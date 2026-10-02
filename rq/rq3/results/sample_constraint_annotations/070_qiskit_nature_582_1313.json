@@ -1,0 +1,182 @@
+{
+  "id": 70,
+  "sample_id": "qiskit_nature_582_1313",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "1d9ed904c5337c8330a6d41b69fbfbabb5e5ec4e",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 7,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/spectral_equivalence": 2,
+      "quantum_semantics/majorana_operator_algebra": 1,
+      "quantum_semantics/majorana_qubit_mapping": 2,
+      "interface/container_mapping_contract": 4,
+      "interface/register_length_contract": 2,
+      "quantum_semantics/fermion_qubit_mapping": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "Ternary-tree-mapped H2 operator has the reference H2 eigenspectrum."
+        }
+      ],
+      "rationale": "The assertion compares a physical molecular spectrum."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_pauli_table",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "Mapped Majorana generators square to identity and anticommute pairwise."
+        }
+      ],
+      "rationale": "The canonical Majorana anticommutation relation is directly asserted."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/majorana_qubit_mapping",
+      "assertions": [
+        {
+          "line": 92,
+          "expected": "Individual Majorana labels map to prescribed Pauli strings, including symbolic, empty, and constant cases."
+        }
+      ],
+      "rationale": "The selected test checks the mapping rule; container edge cases are secondary."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_list_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Mapping a list preserves list length and per-element result positions."
+        }
+      ],
+      "rationale": "The selected test is specifically about the public list input/output contract."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_dict_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "Mapping a dictionary preserves keys and their mapped values."
+        }
+      ],
+      "rationale": "The selected test is specifically about the public dictionary contract."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 164,
+          "expected": "Register-length override gives the same map as an operator created with that length."
+        }
+      ],
+      "rationale": "The public override argument is the distinctive contract."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_pauli_priority",
+      "label": "quantum_semantics/majorana_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Six Pauli-priority permutations yield their prescribed X/Y/Z images."
+        }
+      ],
+      "rationale": "Expected Pauli images are primary; invalid-priority rejection is secondary."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 58,
+          "expected": "Jordan-Wigner H2 operator is equivalent to the reference Pauli Hamiltonian."
+        }
+      ],
+      "rationale": "The control checks physical operator equivalence."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 65,
+          "expected": "Single fermionic operators map to the reference Pauli operators."
+        }
+      ],
+      "rationale": "Expected ladder and number-operator Pauli images determine the label."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Jordan-Wigner mapping preserves list length and element positions."
+        }
+      ],
+      "rationale": "The selected control checks mapping of a list container."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 136,
+          "expected": "Jordan-Wigner mapping preserves dictionary keys and mapped values."
+        }
+      ],
+      "rationale": "The selected control checks mapping of a dictionary container."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 143,
+          "expected": "Jordan-Wigner register-length override agrees with the longer source operator."
+        }
+      ],
+      "rationale": "The selected control checks the public override parameter."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/1d9ed904c5337c8330a6d41b69fbfbabb5e5ec4e/test/second_q/mappers/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/1d9ed904c5337c8330a6d41b69fbfbabb5e5ec4e/test/second_q/mappers/test_ternary_tree_mapper.py"
+  ],
+  "rationale": "Reviewed all 12 selected cases against exact-patch source; physical operator equalities are quantum constraints and result-container contracts are interface constraints."
+}

@@ -1,0 +1,59 @@
+{
+  "id": 73,
+  "sample_id": "qiskit_nature_683_684",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "64b08facfb29cffb3cff91df65debb039bb6ee44",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 2,
+    "subtype_test_counts": {
+      "quantum_semantics/potential_energy_surface": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler_excited_eigensolver",
+      "label": "quantum_semantics/potential_energy_surface",
+      "assertions": [
+        {
+          "line": 243,
+          "expected": "Excited-state sampler returns four reference electronic energies at each H2 geometry."
+        }
+      ],
+      "rationale": "Multiple physical energy curves are the decisive assertion; point echo is secondary."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler",
+      "label": "quantum_semantics/potential_energy_surface",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "Ground-state sampler returns reference H2 energies at three separations."
+        }
+      ],
+      "rationale": "The numerical potential-energy curve is physically specific."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_potential_interface",
+      "label": "quantum_semantics/potential_energy_surface",
+      "assertions": [
+        {
+          "line": 129,
+          "expected": "Morse fit yields reference H2 potential parameters."
+        }
+      ],
+      "rationale": "The fitted well location, depth, and shift describe the molecular energy surface."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/64b08facfb29cffb3cff91df65debb039bb6ee44/test/algorithms/pes_samplers/test_bopes_sampler.py"
+  ],
+  "rationale": "Read all 3 selected tests at the exact sample commit; each case is labeled by its explicit assertion rather than operator class name."
+}

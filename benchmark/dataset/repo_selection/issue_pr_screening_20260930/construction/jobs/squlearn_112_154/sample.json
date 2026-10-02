@@ -1,0 +1,175 @@
+{
+  "instance": {
+    "id": 114,
+    "repo": "sQUlearn/squlearn",
+    "instance_id": "squlearn_112_154",
+    "status": "completed",
+    "issue_url": "https://github.com/sQUlearn/squlearn/issues/112",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/sQUlearn/squlearn/pull/154",
+    "base_commit": "3bb269ebb14818b87041e61690be28a168af2833",
+    "patch": "11a90f284dcbef9e5e543b927929b2a97d113f74"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "Adds missing classification objective to QNN, integrating expectation-output postprocessing and circuit/observable parameter gradients with cross entropy. Unit tests check loss/gradients and modified QNNClassifier tests exercise training with single and multiple observables. Retained as a core QML application API feature under the historical scope (not claiming cross entropy itself is quantum-specific)."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/squlearn/qnn/__init__.py",
+      "src/squlearn/qnn/base_qnn.py",
+      "src/squlearn/qnn/loss/__init__.py",
+      "src/squlearn/qnn/loss/cross_entropy_loss.py",
+      "src/squlearn/qnn/loss/squared_loss.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_pennylane.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_qiskit.py",
+      "src/squlearn/qnn/qnnc.py",
+      "src/squlearn/qnn/qnnr.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Quantum neural-network classifiers need cross-entropy training with probability-valued outputs. The loss and its gradients must support binary and multiple-output classification and integrate with the existing quantum model fitting workflow.",
+    "requirements": [
+      "Provide binary and multiple-output cross-entropy values with numerical clipping.",
+      "Compute parameter gradients from the supplied model-output derivatives.",
+      "Support training and prediction of quantum neural-network classifiers with cross-entropy loss for both single and multiple observables.",
+      "Preserve the neighboring quantum neural-network regression workflow."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "CrossEntropyLoss",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "constructor: eps=1e-8",
+        "Output": "",
+        "Description": "Cross-entropy loss exposed through squlearn.qnn."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.value",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "self, value_dict, **kwargs",
+        "Output": "float",
+        "Description": "Computes loss from value_dict[\"f\"] and ground_truth."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.gradient",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "self, value_dict, **kwargs",
+        "Output": "numpy.ndarray",
+        "Description": "Computes parameter gradients; accepts ground_truth and multiple_output."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.set_opt_param_op",
+        "Path": "src/squlearn/qnn/loss/qnn_loss_base.py",
+        "Input": "self, opt_param_op=True",
+        "Output": "None",
+        "Description": "Selects whether observable parameters are optimized."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.fit",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X, y",
+        "Output": "QNNClassifier",
+        "Description": "Fits a cross-entropy classifier and updates circuit and observable parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.predict",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Returns class predictions with the same target shape."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-squlearn_112_154:latest",
+      "image_id": "sha256:49b70d37d0fec498a793b446e4a344d65b80fe5a7feb392010449ec23882749b",
+      "image_size": "1259741119",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict0-ground_truth0-0.057705]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict1-ground_truth1-0.6931472]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict2-ground_truth2-0.0100503]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict0-ground_truth0-False-gradient_value0]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict1-ground_truth1-False-gradient_value1]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict2-ground_truth2-True-gradient_value2]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict"
+        ],
+        "summary": "9 selected selectors blocked by target-feature import failure (4.98s); each independently confirmed in three stability trials",
+        "duration_seconds": 6.934
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict"
+        ],
+        "summary": "2 passed in 4.66s",
+        "duration_seconds": 6.213
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict0-ground_truth0-0.057705]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict1-ground_truth1-0.6931472]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict2-ground_truth2-0.0100503]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict0-ground_truth0-False-gradient_value0]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict1-ground_truth1-False-gradient_value1]",
+          "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict2-ground_truth2-True-gradient_value2]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict"
+        ],
+        "summary": "9 passed in 5.48s",
+        "duration_seconds": 7.865
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict"
+        ],
+        "summary": "2 passed in 5.12s",
+        "duration_seconds": 7.46
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/squlearn_112_154",
+    "selector_exclusions": {}
+  }
+}

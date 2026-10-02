@@ -1,0 +1,179 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..9720c87 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,174 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep=True) -> dict:
++        """Get parameters for this estimator.
++
++        Besides the constructor parameters, this exposes nested parameters of the encoding circuit
++        using the ``pqc__`` prefix and nested observable parameters using the ``operator__`` prefix.
++        If multiple observables are used, their parameters are exposed as
++        ``operator__<index>__<parameter>``.
++        """
++        params = {
++            "pqc": self.pqc,
++            "operator": self.operator,
++            "executor": self.executor,
++            "loss": self.loss,
++            "optimizer": self.optimizer,
++            "param_ini": self.param_ini,
++            "param_op_ini": self.param_op_ini,
++            "batch_size": self.batch_size,
++            "epochs": self.epochs,
++            "shuffle": self.shuffle,
++            "opt_param_op": self.opt_param_op,
++            "variance": self.variance,
++            "shot_adjusting": self.shot_adjusting,
++            "parameter_seed": self.parameter_seed,
++        }
++
++        if deep:
++            if hasattr(self.pqc, "get_params"):
++                for key, value in self.pqc.get_params(deep=True).items():
++                    params[f"pqc__{key}"] = value
++
++            if isinstance(self.operator, list):
++                for index, operator in enumerate(self.operator):
++                    params[f"operator__{index}"] = operator
++                    if hasattr(operator, "get_params"):
++                        for key, value in operator.get_params(deep=True).items():
++                            params[f"operator__{index}__{key}"] = value
++            elif hasattr(self.operator, "get_params"):
++                for key, value in self.operator.get_params(deep=True).items():
++                    params[f"operator__{key}"] = value
++
++        return params
++
++    def set_params(self, **params):
++        """Set parameters for this estimator.
++
++        Nested encoding-circuit parameters can be set with the ``pqc__`` prefix. Observable
++        parameters can be set with the ``operator__`` prefix for a single observable or with
++        ``operator__<index>__`` for a list of observables. Whenever the circuit or observables are
++        changed, the corresponding parameter arrays and internal QNN object are refreshed.
++        """
++        if not params:
++            return self
++
++        valid_params = self.get_params(deep=True)
++        top_level_params = self.get_params(deep=False)
++
++        pqc_params = {}
++        operator_params = {}
++        top_params = {}
++
++        for key, value in params.items():
++            key_root, delimiter, sub_key = key.partition("__")
++            if delimiter:
++                if key_root == "pqc":
++                    pqc_params[sub_key] = value
++                elif key_root == "operator":
++                    operator_params[sub_key] = value
++                else:
++                    raise ValueError(
++                        f"Invalid parameter {key!r} for estimator {self.__class__.__name__}."
++                    )
++            else:
++                if key not in top_level_params:
++                    raise ValueError(
++                        f"Invalid parameter {key!r} for estimator {self.__class__.__name__}."
++                    )
++                top_params[key] = value
++
++        pqc_changed = False
++        operator_changed = False
++        param_ini_explicit = "param_ini" in top_params
++        param_op_ini_explicit = "param_op_ini" in top_params
++
++        for key, value in top_params.items():
++            setattr(self, key, value)
++            if key == "pqc":
++                pqc_changed = True
++            elif key == "operator":
++                operator_changed = True
++
++        if pqc_params:
++            if not hasattr(self.pqc, "set_params"):
++                raise ValueError(f"Encoding circuit {self.pqc!r} does not support set_params.")
++            self.pqc.set_params(**pqc_params)
++            pqc_changed = True
++
++        if operator_params:
++            operator_changed = True
++            if isinstance(self.operator, list):
++                grouped_operator_params = {}
++                for key, value in operator_params.items():
++                    index_key, delimiter, sub_key = key.partition("__")
++                    try:
++                        index = int(index_key)
++                    except ValueError as exc:
++                        raise ValueError(
++                            "Observable parameters for a list of operators must be of the form "
++                            "'operator__<index>__<parameter>'."
++                        ) from exc
++                    if index < 0 or index >= len(self.operator):
++                        raise ValueError(f"Invalid operator index {index}.")
++                    if delimiter:
++                        grouped_operator_params.setdefault(index, {})[sub_key] = value
++                    else:
++                        self.operator[index] = value
++
++                for index, nested_params in grouped_operator_params.items():
++                    if not hasattr(self.operator[index], "set_params"):
++                        raise ValueError(
++                            f"Observable {self.operator[index]!r} does not support set_params."
++                        )
++                    self.operator[index].set_params(**nested_params)
++            else:
++                if any("__" not in key for key in operator_params):
++                    raise ValueError(
++                        "Replacing a single observable must be done through the top-level "
++                        "'operator' parameter."
++                    )
++                if not hasattr(self.operator, "set_params"):
++                    raise ValueError(f"Observable {self.operator!r} does not support set_params.")
++                self.operator.set_params(**operator_params)
++
++        if pqc_changed and not operator_changed:
++            pqc_params_current = (
++                self.pqc.get_params(deep=False) if hasattr(self.pqc, "get_params") else {}
++            )
++            if "num_qubits" in pqc_params_current:
++                num_qubits = pqc_params_current["num_qubits"]
++                operators = self.operator if isinstance(self.operator, list) else [self.operator]
++                for operator in operators:
++                    if hasattr(operator, "set_params"):
++                        operator_params_current = operator.get_params(deep=False)
++                        if "num_qubits" in operator_params_current:
++                            operator.set_params(num_qubits=num_qubits)
++                            operator_changed = True
++
++        if pqc_changed and not param_ini_explicit:
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        if operator_changed and not param_op_ini_explicit:
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [
++                        operator.generate_initial_parameters(seed=self.parameter_seed)
++                        for operator in self.operator
++                    ]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++
++        self.param = self.param_ini.copy()
++        self.param_op = self.param_op_ini.copy()
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
++        self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

@@ -1,0 +1,348 @@
+{
+  "id": 78,
+  "sample_id": "qiskit_nature_828_891",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "a56898c8a32e15373bd9ff4fe830bffc104fe43c",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 16,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "interface/user_parameter_binding": 1,
+      "general_semantics/numeric_tolerance_filtering": 1,
+      "general_semantics/numeric_tolerance_comparison": 1,
+      "general_semantics/numeric_norm_calculation": 1,
+      "interface/parameter_introspection": 2,
+      "general_semantics/symbolic_operator_arithmetic": 5,
+      "quantum_semantics/fermionic_operator_algebra": 4,
+      "quantum_semantics/operator_hermiticity": 1,
+      "quantum_semantics/operator_normal_ordering": 2,
+      "quantum_semantics/fermionic_matrix_representation": 1,
+      "quantum_semantics/fermion_qubit_mapping": 1,
+      "general_semantics/complex_conjugation": 1,
+      "general_semantics/input_immutability": 1,
+      "general_semantics/operator_equality": 1,
+      "interface/mapping_access": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 403,
+          "expected": "Assigning one parameter returns a new partially bound operator and leaves the original unchanged."
+        }
+      ],
+      "rationale": "The public parameter-assignment API is the focused contract."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_chop",
+      "label": "general_semantics/numeric_tolerance_filtering",
+      "assertions": [
+        {
+          "line": 387,
+          "expected": "Chop removes tiny numeric parts while retaining symbolic coefficients."
+        }
+      ],
+      "rationale": "The explicit behavior is numeric threshold filtering."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 327,
+          "expected": "Equiv distinguishes coefficient tolerances and rejects unbound parameters."
+        }
+      ],
+      "rationale": "The main comparisons are ordinary approximate equality; parameter rejection is a boundary check."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_induced_norm",
+      "label": "general_semantics/numeric_norm_calculation",
+      "assertions": [
+        {
+          "line": 377,
+          "expected": "Induced one- and two-norms match 7 and 5; symbolic values are rejected."
+        }
+      ],
+      "rationale": "The numeric norm is the direct calculation under test."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_parameterized",
+      "label": "interface/parameter_introspection",
+      "assertions": [
+        {
+          "line": 396,
+          "expected": "Parameterized and plain sparse operators report their parameter status."
+        }
+      ],
+      "rationale": "The public introspection method is the assertion target."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 221,
+          "expected": "Sparse-label scalar multiplication preserves symbolic coefficient expressions."
+        }
+      ],
+      "rationale": "The operation scales coefficients generically, including parameters."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_parameters",
+      "label": "interface/parameter_introspection",
+      "assertions": [
+        {
+          "line": 546,
+          "expected": "Public parameters() returns both stored symbols."
+        }
+      ],
+      "rationale": "The assertion checks exposed parameter metadata."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 135,
+          "expected": "Fermionic composition preserves parameter expressions and expected product signs."
+        }
+      ],
+      "rationale": "The multi-compose case includes quantum fermionic sign rules."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_div",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Fermionic division preserves a symbolic reciprocal coefficient."
+        }
+      ],
+      "rationale": "The selected test checks scalar coefficient arithmetic."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 288,
+          "expected": "Fermionic operators satisfy or violate Hermiticity; unbound symbols are rejected."
+        }
+      ],
+      "rationale": "The physical adjoint condition is primary, with parameter error secondary."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "Fermionic multiplication by a parameter preserves the symbolic coefficient."
+        }
+      ],
+      "rationale": "The selected test checks scalar coefficient scaling."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_normal_order",
+      "label": "quantum_semantics/operator_normal_ordering",
+      "assertions": [
+        {
+          "line": 419,
+          "expected": "Parameterized fermionic ladder words normal order with the expected contractions and signs."
+        }
+      ],
+      "rationale": "The asserted identity is fermionic anticommutation."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 186,
+          "expected": "Parameterized fermionic power retains the expected symbolic coefficient."
+        }
+      ],
+      "rationale": "Nilpotence and minus signs follow fermion algebra."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+      "label": "quantum_semantics/operator_normal_ordering",
+      "assertions": [
+        {
+          "line": 249,
+          "expected": "Simplification and ordering of fermionic terms produce the expected canonical operator."
+        }
+      ],
+      "rationale": "The final assertion includes fermionic ordering behavior."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 362,
+          "expected": "Fermionic matrices and H2 spectrum match references; unbound symbols cannot become numeric matrices."
+        }
+      ],
+      "rationale": "Physical matrix action and spectrum dominate the selected test."
+    },
+    {
+      "test_number": 16,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Jordan-Wigner mapping carries a symbolic ladder coefficient into the expected Pauli expansion."
+        }
+      ],
+      "rationale": "The assertion checks the fermion-to-qubit mapping rule with a parameter."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Sparse-label addition combines numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic term aggregation."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 248,
+          "expected": "Sparse-label adjoint conjugates numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "The dummy base subclass tests coefficient conjugation."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+      "label": "general_semantics/input_immutability",
+      "assertions": [
+        {
+          "line": 362,
+          "expected": "Copying source data prevents later mutation from changing the operator."
+        }
+      ],
+      "rationale": "The selected control checks copy semantics."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+      "label": "general_semantics/operator_equality",
+      "assertions": [
+        {
+          "line": 266,
+          "expected": "Exact equality distinguishes identical and differing sparse mappings."
+        }
+      ],
+      "rationale": "The selected control checks generic equality."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "Lookup of a sparse label returns its stored coefficient."
+        }
+      ],
+      "rationale": "The selected control checks public mapping access."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Fermionic addition combines numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "No fermionic sign identity is involved in addition."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 196,
+          "expected": "Fermionic adjoint exchanges ladder actions and applies expected signs."
+        }
+      ],
+      "rationale": "The selected control checks fermion adjoint algebra."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_expand",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 155,
+          "expected": "Expanded fermionic tensor product preserves reversed register order and coefficients."
+        }
+      ],
+      "rationale": "The expected ladder ordering is a fermionic product contract."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/a56898c8a32e15373bd9ff4fe830bffc104fe43c/test/second_q/mappers/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/a56898c8a32e15373bd9ff4fe830bffc104fe43c/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/a56898c8a32e15373bd9ff4fe830bffc104fe43c/test/second_q/operators/test_sparse_label_op.py"
+  ],
+  "rationale": "Individually reviewed 24 selected cases, separating public parameter behavior, generic coefficient arithmetic, and fermionic identities and mappings."
+}

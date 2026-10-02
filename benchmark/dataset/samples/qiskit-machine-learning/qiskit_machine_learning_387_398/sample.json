@@ -1,0 +1,134 @@
+{
+  "instance": {
+    "id": 32,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_387_398",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/387",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/398",
+    "base_commit": "005c9dc0cfb3068850fb33a709faa4bbd30b7c80",
+    "patch": "5df0a738d1120c492ce7fb5e18d61ee8489a6b78"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task implements PegasosQSVC decision-score access for a quantum-kernel classifier, but the core change is classifier API behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PegasosQSVC can be trained and used for prediction, but calling its decision function follows the inherited scikit-learn SVC implementation and fails because PegasosQSVC does not maintain the internal SVC state expected by that parent method. Users should be able to inspect PegasosQSVC decision scores directly after fitting without hitting unrelated scikit-learn internals.",
+    "requirements": [
+      "PegasosQSVC must expose a working decision-function method after fitting.",
+      "The decision function must return one score per input sample and must use the Pegasos quantum-kernel model's learned weighted kernel sum.",
+      "The sign of each returned decision score must agree with the class prediction boundary used by PegasosQSVC.",
+      "The predict method must continue to return the fitted classifier labels by applying the decision scores.",
+      "Calling the decision function before fitting must raise the library's machine-learning error.",
+      "Existing PegasosQSVC behavior for callable quantum kernels, precomputed kernels, changing kernels, and scoring must remain stable."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "PegasosQSVC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+        "Input": "constructor: quantum_kernel=None, C=1.0, num_steps=1000, precomputed=False, seed=None",
+        "Output": "",
+        "Description": "Pegasos quantum support vector classifier that fits quantum-kernel training data and exposes prediction and decision-score behavior without depending on scikit-learn SVC internals."
+      },
+      {
+        "Type": "Method",
+        "Name": "PegasosQSVC.fit",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+        "Input": "self, X, y",
+        "Output": "self",
+        "Description": "Fits the Pegasos classifier on feature vectors or a precomputed kernel matrix."
+      },
+      {
+        "Type": "Method",
+        "Name": "PegasosQSVC.predict",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+        "Input": "self, X",
+        "Output": "array of predicted labels",
+        "Description": "Predicts labels by thresholding Pegasos decision scores."
+      },
+      {
+        "Type": "Method",
+        "Name": "PegasosQSVC.decision_function",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+        "Input": "self, X",
+        "Output": "array of decision scores",
+        "Description": "Returns the fitted Pegasos weighted-kernel decision score for each input sample and validates fitted state and input shape."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_387_398",
+      "image_id": "sha256:2c6e89f3c222029192b7df84be3ac50d0fe7f9e63286a9185e195ecbf84aadf8",
+      "image_size": "1432292677"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_decision_function"
+        ],
+        "summary": "1 passed in 6.91s",
+        "duration_seconds": 11.17
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc_4d",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_precomputed_kernel",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel_types"
+        ],
+        "summary": "5 passed in 17.26s",
+        "duration_seconds": 20.58
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_decision_function"
+        ],
+        "summary": "1 failed in 5.31s. Base failure is AttributeError: 'PegasosQSVC' object has no attribute '_sparse' when decision_function dispatches to sklearn SVC internals.",
+        "duration_seconds": 11.68
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc_4d",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_precomputed_kernel",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel_types"
+        ],
+        "summary": "5 passed in 21.82s",
+        "duration_seconds": 28.98
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "source": "rq/rq2/results/current/regression_data.csv",
+  "sha256": "a3721f3cab1479037853271b8baeda23453359b5925a00860bd82263c9380004",
+  "models": [
+    {
+      "name": "full119_original_specification",
+      "formula": "resolved ~ strong + patch_z + tests_z + C(repo) + C(setting)",
+      "status": "not_estimable",
+      "reason": "(Quasi-)separation in full119_original_specification; ordinary logit inference is invalid",
+      "tasks": 119,
+      "observations": 1785
+    },
+    {
+      "name": "sensitivity_exclude_all_failure_repository",
+      "formula": "resolved ~ strong + patch_z + tests_z + C(repo) + C(setting)",
+      "status": "estimable",
+      "result": {
+        "model": "sensitivity_exclude_all_failure_repository",
+        "term": "strong",
+        "coefficient": -1.005627521138207,
+        "cluster_robust_se": 0.3743984171764607,
+        "odds_ratio": 0.3658150061141123,
+        "ci95_low": 0.17561960913659658,
+        "ci95_high": 0.7619913252066436,
+        "p_value": 0.007231691997012598
+      },
+      "diagnostics": {
+        "name": "sensitivity_exclude_all_failure_repository",
+        "formula": "resolved ~ strong + patch_z + tests_z + C(repo) + C(setting)",
+        "observations": 1710,
+        "task_clusters": 114,
+        "resolved": 651,
+        "design_columns": 27,
+        "design_rank": 27,
+        "design_condition_number": 19.513036476876454,
+        "separation_detected": false,
+        "converged": true,
+        "warnings": [],
+        "min_fitted_probability": 0.0029165702590906047,
+        "max_fitted_probability": 0.9756606824287404
+      }
+    },
+    {
+      "name": "main_full119_without_repository_FE",
+      "formula": "resolved ~ strong + patch_z + tests_z + C(setting)",
+      "status": "estimable",
+      "result": {
+        "model": "main_full119_without_repository_FE",
+        "term": "strong",
+        "coefficient": -1.0677182287696263,
+        "cluster_robust_se": 0.3271779372120865,
+        "odds_ratio": 0.343792077998554,
+        "ci95_low": 0.18105123848202298,
+        "ci95_high": 0.6528151582144494,
+        "p_value": 0.0011007720063417352
+      },
+      "diagnostics": {
+        "name": "main_full119_without_repository_FE",
+        "formula": "resolved ~ strong + patch_z + tests_z + C(setting)",
+        "observations": 1785,
+        "task_clusters": 119,
+        "resolved": 651,
+        "design_columns": 18,
+        "design_rank": 18,
+        "design_condition_number": 18.021404689830067,
+        "separation_detected": false,
+        "converged": true,
+        "warnings": [],
+        "min_fitted_probability": 0.0036381872820154984,
+        "max_fitted_probability": 0.9500819876261305
+      }
+    }
+  ],
+  "repository_outcomes": [
+    {
+      "repo": "PennyLaneAI/pennylane",
+      "sum": 49,
+      "count": 105
+    },
+    {
+      "repo": "Qiskit/qiskit-addon-sqd",
+      "sum": 23,
+      "count": 30
+    },
+    {
+      "repo": "entropicalabs/openqaoa",
+      "sum": 16,
+      "count": 45
+    },
+    {
+      "repo": "qiskit-community/qiskit-finance",
+      "sum": 14,
+      "count": 30
+    },
+    {
+      "repo": "qiskit-community/qiskit-machine-learning",
+      "sum": 180,
+      "count": 360
+    },
+    {
+      "repo": "qiskit-community/qiskit-nature",
+      "sum": 203,
+      "count": 735
+    },
+    {
+      "repo": "qiskit-community/qiskit-optimization",
+      "sum": 43,
+      "count": 150
+    },
+    {
+      "repo": "quantumlib/OpenFermion",
+      "sum": 86,
+      "count": 180
+    },
+    {
+      "repo": "sQUlearn/squlearn",
+      "sum": 0,
+      "count": 75
+    },
+    {
+      "repo": "sandbox-quantum/Tangelo",
+      "sum": 24,
+      "count": 30
+    },
+    {
+      "repo": "tequilahub/tequila",
+      "sum": 13,
+      "count": 45
+    }
+  ],
+  "limitations": [
+    "Same task-cluster robust GEE specification as original analysis.",
+    "Sensitivity fits have different samples or controls and must not be presented as the full119 original specification.",
+    "The author selected the full119 model without repository effects on 2026-10-02 after the separation diagnostic; the specification change was not pre-specified."
+  ]
+}

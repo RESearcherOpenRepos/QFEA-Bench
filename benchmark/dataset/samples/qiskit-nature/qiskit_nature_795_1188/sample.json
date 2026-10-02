@@ -1,0 +1,175 @@
+{
+  "instance": {
+    "id": 77,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_795_1188",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/795",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1188",
+    "base_commit": "a8951eb0602cb32834cdbd3686c1d85569e8a409",
+    "patch": "bade0896005e0df3a36bc71b6354c13f21e3c726"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines mixed second-quantized operators and dispatch mapping across component Hilbert-space registers."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/mappers/__init__.py",
+      "qiskit_nature/second_q/mappers/mixed_mapper.py",
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/mixed_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature can model several second-quantized operator families independently, but it does not provide a first-class way to represent and map composite systems that combine multiple local Hilbert-space operator types. Users need mixed-particle operators and a mapper that can dispatch each component to the appropriate underlying mapper and combine the mapped qubit registers.",
+    "requirements": [
+      "A mixed second-quantized operator must be available for representing weighted products of component operators over named Hilbert-space registers.",
+      "Mixed operators must support scalar multiplication and division, addition and subtraction across same or different register keys, unary negation, and composition across same or different register keys.",
+      "A mixed mapper must map MixedOp inputs by dispatching each component operator to the mapper associated with its register type and composing the resulting qubit operators in register order.",
+      "MixedMapper.map must preserve the container type when mapping lists or dictionaries of MixedOp instances.",
+      "MixedMapper construction must reject configurations that contain more than one fermionic register type.",
+      "Existing fermionic operator arithmetic and Jordan-Wigner mapping behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MixedOp",
+        "Path": "qiskit_nature/second_q/operators/mixed_op.py",
+        "Input": "constructor: data",
+        "Output": "",
+        "Description": "Represents weighted products of component second-quantized operators over one or more named Hilbert-space registers."
+      },
+      {
+        "Type": "Method",
+        "Name": "MixedOp.compose",
+        "Path": "qiskit_nature/second_q/operators/mixed_op.py",
+        "Input": "self, other",
+        "Output": "MixedOp",
+        "Description": "Composes mixed operators and combines register keys in order."
+      },
+      {
+        "Type": "Class",
+        "Name": "MixedMapper",
+        "Path": "qiskit_nature/second_q/mappers/mixed_mapper.py",
+        "Input": "constructor: mappers, hilbert_space_register_lengths, hilbert_space_register_types",
+        "Output": "",
+        "Description": "Configures mapper dispatch for named Hilbert-space registers and validates supported register combinations."
+      },
+      {
+        "Type": "Method",
+        "Name": "MixedMapper.map",
+        "Path": "qiskit_nature/second_q/mappers/mixed_mapper.py",
+        "Input": "second_q_ops",
+        "Output": "SparsePauliOp or same container type",
+        "Description": "Maps MixedOp instances, lists, or dictionaries to qubit operators while preserving list and dictionary containers."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_795_1188",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:7b397a6130ea5928174a3a1765eb13eb6841705e550a1e8958ea31260a98f564",
+      "image_size": "976185064"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "qiskit==1.4.2",
+        "qiskit-algorithms>=0.2.1",
+        "numpy<2",
+        "scipy",
+        "h5py",
+        "rustworkx",
+        "pytest",
+        "ddt"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_div",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_neg",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_sub",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_1",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_2",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_3",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_4",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_multiple_fermionic_operators",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_1",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_2",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_3",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_4"
+        ],
+        "result": "passed",
+        "summary": "15 passed in 1.80s",
+        "duration_seconds": 5.55
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_sub",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops"
+        ],
+        "result": "passed",
+        "summary": "8 passed in 2.68s",
+        "duration_seconds": 6.99
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_div",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_neg",
+          "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_sub",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_1",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_2",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_3",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_4",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_multiple_fermionic_operators",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_1",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_2",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_3",
+          "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_4"
+        ],
+        "result": "failed",
+        "summary": "2 errors in 1.91s; ImportError: cannot import name 'MixedOp' from qiskit_nature.second_q.operators",
+        "duration_seconds": 7.61
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_sub",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops"
+        ],
+        "result": "passed",
+        "summary": "8 passed in 2.49s",
+        "duration_seconds": 8.75
+      }
+    }
+  }
+}

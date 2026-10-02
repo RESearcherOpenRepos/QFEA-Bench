@@ -1,0 +1,291 @@
+"""Run each authorized new cohort once, then validate and preserve old records."""
+import concurrent.futures
+import datetime
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[2]
+sys.path.insert(0, str(ROOT))
+from benchmark.evaluation.scripts import evaluate_agent_preds as ev
+from benchmark.evaluation.common.run_io import update_prediction_files
+
+JOBS = json.loads((OUT / "jobs.json").read_text())
+SAMPLES = ROOT / "benchmark/dataset/samples"
+
+
+def save(path, value):
+    temp = path.with_suffix(path.suffix + ".tmp")
+    temp.write_text(json.dumps(value, indent=2) + "\n")
+    temp.replace(path)
+
+
+def read_jsonl(path):
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def finish(job):
+    cohort = ROOT / job["out"]
+    gen = cohort / "generation"
+    run = cohort.parent
+    ids = json.loads((cohort / "sample_ids.json").read_text())
+    predictions = json.loads((gen / "preds.json").read_text())["predictions"]
+    assert len(predictions) == 13 and set(predictions) == set(ids)
+    recovery_path = cohort / "approved_recovery_audit.json"
+    recovery = json.loads(recovery_path.read_text()) if recovery_path.exists() else None
+    paid_retries = set(recovery["approved_paid_retries"]) if recovery else set()
+    errors, exits = {}, {}
+    if job["agent"] == "minisweagent":
+        for sid in ids:
+            trajectory = json.loads((gen / sid / (sid + ".traj.json")).read_text())
+            info = trajectory["info"]
+            state = info.get("exit_status")
+            assert state, sid
+            exits[sid] = state
+            if state not in {"Submitted", "LimitsExceeded", "RepeatedCommandLoop"}:
+                errors[sid] = {"exit_status": state, "detail": info.get("exception_str")}
+    else:
+        rows = read_jsonl(gen / "output.critic_attempt_1.jsonl")
+        assert len(rows) == 13 and {r["instance_id"] for r in rows} == set(ids)
+        for row in rows:
+            sid = row["instance_id"]
+            if row.get("error"):
+                errors[sid] = row["error"]
+                exits[sid] = "Generation error"
+            else:
+                exits[sid] = "Completed workflow"
+
+    result_path = cohort / "results_additions.json"
+    if result_path.exists():
+        shutil.copy2(result_path, result_path.with_suffix(".json.partial"))
+    result = ev.evaluate_predictions(
+        gen / "preds.json", SAMPLES, result_path,
+        timeout=600, workers=1, stable_runs=3, setup_retries=1, resume=True,
+    )
+    if any(r.get("eval_infra_failed") or r.get("timed_out") for r in result["results"]):
+        raise RuntimeError("Inspect validation infrastructure or timeout before merging: " + job["id"])
+
+    for row in result["results"]:
+        sid = row["instance_id"]
+        row.update(agent_runs=1 + int(sid in paid_retries), valid_agent_runs=1,
+                   interrupted_agent_runs=int(sid in paid_retries),
+                   generation_provider="aliyun-dashscope", cohort="additions_20261001_aliyun")
+        row["generation_exit_status"] = exits[sid]
+        if sid in errors:
+            row["generation_error"] = errors[sid]
+            if job["agent"] == "openhands":
+                row["telemetry_incomplete"] = True
+        runs = row.get("eval_runs", [])
+        if row["patch_applied"]:
+            assert len(runs) == 3
+            assert all(not e["eval_infra_failed"] and not e["timed_out"] for e in runs)
+            assert row["resolved"] == all(e["resolved"] for e in runs)
+        else:
+            assert not row["resolved"]
+
+    backup = json.loads((cohort / "results.before_additions.json").read_text())
+    original_preds = json.loads((cohort / "preds.json.before_additions").read_text())["predictions"]
+    target = ROOT / job["target"]
+    assert len(backup["results"]) == 106
+    assert json.loads(target.read_text()) == backup
+    assert json.loads((run / "preds.json").read_text())["predictions"] == original_preds
+    for sid in ids:
+        assert not (run / sid).exists(), sid
+        if (gen / sid).exists():
+            shutil.copytree(gen / sid, run / sid)
+        update_prediction_files(run, predictions[sid])
+    save(run / "preds.additions_20261001_aliyun.json", {"predictions": predictions})
+
+    merged = backup["results"] + result["results"]
+    paths = {json.loads(p.read_text())["instance"]["instance_id"]: p for p in ev.sample_files(SAMPLES)}
+    metadata = {r["instance_id"]: ev.sample_repo_metadata(paths[r["instance_id"]]) for r in merged}
+    payload = ev.build_evaluation_payload(
+        results=merged, predictions=ev.load_predictions(run / "preds.json"),
+        sample_metadata_by_id=metadata, expected_total=119,
+        model_name_or_path=job["model"],
+    )
+    payload["results"] = json.loads((cohort / "results.before_additions.json").read_text())["results"] + result["results"]
+    provenance = {
+        "new_samples": 13, "new_valid_agent_runs_per_sample": 1,
+        "new_agent_runs_by_sample": {sid: 1 + int(sid in paid_retries) for sid in ids},
+        "authorized_paid_retries": sorted(paid_retries),
+        "new_patch_validation_runs": 3, "new_provider": "aliyun-dashscope",
+        "new_model": job["model"], "original_results_preserved": 106,
+        "actual_validation_runs": sum(len(r.get("eval_runs", [])) for r in result["results"]),
+        "generation_errors": errors, "actual_billed_cost": None,
+        "note": "One completed valid attempt selected per sample. User-authorized retries replace Docker-interrupted workflows; interrupted records remain archived. Existing within-call retries retained. All selected tests remain in denominators, including unexecuted tests when no applicable patch exists. Token cost estimates cover selected attempts, exclude archived interrupted attempts, and are not verified Alibaba billing.",
+    }
+    if recovery:
+        provenance["approved_storage_recovery"] = recovery
+    for data in (payload, result):
+        data["run_provenance"] = provenance
+        data["summary"]["new_generation_errors"] = len(errors)
+    save(result_path, result)
+    save(target, payload)
+
+    check = json.loads(target.read_text())
+    after_preds = json.loads((run / "preds.json").read_text())["predictions"]
+    assert len(check["results"]) == 119 and len({r["instance_id"] for r in check["results"]}) == 119
+    assert check["results"][:106] == json.loads((cohort / "results.before_additions.json").read_text())["results"]
+    assert len(after_preds) == 119 and all(after_preds[k] == v for k, v in original_preds.items())
+    verification = dict(provenance, merged_total=119, original_prediction_rows_preserved=106,
+                        resolved=result["summary"]["resolved"], validation_infrastructure_failures=0,
+                        validation_timeouts=0, generation_exits=exits)
+    save(cohort / "final_verification.json", verification)
+    lines = [f"# {job['agent']} — {job['model']}: 13 additions via Alibaba Cloud", "",
+             "One completed valid agent attempt selected per sample. Authorized Docker-interrupted retries are recorded separately. Applicable patches undergo three validations.", "",
+             "| Sample | Generation exit | Applied | Resolved | F2P | P2P |",
+             "|---|---|---|---|---|---|"]
+    for row in result["results"]:
+        lines.append("| " + " | ".join([row["instance_id"], exits[row["instance_id"]], str(row["patch_applied"]),
+                     str(row["resolved"]), row["fail_pass"]["summary"], row["pass_pass"]["summary"]]) + " |")
+    lines += ["", f"Resolved: {result['summary']['resolved']}/13. Actual validation runs: {provenance['actual_validation_runs']}.",
+              f"Generation errors: {json.dumps(errors)}", "Original 106 result and prediction entries verified unchanged; merged total 119.",
+              "Actual Alibaba billing is unavailable through the inference API; shared token-based estimates are not billed cost."]
+    (cohort / "REPORT.md").write_text("\n".join(lines) + "\n")
+    return {"resolved": result["summary"]["resolved"], "errors": len(errors), "validation_runs": provenance["actual_validation_runs"]}
+
+
+class AdoptedProcess:
+    """Observe the original process without launching another model workflow."""
+    def __init__(self, pid, output, expected):
+        self.pid, self.output, self.expected = pid, output, expected
+
+    def poll(self):
+        result = subprocess.run(["ps", "-p", str(self.pid), "-o", "args="], capture_output=True, text=True)
+        if result.returncode == 0 and str(self.output.relative_to(ROOT)) in result.stdout:
+            return None
+        path = self.output / "preds.json"
+        if path.exists() and len(json.loads(path.read_text())["predictions"]) == self.expected:
+            return 0
+        return 99
+
+
+ARM_IDS = {"qiskit_addon_sqd_148_230", "qiskit_addon_sqd_265_343"}
+
+
+def needs_platform_repair(job):
+    if job["agent"] != "minisweagent":
+        return False
+    cohort = ROOT / job["out"]
+    if (cohort / "platform_repair_done.json").exists():
+        return False
+    for sid in ARM_IDS:
+        data = json.loads((cohort / "generation" / sid / (sid + ".traj.json")).read_text())
+        info = data["info"]
+        if info.get("exit_status") != "CalledProcessError":
+            return False
+        assert not data.get("messages"), "Never rerun a model attempt based on its result"
+        assert "docker" in info["exception_str"] and "linux/amd64" in info["exception_str"]
+    save(cohort / "zero_call_startup_audit.json", {"instance_ids": sorted(ARM_IDS), "model_calls": 0,
+         "reason": "Global amd64 default prevented ARM image containers from starting; recover only these pre-model setup failures."})
+    return True
+
+
+def merge_platform_repair(job):
+    cohort = ROOT / job["out"]
+    gen, repair = cohort / "generation", cohort / "arm_generation"
+    corrected = json.loads((repair / "preds.json").read_text())["predictions"]
+    assert set(corrected) == ARM_IDS
+    archive = cohort / "startup_error_platform"
+    archive.mkdir(exist_ok=False)
+    shutil.copy2(gen / "preds.json", archive / "preds.before_recovery.json")
+    for sid in ARM_IDS:
+        shutil.move(str(gen / sid), str(archive / sid))
+        shutil.copytree(repair / sid, gen / sid)
+        update_prediction_files(gen, corrected[sid])
+    save(cohort / "platform_repair_done.json", {"instance_ids": sorted(ARM_IDS), "invalid_startup_model_calls": 0,
+         "note": "Only zero-model-call container startup failures were replaced; all eleven originally executed workflows are retained unchanged."})
+
+
+def main():
+    os.chdir(ROOT)
+    state, active, waiting = {}, {}, []
+    pending = []
+    for job in JOBS:
+        cohort = ROOT / job["out"]
+        if (cohort / "final_verification.json").exists():
+            state[job["id"]] = {"phase": "completed"}
+        elif (cohort / "valid_generation_done.json").exists():
+            waiting.append(job)
+        elif (cohort / "arm_launch.json").exists():
+            pid = json.loads((cohort / "arm_launch.json").read_text())["pid"]
+            active[job["id"]] = (job, AdoptedProcess(pid, cohort / "arm_generation", 2), None, "repair")
+            state[job["id"]] = {"phase": "repairing_zero_call_startup", "pid": pid}
+        elif (cohort / "launch.json").exists():
+            pid = json.loads((cohort / "launch.json").read_text())["pid"]
+            active[job["id"]] = (job, AdoptedProcess(pid, cohort / "generation", 13), None, "main")
+            state[job["id"]] = {"phase": "generating", "pid": pid, "adopted_existing_process": True}
+        else:
+            pending.append(job)
+    future = None
+    current = None
+    pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    try:
+        while pending or active or waiting or future:
+            while pending and len(active) < 6:
+                job = pending.pop(0)
+                cohort = ROOT / job["out"]
+                assert not (cohort / "launch.json").exists(), "Do not automatically restart an already launched cohort"
+                log = (cohort / "agents.log").open("w")
+                process = subprocess.Popen(job["command"], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+                save(cohort / "launch.json", {"pid": process.pid, "started_at": datetime.datetime.now().isoformat(), "command": job["command"]})
+                active[job["id"]] = (job, process, log, "main")
+                state[job["id"]] = {"phase": "generating", "pid": process.pid}
+                print("START", job["id"], process.pid, flush=True)
+            for key, (job, process, log, stage) in list(active.items()):
+                rc = process.poll()
+                if rc is None:
+                    continue
+                if log is not None:
+                    log.close()
+                del active[key]
+                cohort = ROOT / job["out"]
+                save(cohort / ("arm_generation_done.json" if stage == "repair" else "generation_done.json"), {"returncode": rc, "finished_at": datetime.datetime.now().isoformat()})
+                if rc:
+                    state[key] = {"phase": "runner_failed", "returncode": rc}
+                    print("RUNNER_FAILED", key, rc, flush=True)
+                else:
+                    if stage == "main" and needs_platform_repair(job):
+                        assert not (cohort / "arm_launch.json").exists()
+                        repair_log = (cohort / "arm_agents.log").open("w")
+                        repair_process = subprocess.Popen(job["repair_command"], cwd=ROOT, stdout=repair_log, stderr=subprocess.STDOUT)
+                        save(cohort / "arm_launch.json", {"pid": repair_process.pid, "started_at": datetime.datetime.now().isoformat(), "command": job["repair_command"]})
+                        active[key] = (job, repair_process, repair_log, "repair")
+                        state[key] = {"phase": "repairing_zero_call_startup", "pid": repair_process.pid}
+                        print("ARM_ZERO_CALL_RECOVERY", key, flush=True)
+                        continue
+                    if stage == "repair":
+                        merge_platform_repair(job)
+                    save(cohort / "valid_generation_done.json", {"finished_at": datetime.datetime.now().isoformat()})
+                    state[key] = {"phase": "waiting_for_validation"}
+                    waiting.append(job)
+                    print("GENERATED", key, flush=True)
+            if future is not None and future.done():
+                try:
+                    result = future.result()
+                    state[current["id"]] = {"phase": "completed", **result}
+                    print("COMPLETED", current["id"], result, flush=True)
+                except Exception as exc:
+                    import traceback
+                    traceback.print_exc()
+                    state[current["id"]] = {"phase": "collection_failed", "error": str(exc)}
+                future = None
+            if future is None and waiting:
+                current = waiting.pop(0)
+                state[current["id"]] = {"phase": "validating"}
+                future = pool.submit(finish, current)
+            save(OUT / "status.json", {"updated_at": datetime.datetime.now().isoformat(), "jobs": state,
+                                      "queued": [j["id"] for j in pending]})
+            time.sleep(10)
+    finally:
+        pool.shutdown(wait=True)
+
+
+if __name__ == "__main__":
+    main()

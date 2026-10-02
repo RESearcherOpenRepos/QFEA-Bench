@@ -1,0 +1,147 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..8647044 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -68,12 +68,7 @@ class BaseQNN(BaseEstimator, ABC):
+         self.param = self.param_ini.copy()
+ 
+         if param_op_ini is None:
+-            if isinstance(operator, list):
+-                self.param_op_ini = np.concatenate(
+-                    [op.generate_initial_parameters(seed=parameter_seed) for op in operator]
+-                )
+-            else:
+-                self.param_op_ini = operator.generate_initial_parameters(seed=parameter_seed)
++            self.param_op_ini = self._generate_operator_initial_parameters()
+         else:
+             self.param_op_ini = param_op_ini
+         self.param_op = self.param_op_ini.copy()
+@@ -98,6 +93,128 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def _generate_operator_initial_parameters(self) -> np.ndarray:
++        """Generate initial parameters for the current operator specification."""
++        if isinstance(self.operator, list):
++            return np.concatenate(
++                [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++            )
++        return self.operator.generate_initial_parameters(seed=self.parameter_seed)
++
++    def get_params(self, deep: bool = True) -> dict:
++        """Returns hyper-parameters and their values of the QNN."""
++        params = {
++            "pqc": self.pqc,
++            "operator": self.operator,
++            "executor": self.executor,
++            "loss": self.loss,
++            "optimizer": self.optimizer,
++            "param_ini": self.param_ini,
++            "param_op_ini": self.param_op_ini,
++            "batch_size": self.batch_size,
++            "epochs": self.epochs,
++            "shuffle": self.shuffle,
++            "opt_param_op": self.opt_param_op,
++            "variance": self.variance,
++            "parameter_seed": self.parameter_seed,
++        }
++        if not deep:
++            return params
++
++        for name in ["pqc", "loss", "optimizer"]:
++            obj = getattr(self, name)
++            if hasattr(obj, "get_params"):
++                for key, value in obj.get_params(deep=True).items():
++                    params[f"{name}__{key}"] = value
++
++        if isinstance(self.operator, list):
++            for i, oper in enumerate(self.operator):
++                if hasattr(oper, "get_params"):
++                    for key, value in oper.get_params(deep=True).items():
++                        params[f"operator__op{i}__{key}"] = value
++                        if key != "num_qubits":
++                            params[f"op{i}__{key}"] = value
++        elif hasattr(self.operator, "get_params"):
++            for key, value in self.operator.get_params(deep=True).items():
++                params[f"operator__{key}"] = value
++
++        params.update(self._qnn.get_params(deep=True))
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set QNN and nested circuit/operator hyper-parameters."""
++        if not params:
++            return self
++
++        valid_params = self.get_params(deep=True)
++        for key in params:
++            if key not in valid_params:
++                raise ValueError(
++                    f"Invalid parameter {key!r}. "
++                    f"Valid parameters are {sorted(valid_params)!r}."
++                )
++
++        qnn_params = {}
++        rebuild_qnn = False
++        reinitialize = False
++        explicit_param_ini = "param_ini" in params
++        explicit_param_op_ini = "param_op_ini" in params
++
++        for key, value in params.items():
++            if key == "pqc":
++                self.pqc = value
++                rebuild_qnn = True
++                reinitialize = True
++            elif key == "operator":
++                self.operator = value
++                rebuild_qnn = True
++                reinitialize = True
++            elif key == "param_ini":
++                self.param_ini = value
++                reinitialize = True
++            elif key == "param_op_ini":
++                self.param_op_ini = value
++                reinitialize = True
++            elif "__" not in key and key not in self._qnn.get_params(deep=False):
++                setattr(self, key, value)
++
++        for key, value in params.items():
++            if key in {"pqc", "operator", "param_ini", "param_op_ini"}:
++                continue
++            if key.startswith("pqc__"):
++                qnn_params[key.split("__", 1)[1]] = value
++                reinitialize = True
++            elif key.startswith("operator__op"):
++                qnn_params[key.split("operator__", 1)[1]] = value
++                reinitialize = True
++            elif key.startswith("operator__"):
++                qnn_params[key.split("__", 1)[1]] = value
++                reinitialize = True
++            elif key.startswith("op"):
++                qnn_params[key] = value
++                reinitialize = True
++            elif key in self._qnn.get_params(deep=True):
++                qnn_params[key] = value
++                reinitialize = True
++
++        if rebuild_qnn or qnn_params:
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            if qnn_params:
++                self._qnn.set_params(**qnn_params)
++                self.pqc = self._qnn.pqc._feature_map
++                self.operator = self._qnn.operator
++
++        if reinitialize:
++            if not explicit_param_ini:
++                self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            if not explicit_param_op_ini:
++                self.param_op_ini = self._generate_operator_initial_parameters()
++            self.param = self.param_ini.copy()
++            self.param_op = self.param_op_ini.copy()
++            self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

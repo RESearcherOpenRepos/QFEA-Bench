@@ -1,0 +1,207 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..4f1b83f 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -113,6 +113,146 @@ class BaseQNN(BaseEstimator, ABC):
+         self._is_fitted = False
+         self._fit(X, y, weights)
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Get parameters for this estimator.
++
++        Includes nested parameters from the encoding circuit (prefixed with ``pqc__``)
++        and the observable(s) (prefixed with ``op__`` for a single operator or
++        ``op0__``, ``op1__``, ... for a list of operators).
++
++        Args:
++            deep: If True, will return the parameters of nested objects.
++
++        Returns:
++            Dictionary of parameter names mapped to their values.
++        """
++        params = super().get_params(deep=False)
++        params["pqc"] = self.pqc
++        params["operator"] = self.operator
++        params["param_ini"] = self.param_ini
++        params["param_op_ini"] = self.param_op_ini
++        params["loss"] = self.loss
++        params["optimizer"] = self.optimizer
++        params["executor"] = self.executor
++        params["shot_adjusting"] = self.shot_adjusting
++
++        if deep:
++            if hasattr(self.pqc, "get_params"):
++                for key, value in self.pqc.get_params().items():
++                    params[f"pqc__{key}"] = value
++
++            if isinstance(self.operator, list):
++                for i, op in enumerate(self.operator):
++                    if hasattr(op, "get_params"):
++                        for key, value in op.get_params().items():
++                            params[f"op{i}__{key}"] = value
++            elif hasattr(self.operator, "get_params"):
++                for key, value in self.operator.get_params().items():
++                    params[f"op__{key}"] = value
++
++            if hasattr(self.loss, "get_params"):
++                for key, value in self.loss.get_params().items():
++                    params[f"loss__{key}"] = value
++
++            if hasattr(self.optimizer, "get_params"):
++                for key, value in self.optimizer.get_params().items():
++                    params[f"optimizer__{key}"] = value
++
++            if hasattr(self.executor, "get_params"):
++                for key, value in self.executor.get_params().items():
++                    params[f"executor__{key}"] = value
++
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set parameters for this estimator.
++
++        Supports nested parameter setting for the encoding circuit (``pqc__``),
++        the observable(s) (``op__`` or ``op0__``, ``op1__``, ...), and other
++        nested objects such as ``loss__``, ``optimizer__``, and ``executor__``.
++        When circuit or observable parameters change, the trainable parameter
++        arrays are reinitialized and the underlying QNN is recreated.
++
++        Args:
++            **params: Parameter names and values to set.
++
++        Returns:
++            self
++        """
++        # Separate parameters into model-level and nested
++        model_params = {}
++        pqc_params = {}
++        op_params = {}
++        loss_params = {}
++        optimizer_params = {}
++        executor_params = {}
++
++        for key, value in params.items():
++            if key.startswith("pqc__"):
++                pqc_params[key[len("pqc__") :]] = value
++            elif key.startswith("op__"):
++                op_params.setdefault("__single__", {})[key[len("op__") :]] = value
++            elif key.startswith("op") and "__" in key:
++                # Handle op0__, op1__, etc.
++                prefix, sub_key = key.split("__", 1)
++                idx = int(prefix[len("op") :])
++                op_params.setdefault(idx, {})[sub_key] = value
++            elif key.startswith("loss__"):
++                loss_params[key[len("loss__") :]] = value
++            elif key.startswith("optimizer__"):
++                optimizer_params[key[len("optimizer__") :]] = value
++            elif key.startswith("executor__"):
++                executor_params[key[len("executor__") :]] = value
++            else:
++                model_params[key] = value
++
++        # Update nested objects
++        if pqc_params and hasattr(self.pqc, "set_params"):
++            self.pqc.set_params(**pqc_params)
++
++        if isinstance(self.operator, list):
++            for idx, op_param_dict in op_params.items():
++                if idx == "__single__":
++                    continue
++                if idx < len(self.operator) and hasattr(self.operator[idx], "set_params"):
++                    self.operator[idx].set_params(**op_param_dict)
++        else:
++            if "__single__" in op_params and hasattr(self.operator, "set_params"):
++                self.operator.set_params(**op_params["__single__"])
++
++        if loss_params and hasattr(self.loss, "set_params"):
++            self.loss.set_params(**loss_params)
++
++        if optimizer_params and hasattr(self.optimizer, "set_params"):
++            self.optimizer.set_params(**optimizer_params)
++
++        if executor_params and hasattr(self.executor, "set_params"):
++            self.executor.set_params(**executor_params)
++
++        # Set model-level parameters via parent
++        if model_params:
++            super().set_params(**model_params)
++
++        # Reinitialize parameter arrays and recreate QNN if nested objects changed
++        if pqc_params or op_params or loss_params or optimizer_params or executor_params:
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            self.param = self.param_ini.copy()
++
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            self.param_op = self.param_op_ini.copy()
++
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self._is_fitted = False
++
++        return self
++
+     @abstractmethod
+     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Internal fit function."""
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 1177c3c..5232459 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -121,6 +121,23 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         )
+         self._label_binarizer = None
+ 
++    def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> "QNNClassifier":
++        """Fit the model to data.
++
++        This method fits the model after updating its encoding-circuit hyperparameters.
++        It reinitializes the model's parameters and fits it to the provided data.
++
++        Args:
++            X: Input data
++            y: Labels
++            weights: Weights for each data point
++
++        Returns:
++            self
++        """
++        super().fit(X, y, weights)
++        return self
++
+     def predict(self, X: np.ndarray) -> np.ndarray:
+         """Predict using the QNN.
+ 
+diff --git a/src/squlearn/qnn/qnnr.py b/src/squlearn/qnn/qnnr.py
+index de6b434..e00ec71 100644
+--- a/src/squlearn/qnn/qnnr.py
++++ b/src/squlearn/qnn/qnnr.py
+@@ -118,6 +118,23 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+             parameter_seed=parameter_seed,
+         )
+ 
++    def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> "QNNRegressor":
++        """Fit the model to data.
++
++        This method fits the model after updating its encoding-circuit hyperparameters.
++        It reinitializes the model's parameters and fits it to the provided data.
++
++        Args:
++            X: Input data
++            y: Labels
++            weights: Weights for each data point
++
++        Returns:
++            self
++        """
++        super().fit(X, y, weights)
++        return self
++
+     def predict(self, X: np.ndarray) -> np.ndarray:
+         """Predict using the QNN.
+ 

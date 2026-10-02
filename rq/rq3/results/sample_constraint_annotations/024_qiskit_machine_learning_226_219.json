@@ -1,0 +1,93 @@
+{
+  "id": 24,
+  "sample_id": "qiskit_machine_learning_226_219",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "0f2d1e8fc0c20376f9c7dcc7e68b0840f6cd511b",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/user_parameter_binding": 1,
+      "quantum_semantics/circuit_decomposition": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelFreeParameters::test_user_parameters",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 386,
+          "expected": "The kernel exposes the configured user parameters"
+        },
+        {
+          "line": 396,
+          "expected": "A wrong number of assigned values raises ValueError"
+        },
+        {
+          "line": 399,
+          "expected": "Unassigned user parameters remain visible"
+        },
+        {
+          "line": 410,
+          "expected": "Ordered binding stores the requested values"
+        },
+        {
+          "line": 411,
+          "expected": "All user parameters become bound"
+        },
+        {
+          "line": 415,
+          "expected": "The original unbound feature map retains its four parameters"
+        },
+        {
+          "line": 430,
+          "expected": "Consecutive mapping assignments retain both latest values"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 321,
+          "expected": "The inner-product kernel circuit decomposes into four operations"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 327,
+          "expected": "The self-inner-product circuit decomposes into four operations"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 345,
+          "expected": "Statevector-mode kernel circuit decomposes into one operation"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/0f2d1e8fc0c20376f9c7dcc7e68b0840f6cd511b/test/kernels/test_qkernel.py"
+  ],
+  "rationale": "The new test checks public user-parameter binding, validation, and exposed feature-map properties. The existing tests check the number of operations after decomposing constructed quantum-kernel circuits."
+}

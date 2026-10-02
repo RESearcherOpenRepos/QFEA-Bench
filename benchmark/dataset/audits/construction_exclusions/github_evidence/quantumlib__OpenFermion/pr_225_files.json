@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "b998973c091be328b92eae6faf161e177a88ecb9",
+    "filename": "src/openfermion/ops/_symbolic_operator.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 4,
+    "changes": 14,
+    "blob_url": "https://github.com/quantumlib/OpenFermion/blob/3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d/src%2Fopenfermion%2Fops%2F_symbolic_operator.py",
+    "raw_url": "https://github.com/quantumlib/OpenFermion/raw/3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d/src%2Fopenfermion%2Fops%2F_symbolic_operator.py",
+    "contents_url": "https://api.github.com/repos/quantumlib/OpenFermion/contents/src%2Fopenfermion%2Fops%2F_symbolic_operator.py?ref=3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d",
+    "patch": "@@ -109,16 +109,22 @@ def _long_string_init(self, long_string, coefficient):\n         for match in re.findall(pattern, long_string, flags=re.DOTALL):\n \n             # Determine the coefficient for this term\n-            coef_string = match[0].strip()\n+            coef_string = re.sub(r\"\\s+\", \"\", match[0])\n             if coef_string and coef_string[0] is '+':\n                 coef_string = coef_string[1:].strip()\n-            if coef_string is '':\n+            if coef_string == '':\n                 coef = 1.0\n-            elif coef_string is '-':\n+            elif coef_string == '-':\n                 coef = -1.0\n             else:\n                 try:\n-                    coef = complex(coef_string)\n+                    if 'j' in coef_string:\n+                        if coef_string[0] == '-':\n+                            coef = -complex(coef_string[1:])\n+                        else:\n+                            coef = complex(coef_string)\n+                    else:\n+                        coef = float(coef_string)\n                 except ValueError:\n                     raise ValueError(\n                             'Invalid coefficient {}.'.format(coef_string))"
+  },
+  {
+    "sha": "37b811af06face417834445be473e308a9493f4f",
+    "filename": "src/openfermion/ops/_symbolic_operator_test.py",
+    "status": "modified",
+    "additions": 8,
+    "deletions": 0,
+    "changes": 8,
+    "blob_url": "https://github.com/quantumlib/OpenFermion/blob/3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d/src%2Fopenfermion%2Fops%2F_symbolic_operator_test.py",
+    "raw_url": "https://github.com/quantumlib/OpenFermion/raw/3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d/src%2Fopenfermion%2Fops%2F_symbolic_operator_test.py",
+    "contents_url": "https://api.github.com/repos/quantumlib/OpenFermion/contents/src%2Fopenfermion%2Fops%2F_symbolic_operator_test.py?ref=3d2900587c5f14b5de57f4e54dcd6ba7f50b3f5d",
+    "patch": "@@ -162,6 +162,14 @@ def test_init_long_str(self):\n         reparsed_op = DummyOperator1(str(fermion_op))\n         self.assertEqual(len((fermion_op-reparsed_op).terms), 0)\n \n+        fermion_op = DummyOperator1('1.7 [3^ 2] - 8 [4^]')\n+        correct = DummyOperator1('3^ 2', 1.7) + DummyOperator1('4^', -8.)\n+        self.assertEqual(len((fermion_op-correct).terms), 0)\n+\n+        fermion_op = DummyOperator1('-(2.3 + 1.7j) [3^ 2]')\n+        correct = DummyOperator1('3^ 2', complex(-2.3, -1.7))\n+        self.assertEqual(len((fermion_op-correct).terms), 0)\n+\n     def test_merges_multiple_whitespace(self):\n         fermion_op = DummyOperator1('        \\n ')\n         self.assertEqual(fermion_op.terms, {(): 1})"
+  }
+]

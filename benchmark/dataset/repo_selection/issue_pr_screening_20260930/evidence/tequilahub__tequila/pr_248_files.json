@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "5fc1b2cab403a320f8e1c9c27982767fbe6aa12b",
+    "filename": "requirements.txt",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/382c889af5d646e2e993c61473a1f41f4e15a53b/requirements.txt",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/382c889af5d646e2e993c61473a1f41f4e15a53b/requirements.txt",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/requirements.txt?ref=382c889af5d646e2e993c61473a1f41f4e15a53b",
+    "patch": "@@ -9,7 +9,7 @@ setuptools\n pytest\n openfermion ~= 1.0 # can not be smaller than 1.0 \n #cmake # needed by qulacs, can be removed otherwise, now in qulacs requirements\n-qulacs # default simulator (best integration), remove if the installation gives you trouble and just install one of the other supported backend\n+qulacs < 0.5.0 # default simulator (best integration), remove if the installation gives you trouble and just install one of the other supported backend. Version restriction only for noise models, otherwise the new version is fine\n \n #optional quantum backends\n #cirq >= 0.9.2 #"
+  },
+  {
+    "sha": "ee47f1ef8973d0d46d1aff475ec8dc6cd7b71090",
+    "filename": "src/tequila/quantumchemistry/chemistry_tools.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 6,
+    "changes": 12,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/382c889af5d646e2e993c61473a1f41f4e15a53b/src%2Ftequila%2Fquantumchemistry%2Fchemistry_tools.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/382c889af5d646e2e993c61473a1f41f4e15a53b/src%2Ftequila%2Fquantumchemistry%2Fchemistry_tools.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fquantumchemistry%2Fchemistry_tools.py?ref=382c889af5d646e2e993c61473a1f41f4e15a53b",
+    "patch": "@@ -126,17 +126,17 @@ def get_number_of_core_electrons(self):\n         for atom in self.get_atoms():\n             n=self.get_atom_number(atom)\n             if n>2:\n-                result = 2 \n+                result += 2 \n             if n>10:\n-                result = 8\n+                result += 8\n             if n>18:\n-                result = 18\n+                result += 18\n             if n>36:\n-                result = 36\n+                result += 36\n             if n>45:\n-                result = 54\n+                result += 54\n             if n>86:\n-                result = 86\n+                result += 86\n         return result\n \n     @property"
+  },
+  {
+    "sha": "9889d42db5824b5ada9a8219f4502d13a4dd5345",
+    "filename": "src/tequila/quantumchemistry/madness_interface.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 6,
+    "changes": 16,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/382c889af5d646e2e993c61473a1f41f4e15a53b/src%2Ftequila%2Fquantumchemistry%2Fmadness_interface.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/382c889af5d646e2e993c61473a1f41f4e15a53b/src%2Ftequila%2Fquantumchemistry%2Fmadness_interface.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fquantumchemistry%2Fmadness_interface.py?ref=382c889af5d646e2e993c61473a1f41f4e15a53b",
+    "patch": "@@ -142,10 +142,14 @@ def __init__(self, parameters: ParametersQC,\n \n         if pairinfo is None:\n             raise TequilaMadnessException(\"Pairinfo from madness calculation not found\\nPlease provide pnoinfo.txt\")\n-\n-        n_orbitals = h.shape[0]\n-        assert h.shape[1] == n_orbitals\n-        assert sum(g.shape) == 4 * n_orbitals\n+        \n+        n_orbitals_total = h.shape[0]\n+        if \"n_orbitals\" in kwargs:\n+            # this would be the active orbitals\n+            kwargs.pop(\"n_orbitals\")\n+            \n+        assert h.shape[1] == n_orbitals_total\n+        assert sum(g.shape) == 4 * n_orbitals_total\n         assert len(g.shape) == 4\n         assert len(h.shape) == 2\n \n@@ -181,7 +185,7 @@ def __init__(self, parameters: ParametersQC,\n                          one_body_integrals=h,\n                          two_body_integrals=g,\n                          nuclear_repulsion=nuclear_repulsion,\n-                         n_orbitals=n_orbitals,\n+                         n_orbitals=n_orbitals_total,\n                          orbitals=orbitals,\n                          reference_orbitals=reference_orbitals,\n                          *args,\n@@ -608,7 +612,7 @@ def write_madness_input(self, n_pno=None, n_virt=0, filename=\"input\", maxrank=No\n         n_pairs = n_electrons // 2\n         if n_orbitals is None:\n             n_orbitals = n_electrons  # minimal correlated (each active pair will have one virtual)\n-\n+        \n         if n_pno is None:\n             n_pno = n_orbitals - n_pairs\n "
+  },
+  {
+    "sha": "ae22ea7e3c1cab44eed476f09956c4f9d388eb22",
+    "filename": "tests/test_chemistry_madness.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/382c889af5d646e2e993c61473a1f41f4e15a53b/tests%2Ftest_chemistry_madness.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/382c889af5d646e2e993c61473a1f41f4e15a53b/tests%2Ftest_chemistry_madness.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/tests%2Ftest_chemistry_madness.py?ref=382c889af5d646e2e993c61473a1f41f4e15a53b",
+    "patch": "@@ -37,6 +37,12 @@ def test_madness_he_data():\n     print(result.energy)\n     assert (numpy.isclose(-2.87761809, result.energy, atol=1.e-5))\n \n+@pytest.mark.skipif(executable is None, reason=\"madness was not found\")\n+def test_madness_frozen_core():\n+    molecule = tq.Molecule(geometry=\"Li 0.0 0.0 0.0\\nLi 0.0 0.0 1.6\")\n+    assert molecule.n_orbitals == 2\n+    assert molecule.parameters.get_number_of_core_electrons() == 4\n+\n \n @pytest.mark.skipif(executable is None, reason=\"madness was not found\")\n def test_madness_full_he():"
+  }
+]

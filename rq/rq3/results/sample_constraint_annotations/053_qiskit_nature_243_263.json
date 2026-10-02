@@ -1,0 +1,157 @@
+{
+  "id": 53,
+  "sample_id": "qiskit_nature_243_263",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "3a5a0294032145a54ac53ee2e1fb8358aa291f1d",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "general_semantics/integral_data_grouping": 1,
+      "interface/missing_key_lookup": 1,
+      "quantum_semantics/fermionic_basis_rotation": 1,
+      "quantum_semantics/fermionic_tensor_mapping": 3,
+      "interface/input_validation": 2,
+      "quantum_semantics/spin_orbital_integral_mapping": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_init",
+      "label": "general_semantics/integral_data_grouping",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "IntegralProperty groups AO and MO one-/two-body tensors under the correct keys."
+        }
+      ],
+      "rationale": "The assertion inspects an internal dictionary layout, an ordinary grouping behavior."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_get_electronic_int",
+      "label": "interface/missing_key_lookup",
+      "assertions": [
+        {
+          "line": 65,
+          "expected": "get_electronic_integral returns the stored AO one-body tensor or None for missing rank/basis."
+        }
+      ],
+      "rationale": "The test directly exercises the public lookup return contract."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_transform_basis",
+      "label": "quantum_semantics/fermionic_basis_rotation",
+      "assertions": [
+        {
+          "line": 77,
+          "expected": "AO-to-MO transform with 2I scales one-body integrals by 4 and two-body by 16."
+        }
+      ],
+      "rationale": "The coefficient powers arise from orbital-basis transformation of electronic integrals."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_second_q_ops",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "Stored integrals generate the expected fermionic ladder terms and coefficients."
+        }
+      ],
+      "rationale": "The result is compared against a full second-quantized operator list."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 46,
+          "expected": "OneBodyElectronicIntegrals rejects incompatible tensor types with TypeError."
+        }
+      ],
+      "rationale": "The selected constructor case checks public argument validation."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_spin",
+      "label": "quantum_semantics/spin_orbital_integral_mapping",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "One-body spatial orbital integrals expand to expected spin-orbital matrices."
+        }
+      ],
+      "rationale": "The to_spin test checks alpha/beta block placement."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_second_q_op",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 148,
+          "expected": "One-body integrals yield expected fermionic terms and coefficients."
+        }
+      ],
+      "rationale": "The selected one-body operator conversion checks ladder labels."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 51,
+          "expected": "TwoBodyElectronicIntegrals rejects incompatible tensor types with TypeError."
+        }
+      ],
+      "rationale": "This separate two-body constructor case checks public validation."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_spin",
+      "label": "quantum_semantics/spin_orbital_integral_mapping",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "Two-body spatial tensors expand to expected spin-orbital tensor blocks."
+        }
+      ],
+      "rationale": "The selected to_spin test checks spin index placement."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_second_q_op",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 170,
+          "expected": "Two-body integrals yield expected four-ladder terms and coefficients."
+        }
+      ],
+      "rationale": "The selected conversion compares each expected fermionic term."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/3a5a0294032145a54ac53ee2e1fb8358aa291f1d/test/properties/second_quantization/electronic/integrals/test_integral_property.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3a5a0294032145a54ac53ee2e1fb8358aa291f1d/test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3a5a0294032145a54ac53ee2e1fb8358aa291f1d/test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py"
+  ],
+  "rationale": "Reviewed all four IntegralProperty tests and six one-/two-body integral regression tests; internal grouping, public missing-key behavior and physical basis/operator transforms are separated."
+}

@@ -1,0 +1,95 @@
+{
+  "id": 5,
+  "sample_id": "openfermion_259_283",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "889bc9c2a70b877014261d76237a4b88de63e66e",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/fermion_qubit_mapping": 4,
+      "interface/input_validation": 2,
+      "quantum_semantics/spectral_equivalence": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_tree_transform",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 33, "expected": "Tree-BK raising operator has two Pauli terms"},
+        {"line": 34, "expected": "Tree-BK lowering operator has two Pauli terms"},
+        {"line": 50, "expected": "For 16 qubits, each real-coefficient Majorana component has locality log2(16) + 1"},
+        {"line": 60, "expected": "Mode-9 lowering maps to the specified X/Z Pauli string with coefficient 0.5"},
+        {"line": 61, "expected": "Mode-9 lowering maps to the specified Y/X/Z Pauli string with coefficient 0.5i"},
+        {"line": 62, "expected": "Mode-9 raising maps to that Y/X/Z Pauli string with coefficient -0.5i"},
+        {"line": 63, "expected": "Mode-9 raising maps to the specified X/Z Pauli string with coefficient 0.5"}
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_identity",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [{"line": 66, "expected": "Tree-BK maps the fermionic identity to the qubit identity"}]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+      "label": "interface/input_validation",
+      "assertions": [{"line": 70, "expected": "Explicit n_qubits=4 is rejected when the input operator uses mode 5"}]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [{"line": 84, "expected": "The one-mode number operator has the same eigenspectrum under tree-BK and Jordan–Wigner transforms"}]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 33, "expected": "Existing BK raising operator has two Pauli terms"},
+        {"line": 34, "expected": "Existing BK lowering operator has two Pauli terms"},
+        {"line": 50, "expected": "For 16 qubits, each real-coefficient Majorana component has locality log2(16) + 1"},
+        {"line": 60, "expected": "Mode-9 lowering has the specified X/Z Pauli-string coefficient 0.5"},
+        {"line": 61, "expected": "Mode-9 lowering has the specified Y/X/Z Pauli-string coefficient 0.5i"},
+        {"line": 62, "expected": "Mode-9 raising has the specified Y/X/Z Pauli-string coefficient -0.5i"},
+        {"line": 63, "expected": "Mode-9 raising has the specified X/Z Pauli-string coefficient 0.5"}
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [{"line": 66, "expected": "Existing BK maps the fermionic identity to the qubit identity"}]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+      "label": "interface/input_validation",
+      "assertions": [{"line": 70, "expected": "Existing BK rejects explicit n_qubits=4 when the input operator uses mode 5"}]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [{"line": 84, "expected": "The one-mode number operator has the same eigenspectrum under existing BK and Jordan–Wigner transforms"}]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/889bc9c2a70b877014261d76237a4b88de63e66e/src/openfermion/transforms/_bravyi_kitaev_tree_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/889bc9c2a70b877014261d76237a4b88de63e66e/src/openfermion/transforms/_bravyi_kitaev_test.py"
+  ],
+  "rationale": "The composite mapping tests include term counts and locality, but their primary contract is the precise fermion-to-qubit Pauli mapping. Identity tests check algebraic preservation, while the undersized n_qubits tests check input rejection."
+}

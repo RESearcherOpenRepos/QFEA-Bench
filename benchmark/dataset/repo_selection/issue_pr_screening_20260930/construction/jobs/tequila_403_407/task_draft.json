@@ -1,0 +1,26 @@
+{
+  "oracle_files": [
+    "src/tequila/circuit/circuit.py",
+    "src/tequila/circuit/_gates_impl.py",
+    "src/tequila/circuit/compiler.py",
+    "src/tequila/simulators/simulator_base.py"
+  ],
+  "task": {
+    "problem_statement": "Users need to obtain the unitary matrix represented by a Tequila circuit, including circuits containing symbolic rotation parameters, so that circuit behavior can be compared directly with matrix representations.",
+    "requirements": [
+      "Return the dense unitary matrix for a circuit containing Hadamard and controlled-X operations in the repository qubit-order convention.",
+      "Resolve supplied variable values when producing the unitary matrix of a parameterized Pauli rotation.",
+      "Preserve existing circuit construction, variable mapping, and moment behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "QCircuit.to_matrix",
+        "Path": "src/tequila/circuit/circuit.py",
+        "Input": "self, variables=None",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the circuit unitary; variables maps symbolic parameters to numerical values."
+      }
+    ]
+  }
+}

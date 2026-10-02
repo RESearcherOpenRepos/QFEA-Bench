@@ -1,0 +1,132 @@
+{
+  "id": 9,
+  "sample_id": "openfermion_469_474",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "8a790335cc2ac7f82c53a22f821ce51e8486e79d",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/lattice_edge_type_contract": 1,
+      "quantum_semantics/hubbard_hamiltonian_construction": 2,
+      "interface/constructor_defaults": 2,
+      "interface/input_validation": 2,
+      "general_semantics/grid_topology": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_edge_types",
+      "label": "interface/lattice_edge_type_contract",
+      "assertions": [
+        {"line": 102, "expected": "The lattice exposes onsite, neighbor, vertical_neighbor, and horizontal_neighbor edge type names"},
+        {"line": 106, "expected": "validate_edge_type rejects an unknown name"},
+        {"line": 108, "expected": "site_pairs_iter rejects an unknown edge type name"}
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice0-parameters0-True]",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "parameter_context": "Nonperiodic spinful lattice; horizontal and vertical neighbor parameters distinguished",
+      "assertions": [
+        {"line": 141, "expected": "Each two-ladder hopping term corresponds to a supplied edge, degree-of-freedom pair, and negative tunneling coefficient"},
+        {"line": 144, "expected": "An interaction term has four ladder operators"},
+        {"line": 148, "expected": "Each interaction term matches a supplied edge, degree-of-freedom pair, coefficient, and spin-pair setting"},
+        {"line": 151, "expected": "A remaining potential term has two ladder operators"},
+        {"line": 152, "expected": "That potential term acts on one spin orbital"},
+        {"line": 156, "expected": "Each potential term matches a supplied degree of freedom and negative potential coefficient"},
+        {"line": 165, "expected": "Potential terms occur once per lattice site and spin value"},
+        {"line": 169, "expected": "Hopping term count matches site-pair count in both directions and spin multiplicity"},
+        {"line": 171, "expected": "The remaining interaction branch is identified as interaction"},
+        {"line": 177, "expected": "Spinful interaction parameters do not use the ALL spin-pair setting"},
+        {"line": 183, "expected": "Interaction term count matches edge, degree-of-freedom, and spin-pair multiplicities"}
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice2-parameters2-True]",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "parameter_context": "Nonperiodic spinless lattice; horizontal and vertical neighbor parameters distinguished",
+      "assertions": [
+        {"line": 141, "expected": "Each two-ladder hopping term corresponds to a supplied edge, degree-of-freedom pair, and negative tunneling coefficient"},
+        {"line": 144, "expected": "An interaction term has four ladder operators"},
+        {"line": 148, "expected": "Each interaction term matches a supplied edge, degree-of-freedom pair, coefficient, and spin-pair setting"},
+        {"line": 151, "expected": "A remaining potential term has two ladder operators"},
+        {"line": 152, "expected": "That potential term acts on one spin orbital"},
+        {"line": 156, "expected": "Each potential term matches a supplied degree of freedom and negative potential coefficient"},
+        {"line": 165, "expected": "Potential terms occur once per lattice site and spin value"},
+        {"line": 169, "expected": "Hopping term count matches site-pair count in both directions and spin multiplicity"},
+        {"line": 171, "expected": "The remaining interaction branch is identified as interaction"},
+        {"line": 183, "expected": "Interaction term count matches edge, degree-of-freedom, and spin-pair multiplicities"}
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_defaults",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {"line": 78, "expected": "Default n_dofs is 1"},
+        {"line": 79, "expected": "Default spinless flag is false"},
+        {"line": 80, "expected": "Default periodic flag is true"}
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_dof_validation[1]",
+      "label": "interface/input_validation",
+      "parameter_context": "n_dofs=1",
+      "assertions": [
+        {"line": 92, "expected": "Negative degree-of-freedom index is rejected"},
+        {"line": 94, "expected": "Index equal to n_dofs is rejected"},
+        {"line": 96, "expected": "Duplicate degree-of-freedom indices are rejected"}
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_2x2",
+      "label": "general_semantics/grid_topology",
+      "assertions": [
+        {"line": 136, "expected": "A 2-by-2 square grid has four sites"},
+        {"line": 137, "expected": "Its undirected neighbor iterator yields four pairs"},
+        {"line": 138, "expected": "Its directed neighbor iterator yields eight pairs"}
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_default_parameters",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {"line": 90, "expected": "Default tunneling parameter list is empty"},
+        {"line": 91, "expected": "Default interaction parameter list is empty"},
+        {"line": 92, "expected": "Default potential parameter list is empty"}
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_bad_parameters",
+      "label": "interface/input_validation",
+      "assertions": [
+        {"line": 96, "expected": "An invalid onsite tunneling parameter raises ValueError"},
+        {"line": 100, "expected": "An underspecified interaction parameter raises ValueError"},
+        {"line": 102, "expected": "An overspecified interaction parameter raises ValueError"},
+        {"line": 104, "expected": "An unsupported onsite SAME-spin interaction parameter raises ValueError"}
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/8a790335cc2ac7f82c53a22f821ce51e8486e79d/src/openfermion/utils/_lattice_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/8a790335cc2ac7f82c53a22f821ce51e8486e79d/src/openfermion/hamiltonians/_general_hubbard_test.py"
+  ],
+  "rationale": "The parameterized F2P cases inspect generated Hubbard Hamiltonian terms and physical coefficients. The square-grid neighbor count is ordinary topology without a quantum operator assertion. Edge names, defaults, and rejection behavior specify public interfaces."
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "2f3e757c8150aa9c8c5e6665eb7f6c84e94f62c4",
+    "filename": "qiskit_nature/circuit/library/ansatzes/ucc.py",
+    "status": "modified",
+    "additions": 42,
+    "deletions": 0,
+    "changes": 42,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/4a43e47644ea6e88d18e270bb32a62120dc4850d/qiskit_nature%2Fcircuit%2Flibrary%2Fansatzes%2Fucc.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/4a43e47644ea6e88d18e270bb32a62120dc4850d/qiskit_nature%2Fcircuit%2Flibrary%2Fansatzes%2Fucc.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fcircuit%2Flibrary%2Fansatzes%2Fucc.py?ref=4a43e47644ea6e88d18e270bb32a62120dc4850d",
+    "patch": "@@ -294,6 +294,8 @@ def excitation_ops(self) -> List[SecondQuantizedOp]:\n \n         excitations = self._get_excitation_list()\n \n+        self._check_excitation_list(excitations)\n+\n         logger.debug(\"Converting excitations into SecondQuantizedOps...\")\n         excitation_ops = self._build_fermionic_excitation_ops(excitations)\n \n@@ -354,6 +356,46 @@ def _get_excitation_generators(self) -> List[Callable]:\n \n         return generators\n \n+    def _check_excitation_list(self, excitations: Sequence) -> None:\n+        \"\"\"Checks the format of the given excitation operators.\n+\n+        The following conditions are checked:\n+        - the list of excitations consists of pairs of tuples\n+        - each pair of excitation indices has the same length\n+        - the indices within each excitation pair are unique\n+\n+        Args:\n+            excitations: the list of excitations\n+\n+        Raises:\n+            QiskitNatureError: if format of excitations is invalid\n+        \"\"\"\n+        logger.debug(\"Checking excitation list...\")\n+\n+        error_message = \"{error} in the following UCC excitation: {excitation}\"\n+\n+        for excitation in excitations:\n+            if len(excitation) != 2:\n+                raise QiskitNatureError(\n+                    error_message.format(error=\"Invalid number of tuples\", excitation=excitation)\n+                    + \"; Two tuples are expected, e.g. ((0, 1, 4), (2, 3, 6))\"\n+                )\n+\n+            if len(excitation[0]) != len(excitation[1]):\n+                raise QiskitNatureError(\n+                    error_message.format(\n+                        error=\"Different number of occupied and virtual indices\",\n+                        excitation=excitation,\n+                    )\n+                )\n+\n+            if any(i in excitation[0] for i in excitation[1]) or any(\n+                len(set(indices)) != len(indices) for indices in excitation\n+            ):\n+                raise QiskitNatureError(\n+                    error_message.format(error=\"Duplicated indices\", excitation=excitation)\n+                )\n+\n     def _build_fermionic_excitation_ops(self, excitations: Sequence) -> List[FermionicOp]:\n         \"\"\"Builds all possible excitation operators with the given number of excitations for the\n         specified number of particles distributed in the number of orbitals."
+  },
+  {
+    "sha": "ae2e298e9b5156bb5423a27a9bfac67da7d6beff",
+    "filename": "releasenotes/notes/ucc-check-excitations-4fb34977b9b0c1d1.yaml",
+    "status": "added",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/4a43e47644ea6e88d18e270bb32a62120dc4850d/releasenotes%2Fnotes%2Fucc-check-excitations-4fb34977b9b0c1d1.yaml",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/4a43e47644ea6e88d18e270bb32a62120dc4850d/releasenotes%2Fnotes%2Fucc-check-excitations-4fb34977b9b0c1d1.yaml",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/releasenotes%2Fnotes%2Fucc-check-excitations-4fb34977b9b0c1d1.yaml?ref=4a43e47644ea6e88d18e270bb32a62120dc4850d",
+    "patch": "@@ -0,0 +1,6 @@\n+---\n+features:\n+  - |\n+    Runs checks for the excitations in a UCC ansatz when the excitations were created by a function.\n+    If the excitations are not in the expected format the checks raise a \n+    :class:`qiskit_nature.QiskitNatureError`."
+  },
+  {
+    "sha": "98ef8b5a9ec9bf715c78eda8e4ff46bb1d21ec99",
+    "filename": "test/circuit/library/ansatzes/test_ucc.py",
+    "status": "modified",
+    "additions": 45,
+    "deletions": 0,
+    "changes": 45,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/4a43e47644ea6e88d18e270bb32a62120dc4850d/test%2Fcircuit%2Flibrary%2Fansatzes%2Ftest_ucc.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/4a43e47644ea6e88d18e270bb32a62120dc4850d/test%2Fcircuit%2Flibrary%2Fansatzes%2Ftest_ucc.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/test%2Fcircuit%2Flibrary%2Fansatzes%2Ftest_ucc.py?ref=4a43e47644ea6e88d18e270bb32a62120dc4850d",
+    "patch": "@@ -16,6 +16,7 @@\n \n from ddt import data, ddt, unpack\n \n+from qiskit_nature import QiskitNatureError\n from qiskit_nature.circuit.library import UCC\n from qiskit_nature.converters.second_quantization import QubitConverter\n from qiskit_nature.mappers.second_quantization import JordanWignerMapper\n@@ -88,3 +89,47 @@ def test_ucc_ansatz(self, excitations, num_spin_orbitals, num_particles, expect)\n         )\n \n         assert_ucc_like_ansatz(self, ansatz, num_spin_orbitals, expect)\n+\n+    @unpack\n+    @data(\n+        # Excitations not a list of pairs\n+        (\n+            8,\n+            (2, 2),\n+            [((0, 1, 4), (2, 3, 6), (2, 3, 7))],\n+        ),\n+        # Excitation pair has not same length\n+        (\n+            8,\n+            (2, 2),\n+            [((0, 1, 4), (2, 3, 6, 7))],\n+        ),\n+        # Excitation pair with non-unique indices\n+        (\n+            8,\n+            (2, 2),\n+            [((0, 1, 4), (2, 4, 6))],\n+        ),\n+        (\n+            8,\n+            (2, 2),\n+            [((0, 1, 1), (2, 3, 6))],\n+        ),\n+    )\n+    def test_custom_excitations(self, num_spin_orbitals, num_particles, excitations):\n+        \"\"\"Tests if an error is raised when the excitations have a wrong format\"\"\"\n+        converter = QubitConverter(JordanWignerMapper())\n+\n+        # pylint: disable=unused-argument\n+        def custom_excitations(num_spin_orbitals, num_particles):\n+            return excitations\n+\n+        ansatz = UCC(\n+            qubit_converter=converter,\n+            num_particles=num_particles,\n+            num_spin_orbitals=num_spin_orbitals,\n+            excitations=custom_excitations,\n+        )\n+\n+        with self.assertRaises(QiskitNatureError):\n+            ansatz.excitation_ops()"
+  }
+]

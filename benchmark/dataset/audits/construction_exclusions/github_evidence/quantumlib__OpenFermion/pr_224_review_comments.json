@@ -1,0 +1,488 @@
+[
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460360",
+    "pull_request_review_id": 100314074,
+    "id": 171460360,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTQ2MDM2MA==",
+    "diff_hunk": "@@ -290,3 +290,61 @@ def save_operator(operator, file_name=None, data_directory=None,\n     with open(file_path, 'wb') as f:\n         marshal.dump((operator_type, dict(zip(tm.keys(),\n                                           map(complex, tm.values())))), f)\n+\n+\n+def reorder(Operator, order_function,num_modes=None, reverse=False):",
+    "path": "src/openfermion/utils/_operator_utils.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "e408bdb3ec8d44bcffeb6a35ed6ad836ab6146da",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Here I would use lowercase to conform with our general style (`operator` instead of `Operator`). We generally use lowercase for variables.",
+    "created_at": "2018-03-01T04:25:17Z",
+    "updated_at": "2018-03-01T18:23:21Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171460360",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460360"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171460360"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460360/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 295,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460466",
+    "pull_request_review_id": 100314074,
+    "id": 171460466,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTQ2MDQ2Ng==",
+    "diff_hunk": "@@ -21,7 +21,8 @@\n \n from ._operator_utils import (count_qubits, eigenspectrum, fourier_transform,\n                               get_file_path, inverse_fourier_transform,\n-                              is_identity, load_operator, save_operator)\n+                              is_identity, load_operator, save_operator,\n+                              reorder,up_then_down)",
+    "path": "src/openfermion/utils/__init__.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "e408bdb3ec8d44bcffeb6a35ed6ad836ab6146da",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Missed a space. Please run the PEP 8 linter.",
+    "created_at": "2018-03-01T04:26:31Z",
+    "updated_at": "2018-03-01T18:23:21Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171460466",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460466"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171460466"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171460466/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171647634",
+    "pull_request_review_id": 100538751,
+    "id": 171647634,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTY0NzYzNA==",
+    "diff_hunk": "@@ -15,8 +15,6 @@\n \n import marshal\n import numpy\n-import os\n-import time\n ",
+    "path": "src/openfermion/utils/_operator_utils.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "73e1331d7f5a9507dced18798cfd1851435aa216",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Thanks for removing `time`, but I think `os` is in fact used in the saving operation; apparently we don't have a test for that line right now...",
+    "created_at": "2018-03-01T18:21:00Z",
+    "updated_at": "2018-03-01T18:23:21Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171647634",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171647634"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171647634"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171647634/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 18,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171648067",
+    "pull_request_review_id": 100539252,
+    "id": 171648067,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTY0ODA2Nw==",
+    "diff_hunk": "@@ -15,8 +15,6 @@\n \n import marshal\n import numpy\n-import os\n-import time\n ",
+    "path": "src/openfermion/utils/_operator_utils.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "73e1331d7f5a9507dced18798cfd1851435aa216",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "oops! I got tricked by pycharm. will add it back",
+    "created_at": "2018-03-01T18:22:38Z",
+    "updated_at": "2018-03-01T18:23:21Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171648067",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171648067"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171648067"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171648067/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 18,
+    "side": "RIGHT",
+    "in_reply_to_id": 171647634,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171654952",
+    "pull_request_review_id": 100547211,
+    "id": 171654952,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTY1NDk1Mg==",
+    "diff_hunk": "@@ -820,94 +820,64 @@ def get_active_space_integrals(self,\n                                              active_indices,\n                                              active_indices)])\n \n-    def get_molecular_hamiltonian(self,\n-                                  occupied_indices=None,\n-                                  active_indices=None,\n-                                  spin_indexing=\"even-odd\"):\n+    def get_molecular_hamiltonian(self,occupied_indices=None,\n+                                      active_indices=None):",
+    "path": "src/openfermion/hamiltonians/_molecular_data.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "this spacing seems to be inconsistent with pep8. No?",
+    "created_at": "2018-03-01T18:46:20Z",
+    "updated_at": "2018-03-01T18:47:52Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171654952",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171654952"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171654952"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171654952/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 824,
+    "original_line": 824,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 9,
+    "position": 9,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661076",
+    "pull_request_review_id": 100554321,
+    "id": 171661076,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTY2MTA3Ng==",
+    "diff_hunk": "@@ -820,94 +820,64 @@ def get_active_space_integrals(self,\n                                              active_indices,\n                                              active_indices)])\n \n-    def get_molecular_hamiltonian(self,\n-                                  occupied_indices=None,\n-                                  active_indices=None,\n-                                  spin_indexing=\"even-odd\"):\n+    def get_molecular_hamiltonian(self,occupied_indices=None,\n+                                      active_indices=None):",
+    "path": "src/openfermion/hamiltonians/_molecular_data.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "indeed. I'm failing at pep8ing with this commit.",
+    "created_at": "2018-03-01T19:06:15Z",
+    "updated_at": "2018-03-01T19:06:15Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171661076",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661076"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171661076"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661076/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 824,
+    "original_line": 824,
+    "side": "RIGHT",
+    "in_reply_to_id": 171654952,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 9,
+    "position": 9,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661525",
+    "pull_request_review_id": 100554875,
+    "id": 171661525,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3MTY2MTUyNQ==",
+    "diff_hunk": "@@ -820,94 +820,64 @@ def get_active_space_integrals(self,\n                                              active_indices,\n                                              active_indices)])\n \n-    def get_molecular_hamiltonian(self,\n-                                  occupied_indices=None,\n-                                  active_indices=None,\n-                                  spin_indexing=\"even-odd\"):\n+    def get_molecular_hamiltonian(self,occupied_indices=None,\n+                                      active_indices=None):",
+    "path": "src/openfermion/hamiltonians/_molecular_data.py",
+    "commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "original_commit_id": "3827e6b9e2ac9e6493a561ea96b067251af7524d",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I figured we had given you enough trouble. Perhaps clean it up on the next PR if you're feeling charitable ;-)",
+    "created_at": "2018-03-01T19:07:52Z",
+    "updated_at": "2018-03-01T19:07:52Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171661525",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661525"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/224#discussion_r171661525"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/224"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/171661525/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 824,
+    "original_line": 824,
+    "side": "RIGHT",
+    "in_reply_to_id": 171654952,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 9,
+    "position": 9,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,157 @@
+{
+  "id": 8,
+  "sample_id": "openfermion_458_501",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "6fb280c9d223522ed5ce5e90f5cd809beda7f177",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/majorana_operator_algebra": 3,
+      "general_semantics/symbolic_operator_arithmetic": 3,
+      "general_semantics/algebraic_identity": 1,
+      "interface/string_representation": 2,
+      "interface/coefficient_type_acceptance": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_init",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {"line": 20, "expected": "Reordering five Majorana indices yields the canonical term and a negative sign"},
+        {"line": 23, "expected": "Repeated indices reduce to a single Majorana index with a negative sign"},
+        {"line": 26, "expected": "A second repeated-index ordering reduces to the specified four-index term with positive sign"},
+        {"line": 29, "expected": "A seven-index product reduces to the specified five-index term with negative sign"}
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_commutes_with",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {"line": 38, "expected": "Majorana terms a and b commute"},
+        {"line": 39, "expected": "Majorana terms a and c do not commute"},
+        {"line": 40, "expected": "Majorana terms a and d commute"},
+        {"line": 41, "expected": "Majorana terms b and c commute"},
+        {"line": 42, "expected": "Majorana terms b and d do not commute"},
+        {"line": 43, "expected": "Majorana terms c and d commute"},
+        {"line": 44, "expected": "The two sums a+c and b+d commute"},
+        {"line": 49, "expected": "Terms with repeated indices e and f commute after canonical reduction"},
+        {"line": 51, "expected": "commutes_with rejects a numeric operand with TypeError"}
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_multiply",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {"line": 105, "expected": "Squaring a two-term Majorana operator produces the specified identity and four-index terms"},
+        {"line": 107, "expected": "Multiplying two Majorana sums produces four terms with the specified indices and signs"},
+        {"line": 111, "expected": "Left and right scalar multiplication double both coefficients"},
+        {"line": 116, "expected": "In-place multiplication by 2 and the identity keeps the doubled terms"},
+        {"line": 119, "expected": "Multiplication by a string on the right raises TypeError"},
+        {"line": 122, "expected": "Multiplication by a string on the left raises TypeError"},
+        {"line": 125, "expected": "In-place multiplication by a string raises TypeError"}
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_divide",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {"line": 143, "expected": "Out-of-place division by 2 halves each coefficient"},
+        {"line": 147, "expected": "In-place division by 2 halves each coefficient"},
+        {"line": 150, "expected": "Division by a string raises TypeError"},
+        {"line": 153, "expected": "In-place division by a string raises TypeError"}
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_str",
+      "label": "interface/string_representation",
+      "assertions": [
+        {"line": 189, "expected": "The zero operator formats as 0"},
+        {"line": 190, "expected": "The identity formats with coefficient 1.0 and empty index tuple"},
+        {"line": 191, "expected": "A zero-coefficient term formats as 0"},
+        {"line": 192, "expected": "A positive term formats its coefficient and index tuple"},
+        {"line": 193, "expected": "A negative term formats its coefficient and index tuple"},
+        {"line": 194, "expected": "A two-term sum formats both terms and a separator"}
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+      "label": "interface/coefficient_type_acceptance",
+      "assertions": [
+        {"line": 184, "expected": "Constructor accepts a tuple term with a complex coefficient and stores one term"},
+        {"line": 185, "expected": "The stored coefficient equals the supplied complex value"}
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_zero_is_additive_identity",
+      "label": "general_semantics/algebraic_identity",
+      "assertions": [
+        {"line": 253, "expected": "Zero added on the left preserves f"},
+        {"line": 254, "expected": "Zero added on the right preserves f"},
+        {"line": 255, "expected": "Zero added on the left preserves g"},
+        {"line": 256, "expected": "Zero added on the right preserves g"},
+        {"line": 257, "expected": "Zero added on the left preserves the sum h"},
+        {"line": 258, "expected": "Zero added on the right preserves the sum h"},
+        {"line": 261, "expected": "Adding h in place to zero yields h"},
+        {"line": 262, "expected": "That result differs from f"},
+        {"line": 265, "expected": "A fresh zero instance differs from the updated result"}
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_mul_out_of_place",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {"line": 447, "expected": "Out-of-place multiplication does not change the left operand"},
+        {"line": 449, "expected": "Out-of-place multiplication does not change the right operand"},
+        {"line": 450, "expected": "The product concatenates term indices and multiplies scalar coefficients"}
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {"line": 596, "expected": "Adding a distinct term produces two stored terms"},
+        {"line": 597, "expected": "The original coefficient remains 1"},
+        {"line": 598, "expected": "The added term has coefficient 0.5"},
+        {"line": 600, "expected": "Adding that term again does not increase the term count"},
+        {"line": 601, "expected": "The original term remains unchanged"},
+        {"line": 602, "expected": "The repeated term's coefficient becomes 1"}
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest2::test_str_multiple_terms",
+      "label": "interface/string_representation",
+      "assertions": [
+        {"line": 1032, "expected": "Two-term DummyOperator2 string contains both terms in either supported ordering"},
+        {"line": 1035, "expected": "An identity term string uses the expected empty bracket notation"}
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/6fb280c9d223522ed5ce5e90f5cd809beda7f177/src/openfermion/ops/_majorana_operator_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/6fb280c9d223522ed5ce5e90f5cd809beda7f177/src/openfermion/ops/_symbolic_operator_test.py"
+  ],
+  "rationale": "Majorana initialization, commutation, and multiplication primarily test Majorana-specific signs and canonical products, despite additional type-error or container assertions. Scalar division and DummyOperator arithmetic test generic behavior. String tests specify exposed formatting."
+}

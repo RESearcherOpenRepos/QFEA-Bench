@@ -1,0 +1,154 @@
+{
+  "instance": {
+    "id": 88,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_91_729",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/91",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/729",
+    "base_commit": "fbf11ddc9bcb0ca1e1413fbc69e53cc9d112e03b",
+    "patch": "d59bab1f54a28c902818da4600e62cca7cbbfd57"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task changes SUCCD excitation-pool semantics by adding mirrored singlet-double excitation grouping."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/circuit/library/ansatzes/puccd.py",
+      "qiskit_nature/second_q/circuit/library/ansatzes/succd.py",
+      "qiskit_nature/second_q/circuit/library/ansatzes/ucc.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The SUCCD ansatz can build the standard singlet-paired double-excitation pool, but it cannot reproduce the legacy succ_full-style mirrored excitation grouping. Users who need that mirrored pool have no supported way to request it through SUCCD. The repository should add a mirror setting so SUCCD can generate the mirrored singlet-double excitation structure while keeping the existing non-mirrored behavior unchanged.",
+    "requirements": [
+      "SUCCD must accept a mirror setting that enables the legacy succ_full-style mirrored singlet-double excitation pool.",
+      "When mirror is enabled, SUCCD must group symmetrically mirrored double excitations under shared parameters instead of generating only the default non-mirrored pool.",
+      "The mirrored SUCCD excitation generation must work for the standard singlet-paired configuration, for generalized excitations, and when optional single excitations are included.",
+      "Existing SUCCD behavior without mirror enabled must remain compatible, including standard excitation generation, generalized excitation generation, optional singles handling, and non-singlet validation."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SUCCD",
+        "Path": "qiskit_nature/second_q/circuit/library/ansatzes/succd.py",
+        "Input": "constructor: qubit_converter=None, num_particles=None, num_spin_orbitals=None, reps=1, initial_state=None, include_singles=(False, False), generalized=False, mirror=False",
+        "Output": "",
+        "Description": "Constructs the singlet-paired UCCD ansatz and must expose a mirror option for the mirrored excitation pool."
+      },
+      {
+        "Type": "Method",
+        "Name": "SUCCD.mirror",
+        "Path": "qiskit_nature/second_q/circuit/library/ansatzes/succd.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Reports whether symmetrically mirrored double excitations are enabled for the ansatz."
+      },
+      {
+        "Type": "Method",
+        "Name": "SUCCD.generate_excitations",
+        "Path": "qiskit_nature/second_q/circuit/library/ansatzes/succd.py",
+        "Input": "self, num_spin_orbitals, num_particles",
+        "Output": "list[tuple[tuple[int, ...], tuple[int, ...]]]",
+        "Description": "Generates the SUCCD excitation list, including the mirrored singlet-double pool when mirror is enabled."
+      },
+      {
+        "Type": "Method",
+        "Name": "SUCCD._build_fermionic_excitation_ops",
+        "Path": "qiskit_nature/second_q/circuit/library/ansatzes/succd.py",
+        "Input": "self, excitations",
+        "Output": "list[FermionicOp]",
+        "Description": "Builds fermionic excitation operators and must combine mirrored excitations so they share parameters when mirror is enabled."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_91_729",
+      "image_id": "sha256:c8f034449415d5dd7d26baede755730781e6eb2844071f6ce298574b07ee0bc2",
+      "image_size": "1024264407"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_ansatz_generalized_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_3"
+        ],
+        "summary": "5 passed in 1.72s",
+        "duration_seconds": 7.41
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_raise_non_singlet",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_3"
+        ],
+        "summary": "8 passed in 1.59s",
+        "duration_seconds": 7.11
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_ansatz_generalized_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_3"
+        ],
+        "summary": "5 failed in 1.59s; SUCCD.__init__ does not accept mirror",
+        "duration_seconds": 9.87
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_raise_non_singlet",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_1",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_2",
+          "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_3"
+        ],
+        "summary": "8 passed in 1.58s",
+        "duration_seconds": 8.77
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "81079d7bf5639ee07d520b34f73635d9f164d59d",
+    "filename": "src/tequila/optimizers/optimizer_gd.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 1,
+    "changes": 3,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/src%2Ftequila%2Foptimizers%2Foptimizer_gd.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/src%2Ftequila%2Foptimizers%2Foptimizer_gd.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Foptimizers%2Foptimizer_gd.py?ref=29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe",
+    "patch": "@@ -334,11 +334,12 @@ def __call__(self, objective: Objective,\n \n \n             if not self.silent:\n+                self.__dx = numpy.asarray(self.__dx)\n                 print(\"%3i   %+15.8f   %+7.2e   %7.3e   %7.3e    %s\"\n                       % (step,\n                          e,\n                          e-last,\n-                         numpy.max(abs(self.__dx)),\n+                         numpy.max([abs(x) for x in self.__dx]),\n                          numpy.sqrt(numpy.average(self.__dx**2)),\n                          comment))\n "
+  },
+  {
+    "sha": "043159ed97d5e09437b41f815773c74a34811661",
+    "filename": "tests/test_noise_opt.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 10,
+    "changes": 20,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/tests%2Ftest_noise_opt.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/tests%2Ftest_noise_opt.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/tests%2Ftest_noise_opt.py?ref=29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe",
+    "patch": "@@ -17,10 +17,10 @@ def test_dependencies():\n \n \n @pytest.mark.skipif(len(samplers) == 0, reason=\"Missing necessary backends\")\n-@pytest.mark.parametrize(\"simulator\", [numpy.random.choice(samplers)])\n @pytest.mark.parametrize(\"p\", numpy.random.uniform(0.1, .4, 1))\n @pytest.mark.parametrize('method', numpy.random.choice(['NELDER-MEAD', 'COBYLA'],1))\n-def test_bit_flip_scipy_gradient_free(simulator, p, method):\n+def test_bit_flip_scipy_gradient_free(p, method):\n+    simulator = numpy.random.choice(samplers)\n     qubit = 0\n     H = paulis.Qm(qubit)\n     U = gates.Rx(target=qubit, angle=tq.Variable('a'))\n@@ -31,11 +31,11 @@ def test_bit_flip_scipy_gradient_free(simulator, p, method):\n \n \n @pytest.mark.skipif(len(samplers) == 0, reason=\"Missing necessary backends\")\n-@pytest.mark.parametrize(\"simulator\", [numpy.random.choice(samplers)])\n @pytest.mark.parametrize(\"p\", numpy.random.uniform(0.1, .4, 1))\n @pytest.mark.parametrize('method',\n                          [tq.optimizer_scipy.OptimizerSciPy.gradient_based_methods[numpy.random.randint(0, 4, 1)[0]]])\n-def test_bit_flip_scipy_gradient(simulator, p, method):\n+def test_bit_flip_scipy_gradient(p, method):\n+    simulator = numpy.random.choice(samplers)\n     qubit = 0\n     H = paulis.Qm(qubit)\n     U = gates.Rx(target=qubit, angle=tq.Variable('a'))\n@@ -46,11 +46,11 @@ def test_bit_flip_scipy_gradient(simulator, p, method):\n \n \n @pytest.mark.skipif(len(samplers) == 0, reason=\"Missing necessary backends\")\n-@pytest.mark.parametrize(\"simulator\", [numpy.random.choice(samplers)])\n @pytest.mark.parametrize(\"p\", numpy.random.uniform(0.1, .4, 1))\n @pytest.mark.parametrize('method',\n                          [[\"TRUST-KRYLOV\", \"NEWTON-CG\", \"TRUST-NCG\", \"TRUST-CONSTR\"][numpy.random.randint(0, 4, 1)[0]]])\n-def test_bit_flip_scipy_hessian(simulator, p, method):\n+def test_bit_flip_scipy_hessian(p, method):\n+    simulator = numpy.random.choice(samplers)\n     qubit = 0\n     H = paulis.Qm(qubit)\n     U = gates.Rx(target=qubit, angle=tq.Variable('a'))\n@@ -62,9 +62,9 @@ def test_bit_flip_scipy_hessian(simulator, p, method):\n \n @pytest.mark.skipif(len(samplers) == 0, reason=\"Missing necessary backends\")\n @pytest.mark.skipif(not tq.optimizers.has_phoenics, reason=\"Missing phoenics installation\")\n-@pytest.mark.parametrize(\"simulator\", [numpy.random.choice(samplers)])\n @pytest.mark.parametrize(\"p\", numpy.random.uniform(0.1, .4, 1))\n-def test_bit_flip_phoenics(simulator, p):\n+def test_bit_flip_phoenics(p):\n+    simulator = numpy.random.choice(samplers)\n     qubit = 0\n     H = paulis.Qm(qubit)\n     U = gates.Rx(target=qubit, angle=tq.Variable('a'))\n@@ -75,10 +75,10 @@ def test_bit_flip_phoenics(simulator, p):\n \n @pytest.mark.skipif(len(samplers) == 0, reason=\"Missing necessary backends\")\n @pytest.mark.skipif(not tq.optimizers.has_gpyopt, reason=\"Missing gpyopt installation\")\n-@pytest.mark.parametrize(\"simulator\", [numpy.random.choice(samplers)])\n @pytest.mark.parametrize(\"p\", numpy.random.uniform(0.1, .4, 1))\n @pytest.mark.parametrize('method', ['lbfgs', 'DIRECT', 'CMA'])\n-def test_bit_flip_gpyopt(simulator, p, method):\n+def test_bit_flip_gpyopt(p, method):\n+    simulator = numpy.random.choice(samplers)\n     qubit = 0\n     H = paulis.Qm(qubit)\n     U = gates.Rx(target=qubit, angle=tq.Variable('a'))"
+  },
+  {
+    "sha": "7b004b3ff2177c110c8bd0f69cf3bdde04d39c4b",
+    "filename": "tests/test_simulator_backends.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/tests%2Ftest_simulator_backends.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe/tests%2Ftest_simulator_backends.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/tests%2Ftest_simulator_backends.py?ref=29c16cfdaa6de78d0e8b3015d066fbf9c4c6bafe",
+    "patch": "@@ -18,7 +18,7 @@\n \n \n HAS_GOOGLE = importlib.util.find_spec('cirq_google')\n-@pytest.mark.skipif(condition=HAS_GOOGLE, reason=\"cirq_google not installed\")\n+@pytest.mark.skipif(condition=not HAS_GOOGLE, reason=\"cirq_google not installed\")\n def test_cirq_google_devices():\n     import cirq_google\n     "
+  }
+]

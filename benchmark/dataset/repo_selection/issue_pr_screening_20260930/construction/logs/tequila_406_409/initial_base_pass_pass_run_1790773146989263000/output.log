@@ -1,0 +1,62 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  5a504be Add fci wavefunction to pyscf backend (#409)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 5a504be
+
+HEAD is now at beb74a6 corrected how the default maxrank is calculated, replaced floor division by usual division. (#404)
+Removing src/tequila_basic.egg-info/
+F....                                                                    [100%]
+=================================== FAILURES ===================================
+___________________________ test_h2_hamiltonian_psi4 ___________________________
+
+    @pytest.mark.skipif(condition=not HAS_PYSCF, reason="you don't have pyscf")
+    def test_h2_hamiltonian_psi4():
+>       do_test_h2_hamiltonian(qc_interface=qc.QuantumChemistryPySCF)
+
+tests/test_chemistry.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_chemistry.py:143: in do_test_h2_hamiltonian
+    parameters = tequila.quantumchemistry.chemistry_tools.ParametersQC(geometry="data/h2.xyz", basis_set="sto-3g")
+<string>:10: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ParametersQC(basis_set='sto-3g', geometry='data/h2.xyz', description='', multiplicity=1, charge=0, name='data/h2', frozen_core=True)
+args = (), kwargs = {}
+
+    def __post_init__(self, *args, **kwargs):
+    
+        if self.name is None and self.geometry is None:
+            raise TequilaException(
+                "no geometry or name given to molecule\nprovide geometry=filename.xyz or geometry=`h 0.0 0.0 0.0\\n...`\nor name=whatever with file whatever.xyz being present")
+        # auto naming
+        if self.name is None:
+            if ".xyz" in self.geometry:
+                self.name = self.geometry.split(".xyz")[0]
+                if self.description is None:
+                    coord, description = self.read_xyz_from_file()
+                    self.description = description
+            else:
+                atoms = self.get_atoms()
+                atom_names = sorted(list(set(atoms)), key=lambda x: self.get_atom_number(x), reverse=True)
+                if self.name is None:
+                    drop_ones = lambda x: "" if x == 1 else x
+                    self.name = "".join(["{}{}".format(x, drop_ones(atoms.count(x))) for x in atom_names])
+            self.name = self.name.lower()
+    
+        if self.geometry is None:
+            self.geometry = self.name + ".xyz"
+    
+        if ".xyz" in self.geometry and not os.path.isfile(self.geometry):
+>           raise TequilaException("could not find file for molecular coordinates {}".format(self.geometry))
+E           tequila.utils.exceptions.TequilaException: could not find file for molecular coordinates data/h2.xyz
+
+src/tequila/quantumchemistry/chemistry_tools.py:323: TequilaException
+=========================== short test summary info ============================
+FAILED tests/test_chemistry.py::test_h2_hamiltonian_psi4 - tequila.utils.exce...
+1 failed, 4 passed, 13 warnings in 91.68s (0:01:31)

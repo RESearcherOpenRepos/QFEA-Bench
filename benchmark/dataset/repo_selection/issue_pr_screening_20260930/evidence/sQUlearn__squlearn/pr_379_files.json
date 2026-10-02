@@ -1,0 +1,62 @@
+[
+  {
+    "sha": "d52829273d1c12df1780e8b3e45e0cbc572bc030",
+    "filename": "src/squlearn/qrc/base_qrc.py",
+    "status": "modified",
+    "additions": 16,
+    "deletions": 4,
+    "changes": 20,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fbase_qrc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fbase_qrc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqrc%2Fbase_qrc.py?ref=eb31098e7bbd62f4110ccc1db5b2f5413c5012fb",
+    "patch": "@@ -17,8 +17,6 @@ def validate_data(self, *args, **kwargs):\n         return self._validate_data(*args, **kwargs)\n \n \n-from qiskit.quantum_info.random import random_pauli_list\n-\n from ..observables.observable_base import ObservableBase\n from ..observables import CustomObservable, SinglePauli\n from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase\n@@ -27,6 +25,8 @@ def validate_data(self, *args, **kwargs):\n from ..qnn.lowlevel_qnn import LowLevelQNN\n from ..util.serialization import SerializableModelMixin\n \n+from .util.random_pauli_list import random_pauli_list\n+\n \n class BaseQRC(BaseEstimator, SerializableModelMixin, ABC):\n     \"\"\"Base class for Quantum Reservoir Computing (QRC) models.\n@@ -65,7 +65,7 @@ def __init__(\n         ml_model: str = \"linear\",\n         ml_model_options: Union[dict, None] = None,\n         operators: Union[ObservableBase, list[ObservableBase], str] = \"random_paulis\",\n-        num_operators: int = 100,\n+        num_operators: int = None,\n         operator_seed: int = 0,\n         param_ini: Union[np.ndarray, None] = None,\n         param_op_ini: Union[np.ndarray, None] = None,\n@@ -89,6 +89,19 @@ def __init__(\n         self._is_lowlevel_qnn_initialized = False\n         self._qnn = None\n \n+        if self.operators == \"random_paulis\":\n+            if (\n+                self.num_operators is not None\n+                and self.num_operators > 4**self.encoding_circuit.num_qubits\n+            ):\n+                raise ValueError(\n+                    f\"Number of operators ({self.num_operators}) exceeds the maximum possible \"\n+                    f\"({4**self.encoding_circuit.num_qubits}) for the given number of qubits \"\n+                    f\"({self.encoding_circuit.num_qubits}).\"\n+                )\n+            elif self.num_operators is None:\n+                self.num_operators = min(100, 4**self.encoding_circuit.num_qubits)\n+\n         self._ml_model = None\n         self._initialize_observables()\n         self._initialize_ml_model()\n@@ -152,7 +165,6 @@ def _initialize_observables(self) -> None:\n                     self.encoding_circuit.num_qubits,\n                     self.num_operators,\n                     seed=self.operator_seed,\n-                    phase=False,\n                 )\n                 self._operators = [\n                     CustomObservable(self.encoding_circuit.num_qubits, str(p)) for p in paulis"
+  },
+  {
+    "sha": "d438a812a806a2e86df7639cbf033e0d793e1939",
+    "filename": "src/squlearn/qrc/qrc_classifier.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fqrc_classifier.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fqrc_classifier.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqrc%2Fqrc_classifier.py?ref=eb31098e7bbd62f4110ccc1db5b2f5413c5012fb",
+    "patch": "@@ -94,7 +94,7 @@ def __init__(\n         ml_model: str = \"linear\",\n         ml_model_options: Union[dict, None] = None,\n         operators: Union[ObservableBase, list[ObservableBase], str] = \"random_paulis\",\n-        num_operators: int = 100,\n+        num_operators: int = None,\n         operator_seed: int = 0,\n         param_ini: Union[np.ndarray, None] = None,\n         param_op_ini: Union[np.ndarray, None] = None,"
+  },
+  {
+    "sha": "8c024d3db5501cfec1a1f09c7068a4364fa8432d",
+    "filename": "src/squlearn/qrc/qrc_regressor.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fqrc_regressor.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/src%2Fsqulearn%2Fqrc%2Fqrc_regressor.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqrc%2Fqrc_regressor.py?ref=eb31098e7bbd62f4110ccc1db5b2f5413c5012fb",
+    "patch": "@@ -92,7 +92,7 @@ def __init__(\n         ml_model: str = \"linear\",\n         ml_model_options: Union[dict, None] = None,\n         operators: Union[ObservableBase, list[ObservableBase], str] = \"random_paulis\",\n-        num_operators: int = 100,\n+        num_operators: int = None,\n         operator_seed: int = 0,\n         param_ini: Union[np.ndarray, None] = None,\n         param_op_ini: Union[np.ndarray, None] = None,"
+  },
+  {
+    "sha": "0c91d17d95f15a7a2c2fbdca9de215edd2918ed6",
+    "filename": "tests/qrc/test_qrc_classifier.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/tests%2Fqrc%2Ftest_qrc_classifier.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/tests%2Fqrc%2Ftest_qrc_classifier.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fqrc%2Ftest_qrc_classifier.py?ref=eb31098e7bbd62f4110ccc1db5b2f5413c5012fb",
+    "patch": "@@ -49,7 +49,7 @@ def test_fit_predict(self, data, ml_model):\n         values = qrc_classifier.predict(X)\n \n         referece_values = {\n-            \"linear\": np.array([0, 1, 0, 1, 1, 1]),\n+            \"linear\": np.array([0, 1, 0, 1, 0, 1]),\n             \"mlp\": np.array([0, 1, 0, 1, 0, 1]),\n             \"kernel\": np.array([0, 1, 0, 0, 0, 1]),\n         }"
+  },
+  {
+    "sha": "0ee0b1f0ad9ddc0f4d76854c9ef04a5471cae28b",
+    "filename": "tests/qrc/test_qrc_regressor.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/tests%2Fqrc%2Ftest_qrc_regressor.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/eb31098e7bbd62f4110ccc1db5b2f5413c5012fb/tests%2Fqrc%2Ftest_qrc_regressor.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fqrc%2Ftest_qrc_regressor.py?ref=eb31098e7bbd62f4110ccc1db5b2f5413c5012fb",
+    "patch": "@@ -53,10 +53,10 @@ def test_fit_predict(self, data, ml_model):\n                 [2.88509523, -0.80308901, 3.76200899, -1.35995202, 8.84630756, -1.36004739]\n             ),\n             \"mlp\": np.array(\n-                [3.06585455, -0.96776248, 4.0395428, -1.52636054, 8.80042369, -1.52645433]\n+                [3.04943393, -0.87369101, 3.98814234, -1.42608296, 8.61361362, -1.42617601]\n             ),\n             \"kernel\": np.array(\n-                [2.87653068, -0.65406699, 3.74209315, -1.13894099, 8.15484098, -1.13902237]\n+                [2.54250631, 0.06183984, 3.13005284, -0.29406904, 6.04568976, -0.29412921]\n             ),\n         }\n "
+  }
+]

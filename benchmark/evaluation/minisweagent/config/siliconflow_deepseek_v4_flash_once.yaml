@@ -1,0 +1,19 @@
+prediction_model_name: deepseek-v4-flash
+model:
+  model_name: openai/deepseek-ai/DeepSeek-V4-Flash
+  cost_tracking: ignore_errors
+  model_kwargs:
+    api_base: https://api.siliconflow.cn/v1
+    drop_params: true
+    temperature: 0.0
+    max_tokens: 16384
+    timeout: 300
+    extra_body:
+      enable_thinking: false
+    api_key: $SILICONFLOW_API_KEY
+  model_class: litellm
+_model_source: siliconflow
+environment:
+  run_args:
+  - --rm
+  - --cap-add=NET_ADMIN

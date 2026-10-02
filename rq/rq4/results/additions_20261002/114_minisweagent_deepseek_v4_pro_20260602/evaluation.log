@@ -1,0 +1,550 @@
+Patch applied: true
+Running fail-pass tests...
+FFFFFF..F                                                                [100%]
+=================================== FAILURES ===================================
+_____ TestCrossEntropyLoss.test_value[value_dict0-ground_truth0-0.057705] ______
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22f2f20>
+value_dict = {'f': [0.99, 0.01, 0.9, 0.1]}, ground_truth = array([1, 0, 1, 0])
+loss_value = 0.057705
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+>       assert np.isclose(
+            cross_entropy_loss.value(value_dict, ground_truth=ground_truth), loss_value
+        )
+E       AssertionError: assert False
+E        +  where False = <function isclose at 0x7ffffb141130>(0.23082170302265548, 0.057705)
+E        +    where <function isclose at 0x7ffffb141130> = np.isclose
+E        +    and   0.23082170302265548 = value({'f': [0.99, 0.01, 0.9, 0.1]}, ground_truth=array([1, 0, 1, 0]))
+E        +      where value = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7ffffe2a42b0>.value
+
+tests/qnn/test_loss.py:31: AssertionError
+_____ TestCrossEntropyLoss.test_value[value_dict1-ground_truth1-0.6931472] _____
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22f2860>
+value_dict = {'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...]}
+ground_truth = array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]), loss_value = 0.6931472
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+>       assert np.isclose(
+            cross_entropy_loss.value(value_dict, ground_truth=ground_truth), loss_value
+        )
+E       AssertionError: assert False
+E        +  where False = <function isclose at 0x7ffffb141130>(6.931471805599453, 0.6931472)
+E        +    where <function isclose at 0x7ffffb141130> = np.isclose
+E        +    and   6.931471805599453 = value({'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...]}, ground_truth=array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]))
+E        +      where value = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7ffffe2a43d0>.value
+
+tests/qnn/test_loss.py:31: AssertionError
+_____ TestCrossEntropyLoss.test_value[value_dict2-ground_truth2-0.0100503] _____
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22f27d0>
+value_dict = {'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]}
+ground_truth = array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]])
+loss_value = 0.0100503
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+>       assert np.isclose(
+            cross_entropy_loss.value(value_dict, ground_truth=ground_truth), loss_value
+        )
+E       AssertionError: assert False
+E        +  where False = <function isclose at 0x7ffffb141130>(0.030151007560504352, 0.0100503)
+E        +    where <function isclose at 0x7ffffb141130> = np.isclose
+E        +    and   0.030151007560504352 = value({'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]}, ground_truth=array([[1, 0, 0],\n       [0, 1, 0],\n       [0, 0, 1]]))
+E        +      where value = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7fffe16e78e0>.value
+
+tests/qnn/test_loss.py:31: AssertionError
+_ TestCrossEntropyLoss.test_gradient[value_dict0-ground_truth0-False-gradient_value0] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22f16f0>
+value_dict = {'f': [0.99, 0.01, 0.9], 'dfdp': [[0.1, 0.2, 0.3]]}
+ground_truth = array([1, 0, 1]), multiple_output = False
+gradient_value = array([0.05993933, 0.11987865, 0.17981798])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+        cross_entropy_loss.set_opt_param_op(False)
+        assert np.allclose(
+>           cross_entropy_loss.gradient(
+                value_dict, multiple_output=multiple_output, ground_truth=ground_truth
+            ),
+            gradient_value,
+        )
+
+tests/qnn/test_loss.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7ffffe2a41c0>
+value_dict = {'f': [0.99, 0.01, 0.9], 'dfdp': [[0.1, 0.2, 0.3]]}
+kwargs = {'multiple_output': False, 'ground_truth': array([1, 0, 1])}
+
+    def gradient(
+        self, value_dict: dict, **kwargs
+    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+        r"""Returns the gradient of the cross-entropy loss.
+    
+        This function calculates the gradient of the cross-entropy loss with respect
+        to the model parameters.
+    
+        Args:
+            value_dict (dict): Contains calculated values of the model.
+                Must contain keys ``"f"``, ``"dfdp"``, and optionally ``"dfdop"``.
+            ground_truth (np.ndarray): The true labels.
+            weights (np.ndarray, optional): Weight for each data point.
+                If None, all data points count the same.
+            multiple_output (bool): True if the QNN has multiple outputs.
+    
+        Returns:
+            Gradient values as a single array or tuple of arrays.
+        """
+        if "ground_truth" not in kwargs:
+            raise AttributeError("CrossEntropyLoss requires ground_truth.")
+    
+        ground_truth = kwargs["ground_truth"]
+        if "weights" in kwargs and kwargs["weights"] is not None:
+            weights = kwargs["weights"]
+        else:
+            weights = np.ones_like(ground_truth)
+    
+        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
+    
+        f = value_dict["f"]
+        f_clipped = np.clip(f, self._eps, 1.0 - self._eps)
+    
+        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
+            # Binary cross-entropy gradient
+            gt = ground_truth.ravel()
+            f_clipped = f_clipped.ravel()
+            w = weights.ravel()
+    
+            # dL/df = -(gt/f - (1-gt)/(1-f))
+            dL_df = -(gt / f_clipped - (1.0 - gt) / (1.0 - f_clipped))
+            dL_df = dL_df * w
+        else:
+            # Multiple-output cross-entropy gradient
+            # dL/df_c = -gt_c / f_c
+            dL_df = -weights * ground_truth / f_clipped
+    
+        # Compute gradient with respect to circuit parameters
+>       if value_dict["dfdp"].shape[0] == 0:
+E       AttributeError: 'list' object has no attribute 'shape'
+
+src/squlearn/qnn/loss/cross_entropy_loss.py:153: AttributeError
+_ TestCrossEntropyLoss.test_gradient[value_dict1-ground_truth1-False-gradient_value1] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22f0340>
+value_dict = {'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], 'dfdp': [[0.1, 0.2, 0.3]]}
+ground_truth = array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]), multiple_output = False
+gradient_value = array([0.13333333, 0.26666667, 0.4       ])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+        cross_entropy_loss.set_opt_param_op(False)
+        assert np.allclose(
+>           cross_entropy_loss.gradient(
+                value_dict, multiple_output=multiple_output, ground_truth=ground_truth
+            ),
+            gradient_value,
+        )
+
+tests/qnn/test_loss.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7fffe170ff70>
+value_dict = {'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], 'dfdp': [[0.1, 0.2, 0.3]]}
+kwargs = {'multiple_output': False, 'ground_truth': array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1])}
+
+    def gradient(
+        self, value_dict: dict, **kwargs
+    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+        r"""Returns the gradient of the cross-entropy loss.
+    
+        This function calculates the gradient of the cross-entropy loss with respect
+        to the model parameters.
+    
+        Args:
+            value_dict (dict): Contains calculated values of the model.
+                Must contain keys ``"f"``, ``"dfdp"``, and optionally ``"dfdop"``.
+            ground_truth (np.ndarray): The true labels.
+            weights (np.ndarray, optional): Weight for each data point.
+                If None, all data points count the same.
+            multiple_output (bool): True if the QNN has multiple outputs.
+    
+        Returns:
+            Gradient values as a single array or tuple of arrays.
+        """
+        if "ground_truth" not in kwargs:
+            raise AttributeError("CrossEntropyLoss requires ground_truth.")
+    
+        ground_truth = kwargs["ground_truth"]
+        if "weights" in kwargs and kwargs["weights"] is not None:
+            weights = kwargs["weights"]
+        else:
+            weights = np.ones_like(ground_truth)
+    
+        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
+    
+        f = value_dict["f"]
+        f_clipped = np.clip(f, self._eps, 1.0 - self._eps)
+    
+        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
+            # Binary cross-entropy gradient
+            gt = ground_truth.ravel()
+            f_clipped = f_clipped.ravel()
+            w = weights.ravel()
+    
+            # dL/df = -(gt/f - (1-gt)/(1-f))
+            dL_df = -(gt / f_clipped - (1.0 - gt) / (1.0 - f_clipped))
+            dL_df = dL_df * w
+        else:
+            # Multiple-output cross-entropy gradient
+            # dL/df_c = -gt_c / f_c
+            dL_df = -weights * ground_truth / f_clipped
+    
+        # Compute gradient with respect to circuit parameters
+>       if value_dict["dfdp"].shape[0] == 0:
+E       AttributeError: 'list' object has no attribute 'shape'
+
+src/squlearn/qnn/loss/cross_entropy_loss.py:153: AttributeError
+_ TestCrossEntropyLoss.test_gradient[value_dict2-ground_truth2-True-gradient_value2] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22c8700>
+value_dict = {'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]], 'dfdp': [[[0.1, 0.2, 0.3]]]}
+ground_truth = array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]])
+multiple_output = True, gradient_value = array([0.1, 0.2, 0.3])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+        cross_entropy_loss = CrossEntropyLoss(1e-8)
+        cross_entropy_loss.set_opt_param_op(False)
+        assert np.allclose(
+>           cross_entropy_loss.gradient(
+                value_dict, multiple_output=multiple_output, ground_truth=ground_truth
+            ),
+            gradient_value,
+        )
+
+tests/qnn/test_loss.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.qnn.loss.cross_entropy_loss.CrossEntropyLoss object at 0x7fffe16d7760>
+value_dict = {'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]], 'dfdp': [[[0.1, 0.2, 0.3]]]}
+kwargs = {'multiple_output': True, 'ground_truth': array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]])}
+
+    def gradient(
+        self, value_dict: dict, **kwargs
+    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+        r"""Returns the gradient of the cross-entropy loss.
+    
+        This function calculates the gradient of the cross-entropy loss with respect
+        to the model parameters.
+    
+        Args:
+            value_dict (dict): Contains calculated values of the model.
+                Must contain keys ``"f"``, ``"dfdp"``, and optionally ``"dfdop"``.
+            ground_truth (np.ndarray): The true labels.
+            weights (np.ndarray, optional): Weight for each data point.
+                If None, all data points count the same.
+            multiple_output (bool): True if the QNN has multiple outputs.
+    
+        Returns:
+            Gradient values as a single array or tuple of arrays.
+        """
+        if "ground_truth" not in kwargs:
+            raise AttributeError("CrossEntropyLoss requires ground_truth.")
+    
+        ground_truth = kwargs["ground_truth"]
+        if "weights" in kwargs and kwargs["weights"] is not None:
+            weights = kwargs["weights"]
+        else:
+            weights = np.ones_like(ground_truth)
+    
+        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
+    
+        f = value_dict["f"]
+        f_clipped = np.clip(f, self._eps, 1.0 - self._eps)
+    
+        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
+            # Binary cross-entropy gradient
+            gt = ground_truth.ravel()
+            f_clipped = f_clipped.ravel()
+            w = weights.ravel()
+    
+            # dL/df = -(gt/f - (1-gt)/(1-f))
+            dL_df = -(gt / f_clipped - (1.0 - gt) / (1.0 - f_clipped))
+            dL_df = dL_df * w
+        else:
+            # Multiple-output cross-entropy gradient
+            # dL/df_c = -gt_c / f_c
+            dL_df = -weights * ground_truth / f_clipped
+    
+        # Compute gradient with respect to circuit parameters
+>       if value_dict["dfdp"].shape[0] == 0:
+E       AttributeError: 'list' object has no attribute 'shape'
+
+src/squlearn/qnn/loss/cross_entropy_loss.py:153: AttributeError
+________________________ TestQNNClassifier.test_predict ________________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe18c2cb0>
+qnn_classifier = QNNClassifier(encoding_circuit=<squlearn.encoding_circuit.circuit_library.chebyshev_pqc.ChebyshevPQC object at 0x7fffe...6, 0.78269868,
+       0.867578  , 0.32645486]),
+              param_op_ini=array([0.10958037, 0.39880948, 0.59160269]))
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+
+    def test_predict(self, qnn_classifier, data):
+        """Tests concerning the predict function of the QNNClassifier.
+    
+        Tests include
+            - whether the prediction output is correct
+        """
+        X, y = data
+        qnn_classifier._param = np.linspace(0.1, 0.7, 7)
+        qnn_classifier._param_op = np.linspace(0.1, 0.3, 3)
+        qnn_classifier._label_binarizer = LabelBinarizer()
+        qnn_classifier._label_binarizer.fit(y)
+        qnn_classifier._is_fitted = True
+        y_pred = qnn_classifier.predict(X)
+    
+        assert isinstance(y_pred, np.ndarray)
+        assert y_pred.shape == y.shape
+>       assert np.allclose(y_pred, np.ones_like(y))
+E       assert False
+E        +  where False = <function allclose at 0x7ffffb140fb0>(array([0, 0, 0, 0, 0, 0, 0]), array([1, 1, 1, 1, 1, 1, 1]))
+E        +    where <function allclose at 0x7ffffb140fb0> = np.allclose
+E        +    and   array([1, 1, 1, 1, 1, 1, 1]) = <function ones_like at 0x7ffffb1339f0>(array([0, 1, 1, 0, 0, 0, 1]))
+E        +      where <function ones_like at 0x7ffffb1339f0> = np.ones_like
+
+tests/qnn/test_qnnc.py:189: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:994 Execution of pennylane circuit function
+INFO     executor:executor.py:997 Execution of pennylane circuit successful
+=============================== warnings summary ===============================
+src/squlearn/kernel/lowlevel_kernel/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/lowlevel_kernel/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict0-ground_truth0-0.057705]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict1-ground_truth1-0.6931472]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict2-ground_truth2-0.0100503]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict0-ground_truth0-False-gradient_value0]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict1-ground_truth1-False-gradient_value1]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict2-ground_truth2-True-gradient_value2]
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict - assert False
+7 failed, 2 passed, 4 warnings in 3.46s
+
+
+Running pass-pass tests...
+..                                                                       [100%]
+2 passed in 2.17s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)

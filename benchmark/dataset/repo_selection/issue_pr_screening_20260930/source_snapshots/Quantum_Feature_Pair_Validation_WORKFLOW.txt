@@ -1,0 +1,113 @@
+# Quantum Feature Pair Validation Workflow
+
+This workflow corresponds to Step 3 of the QFEA-Bench construction pipeline
+in the paper: `Quantum Feature Pair Validation`. It is used to annotate
+candidate issue-PR samples in
+`preprocessing/result/*_review_candidates.csv`.
+
+## Basic Principles
+
+Process samples one at a time. Do not make batch decisions. For each sample,
+only inspect the issue, PR, and PR changed files corresponding to that sample.
+
+During annotation, always inspect the concrete issue and PR content. Do not
+make decisions based only on titles, `Fixes #...`, `Related to #...`, or
+automatically generated link relations.
+
+## CSV Fields
+
+Only annotate the following fields in this stage:
+
+- `issue_label`
+- `keep`
+
+Do not fill in `benchmark_status` or `benchmark_notes`; these fields are
+reserved for later benchmark-sample construction.
+
+## Annotation Order
+
+For each row, make decisions in the following order:
+
+1. Determine whether the issue and PR are genuinely related.
+   - If they are not the same task, or are only weakly related, set
+     `issue_label=other` and leave `keep` blank.
+   - If they are genuinely related, continue to the next step.
+
+2. Determine the issue type. Use only the following four labels:
+   - `feature`
+   - `bugfix`
+   - `refactor`
+   - `other`
+
+3. If `issue_label` is not `feature`:
+   - Do not continue to judge one-to-one correspondence, test-file changes, or
+     quantum specificity.
+   - Leave `keep` blank.
+
+4. If `issue_label=feature`, continue by checking:
+   - Whether the issue and PR have a one-to-one relation.
+   - Whether the PR modifies or adds test files.
+   - Whether the task has clear quantum specificity, rather than being ordinary
+     engineering work, documentation, CI, dependency maintenance, type
+     annotation, or general language behavior.
+
+5. Set `keep=yes` only when all of the following conditions are satisfied:
+   - `issue_label=feature`
+   - The issue and PR have a one-to-one relation.
+   - The PR modifies or adds test files.
+   - The feature has clear quantum specificity.
+
+6. If `issue_label=feature` but any of the conditions above is not satisfied:
+   - Set `keep=no`.
+
+## One-to-One Relation
+
+One-to-one relation does not require the issue to contain only a single small
+point. A pair can be treated as one-to-one as long as the PR's main
+implementation goal is to complete the issue and it does not clearly mix in
+multiple independent tasks.
+
+Use the following evidence when making this judgment:
+
+- Issue body and discussion.
+- PR body and discussion.
+- PR changed files.
+- Whether the actual PR change scope clearly exceeds the issue.
+
+## Quantum Specificity
+
+Retained features should involve core quantum-computing, quantum-chemistry,
+quantum-information, or quantum-optimization capabilities of the target
+repository, such as:
+
+- Core object behavior for quantum operators, Pauli/fermionic/bosonic
+  operators, Hamiltonians, and related abstractions.
+- Quantum mapping, encoding, transpilation, ansatz, circuit, state-preparation,
+  measurement, and other quantum-circuit or quantum-state capabilities.
+- Molecular data, integrals, second quantization, quantum-chemistry models, or
+  quantum-simulation capabilities.
+- Core repository-domain capabilities such as quantum machine learning, quantum
+  optimization, error mitigation, or noise models.
+
+The following usually do not provide sufficient quantum specificity:
+
+- Documentation, examples, README updates, CI, releases, or dependency
+  upgrades.
+- Pure formatting, type annotations, linting, renaming, or code organization.
+- Generic Python/NumPy/SciPy behavior fixes, unless they directly target a new
+  capability of a core quantum object or quantum-domain API.
+
+## Recommended Review Rhythm
+
+For each sample, follow this rhythm:
+
+1. Open the issue page.
+2. Open the PR page.
+3. Open the PR files page.
+4. Write down the judgment:
+   - Whether the issue and PR are genuinely related.
+   - `issue_label`.
+   - If it is a feature, also judge one-to-one relation, test-file changes, and
+     quantum specificity.
+5. Immediately update the current CSV row.
+6. Then move to the next sample.

@@ -1,0 +1,708 @@
+FILE pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qiskit-addon-sqd"
+version = "0.13.0"
+readme = "README.md"
+description = "Classically postprocess noisy quantum samples to yield more accurate energy estimations"
+license = "Apache-2.0"
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+requires-python = ">=3.10"
+
+dependencies = [
+    "qiskit>=2.0, <3",
+    "numpy>=2.0",
+    "pyscf>=2.9; sys_platform != 'win32'",
+    "jaxlib>=0.4.30",
+    "jax>=0.4.30",
+    "scipy>=1.14.1",
+]
+
+[project.optional-dependencies]
+fulqrum = [
+    "fulqrum>=0.4.4",
+    "primme>=3.2.3",
+]
+dev = [
+    "qiskit-addon-sqd[test,nbtest,lint,docs]",
+    "tox>=4.4.3",
+]
+basetest = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+test = [
+    "qiskit-addon-sqd[basetest]",
+]
+nbtest = [
+    "qiskit-addon-sqd[basetest]",
+    "nbmake>=1.5.0",
+]
+style = [
+    "ruff==0.16.5",
+    "nbqa>=1.8.5",
+]
+lint = [
+    "qiskit-addon-sqd[style]",
+    "mypy==2.3.1",
+    "pylint==4.0.8",
+    "reno>=4.1",
+    "toml>=0.9.6",
+]
+notebook-dependencies = [
+    "qiskit-addon-sqd[fulqrum]",
+    "qiskit-addon-utils",
+    "qiskit-aer",
+    "matplotlib",
+    "pylatexenc",
+    "ffsim>=0.0.58",
+    "qiskit",
+    "qiskit-ibm-runtime",
+]
+docs = [
+    "qiskit-addon-sqd[test,notebook-dependencies]",
+    "qiskit-sphinx-theme~=2.1.0",
+    "jupyter-sphinx",
+    "sphinx-design",
+    "sphinx-autodoc-typehints",
+    "sphinx-copybutton",
+    "sphinx_reredirects",
+    "nbsphinx>=0.9.4",
+    "reno>=4.1",
+]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "qiskit_addon_sqd",
+]
+
+[tool.mypy]
+python_version = "3.10"
+show_error_codes = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pylint]
+py-version = "3.10"
+load-plugins = ["pylint.extensions.no_self_use"]
+
+[tool.pylint."messages control"]
+disable = ["all"]
+enable = [
+    "reimported",
+    "no-else-raise",
+    "redefined-argument-from-local",
+    "redefined-builtin",
+    "raise-missing-from",
+    "cyclic-import",
+    "unused-argument",
+    "attribute-defined-outside-init",
+    "no-else-return",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["./qiskit_addon_sqd/", "./test/"]
+
+[tool.ruff]
+line-length = 100
+src = ["qiskit_addon_sqd", "test"]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "I",   # isort
+    "E",   # pycodestyle
+    "W",   # pycodestyle
+    "D",   # pydocstyle
+    "F",   # pyflakes
+    "RUF", # ruff
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+]
+ignore = [
+    "E501", # line too long
+]
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.ruff.lint.extend-per-file-ignores]
+"test/**.py" = [
+    "D",  # pydocstyle
+]
+"docs/**/*" = [
+    "E402", # module level import not at top of file
+    "D",    # pydocstyle
+]
+
+[tool.ruff.lint.flake8-copyright]
+notice-rgx = """
+# This code is a Qiskit project.
+#
+# \\(C\\) Copyright IBM \\d{4}((,\\s)\\d{4})*\\.
+#
+# This code is licensed under the Apache License, Version 2\\.0\\. You may
+# obtain a copy of this license in the LICENSE\\.txt file in the root directory
+# of this source tree or at http\\:\\/\\/www\\.apache\\.org\\/licenses\\/LICENSE\\-2\\.0\\.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals\\.
+"""
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+FILE .github/workflows/test_minimum_versions.yml
+name: Minimum version tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+
+jobs:
+  tests:
+    name: minimum version tests (${{ matrix.os }}, ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies (minimum versions)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'extremal-python-dependencies<2'
+          pip install "tox==$(extremal-python-dependencies get-tox-minversion)"
+          extremal-python-dependencies pin-dependencies-to-minimum --inplace
+      # BLAS/LAPACK and OpenMP needed to build fulqrum for notebook testing
+      - name: Install BLAS/LAPACK (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libblas-dev liblapack-dev
+      - name: Bootstrap OpenMP-capable compiler (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew install llvm libomp
+          LLVM_PREFIX="$(brew --prefix llvm)"
+          OMP_PREFIX="$(brew --prefix libomp)"
+          {
+            echo "CC=${LLVM_PREFIX}/bin/clang"
+            echo "CXX=${LLVM_PREFIX}/bin/clang++"
+            echo "LDFLAGS=-L${LLVM_PREFIX}/lib -L${OMP_PREFIX}/lib -Wl,-rpath,${LLVM_PREFIX}/lib"
+            echo "CPPFLAGS=-I${LLVM_PREFIX}/include -I${OMP_PREFIX}/include"
+          } >> "$GITHUB_ENV"
+      # Run the environments serially. In parallel mode, tox buffers each
+      # environment's output and replays it once the run finishes, and a
+      # failing environment's stderr does not survive that replay -- which
+      # hides the compiler error when building fulqrum from its sdist fails.
+      - name: Test using tox environment
+        shell: bash
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          tox -e py,notebook
+
+FILE .github/workflows/coverage.yml
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+  merge_group:
+
+jobs:
+  coverage:
+    name: code coverage (${{ matrix.os }}, ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox coverage
+      - name: Run coverage
+        run: |
+          tox -e coverage
+      - name: Convert to lcov
+        if: always()
+        run: python -m coverage lcov -o coveralls.lcov
+      - name: Upload report to Coveralls
+        if: always()
+        uses: coverallsapp/github-action@v2
+        with:
+          file: coveralls.lcov
+          format: lcov
+
+FILE .github/workflows/release.yml
+name: Build and publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - main
+      - 'stable/**'
+
+jobs:
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build distribution
+        run: |
+          pipx run build --sdist
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: pkg-sdist
+          path: dist/*.tar.gz
+
+  build_wheels:
+    name: Build universal wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build wheel
+        run: |
+          pipx run build --wheel
+      - name: Store the wheel
+        uses: actions/upload-artifact@v7
+        with:
+          name: pkg-wheel
+          path: dist/*.whl
+
+  github:
+    name: Publish to GitHub
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs:
+      - build_sdist
+      - build_wheels
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v7
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: pkg-*
+          path: dist
+          merge-multiple: true
+      - name: Publish release
+        uses: ghalactic/github-release-from-tag@v6
+        with:
+          prerelease: false
+          generateReleaseNotes: "true"
+          assets: |
+            - path: dist/*
+
+  pypi:
+    name: Publish to pypi
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs:
+      - build_sdist
+      - build_wheels
+      - github
+    environment:
+      name: pypi
+      url: https://pypi.org/p/qiskit-addon-sqd
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v7
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: pkg-*
+          path: dist
+          merge-multiple: true
+      - name: Publish release to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+FILE .github/workflows/test_latest_versions.yml
+name: Latest version tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: macos-latest
+            python-version: "3.14"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+      # BLAS/LAPACK and OpenMP needed to build fulqrum for notebook testing
+      - name: Install BLAS/LAPACK (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libblas-dev liblapack-dev
+      - name: Bootstrap OpenMP-capable compiler (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew install llvm libomp
+          LLVM_PREFIX="$(brew --prefix llvm)"
+          OMP_PREFIX="$(brew --prefix libomp)"
+          {
+            echo "CC=${LLVM_PREFIX}/bin/clang"
+            echo "CXX=${LLVM_PREFIX}/bin/clang++"
+            echo "LDFLAGS=-L${LLVM_PREFIX}/lib -L${OMP_PREFIX}/lib -Wl,-rpath,${LLVM_PREFIX}/lib"
+            echo "CPPFLAGS=-I${LLVM_PREFIX}/include -I${OMP_PREFIX}/include"
+          } >> "$GITHUB_ENV"
+      # Run the environments serially. In parallel mode, tox buffers each
+      # environment's output and replays it once the run finishes, and a
+      # failing environment's stderr does not survive that replay -- which
+      # hides the compiler error when building fulqrum from its sdist fails.
+      - name: Test using tox environment
+        shell: bash
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          tox -e py,notebook
+
+FILE .github/workflows/lint.yml
+name: Lint check
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+      - name: Install tox
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+      - name: Run lint check
+        shell: bash
+        run: |
+          tox -elint
+
+FILE .github/workflows/test_development_versions.yml
+name: Development version tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  tests:
+    name: development version tests (${{ matrix.os }}, ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+      # BLAS/LAPACK and OpenMP needed to build fulqrum for notebook testing
+      - name: Install BLAS/LAPACK (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libblas-dev liblapack-dev
+      - name: Bootstrap OpenMP-capable compiler (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew install llvm libomp
+          LLVM_PREFIX="$(brew --prefix llvm)"
+          OMP_PREFIX="$(brew --prefix libomp)"
+          {
+            echo "CC=${LLVM_PREFIX}/bin/clang"
+            echo "CXX=${LLVM_PREFIX}/bin/clang++"
+            echo "LDFLAGS=-L${LLVM_PREFIX}/lib -L${OMP_PREFIX}/lib -Wl,-rpath,${LLVM_PREFIX}/lib"
+            echo "CPPFLAGS=-I${LLVM_PREFIX}/include -I${OMP_PREFIX}/include"
+          } >> "$GITHUB_ENV"
+      - name: Install tools from pypi
+        run: |
+          python -m pip install tox build 'extremal-python-dependencies<2'
+      - name: Build fulqrum development wheel
+        run: |
+          git clone --recurse-submodules https://github.com/qiskit-community/fulqrum
+          cd fulqrum
+          git rev-parse HEAD
+          python -m build --wheel
+      - name: Build Qiskit SDK development wheel
+        run: |
+          git clone https://github.com/Qiskit/qiskit
+          cd qiskit
+          git rev-parse HEAD
+          python -m build --wheel
+      - name: Build qiskit-ibm-runtime development wheel
+        run: |
+          git clone https://github.com/Qiskit/qiskit-ibm-runtime
+          cd qiskit-ibm-runtime
+          git rev-parse HEAD
+          python -m build --wheel
+      - name: Build qiskit-addon-utils development wheel
+        run: |
+          git clone https://github.com/Qiskit/qiskit-addon-utils
+          cd qiskit-addon-utils
+          git rev-parse HEAD
+          python -m build --wheel
+      - name: Pin development versions
+        shell: bash
+        run: >-
+          extremal-python-dependencies pin-dependencies --inplace
+          "fulqrum @ file:$(echo fulqrum/dist/*.whl)"
+          "qiskit @ file:$(echo qiskit/dist/*.whl)"
+          "qiskit-ibm-runtime @ file:$(echo qiskit-ibm-runtime/dist/*.whl)"
+          "qiskit-addon-utils @ file:$(echo qiskit-addon-utils/dist/*.whl)"
+      - name: Test using tox environment
+        shell: bash
+        run: |
+          tox -e py,notebook
+
+FILE .github/workflows/docs.yml
+name: Build Sphinx docs
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+jobs:
+  build:
+    name: Build docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+          sudo apt-get update
+          sudo apt-get install -y pandoc libblas-dev liblapack-dev
+      - name: Build docs
+        shell: bash
+        run: |
+          tox -edocs
+      - name: Upload docs artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/_build/html
+
+  deploy:
+    name: Deploy docs
+    if: ${{ github.ref == 'refs/heads/stable/0.13' }}
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+FILE .github/workflows/citation.yml
+name: Citation preview
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['CITATION.bib', '.github/workflows/citation.yml']
+  pull_request:
+    branches: [ main ]
+    paths: ['CITATION.bib', '.github/workflows/citation.yml']
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check for non-ASCII characters
+        run: |
+          # Fail immediately if there are any non-ASCII characters in
+          # the BibTeX source.  We prefer "escaped codes" rather than
+          # UTF-8 characters in order to ensure the bibliography will
+          # display correctly even in documents that do not contain
+          # \usepackage[utf8]{inputenc}.
+          if [ -f "CITATION.bib" ]; then
+          python3 -c 'open("CITATION.bib", encoding="ascii").read()'
+          fi
+      - name: Install LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-publishers
+          fi
+      - name: Run LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          arr=(${GITHUB_REPOSITORY//\// })
+          export REPO=${arr[1]}
+          cat <<- EOF > citation-preview.tex
+          \documentclass[preprint,aps,physrev,notitlepage]{revtex4-2}
+          \usepackage{hyperref}
+          \begin{document}
+          \title{\texttt{$REPO} BibTeX test}
+          \maketitle
+          \noindent
+          \texttt{$REPO}
+          \cite{$REPO}
+          \bibliography{CITATION}
+          \end{document}
+          EOF
+          pdflatex citation-preview
+          fi
+      - name: Run BibTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          bibtex citation-preview
+          fi
+      - name: Re-run LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          pdflatex citation-preview
+          pdflatex citation-preview
+          fi
+      - name: Upload PDF
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: citation-preview.pdf
+          path: citation-preview.pdf

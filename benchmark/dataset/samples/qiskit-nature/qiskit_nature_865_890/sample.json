@@ -1,0 +1,163 @@
+{
+  "instance": {
+    "id": 83,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_865_890",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/865",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/890",
+    "base_commit": "3f36886cbacc26cd68c3179c9e224ee87906640f",
+    "patch": "92a0b86bddf48c52f5b359e69e020031aa38488a"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds arithmetic and representation behavior for QuadraticHamiltonian coefficient blocks rather than new Hamiltonian semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+      "qiskit_nature/second_q/operators/sparse_label_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "QuadraticHamiltonian stores tensor-like coefficient data, but it does not participate in the arithmetic and representation behavior shared by PolynomialTensor-backed containers. Users need compatible QuadraticHamiltonian objects to combine cleanly, scale by numeric factors from either side, compare by value, and display their coefficient data in a reproducible constructor-style form.",
+    "requirements": [
+      "QuadraticHamiltonian instances must support equality and addition or subtraction with other compatible QuadraticHamiltonian instances.",
+      "QuadraticHamiltonian instances must support scalar multiplication from either side.",
+      "Arithmetic operations must combine the Hermitian part, antisymmetric part, and constant consistently with the requested operation.",
+      "The string representation must expose the Hermitian part, antisymmetric part, constant, and number of modes in a reproducible QuadraticHamiltonian constructor-style form, preserving the standard NumPy array representation including whitespace, line breaks, and alignment."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QuadraticHamiltonian",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "constructor: hermitian_part=None, antisymmetric_part=None, constant=0.0, num_modes=None, validate=True, rtol=None, atol=None",
+        "Output": "",
+        "Description": "Quadratic fermionic Hamiltonian with coefficient data, value equality, addition, subtraction, scalar multiplication, and constructor-style repr behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__eq__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self, other",
+        "Output": "bool",
+        "Description": "Compares two quadratic Hamiltonians by coefficient data and constant."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__add__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self, other",
+        "Output": "QuadraticHamiltonian",
+        "Description": "Returns the sum of two compatible quadratic Hamiltonians."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__sub__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self, other",
+        "Output": "QuadraticHamiltonian",
+        "Description": "Returns the difference of two compatible quadratic Hamiltonians."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__mul__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self, scalar",
+        "Output": "QuadraticHamiltonian",
+        "Description": "Returns the quadratic Hamiltonian scaled by a numeric factor."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__rmul__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self, scalar",
+        "Output": "QuadraticHamiltonian",
+        "Description": "Returns the quadratic Hamiltonian scaled by a numeric factor when the scalar is on the left-hand side."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.__repr__",
+        "Path": "qiskit_nature/second_q/hamiltonians/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "str",
+        "Description": "Returns a constructor-style representation containing coefficient arrays, constant, and num_modes while preserving the standard NumPy array representation including whitespace, line breaks, and alignment."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_865_890",
+      "image_id": "sha256:38a5a2911910edc72f08dea787d507d484e7279038e7816d1d8b0a56030c3553",
+      "image_size": "1023830522"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_addition",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_multiplication",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_repr"
+        ],
+        "summary": "3 passed in 2.92s.",
+        "duration_seconds": 9.47
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_validate"
+        ],
+        "summary": "3 passed in 2.47s.",
+        "duration_seconds": 9.26
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_addition",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_multiplication",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_repr"
+        ],
+        "summary": "3 failed in 3.87s. Failures show missing QuadraticHamiltonian addition, scalar multiplication, and constructor-style repr behavior.",
+        "duration_seconds": 15.72
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+          "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_validate"
+        ],
+        "summary": "3 passed in 2.81s.",
+        "duration_seconds": 12.24
+      }
+    }
+  }
+}

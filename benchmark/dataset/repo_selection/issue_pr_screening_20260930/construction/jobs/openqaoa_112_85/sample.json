@@ -1,0 +1,142 @@
+{
+  "instance": {
+    "id": 115,
+    "repo": "entropicalabs/openqaoa",
+    "instance_id": "openqaoa_112_85",
+    "status": "completed",
+    "issue_url": "https://github.com/entropicalabs/openqaoa/issues/112",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/entropicalabs/openqaoa/pull/85",
+    "base_commit": "a463e69e2e3dbd8c877932d759a4dfd1c7469246",
+    "patch": "b1463b99b5ed4441dbc328fab357dbe1cef31db4"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "\u65b0\u589e\u81ea\u5b9a\u4e49 RotationGateMap mixer block\uff0c\u76f4\u63a5\u5b9e\u73b0\u8d85\u51fa X/XY \u7684 mixer \u8bf7\u6c42\uff1b\u65b0\u589e\u6d4b\u8bd5\u6838\u5bf9 Hamiltonian/gate-map \u7b49\u4ef7\u3001\u7cfb\u6570\u5206\u914d\u4e0e\u7535\u8def\u7ed3\u6784\u3002"
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "openqaoa/qaoa_parameters/baseparams.py",
+      "openqaoa/qaoa_parameters/gatemap.py",
+      "openqaoa/qaoa_parameters/hamiltonianmapper.py",
+      "openqaoa/utilities.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenQAOA users need to supply custom mixer circuits as rotation-gate maps rather than being limited to a mixer Hamiltonian. Both representations should describe consistent QAOA layers and coefficient assignments.",
+    "requirements": [
+      "Accept a Hamiltonian or a list of rotation-gate maps as the mixer block.",
+      "Associate user-supplied mixer coefficients with gate maps and reject a mismatched number of coefficients.",
+      "Preserve the separation and ordering of single-qubit and two-qubit mixer terms across QAOA layers.",
+      "Produce equivalent circuit-parameter attributes for equivalent Hamiltonian and gate-map mixer inputs."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QAOACircuitParams",
+        "Path": "openqaoa/qaoa_parameters/baseparams.py",
+        "Input": "constructor: cost_hamiltonian, mixer_block, p, mixer_coeffs=[]",
+        "Output": "",
+        "Description": "Provides QAOA layer blocks, mixer coefficients, and single/pair coefficient and gate-name attributes."
+      },
+      {
+        "Type": "Class",
+        "Name": "RXGateMap",
+        "Path": "openqaoa/qaoa_parameters/gatemap.py",
+        "Input": "constructor: qubit_1",
+        "Output": "",
+        "Description": "Represents a single-qubit X rotation in a custom mixer."
+      },
+      {
+        "Type": "Class",
+        "Name": "RXXGateMap",
+        "Path": "openqaoa/qaoa_parameters/gatemap.py",
+        "Input": "constructor: qubit_1, qubit_2",
+        "Output": "",
+        "Description": "Represents a two-qubit XX rotation in a custom mixer."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-openqaoa_112_85:latest",
+      "image_id": "sha256:1835cdcfacc8181341b705f231d21bf398aed7f3f2ab3766d613dcb3b10c608b",
+      "image_size": "1303348155",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams",
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_mixer_coeffs_selector_gatemap",
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_assign_coefficients"
+        ],
+        "summary": "3 failed in 4.96s",
+        "duration_seconds": 6.783
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_init",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_len",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_qureg",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_expression",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_divide_into_singlets_pairs",
+          "tests/test_operators.py::TestingOperators::test_pauli_matrix"
+        ],
+        "summary": "6 passed in 4.52s",
+        "duration_seconds": 6.432
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams",
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_mixer_coeffs_selector_gatemap",
+          "tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_assign_coefficients"
+        ],
+        "summary": "3 passed in 4.41s",
+        "duration_seconds": 5.963
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_init",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_len",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_qureg",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_expression",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_divide_into_singlets_pairs",
+          "tests/test_operators.py::TestingOperators::test_pauli_matrix"
+        ],
+        "summary": "6 passed in 4.27s",
+        "duration_seconds": 5.804
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/openqaoa_112_85",
+    "selector_exclusions": {
+      "TestingQAOAVariationalParameters": "Class renamed by PR; no stable shared nodeids in test_parameters.py. Use adjacent Hamiltonian and Pauli representation tests consumed by QAOA circuit parameters."
+    }
+  }
+}

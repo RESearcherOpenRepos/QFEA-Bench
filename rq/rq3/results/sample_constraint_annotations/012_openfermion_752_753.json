@@ -1,0 +1,290 @@
+{
+  "id": 12,
+  "sample_id": "openfermion_752_753",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "6ee2c96e0054d1af75a24515c1f65270229ad605",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "interface/input_validation": 2,
+      "quantum_semantics/fermion_qubit_mapping": 9,
+      "quantum_semantics/spectral_equivalence": 7
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "A too-small n_qubits value is rejected for FermionOperator"
+        },
+        {
+          "line": 101,
+          "expected": "A too-small n_qubits value is rejected for MajoranaOperator"
+        },
+        {
+          "line": 103,
+          "expected": "A too-small n_qubits value is rejected for InteractionOperator"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_case_one_body_op_success",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 272,
+          "expected": "InteractionOperator and equivalent FermionOperator one-body terms have identical Bravyi-Kitaev qubit images"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_coulomb_and_exchange_ops_success",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 286,
+          "expected": "Coulomb and exchange terms have the same Bravyi-Kitaev image through both fermionic representations"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_number_excitation_op_success",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 301,
+          "expected": "Number-excitation terms have the same Bravyi-Kitaev image through both fermionic representations"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_double_excitation_op_success",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 319,
+          "expected": "Double-excitation terms have the same Bravyi-Kitaev image through both fermionic representations"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_consistency_for_complex_numbers",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 328,
+          "expected": "Complex InteractionOperator terms map identically to their FermionOperator equivalents"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 39,
+          "expected": "Mapped raising and lowering operators each contain two Pauli terms"
+        },
+        {
+          "line": 56,
+          "expected": "The Bravyi-Kitaev Majorana term satisfies the logarithmic locality invariant"
+        },
+        {
+          "line": 66,
+          "expected": "Mapped ladder operators have the expected Pauli coefficients and signs"
+        },
+        {
+          "line": 67,
+          "expected": "The complementary Pauli string has the expected imaginary coefficient"
+        },
+        {
+          "line": 68,
+          "expected": "Raising has the opposite imaginary sign"
+        },
+        {
+          "line": 69,
+          "expected": "Raising retains the expected real coefficient"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 87,
+          "expected": "Symbolic ladder-operator terms retain the expected mapped coefficients"
+        },
+        {
+          "line": 88,
+          "expected": "The imaginary Pauli coefficient scales symbolically"
+        },
+        {
+          "line": 89,
+          "expected": "The raising imaginary coefficient has the expected sign"
+        },
+        {
+          "line": 90,
+          "expected": "The real Pauli coefficient scales symbolically"
+        },
+        {
+          "line": 91,
+          "expected": "Raising plus lowering simplifies to one qubit term"
+        },
+        {
+          "line": 93,
+          "expected": "The simplified symbolic qubit operator matches its expected Pauli string"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "The fermionic identity maps to the qubit identity"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Bravyi-Kitaev and Jordan-Wigner number operators have equal spectra"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operators",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "The two transforms preserve the spectrum of a sum of number operators"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator_scaled",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 152,
+          "expected": "The two transforms preserve the spectrum of a scaled number operator"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_hopping_operator",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "The two transforms preserve the spectrum of a hopping operator"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_majoranas",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 185,
+          "expected": "The first Majorana combination has equal spectra under both transforms"
+        },
+        {
+          "line": 187,
+          "expected": "The second Majorana combination has equal spectra under both transforms"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 203,
+          "expected": "A mapped single ladder operator has the same spectrum under both transforms"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration_original",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 221,
+          "expected": "A multi-term fermion operator has matching mapped spectra to five decimal places"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_bad_type",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 227,
+          "expected": "Bravyi-Kitaev rejects a QubitOperator input with TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::test_bravyi_kitaev_majorana_op_consistent",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 234,
+          "expected": "Direct Majorana mapping equals mapping its equivalent FermionOperator"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/6ee2c96e0054d1af75a24515c1f65270229ad605/src/openfermion/transforms/opconversions/bravyi_kitaev_test.py"
+  ],
+  "rationale": "Bravyi-Kitaev output equality and JW/BK spectra test fermion-to-qubit operator semantics; too-small qubit counts and unsupported operand types test API validation."
+}

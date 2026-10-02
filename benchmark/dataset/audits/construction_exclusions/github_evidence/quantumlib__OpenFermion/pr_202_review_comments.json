@@ -1,0 +1,830 @@
+[
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810458",
+    "pull_request_review_id": 94932419,
+    "id": 166810458,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMDQ1OA==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "okay, here it is, perhaps the most despised rule of OpenFermion: we have a strict \"no importing as\" rule. I know it's kind of silly in this case since np is almost universally recognized as numpy. But at this point we should stay consistent with other parts of the code.",
+    "created_at": "2018-02-08T01:32:04Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166810458",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810458"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166810458"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810458/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 4,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810669",
+    "pull_request_review_id": 94932419,
+    "id": 166810669,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMDY2OQ==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Please copy the Apache 2 license header that is in the rest of the OpenFermion files. This is a fine one-line description but it should go under the header and should be commented\r\n`\"\"\"Like this.\"\"\"`\r\nrather than\r\n`# like this.`",
+    "created_at": "2018-02-08T01:33:44Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166810669",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810669"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166810669"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166810669/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 1,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 1,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811176",
+    "pull_request_review_id": 94932419,
+    "id": 166811176,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMTE3Ng==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Can you add a little more context to the description about when this class would be used and for what. Also, I think it is a good idea to put the arXiv paper reference in the doc strings for the class so that people looking through the online documentation can find the reference.",
+    "created_at": "2018-02-08T01:37:28Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811176",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811176"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811176"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811176/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811301",
+    "pull_request_review_id": 94932419,
+    "id": 166811301,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMTMwMQ==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Please run the pep8 linter. This line is over 100 characters. We're old school - keep to 80 char per line please.",
+    "created_at": "2018-02-08T01:38:18Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811301",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811301"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811301"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811301/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 19,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 19,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811908",
+    "pull_request_review_id": 94932419,
+    "id": 166811908,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMTkwOA==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.\n+        1 + 1 = 0\n+\n+        Example:\n+            .. code-block:: python\n+\n+                bin_fun = SymbolicBinary('1 + w1 w2 + w0 w1')\n+                # Equivalently\n+                bin_fun = SymbolicBinary([((1,'1'),)] + SymbolicBinary([((1,'W'),(2,'W')),((0,'W'),(1,'W'))])\n+\n+        \"\"\"\n+    actions = ('1', 'W')\n+    action_strings = ('', 'W')\n+    action_before_index = True\n+    different_indices_commute = True\n+\n+    def __init__(self, term=None):\n+        \"\"\"\n+        Initialize the SymbolicBinary based on term\n+\n+        Args:\n+            term: (str, list, tuple) used for initializing a SymbolicBinary\n+        \"\"\"\n+\n+        self.terms = []\n+\n+        # long string input\n+        if isinstance(term, str) and '+' in term:\n+            self._long_string_init(term)\n+            return\n+\n+        # Zero operator: leave the terms list empty\n+        if term is None:\n+            return\n+\n+        # Sequence input\n+        elif isinstance(term, tuple) or isinstance(term, list):  # list of tuples of tuples\n+            self._parse_sequence(term)\n+\n+        # String input\n+        elif isinstance(term, str):\n+            self.terms.append(tuple(self._parse_string(term)))\n+\n+        # Invalid input type\n+        else:\n+            raise ValueError('term specified incorrectly.')\n+\n+        self._check_terms()\n+\n+    def _check_terms(self):\n+        \"\"\"",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "General comment: you don't need white space at the top and bottom of the doc strings. As an example just write:\r\n`\"\"\"Blah Blah Blah.\"\"\"`",
+    "created_at": "2018-02-08T01:42:29Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811908",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811908"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166811908"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166811908/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 69,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 69,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812309",
+    "pull_request_review_id": 94932419,
+    "id": 166812309,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMjMwOQ==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.\n+        1 + 1 = 0\n+\n+        Example:\n+            .. code-block:: python\n+\n+                bin_fun = SymbolicBinary('1 + w1 w2 + w0 w1')\n+                # Equivalently\n+                bin_fun = SymbolicBinary([((1,'1'),)] + SymbolicBinary([((1,'W'),(2,'W')),((0,'W'),(1,'W'))])\n+\n+        \"\"\"\n+    actions = ('1', 'W')\n+    action_strings = ('', 'W')\n+    action_before_index = True\n+    different_indices_commute = True\n+\n+    def __init__(self, term=None):\n+        \"\"\"\n+        Initialize the SymbolicBinary based on term\n+\n+        Args:\n+            term: (str, list, tuple) used for initializing a SymbolicBinary\n+        \"\"\"\n+\n+        self.terms = []\n+\n+        # long string input\n+        if isinstance(term, str) and '+' in term:\n+            self._long_string_init(term)\n+            return\n+\n+        # Zero operator: leave the terms list empty\n+        if term is None:\n+            return\n+\n+        # Sequence input\n+        elif isinstance(term, tuple) or isinstance(term, list):  # list of tuples of tuples\n+            self._parse_sequence(term)\n+\n+        # String input\n+        elif isinstance(term, str):\n+            self.terms.append(tuple(self._parse_string(term)))\n+\n+        # Invalid input type\n+        else:\n+            raise ValueError('term specified incorrectly.')\n+\n+        self._check_terms()\n+\n+    def _check_terms(self):\n+        \"\"\"\n+        Ensures all terms obey binary rules\n+        Updates terms in place.\n+\n+        \"\"\"\n+        sorted_input = []\n+        for item in self.terms:\n+            if len(item) == 0:",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think it would be nicer to write:\r\n`if len(item):\r\n    binary_sum_rule(sorted_input, tuple(sorted(set(item))))`\r\nThere is no need for the negative conditional followed by continue.",
+    "created_at": "2018-02-08T01:45:14Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166812309",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812309"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166812309"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812309/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 76,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 76,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812669",
+    "pull_request_review_id": 94932419,
+    "id": 166812669,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMjY2OQ==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.\n+        1 + 1 = 0\n+\n+        Example:\n+            .. code-block:: python\n+\n+                bin_fun = SymbolicBinary('1 + w1 w2 + w0 w1')\n+                # Equivalently\n+                bin_fun = SymbolicBinary([((1,'1'),)] + SymbolicBinary([((1,'W'),(2,'W')),((0,'W'),(1,'W'))])\n+\n+        \"\"\"\n+    actions = ('1', 'W')\n+    action_strings = ('', 'W')\n+    action_before_index = True\n+    different_indices_commute = True\n+\n+    def __init__(self, term=None):\n+        \"\"\"\n+        Initialize the SymbolicBinary based on term\n+\n+        Args:\n+            term: (str, list, tuple) used for initializing a SymbolicBinary\n+        \"\"\"\n+\n+        self.terms = []\n+\n+        # long string input\n+        if isinstance(term, str) and '+' in term:\n+            self._long_string_init(term)\n+            return\n+\n+        # Zero operator: leave the terms list empty\n+        if term is None:\n+            return\n+\n+        # Sequence input\n+        elif isinstance(term, tuple) or isinstance(term, list):  # list of tuples of tuples\n+            self._parse_sequence(term)\n+\n+        # String input\n+        elif isinstance(term, str):\n+            self.terms.append(tuple(self._parse_string(term)))\n+\n+        # Invalid input type\n+        else:\n+            raise ValueError('term specified incorrectly.')\n+\n+        self._check_terms()\n+\n+    def _check_terms(self):\n+        \"\"\"\n+        Ensures all terms obey binary rules\n+        Updates terms in place.\n+\n+        \"\"\"\n+        sorted_input = []\n+        for item in self.terms:\n+            if len(item) == 0:\n+                continue\n+            binary_sum_rule(sorted_input, tuple(sorted(set(item))))\n+\n+        self.terms = sorted_input\n+\n+    def _long_string_init(self, term):\n+        \"\"\"\n+        Initialization from a long string representation i.e.: 1 + w1 w2 + w3 w4'.\n+        updates terms in place.\n+\n+        Args:\n+            term: (str) a string representation of a symbolicBinary that involves summation\n+\n+        \"\"\"\n+        for summand in term.split(' + '):\n+            # for each sum term\n+            parsed_summand = self._parse_string(summand)\n+            self.terms.append(parsed_summand)\n+\n+        self._check_terms()\n+\n+    def _check_factor(self, term, factor):\n+        \"\"\"\n+        makes sure all factor in a term makes sense, cleans it up if there is multiplication with 1.",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "empty line before Args",
+    "created_at": "2018-02-08T01:48:11Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166812669",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812669"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166812669"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166812669/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 100,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 100,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813207",
+    "pull_request_review_id": 94932419,
+    "id": 166813207,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMzIwNw==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.\n+        1 + 1 = 0\n+\n+        Example:\n+            .. code-block:: python\n+\n+                bin_fun = SymbolicBinary('1 + w1 w2 + w0 w1')\n+                # Equivalently\n+                bin_fun = SymbolicBinary([((1,'1'),)] + SymbolicBinary([((1,'W'),(2,'W')),((0,'W'),(1,'W'))])\n+\n+        \"\"\"\n+    actions = ('1', 'W')\n+    action_strings = ('', 'W')\n+    action_before_index = True\n+    different_indices_commute = True\n+\n+    def __init__(self, term=None):\n+        \"\"\"\n+        Initialize the SymbolicBinary based on term\n+\n+        Args:\n+            term: (str, list, tuple) used for initializing a SymbolicBinary\n+        \"\"\"\n+\n+        self.terms = []\n+\n+        # long string input\n+        if isinstance(term, str) and '+' in term:\n+            self._long_string_init(term)\n+            return\n+\n+        # Zero operator: leave the terms list empty\n+        if term is None:\n+            return\n+\n+        # Sequence input\n+        elif isinstance(term, tuple) or isinstance(term, list):  # list of tuples of tuples\n+            self._parse_sequence(term)\n+\n+        # String input\n+        elif isinstance(term, str):\n+            self.terms.append(tuple(self._parse_string(term)))\n+\n+        # Invalid input type\n+        else:\n+            raise ValueError('term specified incorrectly.')\n+\n+        self._check_terms()\n+\n+    def _check_terms(self):\n+        \"\"\"\n+        Ensures all terms obey binary rules\n+        Updates terms in place.\n+\n+        \"\"\"\n+        sorted_input = []\n+        for item in self.terms:\n+            if len(item) == 0:\n+                continue\n+            binary_sum_rule(sorted_input, tuple(sorted(set(item))))\n+\n+        self.terms = sorted_input\n+\n+    def _long_string_init(self, term):\n+        \"\"\"\n+        Initialization from a long string representation i.e.: 1 + w1 w2 + w3 w4'.\n+        updates terms in place.\n+\n+        Args:\n+            term: (str) a string representation of a symbolicBinary that involves summation\n+\n+        \"\"\"\n+        for summand in term.split(' + '):\n+            # for each sum term\n+            parsed_summand = self._parse_string(summand)\n+            self.terms.append(parsed_summand)\n+\n+        self._check_terms()\n+\n+    def _check_factor(self, term, factor):\n+        \"\"\"\n+        makes sure all factor in a term makes sense, cleans it up if there is multiplication with 1.\n+        Args:\n+            term: a single term of symbolicBinary\n+            factor: a factor in term\n+\n+        Returns: updated term\n+\n+        Raises:\n+            ValueError: invalid action/negative or non-integer qubit index\n+\n+        \"\"\"\n+        if len(factor) != 2:\n+            raise ValueError('Invalid factor {}.'.format(factor))\n+\n+        term = list(term)\n+        index, action = factor\n+\n+        if action not in self.actions:\n+            raise ValueError('Invalid action in factor {}. '\n+                             'Valid actions are: {}'.format(factor, self.actions))\n+\n+        if not isinstance(index, int) or index < 0:\n+            raise ValueError('Invalid index in factor {}.'\n+                             'The index should be a non-negative '\n+                             'integer.'.format(factor))\n+\n+        if action == '1' and len(term) > 1:\n+            term.remove(factor)  # no need to keep 1 multiplier in the term\n+\n+        return term\n+\n+    def _parse_sequence(self, term):\n+        \"\"\"\n+        Parse a term given as a sequence type (i.e., list, tuple, etc.).\n+        e.g. [((1,'W'),(2,'W')),...]\n+\n+        Args:\n+            term: (list) of tuples of tuples.\n+\n+        \"\"\"\n+        if not term:",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Code is generally easier to read if try to avoid negatives in conditionals. For instance if you write \"if term\" and then what comes instead of \"if not term\"...",
+    "created_at": "2018-02-08T01:52:10Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813207",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813207"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813207"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813207/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 140,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 140,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813317",
+    "pull_request_review_id": 94932419,
+    "id": 166813317,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMzMxNw==",
+    "diff_hunk": "@@ -0,0 +1,494 @@\n+# symbolic binary class for decoder definitions (arxiv 1712.07067)\n+\n+import copy\n+import numpy as np\n+\n+\n+class SymbolicBinaryError(Exception):\n+    pass\n+\n+\n+class SymbolicBinary(object):\n+    \"\"\"\n+        SymbolicBinaries are non-linear binary functions that are expressed analytically, they are\n+        components of decoders that are used to rotate terms in qubit basis to fermionic basis. \n+        \n+        A SymbolicBinary represents a sum of terms. Each term can consist of two types of binary variables:\n+        (n,'W') where n stands for the qubit index, or (1,'1') for constant 1.\n+         \n+        The SymbolicBinary class overloads operations for manipulation of binary functions obeying binary rules.\n+        1 + 1 = 0\n+\n+        Example:\n+            .. code-block:: python\n+\n+                bin_fun = SymbolicBinary('1 + w1 w2 + w0 w1')\n+                # Equivalently\n+                bin_fun = SymbolicBinary([((1,'1'),)] + SymbolicBinary([((1,'W'),(2,'W')),((0,'W'),(1,'W'))])\n+\n+        \"\"\"\n+    actions = ('1', 'W')\n+    action_strings = ('', 'W')\n+    action_before_index = True\n+    different_indices_commute = True\n+\n+    def __init__(self, term=None):\n+        \"\"\"\n+        Initialize the SymbolicBinary based on term\n+\n+        Args:\n+            term: (str, list, tuple) used for initializing a SymbolicBinary\n+        \"\"\"\n+\n+        self.terms = []\n+\n+        # long string input\n+        if isinstance(term, str) and '+' in term:\n+            self._long_string_init(term)\n+            return\n+\n+        # Zero operator: leave the terms list empty\n+        if term is None:\n+            return\n+\n+        # Sequence input\n+        elif isinstance(term, tuple) or isinstance(term, list):  # list of tuples of tuples\n+            self._parse_sequence(term)\n+\n+        # String input\n+        elif isinstance(term, str):\n+            self.terms.append(tuple(self._parse_string(term)))\n+\n+        # Invalid input type\n+        else:\n+            raise ValueError('term specified incorrectly.')\n+\n+        self._check_terms()\n+\n+    def _check_terms(self):\n+        \"\"\"\n+        Ensures all terms obey binary rules\n+        Updates terms in place.\n+\n+        \"\"\"\n+        sorted_input = []\n+        for item in self.terms:\n+            if len(item) == 0:\n+                continue\n+            binary_sum_rule(sorted_input, tuple(sorted(set(item))))\n+\n+        self.terms = sorted_input\n+\n+    def _long_string_init(self, term):\n+        \"\"\"\n+        Initialization from a long string representation i.e.: 1 + w1 w2 + w3 w4'.\n+        updates terms in place.\n+\n+        Args:\n+            term: (str) a string representation of a symbolicBinary that involves summation\n+\n+        \"\"\"\n+        for summand in term.split(' + '):\n+            # for each sum term\n+            parsed_summand = self._parse_string(summand)\n+            self.terms.append(parsed_summand)\n+\n+        self._check_terms()\n+\n+    def _check_factor(self, term, factor):\n+        \"\"\"\n+        makes sure all factor in a term makes sense, cleans it up if there is multiplication with 1.\n+        Args:\n+            term: a single term of symbolicBinary\n+            factor: a factor in term\n+\n+        Returns: updated term\n+\n+        Raises:\n+            ValueError: invalid action/negative or non-integer qubit index\n+\n+        \"\"\"\n+        if len(factor) != 2:\n+            raise ValueError('Invalid factor {}.'.format(factor))\n+\n+        term = list(term)\n+        index, action = factor\n+\n+        if action not in self.actions:\n+            raise ValueError('Invalid action in factor {}. '\n+                             'Valid actions are: {}'.format(factor, self.actions))\n+\n+        if not isinstance(index, int) or index < 0:\n+            raise ValueError('Invalid index in factor {}.'\n+                             'The index should be a non-negative '\n+                             'integer.'.format(factor))\n+\n+        if action == '1' and len(term) > 1:\n+            term.remove(factor)  # no need to keep 1 multiplier in the term\n+\n+        return term\n+\n+    def _parse_sequence(self, term):\n+        \"\"\"\n+        Parse a term given as a sequence type (i.e., list, tuple, etc.).\n+        e.g. [((1,'W'),(2,'W')),...]\n+\n+        Args:\n+            term: (list) of tuples of tuples.\n+\n+        \"\"\"\n+        if not term:\n+            return []\n+        else:\n+            for summand in term:\n+                for factor in summand:\n+                    summand = self._check_factor(summand, factor)\n+\n+                if self.different_indices_commute:\n+                    summand = sorted(summand, key=lambda real_factor: real_factor[0])\n+                self.terms.append(summand)\n+\n+    @staticmethod\n+    def _parse_string(term):\n+        \"\"\"\n+        parse a string term 'w1 w2 w0'\n+        Args:\n+            term: (str) string representation of symbolicBinary term.",
+    "path": "src/openfermion/ops/_binary_operator.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It is best if you write\r\n`term (str): string representation of SymbolicBinary term `\r\nI believe that is picked up in the optimal way by our sphinx documentation.",
+    "created_at": "2018-02-08T01:53:02Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813317",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813317"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813317"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813317/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 156,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 156,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813586",
+    "pull_request_review_id": 94932419,
+    "id": 166813586,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMzU4Ng==",
+    "diff_hunk": "@@ -0,0 +1,108 @@\n+import unittest\n+from _binary_operator import SymbolicBinary",
+    "path": "src/openfermion/ops/_binary_operator_test.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "please update `__init__.py` in this PR so that you can just write `from openfermion.ops import SymbolicBinary`.",
+    "created_at": "2018-02-08T01:54:53Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813586",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813586"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813586"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813586/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 2,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 2,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813959",
+    "pull_request_review_id": 94932419,
+    "id": 166813959,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NjgxMzk1OQ==",
+    "diff_hunk": "@@ -0,0 +1,108 @@\n+import unittest\n+from _binary_operator import SymbolicBinary\n+\n+\n+class SymbolicBinaryTest(unittest.TestCase):",
+    "path": "src/openfermion/ops/_binary_operator_test.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "30a778b3b0409721cd85647e61fd8a740b90fa43",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "These are nice tests but unfortunately you will need a few more. This is the downside to introducing a large class like this with all the magic methods. Coveralls will show you which lines are covered and which aren't. Apparently you are covering 156 relevant lines but missed 43.",
+    "created_at": "2018-02-08T01:57:43Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813959",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813959"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r166813959"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/166813959/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 5,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/167066912",
+    "pull_request_review_id": 95232182,
+    "id": 167066912,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2NzA2NjkxMg==",
+    "diff_hunk": "@@ -21,3 +21,4 @@\n from ._interaction_operator import InteractionOperator\n from ._interaction_rdm import InteractionRDM\n from ._quadratic_hamiltonian import QuadraticHamiltonian\n+from ._binary_operator import SymbolicBinary",
+    "path": "src/openfermion/ops/__init__.py",
+    "commit_id": "9fb60540cd9b096b77b1c013f3d5e389b8bf2abc",
+    "original_commit_id": "20fda52894c5be2cd4cfe946ded6f2dd3971a152",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "we prefer to import things in alphabetical order, meaning this should be the first import. However, sometimes there is a problem with circular imports. If that is the case here, then it is fine.",
+    "created_at": "2018-02-08T21:05:00Z",
+    "updated_at": "2018-02-08T21:24:56Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r167066912",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/167066912"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/202#discussion_r167066912"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/202"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/167066912/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 24,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,117 @@
+{
+  "instance": {
+    "id": 13,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_166_588",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/166",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/588",
+    "base_commit": "606e2b0b1b038f1e193a1dd83c282d36c3c95739",
+    "patch": "d5986483da271a6de0a319c1b4e17c2f73d11402"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task wraps a QNode for PyTorch training, but the main work is neural-network interface and parameter plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/qnn/__init__.py",
+      "pennylane/qnn/torch.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PennyLane has QML templates and PyTorch support, but users do not have a native way to wrap a QNode as a PyTorch neural-network layer. A QNode should be usable inside standard torch.nn modules and hybrid models while keeping its quantum weights trainable through PyTorch.",
+    "requirements": [
+      "A Torch-compatible QNode layer must be available from the qnn module.",
+      "The layer must be constructible from a QNode and a mapping of QNode weight names to shapes.",
+      "The layer must behave as a torch.nn.Module and evaluate the wrapped QNode for single inputs and batched inputs.",
+      "Trainable QNode weights must be registered as PyTorch parameters with gradients populated by backpropagation.",
+      "The layer must be usable inside a larger torch.nn.Module together with classical layers."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TorchLayer",
+        "Path": "pennylane/qnn/torch.py",
+        "Input": "qnode, weight_shapes, init_method=None",
+        "Output": "torch.nn.Module",
+        "Description": "Wraps a PennyLane QNode as a PyTorch module with trainable QNode weights."
+      },
+      {
+        "Type": "Method",
+        "Name": "TorchLayer.forward",
+        "Path": "pennylane/qnn/torch.py",
+        "Input": "inputs",
+        "Output": "torch.Tensor",
+        "Description": "Evaluates the wrapped QNode for single or batched PyTorch inputs."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_166_588",
+      "image_id": "sha256:12c34ebe007bdf999a96f1cc65a43c88695e51b884ab93f240bd3e976a731fbc",
+      "image_size": "1722769964"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "repair_plugin_entry_points_after_clean": true,
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "networkx<3",
+        "tensornetwork==0.3",
+        "semantic_version==2.6",
+        "dask[delayed]<2024",
+        "autoray>=0.3.1,<0.7",
+        "torch==2.2.2+cpu",
+        "pytest==7.4.4"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_gradients[n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayerIntegration::test_module_gradients[n_qubits0-output_dim0-torch]"
+        ],
+        "summary": "3 passed in 1.48s",
+        "duration_seconds": 28.15
+      },
+      "pass_pass": {
+        "result": "not_applicable",
+        "file_list": [],
+        "summary": "No pass-pass tests configured: adjacent qnn tests present in both commits are Keras/TensorFlow-only and TensorFlow is not stable in this linux/amd64 Docker host.",
+        "duration_seconds": 4.41
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_gradients[n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayerIntegration::test_module_gradients[n_qubits0-output_dim0-torch]"
+        ],
+        "summary": "3 selected selectors failed during collection in 0.54s: ModuleNotFoundError for pennylane.qnn.torch",
+        "duration_seconds": 10.79
+      },
+      "pass_pass": {
+        "result": "not_applicable",
+        "file_list": [],
+        "summary": "No pass-pass tests configured: adjacent qnn tests present in both commits are Keras/TensorFlow-only and TensorFlow is not stable in this linux/amd64 Docker host.",
+        "duration_seconds": 4.53
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.183435959999997,
+  "items": [
+    "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.03208820800000467,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.004619833000106155,
+      "wasxfail": null,
+      "longrepr": "self = <tests.kernel.ml.test_qgpc.TestQGPC object at 0x7fffe2356770>\nqgpc = 'qgpc_pqk_without_num_features'\nrequest = <FixtureRequest for <Function test_predict_without_num_features[qgpc_pqk_without_num_features]>>\ndata = (array([[0.12394968, 0.81758165],\n       [0.9       , 0.1       ],\n       [0.69982171, 0.21117187],\n       [0.82821029, 0.21911751],\n       [0.30850417, 0.9       ],\n       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))\n\n    @pytest.mark.parametrize(\n        \"qgpc\", [\"qgpc_fidelity_without_num_features\", \"qgpc_pqk_without_num_features\"]\n    )\n    def test_predict_without_num_features(self, qgpc, request, data):\n        \"\"\"Tests concerning the predict function of the QGPC.\n    \n        Tests include\n            - whether the prediction output is correct\n            - whether the output is of the same shape as the reference\n            - whether the type of the output is np.ndarray\n        \"\"\"\n>       qgpc_instance = request.getfixturevalue(qgpc)\n\ntests/kernel/ml/test_qgpc.py:135: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:630: in getfixturevalue\n    fixturedef = self._get_active_fixturedef(argname)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef\n    fixturedef.execute(request=subrequest)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1232: in execute\n    result: FixtureValue = ihook.pytest_fixture_setup(\n/usr/local/lib/python3.10/site-packages/pluggy/_hooks.py:512: in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n/usr/local/lib/python3.10/site-packages/pluggy/_manager.py:120: in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n/usr/local/lib/python3.10/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup\n    return (yield)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup\n    result = call_fixture_func(fixturefunc, request, kwargs)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1005: in call_fixture_func\n    fixture_result = fixturefunc(**kwargs)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <tests.kernel.ml.test_qgpc.TestQGPC object at 0x7ffffe2849a0>\n\n    @pytest.fixture(scope=\"module\")\n    def qgpc_pqk_without_num_features(self) -> QGPC:\n        \"\"\"QGPC module wit ProjectedQuantumKernel.\"\"\"\n        np.random.seed(42)\n        executor = Executor()\n>       encoding_circuit = HubregtsenEncodingCircuit(num_qubits=3, num_layers=2)\nE       TypeError: HubregtsenEncodingCircuit.__init__() missing 1 required positional argument: 'num_features'\n\ntests/kernel/ml/test_qgpc.py:73: TypeError"
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0012579169999753503,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

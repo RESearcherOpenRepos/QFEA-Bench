@@ -1,0 +1,224 @@
+{
+  "id": 51,
+  "sample_id": "qiskit_nature_174_862",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "53aa83650ae55bd287622a88aaa88dd70d08e3ea",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "quantum_semantics/reduced_density_matrix_construction": 2,
+      "quantum_semantics/reduced_density_operator_construction": 1,
+      "interface/property_container_contract": 5,
+      "interface/electronic_integral_accessors": 3,
+      "interface/return_representation": 1,
+      "general_semantics/symbolic_tensor_arithmetic": 1,
+      "general_semantics/tensor_conjugation": 1,
+      "general_semantics/tensor_transpose": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation",
+      "label": "quantum_semantics/reduced_density_matrix_construction",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "Alpha/beta occupations yield the expected one- and two-particle density tensors."
+        }
+      ],
+      "rationale": "The explicit occupied-orbital RDM entries encode electronic state information."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops",
+      "label": "quantum_semantics/reduced_density_operator_construction",
+      "assertions": [
+        {
+          "line": 88,
+          "expected": "RDM auxiliary operators contain the expected one- and two-body ladder terms."
+        }
+      ],
+      "rationale": "The key set is also checked, but the decisive assertion compares quantum operator contents."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret",
+      "label": "quantum_semantics/reduced_density_matrix_construction",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Evaluated auxiliary values reconstruct the expected electronic density tensors."
+        }
+      ],
+      "rationale": "The result is compared with one- and two-particle RDM references."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_angular_momentum",
+      "label": "interface/property_container_contract",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "AngularMomentum property container defaults to None, validates assignments and membership."
+        }
+      ],
+      "rationale": "This retained test concerns public property-container access and type rules."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_electronic_dipole_moment",
+      "label": "interface/property_container_contract",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "ElectronicDipoleMoment container validates assignment and membership."
+        }
+      ],
+      "rationale": "The selected different property class checks the same exposed container contract."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_magnetization",
+      "label": "interface/property_container_contract",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "Magnetization container validates assignment and membership."
+        }
+      ],
+      "rationale": "No magnetization operator value is computed in this case."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_particle_number",
+      "label": "interface/property_container_contract",
+      "assertions": [
+        {
+          "line": 117,
+          "expected": "ParticleNumber container validates assignment and membership."
+        }
+      ],
+      "rationale": "No particle-number operator terms are checked here."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_custom_property",
+      "label": "interface/property_container_contract",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Custom OccupiedModals property is discoverable in the container."
+        }
+      ],
+      "rationale": "The assertion checks membership of a custom property type."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+      "label": "interface/electronic_integral_accessors",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "ElectronicIntegrals exposes alpha, beta and beta_alpha PolynomialTensors."
+        }
+      ],
+      "rationale": "The attributes case checks public getter type, emptiness and stored values."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+      "label": "interface/electronic_integral_accessors",
+      "assertions": [
+        {
+          "line": 143,
+          "expected": "one_body accessor returns the expected one-body integral container."
+        }
+      ],
+      "rationale": "The selected accessor case checks which tensor ranks are exposed."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+      "label": "interface/electronic_integral_accessors",
+      "assertions": [
+        {
+          "line": 153,
+          "expected": "two_body accessor returns the expected two-body integral container."
+        }
+      ],
+      "rationale": "This separate accessor case checks two-body tensor selection."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 158,
+          "expected": "Iterating ElectronicIntegrals yields alpha, beta, beta_alpha keys in order."
+        }
+      ],
+      "rationale": "The iterator contract is explicitly asserted."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 213,
+          "expected": "Adding ElectronicIntegrals doubles each coefficient tensor."
+        }
+      ],
+      "rationale": "The operation is generic coefficient addition; wrong-type rejection is secondary."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+      "label": "general_semantics/tensor_conjugation",
+      "assertions": [
+        {
+          "line": 228,
+          "expected": "Conjugate applies elementwise complex conjugation to each tensor."
+        }
+      ],
+      "rationale": "The retained test checks ordinary tensor arithmetic."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose",
+      "label": "general_semantics/tensor_transpose",
+      "assertions": [
+        {
+          "line": 238,
+          "expected": "Transpose applies the corresponding axis permutation to each tensor."
+        }
+      ],
+      "rationale": "The retained test compares generic tensor transposes."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/53aa83650ae55bd287622a88aaa88dd70d08e3ea/test/second_q/operators/test_electronic_integrals.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/53aa83650ae55bd287622a88aaa88dd70d08e3ea/test/second_q/problems/test_electronic_properties_container.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/53aa83650ae55bd287622a88aaa88dd70d08e3ea/test/second_q/properties/test_electronic_density.py"
+  ],
+  "rationale": "Reviewed three density-specific tests and twelve retained container/integral tests; electronic RDM contents are quantum-semantic, while property access and tensor arithmetic have different primary contracts."
+}

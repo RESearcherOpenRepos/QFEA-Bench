@@ -1,0 +1,172 @@
+{
+  "instance": {
+    "id": 79,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_82_96",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/82",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/96",
+    "base_commit": "8a5849a71671107841db956af81ecc098424d109",
+    "patch": "1d0d3d3579a06463e3a2f35ffa31f4746354c438"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements mapper-aware two-qubit reduction and Z2 symmetry tapering for second-quantized-to-qubit conversion."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_uccsd_factory.py",
+      "qiskit_nature/circuit/library/ansatzes/ucc.py",
+      "qiskit_nature/circuit/library/initial_states/hartree_fock.py",
+      "qiskit_nature/operators/second_quantization/qubit_converter.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "QubitConverter can map second-quantized operators to qubit operators, but it does not yet support the reduction workflow users need for molecular problems. Conversions should be able to apply mapper-aware two-qubit reduction and optional Z2 symmetry tapering, and follow-up matched conversions should reuse the same reduction settings instead of forcing callers to rebuild that state by hand.",
+    "requirements": [
+      "QubitConverter must support mapper-aware two-qubit reduction during conversion when the mapper allows it and particle counts are provided.",
+      "When two-qubit reduction is requested but particle counts are omitted, conversion must leave the mapped operator unreduced and keep the stored particle-count state unset.",
+      "QubitConverter must support Z2 symmetry tapering by accepting an explicit symmetry sector and returning the tapered qubit operator for that sector.",
+      "After a conversion establishes two-qubit reduction and-or Z2 tapering state, convert_match must apply the same stored reduction settings to subsequent matched conversions.",
+      "Changing the configured tapering sector must affect later conversions, and invalid tapering sector values or incompatible tapering-sector lengths must raise validation errors.",
+      "Existing Jordan-Wigner and Parity mapper behavior, including standard mapping output and mapper-level two-qubit-reduction capability reporting, must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QubitConverter",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "constructor: mapper, two_qubit_reduction=False, z2symmetry_reduction=None",
+        "Output": "",
+        "Description": "Constructs a second-quantized to qubit-operator converter with optional two-qubit reduction and Z2 tapering defaults."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.convert",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self, second_q_op, num_particles=None, z2symmetry_reduction=None",
+        "Output": "PauliSumOp",
+        "Description": "Maps a second-quantized operator and applies configured two-qubit reduction and optional Z2 symmetry tapering."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.convert_match",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self, second_q_ops, suppress_none=False",
+        "Output": "PauliSumOp | list[PauliSumOp | None]",
+        "Description": "Converts additional operators using the reducer and tapering state established by earlier conversions."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.two_qubit_reduction",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Reports whether mapper-aware two-qubit reduction is enabled and accepts updated boolean settings."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.z2symmetry_reduction",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self",
+        "Output": "list[int] | None",
+        "Description": "Reports and validates the configured tapering sector used for Z2 symmetry reduction."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.num_particles",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self",
+        "Output": "tuple[int, int] | None",
+        "Description": "Returns the particle-count state stored from the latest conversion for later matched reductions."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.z2symmetries",
+        "Path": "qiskit_nature/operators/second_quantization/qubit_converter.py",
+        "Input": "self",
+        "Output": "Z2Symmetries",
+        "Description": "Returns the symmetry information detected during conversion, including tapering values used by later matched conversions."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_82_96",
+      "image_id": "sha256:1e66783560001b8d1750982df4a81aecd782bfc164aea87c78cc5a9b104b63ad",
+      "image_size": "1098497090"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "pytest option: -p no:logging"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction",
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry",
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry"
+        ],
+        "summary": "3 passed in 1.89s",
+        "duration_seconds": 4.88
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping"
+        ],
+        "summary": "4 passed in 1.49s",
+        "duration_seconds": 4.42
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction",
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry",
+          "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry"
+        ],
+        "summary": "3 failed in 1.84s; base QubitConverter lacks convert and two_qubit_reduction support",
+        "duration_seconds": 4.99
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping"
+        ],
+        "summary": "4 passed in 1.42s",
+        "duration_seconds": 4.47
+      }
+    }
+  }
+}

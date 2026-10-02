@@ -1,0 +1,56 @@
+import json,shutil,sys,hashlib
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2];sys.path.insert(0,str(ROOT))
+from benchmark.evaluation.common.run_io import write_batch_prediction_files
+assert not (B/'recovery_jobs.json').exists(), 'Recovery already prepared'
+plans={p['job']:p for p in json.loads((B/'docker_storage_incident/recovery_plan.json').read_text())}
+jobs=json.loads((B/'jobs.json').read_text());new=[]
+for j in jobs:
+ p=ROOT/j['out'];g=p/'generation';run=p.parent;plan=plans[j['id']];arc=p/'docker_io_interrupted';arc.mkdir()
+ preds=json.loads((g/'preds.json').read_text())['predictions']
+ for name in ['preds.json','preds.jsonl','output.jsonl','output.critic_attempt_1.jsonl']:
+  if (g/name).exists():shutil.copy2(g/name,arc/name)
+ (arc/'instances').mkdir()
+ for sid in plan['recover']:
+  if (g/sid).exists():shutil.move(str(g/sid),str(arc/'instances'/sid))
+ for name in ['final_verification.json','results_additions.json','results_additions.json.partial','REPORT.md','valid_generation_done.json','generation_done.json','arm_generation_done.json','arm_launch.json','platform_repair_done.json','arm_generation']:
+  if (p/name).exists():shutil.move(str(p/name),str(arc/name))
+ backup=json.loads((p/'results.before_additions.json').read_text())
+ current=json.loads((ROOT/j['target']).read_text())
+ assert current['results'][:106]==backup['results']
+ if len(current['results'])==119:
+  assert {r['instance_id'] for r in current['results'][106:]}==set(plan['retained']+plan['recover'])
+  shutil.copy2(ROOT/j['target'],arc/'merged_results.invalid.json')
+  shutil.copy2(p/'results.before_additions.json',ROOT/j['target'])
+  for name in ['preds.json','preds.jsonl']:
+   shutil.copy2(run/name,arc/('merged_'+name));shutil.copy2(p/(name+'.before_additions'),run/name)
+  (arc/'merged_instances').mkdir()
+  for sid in plan['retained']+plan['recover']:
+   if (run/sid).exists():shutil.move(str(run/sid),str(arc/'merged_instances'/sid))
+  addition=run/'preds.additions_20261001_aliyun.json'
+  if addition.exists():shutil.move(str(addition),str(arc/addition.name))
+ else:assert current==backup
+ write_batch_prediction_files(g,[preds[sid] for sid in plan['retained']])
+ if j['agent']=='openhands':
+  for name in ['output.jsonl','output.critic_attempt_1.jsonl']:
+   f=g/name
+   if f.exists():
+    rows=[json.loads(line) for line in f.read_text().splitlines() if line.strip()]
+    f.write_text(''.join(json.dumps(r)+'\n' for r in rows if r['instance_id'] in plan['retained']))
+ valid_cache=json.loads((p/'prevalidation_results.json').read_text())
+ assert all(not r.get('eval_infra_failed') and not r.get('timed_out') and r['instance_id'] in plan['retained'] for r in valid_cache['results'])
+ (p/'results_additions.json.partial').write_text(json.dumps(valid_cache,indent=2)+'\n')
+ source=[json.loads(line) for line in (p/'instances.secure.jsonl').read_text().splitlines() if line.strip()]
+ key=(lambda r:r['problem_statement']['id']) if j['agent']=='minisweagent' else (lambda r:r['instance_id'])
+ selected=[r for r in source if key(r) in plan['recover']];assert len(selected)==len(plan['recover'])
+ snapshot=p/'recovery_instances.jsonl';snapshot.write_text(''.join(json.dumps(r)+'\n' for r in selected))
+ command=j['command'].copy();command[command.index('--output-dir')+1]=str((p/'recovery_generation').relative_to(ROOT))
+ if j['agent']=='minisweagent':command[command.index('--instances')+1]=str(snapshot.relative_to(ROOT))
+ else:
+  staged=Path('/private/tmp')/('qfea-io-recovery-'+j['id']+'.jsonl');shutil.copy2(snapshot,staged)
+  command[command.index('--dataset')+1]=str(staged)
+ plan['retained_prediction_hashes']={sid:hashlib.sha256(json.dumps(preds[sid],sort_keys=True).encode()).hexdigest() for sid in plan['retained']}
+ (p/'storage_recovery_audit.json').write_text(json.dumps(plan,indent=2)+'\n')
+ new.append(dict(j,recovery_command=command,recovery_ids=plan['recover']))
+ print(j['id'],'retained',len(plan['retained']),'remaining',len(plan['recover']))
+(B/'recovery_jobs.json').write_text(json.dumps(new,indent=2)+'\n')

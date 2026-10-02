@@ -1,0 +1,128 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..942efc0 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,99 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Get parameters for this estimator.
++
++        Args:
++            deep: If True, will return the parameters for this estimator and
++                contained subobjects that are estimators.
++
++        Returns:
++            Dictionary with parameter names mapped to their values.
++        """
++        out = dict()
++        for key in self._get_param_names():
++            out[key] = getattr(self, key)
++        return out
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set the parameters of this estimator.
++
++        Updates nested quantum-model hyperparameters and reinitializes
++        derived parameter arrays when the circuit or operator changes.
++
++        Args:
++            **params: Estimator parameters.
++
++        Returns:
++            self: Estimator instance.
++        """
++        if not params:
++            return self
++
++        # Track whether pqc or operator are changing
++        pqc_changed = False
++        op_changed = False
++
++        # Separate top-level params from nested params
++        nested_params = {}
++        for key, value in params.items():
++            key_parts = key.split("__", 1)
++            if len(key_parts) == 2:
++                nested_params.setdefault(key_parts[0], {})[key_parts[1]] = value
++            else:
++                setattr(self, key, value)
++                if key == "pqc":
++                    pqc_changed = True
++                elif key == "operator":
++                    op_changed = True
++
++        # Handle nested pqc params
++        if "pqc" in nested_params:
++            self.pqc.set_params(**nested_params["pqc"])
++            pqc_changed = True
++
++        # Handle nested operator params
++        if isinstance(self.operator, list):
++            for i in range(len(self.operator)):
++                op_key = "op" + str(i)
++                if op_key in nested_params:
++                    self.operator[i].set_params(**nested_params[op_key])
++                    op_changed = True
++            # Also handle "operator" prefix for list operators
++            if "operator" in nested_params:
++                for i in range(len(self.operator)):
++                    self.operator[i].set_params(**nested_params["operator"])
++                op_changed = True
++        else:
++            if "operator" in nested_params:
++                self.operator.set_params(**nested_params["operator"])
++                op_changed = True
++
++        # Reinitialize derived state if pqc or operator changed
++        if pqc_changed or op_changed:
++            self._initialize_parameters_and_qnn()
++
++        return self
++
++    def _initialize_parameters_and_qnn(self) -> None:
++        """Initialize or reinitialize parameter arrays and the internal QNN."""
++        self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            self.param_op_ini = np.concatenate(
++                [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++            )
++        else:
++            self.param_op_ini = self.operator.generate_initial_parameters(
++                seed=self.parameter_seed
++            )
++        self.param_op = self.param_op_ini.copy()
++
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
++        self._is_fitted = False
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 
+diff --git a/tests/qnn/test_qnnc.py b/tests/qnn/test_qnnc.py
+index d42a93a..b99c7c0 100644
+--- a/tests/qnn/test_qnnc.py
++++ b/tests/qnn/test_qnnc.py
+@@ -49,6 +49,7 @@ class TestQNNClassifier:
+             "optimizer",
+             "param_ini",
+             "param_op_ini",
++            "parameter_seed",
+             "pqc",
+             "shuffle",
+             "variance",
+diff --git a/tests/qnn/test_qnnr.py b/tests/qnn/test_qnnr.py
+index a1febb7..974cefa 100644
+--- a/tests/qnn/test_qnnr.py
++++ b/tests/qnn/test_qnnr.py
+@@ -49,6 +49,7 @@ class TestQNNRegressor:
+             "optimizer",
+             "param_ini",
+             "param_op_ini",
++            "parameter_seed",
+             "pqc",
+             "shuffle",
+             "variance",

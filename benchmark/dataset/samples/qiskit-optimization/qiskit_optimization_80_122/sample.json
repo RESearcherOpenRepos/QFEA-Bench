@@ -1,0 +1,155 @@
+{
+  "instance": {
+    "id": 103,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_80_122",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/80",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/122",
+    "base_commit": "b661c54807660cea0e0e3a4260e61988bb575fa2",
+    "patch": "cfe0b8230d62bf6e652f16cc7f91d769a5eedea9"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds DOcplex-to-QuadraticProgram translator functions for classical optimization models."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/cplex_optimizer.py",
+      "qiskit_optimization/algorithms/gurobi_optimizer.py",
+      "qiskit_optimization/applications/clique.py",
+      "qiskit_optimization/applications/exact_cover.py",
+      "qiskit_optimization/applications/graph_partition.py",
+      "qiskit_optimization/applications/knapsack.py",
+      "qiskit_optimization/applications/max_cut.py",
+      "qiskit_optimization/applications/number_partition.py",
+      "qiskit_optimization/applications/set_packing.py",
+      "qiskit_optimization/applications/stable_set.py",
+      "qiskit_optimization/applications/tsp.py",
+      "qiskit_optimization/applications/vehicle_routing.py",
+      "qiskit_optimization/applications/vertex_cover.py",
+      "qiskit_optimization/problems/quadratic_program.py",
+      "qiskit_optimization/translators/__init__.py",
+      "qiskit_optimization/translators/docplex_mp.py",
+      "qiskit_optimization/translators/gurobipy.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "QuadraticProgram had built-in methods for translating to and from DOcplex models, but users needed a reusable translator interface that could live outside the core problem class. The optimization package should provide DOcplex MP translator functions that convert supported models both into and out of QuadraticProgram while rejecting unsupported DOcplex constructs with the package's optimization error.",
+    "requirements": [
+      "Provide a qiskit_optimization.translators package that exposes DOcplex MP translator entry points.",
+      "Convert a DOcplex MP model with binary, integer, and continuous variables into an equivalent QuadraticProgram.",
+      "Convert QuadraticProgram objectives, linear constraints, and quadratic constraints to and from DOcplex MP while preserving names, bounds, senses, constants, linear terms, and quadratic terms.",
+      "Reject unsupported DOcplex MP constructs such as semi-integer variables, range constraints, indicator constraints, equivalence constraints, and not-equal constraints with QiskitOptimizationError.",
+      "Existing QuadraticProgram expression, constraint, objective, and variable behavior in the same directory must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "from_docplex_mp",
+        "Path": "qiskit_optimization/translators/docplex_mp.py",
+        "Input": "model: docplex.mp.model.Model",
+        "Output": "QuadraticProgram",
+        "Description": "Translates a supported DOcplex MP model into an equivalent QuadraticProgram and raises QiskitOptimizationError for unsupported model elements."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_docplex_mp",
+        "Path": "qiskit_optimization/translators/docplex_mp.py",
+        "Input": "quadratic_program: QuadraticProgram",
+        "Output": "docplex.mp.model.Model",
+        "Description": "Translates a QuadraticProgram into an equivalent DOcplex MP model."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuadraticProgram",
+        "Path": "qiskit_optimization/problems/quadratic_program.py",
+        "Input": "constructor: name: str = ''",
+        "Output": "",
+        "Description": "Optimization problem container accepted by to_docplex_mp and returned by from_docplex_mp, preserving variables, objectives, and constraints in exported LP form."
+      },
+      {
+        "Type": "Class",
+        "Name": "QiskitOptimizationError",
+        "Path": "qiskit_optimization/exceptions.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Error raised by from_docplex_mp for unsupported DOcplex MP model elements."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_80_122",
+      "image_id": "sha256:1e42802999730ad3e80b8e45bd81e209b47e26991e780cb1d55f9b2e372e6df7",
+      "image_size": "846063263"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "qiskit-terra==0.17.4",
+        "docplex==2.21.207",
+        "networkx<3",
+        "pytest<8",
+        "ddt"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to"
+        ],
+        "summary": "1 passed in 2.31s",
+        "duration_seconds": 9.15
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_docplex",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_write_to_lp_file"
+        ],
+        "summary": "7 passed in 1.56s",
+        "duration_seconds": 6.63
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to"
+        ],
+        "summary": "1 collection error in 2.70s; ModuleNotFoundError: No module named 'qiskit_optimization.translators'",
+        "duration_seconds": 13.42
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_docplex",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_write_to_lp_file"
+        ],
+        "summary": "7 passed in 1.36s",
+        "duration_seconds": 9.0
+      }
+    }
+  }
+}

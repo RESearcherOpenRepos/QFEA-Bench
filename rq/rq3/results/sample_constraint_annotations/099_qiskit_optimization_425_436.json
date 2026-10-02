@@ -1,0 +1,76 @@
+{
+  "id": 99,
+  "sample_id": "qiskit_optimization_425_436",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "a752fd9e6af400a427a841952aac9555e454bc30",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 2,
+    "subtype_test_counts": {
+      "quantum_semantics/quantum_optimization_result": 1,
+      "quantum_semantics/quantum_sample_interpretation": 1,
+      "interface/converter_list_contract": 1,
+      "general_semantics/optimization_result_interpretation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_zero_3_sampler",
+      "label": "quantum_semantics/quantum_optimization_result",
+      "assertions": [
+        {
+          "line": 120,
+          "expected": "Sampler-backed Grover optimizer returns the zero-state optimum."
+        }
+      ],
+      "rationale": "Sampler-backed Grover optimizer returns the zero-state optimum."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_qaoa",
+      "label": "quantum_semantics/quantum_sample_interpretation",
+      "assertions": [
+        {
+          "line": 237,
+          "expected": "QAOA sample probabilities normalize and decoded objectives match optimum."
+        }
+      ],
+      "rationale": "QAOA sample probabilities normalize and decoded objectives match optimum."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+      "label": "interface/converter_list_contract",
+      "assertions": [
+        {
+          "line": 184,
+          "expected": "MinimumEigenOptimizer accepts converters and rejects an invalid converter type."
+        }
+      ],
+      "rationale": "MinimumEigenOptimizer accepts converters and rejects an invalid converter type."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 225,
+          "expected": "NumPy eigen solver control retains decoded sample and raw sample results."
+        }
+      ],
+      "rationale": "NumPy eigen solver control retains decoded sample and raw sample results."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/a752fd9e6af400a427a841952aac9555e454bc30/test/algorithms/test_grover_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/a752fd9e6af400a427a841952aac9555e454bc30/test/algorithms/test_min_eigen_optimizer.py"
+  ],
+  "rationale": "Every selected test was inspected individually against its task and assertion."
+}

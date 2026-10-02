@@ -1,0 +1,856 @@
+diff --git a/qiskit_optimization/algorithms/__init__.py b/qiskit_optimization/algorithms/__init__.py
+index c4ab6b0..b68b9f7 100644
+--- a/qiskit_optimization/algorithms/__init__.py
++++ b/qiskit_optimization/algorithms/__init__.py
+@@ -89,6 +89,17 @@ from .optimization_algorithm import (
+     OptimizationResultStatus,
+     SolutionSample,
+ )
++from .qrao import (
++    EncodingCommutationVerifier,
++    MagicRounding,
++    QuantumRandomAccessEncoding,
++    QuantumRandomAccessOptimizationResult,
++    QuantumRandomAccessOptimizer,
++    RoundingContext,
++    RoundingResult,
++    RoundingScheme,
++    SemideterministicRounding,
++)
+ from .recursive_minimum_eigen_optimizer import (
+     RecursiveMinimumEigenOptimizer,
+     RecursiveMinimumEigenOptimizationResult,
+@@ -123,6 +134,15 @@ __all__ = [
+     "MinimumEigenOptimizer",
+     "MinimumEigenOptimizationResult",
+     "MultiStartOptimizer",
++    "EncodingCommutationVerifier",
++    "MagicRounding",
++    "QuantumRandomAccessEncoding",
++    "QuantumRandomAccessOptimizationResult",
++    "QuantumRandomAccessOptimizer",
++    "RoundingContext",
++    "RoundingResult",
++    "RoundingScheme",
++    "SemideterministicRounding",
+     "RecursiveMinimumEigenOptimizer",
+     "RecursiveMinimumEigenOptimizationResult",
+     "IntermediateResult",
+diff --git a/qiskit_optimization/algorithms/qrao/__init__.py b/qiskit_optimization/algorithms/qrao/__init__.py
+new file mode 100644
+index 0000000..2ee6cb9
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/__init__.py
+@@ -0,0 +1,31 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Quantum Random Access Optimization (:mod:`qiskit_optimization.algorithms.qrao`)."""
++
++from .encoding_commutation_verifier import EncodingCommutationVerifier
++from .magic_rounding import MagicRounding
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++from .quantum_random_access_optimizer import (
++    QuantumRandomAccessOptimizationResult,
++    QuantumRandomAccessOptimizer,
++)
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++from .semideterministic_rounding import SemideterministicRounding
++
++__all__ = [
++    "EncodingCommutationVerifier",
++    "MagicRounding",
++    "QuantumRandomAccessEncoding",
++    "QuantumRandomAccessOptimizationResult",
++    "QuantumRandomAccessOptimizer",
++    "RoundingContext",
++    "RoundingResult",
++    "RoundingScheme",
++    "SemideterministicRounding",
++]
+diff --git a/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py b/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py
+new file mode 100644
+index 0000000..d541f14
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py
+@@ -0,0 +1,57 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Verifier for QRAO encoded objective values."""
++
++from __future__ import annotations
++
++from typing import Iterator, Tuple
++
++import numpy as np
++from qiskit.primitives import BaseEstimator
++
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++
++
++class EncodingCommutationVerifier:
++    """Verify that QRAC encoded expectation values match original objectives."""
++
++    def __init__(self, encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator) -> None:
++        self._encoding = encoding
++        self._estimator = estimator
++
++    def __len__(self) -> int:
++        """Return the number of encoded bit-string assignments covered by the verifier."""
++        return 2**self._encoding.num_vars
++
++    def __iter__(self) -> Iterator[Tuple[str, float, float]]:
++        """Iterate over bit strings with original and encoded objective values."""
++        if self._encoding.num_vars == 0:
++            original = float(self._encoding.problem.objective.evaluate([]))
++            encoded = float(self._encoding.offset * self._encoding.problem.objective.sense.value)
++            yield "", original, encoded
++            return
++        circuits = []
++        bitstrings = []
++        for value in range(len(self)):
++            bits = format(value, f"0{self._encoding.num_vars}b")
++            x = np.fromiter((int(bit) for bit in bits), dtype=int)
++            circuits.append(self._encoding.state_preparation_circuit(x))
++            bitstrings.append(bits)
++        job = self._estimator.run(circuits, [self._encoding.qubit_op] * len(circuits))
++        result = job.result()
++        if len(result.values) != len(circuits):
++            raise QiskitOptimizationError("Estimator returned an unexpected number of values.")
++        sense = self._encoding.problem.objective.sense.value
++        for bits, value in zip(bitstrings, result.values):
++            x = np.fromiter((int(bit) for bit in bits), dtype=int)
++            original = float(self._encoding.problem.objective.evaluate(x))
++            encoded = float(np.real_if_close((value + self._encoding.offset) * sense))
++            yield bits, original, encoded
+diff --git a/qiskit_optimization/algorithms/qrao/magic_rounding.py b/qiskit_optimization/algorithms/qrao/magic_rounding.py
+new file mode 100644
+index 0000000..0d62d45
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/magic_rounding.py
+@@ -0,0 +1,138 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Magic-basis rounding for QRAO."""
++
++from __future__ import annotations
++
++from collections import defaultdict
++from typing import Dict, List
++
++import numpy as np
++from qiskit import ClassicalRegister, QuantumCircuit
++from qiskit.primitives import BaseSampler
++
++from qiskit_optimization.algorithms.optimization_algorithm import (
++    OptimizationResultStatus,
++    SolutionSample,
++)
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++
++
++class MagicRounding(RoundingScheme):
++    """Sample QRAC measurement bases and round outcomes to classical samples."""
++
++    def __init__(
++        self, sampler: BaseSampler, basis_sampling: str = "uniform", seed: int | None = None
++    ) -> None:
++        if basis_sampling not in ("uniform", "weighted"):
++            raise QiskitOptimizationError("basis_sampling must be either 'uniform' or 'weighted'.")
++        self._sampler = sampler
++        self._basis_sampling = basis_sampling
++        self._rng = np.random.default_rng(seed)
++
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Round a relaxed QRAO solution by sampling QRAC measurement bases."""
++        if rounding_context.circuit is None:
++            raise QiskitOptimizationError("MagicRounding requires a relaxed-state circuit.")
++        encoding = rounding_context.encoding
++        if encoding.num_qubits == 0:
++            x = np.zeros(encoding.num_vars, dtype=int)
++            return RoundingResult(
++                expectation_values=rounding_context.expectation_values,
++                samples=[self._make_sample(encoding, x, 1.0)],
++            )
++        bases = self._sample_bases(encoding)
++        circuits = self._make_circuits(
++            rounding_context.circuit, bases, encoding.max_vars_per_qubit
++        )
++        sampler_result = self._sampler.run(circuits).result()
++        probabilities: Dict[tuple[int, ...], float] = defaultdict(float)
++        basis_counts: List[dict[str, int]] = []
++        for basis_index, quasi in enumerate(sampler_result.quasi_dists):
++            counts: dict[str, int] = {}
++            for outcome, probability in quasi.items():
++                bitstring = format(int(outcome), f"0{encoding.num_qubits}b")
++                counts[bitstring] = int(round(float(probability)))
++                x = self._decode_outcome(encoding, bases[basis_index], bitstring)
++                probabilities[tuple(x)] += float(probability) / len(bases)
++            basis_counts.append(counts)
++        samples = [
++            self._make_sample(encoding, np.asarray(x, dtype=int), probability)
++            for x, probability in probabilities.items()
++        ]
++        samples.sort(key=lambda sample: (sample.status.value, encoding.problem.objective.sense.value * sample.fval))
++        return RoundingResult(
++            expectation_values=rounding_context.expectation_values,
++            samples=samples,
++            bases=bases,
++            basis_shots=np.ones(len(bases), dtype=int),
++            basis_counts=basis_counts,
++        )
++
++    def _make_circuits(
++        self, circuit: QuantumCircuit, bases: np.ndarray, vars_per_qubit: int
++    ) -> List[QuantumCircuit]:
++        """Build QRAC measurement circuits for sampled bases."""
++        if vars_per_qubit not in (1, 2, 3):
++            raise QiskitOptimizationError("vars_per_qubit must be one of 1, 2, or 3.")
++        circuits = []
++        for basis in bases:
++            qc = circuit.copy()
++            if qc.num_clbits < qc.num_qubits:
++                qc.add_register(ClassicalRegister(qc.num_qubits - qc.num_clbits))
++            for qubit, pauli_index in enumerate(basis):
++                if pauli_index < 0 or pauli_index >= vars_per_qubit:
++                    raise QiskitOptimizationError("Invalid QRAC measurement basis index.")
++                pauli = ("X", "Y", "Z")[int(pauli_index)]
++                if pauli == "X":
++                    qc.h(qubit)
++                elif pauli == "Y":
++                    qc.sdg(qubit)
++                    qc.h(qubit)
++                qc.measure(qubit, qubit)
++            circuits.append(qc)
++        return circuits
++
++    def _sample_bases(self, encoding) -> np.ndarray:
++        bases = np.zeros((1, encoding.num_qubits), dtype=int)
++        for qubit, variables in enumerate(encoding.qubit2vars):
++            if self._basis_sampling == "uniform":
++                bases[0, qubit] = int(self._rng.integers(len(variables)))
++            else:
++                bases[0, qubit] = 0
++        return bases
++
++    @staticmethod
++    def _decode_outcome(encoding, basis: np.ndarray, bitstring: str) -> np.ndarray:
++        x = np.zeros(encoding.num_vars, dtype=int)
++        # bitstring is displayed most-significant first, matching reversed labels.
++        for qubit, variables in enumerate(encoding.qubit2vars):
++            measured_var = variables[int(basis[qubit])]
++            bit = int(bitstring[::-1][qubit])
++            x[measured_var] = bit
++            for var in variables:
++                if var != measured_var:
++                    x[var] = bit
++        return x
++
++    @staticmethod
++    def _make_sample(encoding, x: np.ndarray, probability: float) -> SolutionSample:
++        status = (
++            OptimizationResultStatus.SUCCESS
++            if encoding.problem.is_feasible(x)
++            else OptimizationResultStatus.INFEASIBLE
++        )
++        return SolutionSample(
++            x=x,
++            fval=float(encoding.problem.objective.evaluate(x)),
++            probability=float(probability),
++            status=status,
++        )
+diff --git a/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py b/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py
+new file mode 100644
+index 0000000..ead47e2
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py
+@@ -0,0 +1,240 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Quantum random access encoding for binary quadratic programs."""
++
++from __future__ import annotations
++
++from collections import defaultdict
++from typing import Dict, List, Sequence, Tuple
++
++import numpy as np
++from qiskit import QuantumCircuit
++from qiskit.quantum_info import Pauli, SparsePauliOp
++
++from qiskit_optimization.exceptions import QiskitOptimizationError
++from qiskit_optimization.problems.quadratic_objective import ObjSense
++from qiskit_optimization.problems.quadratic_program import QuadraticProgram
++
++
++class QuantumRandomAccessEncoding:
++    """Encode a binary quadratic program as a QRAC-backed relaxation.
++
++    The encoding maps each binary variable :math:`x_i` to an observable
++    :math:`(1 - \sqrt{m_q} P_i) / 2`, where ``P_i`` is one of ``X``, ``Y`` or
++    ``Z`` on qubit ``q`` and ``m_q`` is the number of variables packed into that
++    qubit.  Quadratically interacting variables are never packed into the same
++    qubit, so products are represented by tensor products of single-qubit Pauli
++    observables.
++    """
++
++    _PAULIS = ("X", "Y", "Z")
++
++    def __init__(self, max_vars_per_qubit: int = 3) -> None:
++        """Args:
++            max_vars_per_qubit: maximum number of variables packed into a qubit (1, 2, or 3).
++        """
++        if max_vars_per_qubit not in (1, 2, 3):
++            raise QiskitOptimizationError(
++                "max_vars_per_qubit must be one of 1, 2, or 3 for QRAC encodings."
++            )
++        self._max_vars_per_qubit = max_vars_per_qubit
++        self._problem: QuadraticProgram | None = None
++        self._qubit_op: SparsePauliOp | None = None
++        self._offset = 0.0
++        self._var2op: Dict[int, Tuple[int, str]] = {}
++        self._qubit2vars: List[List[int]] = []
++
++    @property
++    def max_vars_per_qubit(self) -> int:
++        """The requested maximum number of variables per qubit."""
++        return self._max_vars_per_qubit
++
++    @property
++    def problem(self) -> QuadraticProgram:
++        """The encoded quadratic program."""
++        if self._problem is None:
++            raise QiskitOptimizationError("No problem has been encoded yet.")
++        return self._problem
++
++    @property
++    def encoded_problem(self) -> QuadraticProgram:
++        """Alias for the encoded quadratic program."""
++        return self.problem
++
++    @property
++    def qubit_op(self) -> SparsePauliOp:
++        """SparsePauliOp for the relaxed Hamiltonian."""
++        if self._qubit_op is None:
++            raise QiskitOptimizationError("No problem has been encoded yet.")
++        return self._qubit_op
++
++    @property
++    def offset(self) -> float:
++        """Constant offset of the relaxed Hamiltonian."""
++        return self._offset
++
++    @property
++    def num_vars(self) -> int:
++        """Number of encoded binary variables."""
++        return 0 if self._problem is None else self._problem.get_num_vars()
++
++    @property
++    def num_qubits(self) -> int:
++        """Number of qubits used by the encoding."""
++        return len(self._qubit2vars)
++
++    @property
++    def variable_mapping(self) -> Dict[int, Tuple[int, str]]:
++        """Mapping from variable index to ``(qubit, pauli)``."""
++        return dict(self._var2op)
++
++    @property
++    def var2op(self) -> Dict[int, Tuple[int, str]]:
++        """Alias for :attr:`variable_mapping`."""
++        return self.variable_mapping
++
++    @property
++    def qubit2vars(self) -> List[List[int]]:
++        """Variables assigned to each qubit."""
++        return [vars_.copy() for vars_ in self._qubit2vars]
++
++    @property
++    def compression_ratio(self) -> float:
++        """Ratio of original variables to encoded qubits."""
++        return 1.0 if self.num_qubits == 0 else self.num_vars / self.num_qubits
++
++    @property
++    def minimum_recovery_probability(self) -> float:
++        """Minimum QRAC single-bit recovery probability for the used packing."""
++        if not self._qubit2vars:
++            return 1.0
++        max_used = max(len(v) for v in self._qubit2vars)
++        return 0.5 * (1.0 + 1.0 / np.sqrt(max_used))
++
++    def encode(self, problem: QuadraticProgram) -> None:
++        """Build the qubit operator, offset, and variable-to-Pauli mapping."""
++        self._validate_problem(problem)
++        self._problem = problem
++        self._offset = problem.objective.constant * problem.objective.sense.value
++        self._var2op = {}
++        self._qubit2vars = self._assign_variables(problem)
++        for qubit, variables in enumerate(self._qubit2vars):
++            for slot, var in enumerate(variables):
++                self._var2op[var] = (qubit, self._PAULIS[slot])
++
++        terms: List[Tuple[str, complex]] = []
++        sense = problem.objective.sense.value
++        for idx, coef in problem.objective.linear.to_dict().items():
++            weight = coef * sense / 2
++            self._offset += weight
++            self._append_term(terms, [idx], -weight)
++
++        for (i, j), coef in problem.objective.quadratic.to_dict().items():
++            weight = coef * sense / 4
++            if i == j:
++                self._offset += weight
++            else:
++                self._append_term(terms, [i, j], weight)
++            self._append_term(terms, [i], -weight)
++            self._append_term(terms, [j], -weight)
++            self._offset += weight
++
++        if terms:
++            self._qubit_op = SparsePauliOp.from_list(terms).simplify(atol=0)
++        else:
++            self._qubit_op = SparsePauliOp.from_list([("I" * max(1, self.num_qubits), 0.0)])
++
++    def state_preparation_circuit(self, x: Sequence[int]) -> QuantumCircuit:
++        """Build the QRAC state preparation circuit for a classical bit string."""
++        if len(x) != self.num_vars:
++            raise QiskitOptimizationError(
++                f"Input bit string has length {len(x)} but the encoding has {self.num_vars} variables."
++            )
++        qc = QuantumCircuit(self.num_qubits)
++        for qubit, variables in enumerate(self._qubit2vars):
++            signs = []
++            for var in variables:
++                value = int(x[var])
++                if value not in (0, 1):
++                    raise QiskitOptimizationError("QRAC state preparation requires a binary bit string.")
++                signs.append(1.0 if value == 0 else -1.0)
++            while len(signs) < 3:
++                signs.append(0.0)
++            vec = np.asarray(signs[:3], dtype=float)
++            norm = np.linalg.norm(vec)
++            if norm == 0:
++                continue
++            vec /= norm
++            theta = float(np.arccos(np.clip(vec[2], -1.0, 1.0)))
++            phi = float(np.arctan2(vec[1], vec[0]))
++            qc.ry(theta, qubit)
++            qc.rz(phi, qubit)
++        return qc
++
++    def term_observable(self, variable: int) -> SparsePauliOp:
++        """Return the unscaled auxiliary Pauli observable."""
++        return SparsePauliOp.from_list([(self._pauli_string([variable]), 1.0)])
++
++    def _append_term(self, terms: List[Tuple[str, complex]], variables: List[int], coeff: float) -> None:
++        if abs(coeff) == 0:
++            return
++        terms.append((self._pauli_string(variables), coeff * self._scale(variables)))
++
++    def _pauli_string(self, variables: List[int]) -> str:
++        labels = ["I"] * self.num_qubits
++        for var in variables:
++            qubit, pauli = self._var2op[var]
++            if labels[qubit] != "I" and labels[qubit] != pauli:
++                raise QiskitOptimizationError(
++                    "Interacting variables cannot be assigned to non-commuting operators "
++                    "on the same qubit."
++                )
++            labels[qubit] = pauli
++        return "".join(reversed(labels))
++
++    def _scale(self, variables: List[int]) -> float:
++        scale = 1.0
++        for var in variables:
++            qubit, _ = self._var2op[var]
++            scale *= np.sqrt(len(self._qubit2vars[qubit]))
++        return float(scale)
++
++    def _assign_variables(self, problem: QuadraticProgram) -> List[List[int]]:
++        conflicts: Dict[int, set[int]] = defaultdict(set)
++        for (i, j), coeff in problem.objective.quadratic.to_dict().items():
++            if i != j and abs(coeff) > 0:
++                conflicts[i].add(j)
++                conflicts[j].add(i)
++        order = sorted(range(problem.get_num_vars()), key=lambda v: (-len(conflicts[v]), v))
++        bins: List[List[int]] = []
++        for var in order:
++            placed = False
++            for variables in bins:
++                if len(variables) < self._max_vars_per_qubit and all(
++                    other not in conflicts[var] for other in variables
++                ):
++                    variables.append(var)
++                    placed = True
++                    break
++            if not placed:
++                bins.append([var])
++        # Keep Pauli assignment stable inside each qubit.
++        return [sorted(variables) for variables in bins]
++
++    @staticmethod
++    def _validate_problem(problem: QuadraticProgram) -> None:
++        if problem.get_num_vars() > problem.get_num_binary_vars():
++            raise QiskitOptimizationError("QRAO supports only binary variables.")
++        if problem.linear_constraints or problem.quadratic_constraints:
++            raise QiskitOptimizationError(
++                "QRAO supports unconstrained binary quadratic programs. Use a QUBO converter "
++                "to move constraints into the objective."
++            )
++        if problem.objective.sense not in (ObjSense.MINIMIZE, ObjSense.MAXIMIZE):
++            raise QiskitOptimizationError("Unsupported objective sense for QRAO.")
+diff --git a/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py b/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py
+new file mode 100644
+index 0000000..8993973
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py
+@@ -0,0 +1,195 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Quantum Random Access Optimizer."""
++
++from __future__ import annotations
++
++from typing import List, Optional, Tuple, Union
++
++import numpy as np
++from qiskit import QuantumCircuit
++from qiskit.quantum_info import Statevector
++from qiskit_algorithms import MinimumEigensolver, MinimumEigensolverResult
++
++from qiskit_optimization.algorithms.optimization_algorithm import (
++    OptimizationAlgorithm,
++    OptimizationResult,
++    OptimizationResultStatus,
++    SolutionSample,
++)
++from qiskit_optimization.converters.quadratic_program_to_qubo import QuadraticProgramToQubo
++from qiskit_optimization.exceptions import QiskitOptimizationError
++from qiskit_optimization.problems.quadratic_program import QuadraticProgram, Variable
++
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++from .semideterministic_rounding import SemideterministicRounding
++
++
++class QuantumRandomAccessOptimizationResult(OptimizationResult):
++    """Optimization result returned by the full QRAO solve workflow."""
++
++    def __init__(
++        self,
++        x: Union[List[float], np.ndarray],
++        fval: float,
++        variables: List[Variable],
++        status: OptimizationResultStatus,
++        samples: List[SolutionSample],
++        encoding: QuantumRandomAccessEncoding,
++        relaxed_fval: float,
++        relaxed_result: MinimumEigensolverResult,
++        rounding_result: RoundingResult,
++    ) -> None:
++        super().__init__(x, fval, variables, status, samples=samples, raw_results=relaxed_result)
++        self._encoding = encoding
++        self._relaxed_fval = relaxed_fval
++        self._relaxed_result = relaxed_result
++        self._rounding_result = rounding_result
++
++    @property
++    def encoding(self) -> QuantumRandomAccessEncoding:
++        """QRAO encoding used by the optimizer."""
++        return self._encoding
++
++    @property
++    def relaxed_fval(self) -> float:
++        """Objective value of the relaxed eigensolver result."""
++        return self._relaxed_fval
++
++    @property
++    def relaxed_result(self) -> MinimumEigensolverResult:
++        """Raw relaxed minimum eigensolver result."""
++        return self._relaxed_result
++
++    @property
++    def min_eigen_solver_result(self) -> MinimumEigensolverResult:
++        """Alias for the raw relaxed minimum eigensolver result."""
++        return self._relaxed_result
++
++    @property
++    def rounding_result(self) -> RoundingResult:
++        """QRAO rounding metadata and samples."""
++        return self._rounding_result
++
++
++class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
++    """Run QRAO by encoding, solving the relaxation, and rounding."""
++
++    def __init__(
++        self,
++        min_eigen_solver: MinimumEigensolver,
++        max_vars_per_qubit: int = 3,
++        rounding_scheme: Optional[RoundingScheme] = None,
++        penalty: Optional[float] = None,
++    ) -> None:
++        if not min_eigen_solver.supports_aux_operators():
++            raise QiskitOptimizationError(
++                "QRAO requires a minimum eigensolver that supports auxiliary operators."
++            )
++        self._min_eigen_solver = min_eigen_solver
++        self._max_vars_per_qubit = max_vars_per_qubit
++        self._rounding_scheme = rounding_scheme or SemideterministicRounding()
++        self._converter = QuadraticProgramToQubo(penalty=penalty)
++
++    def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
++        """Return a compatibility message for the given problem."""
++        return QuadraticProgramToQubo.get_compatibility_msg(problem)
++
++    @property
++    def min_eigen_solver(self) -> MinimumEigensolver:
++        """Minimum eigensolver used for the relaxation."""
++        return self._min_eigen_solver
++
++    @property
++    def rounding_scheme(self) -> RoundingScheme:
++        """Rounding scheme used after solving the relaxation."""
++        return self._rounding_scheme
++
++    def solve_relaxed(
++        self, encoding: QuantumRandomAccessEncoding
++    ) -> Tuple[MinimumEigensolverResult, RoundingContext]:
++        """Solve the encoded relaxed Hamiltonian and prepare a rounding context."""
++        aux_ops = [encoding.term_observable(index) for index in range(encoding.num_vars)]
++        relaxed_result = self._min_eigen_solver.compute_minimum_eigenvalue(
++            encoding.qubit_op, aux_operators=aux_ops
++        )
++        expectation_values = self._extract_expectation_values(relaxed_result, encoding.num_vars)
++        if expectation_values is None and encoding.num_vars == 0:
++            expectation_values = []
++        circuit = self._extract_circuit(relaxed_result, encoding.num_qubits)
++        context = RoundingContext(
++            encoding=encoding, expectation_values=expectation_values, circuit=circuit
++        )
++        return relaxed_result, context
++
++    def solve(self, problem: QuadraticProgram) -> QuantumRandomAccessOptimizationResult:
++        """Execute the full QRAO workflow."""
++        self._verify_compatibility(problem)
++        qubo = self._converter.convert(problem)
++        encoding = QuantumRandomAccessEncoding(self._max_vars_per_qubit)
++        encoding.encode(qubo)
++        relaxed_result, rounding_context = self.solve_relaxed(encoding)
++        rounding_result = self._rounding_scheme.round(rounding_context)
++        if not rounding_result.samples:
++            raise QiskitOptimizationError("QRAO rounding produced no solution samples.")
++        # Interpret QUBO samples back to the original problem and aggregate probabilities.
++        raw_samples = rounding_result.samples
++        samples, _ = self._interpret_samples(problem, raw_samples, [self._converter])
++        best = samples[0]
++        relaxed_fval = self._relaxed_fval(relaxed_result, encoding)
++        return QuantumRandomAccessOptimizationResult(
++            x=best.x,
++            fval=best.fval,
++            variables=problem.variables,
++            status=best.status,
++            samples=samples,
++            encoding=encoding,
++            relaxed_fval=relaxed_fval,
++            relaxed_result=relaxed_result,
++            rounding_result=rounding_result,
++        )
++
++    @staticmethod
++    def _extract_expectation_values(
++        result: MinimumEigensolverResult, num_vars: int
++    ) -> Optional[List[complex]]:
++        aux_values = getattr(result, "aux_operators_evaluated", None)
++        if aux_values is None:
++            return None
++        values = []
++        if isinstance(aux_values, dict):
++            iterable = [aux_values[index] for index in range(num_vars)]
++        else:
++            iterable = aux_values[:num_vars]
++        for item in iterable:
++            if item is None:
++                values.append(0.0)
++            elif isinstance(item, tuple):
++                values.append(item[0])
++            else:
++                values.append(item)
++        return values
++
++    @staticmethod
++    def _extract_circuit(result: MinimumEigensolverResult, num_qubits: int) -> Optional[QuantumCircuit]:
++        eigenstate = getattr(result, "eigenstate", None)
++        if isinstance(eigenstate, QuantumCircuit):
++            return eigenstate
++        if isinstance(eigenstate, Statevector):
++            logical_qubits = max(1, num_qubits)
++            circuit = QuantumCircuit(logical_qubits)
++            circuit.initialize(eigenstate.data, range(logical_qubits))
++            return circuit
++        return None
++
++    @staticmethod
++    def _relaxed_fval(result: MinimumEigensolverResult, encoding: QuantumRandomAccessEncoding) -> float:
++        eigenvalue = getattr(result, "eigenvalue", 0.0)
++        return float(np.real_if_close((eigenvalue + encoding.offset) * encoding.problem.objective.sense.value))
+diff --git a/qiskit_optimization/algorithms/qrao/rounding_common.py b/qiskit_optimization/algorithms/qrao/rounding_common.py
+new file mode 100644
+index 0000000..1dab291
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/rounding_common.py
+@@ -0,0 +1,52 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Common classes for QRAO rounding schemes."""
++
++from __future__ import annotations
++
++from abc import ABC, abstractmethod
++from dataclasses import dataclass
++from typing import List, Optional
++
++import numpy as np
++from qiskit import QuantumCircuit
++
++from qiskit_optimization.algorithms.optimization_algorithm import SolutionSample
++
++
++@dataclass
++class RoundingContext:
++    """Context object passed to QRAO rounding schemes."""
++
++    encoding: "QuantumRandomAccessEncoding"
++    expectation_values: Optional[List[complex]]
++    circuit: Optional[QuantumCircuit] = None
++
++
++@dataclass
++class RoundingResult:
++    """Result object returned by QRAO rounding schemes."""
++
++    expectation_values: Optional[List[complex]]
++    samples: List[SolutionSample]
++    bases: Optional[np.ndarray] = None
++    basis_shots: Optional[np.ndarray] = None
++    basis_counts: Optional[List[dict[str, int]]] = None
++
++
++class RoundingScheme(ABC):
++    """Base class for QRAO rounding schemes."""
++
++    @abstractmethod
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Round a relaxed QRAO solution."""
++
++
++# imported only for typing to avoid a runtime cycle
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding  # noqa: E402  pylint: disable=wrong-import-position, cyclic-import
+diff --git a/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py b/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py
+new file mode 100644
+index 0000000..11f822e
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py
+@@ -0,0 +1,63 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2024.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++
++"""Semideterministic rounding for QRAO."""
++
++from __future__ import annotations
++
++import numpy as np
++
++from qiskit_optimization.algorithms.optimization_algorithm import (
++    OptimizationResultStatus,
++    SolutionSample,
++)
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++
++
++class SemideterministicRounding(RoundingScheme):
++    """Round signs of relaxed single-variable expectation values."""
++
++    def __init__(self, atol: float = 1e-8, seed: int | None = None) -> None:
++        self._atol = atol
++        self._rng = np.random.default_rng(seed)
++
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Round a relaxed QRAO solution from expectation values."""
++        expectation_values = rounding_context.expectation_values
++        if expectation_values is None:
++            raise QiskitOptimizationError(
++                "SemideterministicRounding requires per-variable expectation values."
++            )
++        encoding = rounding_context.encoding
++        if len(expectation_values) != encoding.num_vars:
++            raise QiskitOptimizationError(
++                f"Expected {encoding.num_vars} expectation values, got {len(expectation_values)}."
++            )
++        x = np.zeros(encoding.num_vars, dtype=int)
++        for index, value in enumerate(expectation_values):
++            real = float(np.real_if_close(value))
++            if real > self._atol:
++                x[index] = 0
++            elif real < -self._atol:
++                x[index] = 1
++            else:
++                x[index] = int(self._rng.integers(2))
++        status = (
++            OptimizationResultStatus.SUCCESS
++            if encoding.problem.is_feasible(x)
++            else OptimizationResultStatus.INFEASIBLE
++        )
++        sample = SolutionSample(
++            x=x,
++            fval=float(encoding.problem.objective.evaluate(x)),
++            probability=1.0,
++            status=status,
++        )
++        return RoundingResult(expectation_values=list(expectation_values), samples=[sample])

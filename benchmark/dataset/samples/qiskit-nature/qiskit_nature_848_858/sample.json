@@ -1,0 +1,171 @@
+{
+  "instance": {
+    "id": 81,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_848_858",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/848",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/858",
+    "base_commit": "d1af4bab5df10e4f56b670b342c9c1a60ea059e6",
+    "patch": "abfd9973b316b8b33990c7aace0940b950b3ddab"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds commutator utilities over existing sparse-label operator algebra, with correctness mainly as symbolic operator helper behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/commutators.py",
+      "qiskit_nature/second_q/operators/sparse_label_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "SparseLabelOp instances do not currently have the commutator helper routines that users may know from Qiskit opflow. Users need second-quantized operators to support direct commutator, anti-commutator, and symmetric double-commutator utilities, with results simplified consistently and a way to identify zero sparse-label operators.",
+    "requirements": [
+      "The second_q operator package must provide commutator, anti-commutator, and double_commutator utilities for SparseLabelOp-compatible operands.",
+      "The commutator utility must compute AB - BA and return a simplified SparseLabelOp result.",
+      "The anti_commutator utility must compute AB + BA and return a simplified SparseLabelOp result.",
+      "The double_commutator utility must compute the symmetric double-commutator expression for three operands and support both sign conventions.",
+      "SparseLabelOp instances must expose an is_zero check that treats empty operators and coefficients within a tolerance as zero.",
+      "Existing second-quantized operator behavior in the same operators package must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "commutator",
+        "Path": "qiskit_nature/second_q/operators/commutators.py",
+        "Input": "op_a, op_b",
+        "Output": "SparseLabelOp",
+        "Description": "Computes AB - BA for two SparseLabelOp-compatible operands and returns the simplified result."
+      },
+      {
+        "Type": "Function",
+        "Name": "anti_commutator",
+        "Path": "qiskit_nature/second_q/operators/commutators.py",
+        "Input": "op_a, op_b",
+        "Output": "SparseLabelOp",
+        "Description": "Computes AB + BA for two SparseLabelOp-compatible operands and returns the simplified result."
+      },
+      {
+        "Type": "Function",
+        "Name": "double_commutator",
+        "Path": "qiskit_nature/second_q/operators/commutators.py",
+        "Input": "op_a, op_b, op_c, sign=False",
+        "Output": "SparseLabelOp",
+        "Description": "Computes the symmetric double-commutator expression for three SparseLabelOp-compatible operands and returns the simplified result."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.is_zero",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, tol=None",
+        "Output": "bool",
+        "Description": "Returns whether the operator is empty or all stored coefficients are zero within the given tolerance, using the operator tolerance when no explicit tolerance is supplied."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_848_858",
+      "image_id": "sha256:0b828c61fb44d8df9e02cb0a26d970a01d04c5c589e20a5b125e13273d801e3c",
+      "image_size": "1217394278"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_3",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero"
+        ],
+        "summary": "8 passed, 1 warning in 3.83s.",
+        "duration_seconds": 10.9
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero"
+        ],
+        "summary": "12 passed in 1.48s",
+        "duration_seconds": 6.3
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_1",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_2",
+          "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_3",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero"
+        ],
+        "summary": "7 collection errors, 1 warning in 3.13s. The patched commutator selectors fail on base because qiskit_nature.second_q.operators.commutators does not exist.",
+        "duration_seconds": 14.74
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero"
+        ],
+        "summary": "12 passed in 1.28s",
+        "duration_seconds": 8.1
+      }
+    }
+  }
+}

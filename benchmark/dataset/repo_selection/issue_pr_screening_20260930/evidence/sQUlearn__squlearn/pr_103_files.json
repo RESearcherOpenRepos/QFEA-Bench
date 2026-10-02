@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "9150982aeca00a5c697f06f381f68e14476ba0ac",
+    "filename": "src/squlearn/kernel/matrix/fidelity_kernel.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 3,
+    "changes": 9,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py?ref=c7ca1cc44401ea23040e424b976761135b29d680",
+    "patch": "@@ -34,15 +34,18 @@ class FidelityKernel(KernelMatrixBase):\n     Args:\n         feature_map (FeatureMapBase): PQC feature map.\n         executor (Executor): Executor object.\n-        initial_parameters (Union[np.ndarray, None], default=None):\n-            Initial parameters for the feature map.\n         evaluate_duplicates (str), default='off_diagonal':\n             Option for evaluating duplicates ('all', 'off_diagonal', 'none').\n         mit_depol_noise (Union[str, None]), default=None:\n             Option for mitigating depolarizing noise ('msplit' or 'mmean') after\n             Ref. [4]. Only meaningful for\n             FQKs computed on a real backend.\n-        regularization  (Union[str, None], default=None) :\n+        initial_parameters (Union[np.ndarray, None], default=None):\n+            Initial parameters for the feature map.\n+        parameter_seed (Union[int, None], default=0):\n+            Seed for the random number generator for the parameter initialization, if\n+            initial_parameters is None.\n+        regularization  (Union[str, None], default=None):\n             Option for choosing different regularization techniques ('thresholding' or 'tikhonov')\n             after Ref. [4] for the training kernel matrix, prior to  solving the linear system\n             in the ``fit()``-procedure."
+  },
+  {
+    "sha": "a06f80a09d734af4caec0656747969f47bee962e",
+    "filename": "src/squlearn/kernel/matrix/kernel_matrix_base.py",
+    "status": "modified",
+    "additions": 4,
+    "deletions": 1,
+    "changes": 5,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fkernel_matrix_base.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fkernel_matrix_base.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fkernel_matrix_base.py?ref=c7ca1cc44401ea23040e424b976761135b29d680",
+    "patch": "@@ -17,7 +17,10 @@ class KernelMatrixBase:\n             Executor object\n         initial_parameters (Union[np.ndarray, None], default=None) :\n             Initial parameters of the PQC feature map\n-        regularization (str, None) :\n+        parameter_seed (Union[int, None], default=0) :\n+            Seed for the random number generator for the parameter initialization, if\n+            initial_parameters is None.\n+        regularization  (Union[str, None], default=None):\n             Str that specifies the method with which the kernel matrix should be regularized.\n             See method attribute from KernMatrixBase._regularize_matrix() method for valid\n             options."
+  },
+  {
+    "sha": "b330b7f5779433157e24a7422fc12857b78463d7",
+    "filename": "src/squlearn/kernel/matrix/projected_quantum_kernel.py",
+    "status": "modified",
+    "additions": 4,
+    "deletions": 1,
+    "changes": 5,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/c7ca1cc44401ea23040e424b976761135b29d680/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py?ref=c7ca1cc44401ea23040e424b976761135b29d680",
+    "patch": "@@ -183,7 +183,10 @@ class ProjectedQuantumKernel(KernelMatrixBase):\n             ``RationalQuadratic``, ``DotProduct``, ``PairwiseKernel``\n         initial_parameters (np.ndarray): Initial parameters of the feature map and the\n             operator (if parameterized)\n-        regularization  (Union[str, None], default=None) :\n+        parameter_seed (Union[int, None], default=0):\n+            Seed for the random number generator for the parameter initialization, if\n+            initial_parameters is None.\n+        regularization  (Union[str, None], default=None):\n             Option for choosing different regularization techniques ('thresholding' or 'tikhonov')\n             after Ref. [2] for the training kernel matrix, prior to  solving the linear system\n             in the ``fit()``-procedure."
+  }
+]

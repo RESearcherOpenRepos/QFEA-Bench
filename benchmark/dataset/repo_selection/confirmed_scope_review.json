@@ -1,0 +1,71 @@
+{
+  "date": "2026-09-30",
+  "authorization": {
+    "date": "2026-09-30",
+    "source": "Direct user reply in this conversation",
+    "confirmed_all_four": true,
+    "user_reply": "可以，然后暂时先不排查现有的7个库是否符合",
+    "existing_seven_recheck": "deferred_at_user_request",
+    "historical_selection_rule": false
+  },
+  "rule": "Any one evidence-supported failure is sufficient.",
+  "proposals": [
+    {
+      "repository": "XanaduAI/strawberryfields",
+      "code": "E12",
+      "criterion": "qubit_application_scope",
+      "title": "以连续变量光子量子计算为主",
+      "finding": "主要计算模型是连续变量光子电路，使用 Gaussian/Fock/Bosonic 表示及 GBS 应用层；不满足本轮新增的量子比特应用范围条件。",
+      "limit": "确有图优化、机器学习和振动光谱应用及测试；排除依据是计算模型范围，不是没有应用。",
+      "evidence_url": "https://github.com/XanaduAI/strawberryfields/blob/162125d8ad5fd5488322a30c520253189596adf5/doc/introduction/introduction.rst#L10"
+    },
+    {
+      "repository": "microsoft/QuantumLibraries",
+      "code": "E13",
+      "criterion": "python_native_application_implementation",
+      "title": "应用核心实现非 Python 原生",
+      "finding": "Chemistry 的 Hamiltonian 数据处理由 C# DataModel 实现，量子算法由 Q# Runtime 实现；Python qsharp-chemistry 是互操作接口，不满足本轮要求的 Python 原生应用核心实现。",
+      "limit": "存在 Python 化学接口和测试；不能写成没有 Python 入口、没有测试或已证明 .NET 环境无法构建。",
+      "evidence_url": "https://github.com/microsoft/QuantumLibraries/blob/f2f5e380225367ee4eb995d922067025dc77f0a0/Chemistry/README.md#L8"
+    },
+    {
+      "repository": "entropicalabs/openqaoa",
+      "code": "E14",
+      "criterion": "beyond_single_algorithm_family",
+      "title": "聚焦 QAOA/RQAOA 单一算法族",
+      "finding": "核心产品围绕 QAOA 及递归 QAOA 的问题编码、参数化、mixer、优化器和多后端执行；不满足本轮排除单一算法族工具包的条件。",
+      "limit": "支持多种应用问题与完整求解流程；不同优化问题、参数化、后端和 QAOA 变体不被本轮规则视为独立算法族。",
+      "evidence_url": "https://github.com/entropicalabs/openqaoa/blob/c6e7dd759392fcca180bab9bd29c5f5e7dab3662/README.md#L79"
+    },
+    {
+      "repository": "Qiskit/qiskit-addon-sqd",
+      "code": "E14",
+      "criterion": "beyond_single_algorithm_family",
+      "title": "聚焦 SQD 单一算法族",
+      "finding": "核心实现围绕 sample-based quantum diagonalization 的样本处理、构型恢复、子空间投影和求解；不同样本来源或 Fermionic/qubit 求解器均服务于 SQD 流程，不满足本轮算法广度条件。",
+      "limit": "包含真实量子化学、能量与对称性约束；不因 addon 名称或经典后处理实现而排除，也不声称没有应用。",
+      "evidence_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/8124d790600a764740fd40f44956a67ddecb3cd1/README.md#L91"
+    },
+    {
+      "repository": "qiskit-community/ffsim",
+      "code": "E15",
+      "criterion": "not_a_domain_specific_simulator_product",
+      "title": "领域专用费米电路模拟器",
+      "finding": "官方主要产品是利用粒子数及自旋守恒进行费米量子电路模拟的专用库；核心公开接口包括状态向量、门作用及模拟协议，不满足本轮排除领域专用模拟器的条件。",
+      "limit": "确有 MolecularHamiltonian、MolecularData、FermionOperator、变分算符及 Qiskit 电路构造能力；这些功能不抵消本轮按主体模拟产品定位作出的排除。",
+      "evidence_url": "https://github.com/qiskit-community/ffsim/blob/cd4228a9e4be5975830da7523ee4da7649740307/README.md#L5"
+    }
+  ],
+  "remaining_unresolved": [
+    "tequilahub/tequila",
+    "qiboteam/qibo",
+    "eclipse-qrisp/Qrisp",
+    "sQUlearn/squlearn"
+  ],
+  "existing_seven_new_condition_compliance": "not_checked_deferred_at_user_request",
+  "counts": {
+    "exclude_proposed": 58,
+    "retain_existing": 7,
+    "needs_exclusion_evidence": 4
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "instance": {
+    "id": 73,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_683_684",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/683",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/684",
+    "base_commit": "0f07057c4f72c026e6cde420bd8d7a112127fd70",
+    "patch": "64b08facfb29cffb3cff91df65debb039bb6ee44"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts BOPESSampler to excited-state solver workflows, preserving multiple energy outputs rather than defining new electronic-structure semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/algorithms/excited_states_solvers/excited_states_eigensolver.py",
+      "qiskit_nature/algorithms/excited_states_solvers/excited_states_solver.py",
+      "qiskit_nature/algorithms/excited_states_solvers/qeom.py",
+      "qiskit_nature/algorithms/ground_state_solvers/ground_state_eigensolver.py",
+      "qiskit_nature/algorithms/ground_state_solvers/ground_state_solver.py",
+      "qiskit_nature/algorithms/pes_samplers/bopes_sampler.py",
+      "qiskit_nature/problems/second_quantization/lattice/models/fermi_hubbard_model.py",
+      "qiskit_nature/results/bopes_sampler_result.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "BOPESSampler can sample potential energy surfaces with ground-state solvers, but it cannot consume excited-state solvers and return multiple energy curves for the same molecular geometry points. Users need BOPESSampler to work with excited-state solver workflows so they can sample ground and excited electronic-state energies across a potential energy surface.",
+    "requirements": [
+      "BOPESSampler must accept an excited-state solver in the same sampling workflow used for ground-state solvers.",
+      "Sampling with an excited-state solver must evaluate each requested geometry point and return the sampled points unchanged.",
+      "The sampled energies must preserve the multiple electronic-state energies produced by the excited-state solver for each geometry point.",
+      "Existing BOPESSampler behavior for ground-state NumPyMinimumEigensolver workflows and Morse-potential fitting must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "BOPESSampler",
+        "Path": "qiskit_nature/algorithms/pes_samplers/bopes_sampler.py",
+        "Input": "constructor: solver, bootstrap=False, num_bootstrap=None, extrapolator=None",
+        "Output": "",
+        "Description": "Configures potential-energy-surface sampling with either ground-state or excited-state solver workflows."
+      },
+      {
+        "Type": "Method",
+        "Name": "BOPESSampler.sample",
+        "Path": "qiskit_nature/algorithms/pes_samplers/bopes_sampler.py",
+        "Input": "problem, points, aux_operators=None",
+        "Output": "BOPESSamplerResult",
+        "Description": "Samples the configured solver at each geometry point and returns points, energies, and raw solver results."
+      },
+      {
+        "Type": "Class",
+        "Name": "BOPESSamplerResult",
+        "Path": "qiskit_nature/results/bopes_sampler_result.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Stores sampled geometry points and scalar or multi-state energy values from BOPESSampler."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_683_684",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:502b9d56227d2b767e65af5ae95bae2b9ddd60789b8270b4dc2fafaeb7622ab3",
+      "image_size": "1245023854"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "pyscf==2.2.1"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler_excited_eigensolver"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 4.21s",
+        "duration_seconds": 7.79
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler",
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_potential_interface"
+        ],
+        "result": "passed",
+        "summary": "2 passed in 6.30s",
+        "duration_seconds": 10.17
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler_excited_eigensolver"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 2.72s; AttributeError: 'ExcitedStatesEigensolver' object has no attribute 'get_qubit_operators'",
+        "duration_seconds": 8.74
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_h2_bopes_sampler",
+          "test/algorithms/pes_samplers/test_bopes_sampler.py::TestBOPES::test_potential_interface"
+        ],
+        "result": "passed",
+        "summary": "2 passed in 6.33s",
+        "duration_seconds": 12.48
+      }
+    }
+  }
+}

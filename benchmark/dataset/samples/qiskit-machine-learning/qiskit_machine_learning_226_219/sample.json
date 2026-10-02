@@ -1,0 +1,157 @@
+{
+  "instance": {
+    "id": 24,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_226_219",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/226",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/219",
+    "base_commit": "3cfecd6fd149920962e77dceaeaafcf233da9cf7",
+    "patch": "0f2d1e8fc0c20376f9c7dcc7e68b0840f6cd511b"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task tracks and binds trainable QuantumKernel feature-map parameters, but the core work is parameter API and state management."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/kernels/quantum_kernel.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "QuantumKernel should support feature maps that contain user-tunable parameters in addition to data-encoding parameters. Users need to mark which feature-map parameters are trainable, assign or reassign them independently of input data, inspect whether any remain unbound, and keep the original unbound feature map available while the working feature map is updated.",
+    "requirements": [
+      "QuantumKernel can be constructed with a feature map and an explicit collection of user-tunable parameters.",
+      "The kernel tracks user parameters separately from data parameters and exposes the current user-parameter bindings.",
+      "Assigning user-parameter values accepts both ordered values and parameter-to-value mappings.",
+      "Assigning the wrong number of ordered values or unknown parameters raises ValueError.",
+      "Repeated assignments update existing bindings without losing previous bound values.",
+      "The original unbound feature map remains available after user parameters have been bound."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QuantumKernel",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "constructor: feature_map, enforce_psd, batch_size, quantum_instance, user_parameters",
+        "Output": "QuantumKernel instance",
+        "Description": "Kernel class that can track tunable feature-map parameters separately from data-encoding parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.assign_user_parameters",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "values",
+        "Output": "",
+        "Description": "Assigns user-tunable feature-map parameters from an ordered sequence or parameter mapping and raises ValueError for incompatible assignments."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.bind_user_parameters",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "values",
+        "Output": "",
+        "Description": "Alternate binding entry point for assigning user-tunable parameter values."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.get_unbound_parameters",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "",
+        "Output": "list",
+        "Description": "Returns user parameters that are still not bound to numeric values."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.user_parameters",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "",
+        "Output": "Parameter collection",
+        "Description": "Property exposing the user-tunable parameters tracked by the kernel."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.user_param_binds",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "",
+        "Output": "mapping",
+        "Description": "Property exposing the current mapping from tracked user parameters to bound values or replacement parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernel.unbound_feature_map",
+        "Path": "qiskit_machine_learning/kernels/quantum_kernel.py",
+        "Input": "",
+        "Output": "QuantumCircuit",
+        "Description": "Property returning the original feature map before user-parameter values are bound."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "image": "benchmark-evaluation:qiskit_machine_learning_226_219",
+      "image_id": "sha256:95a9c2a70b72bfa75ec5c1c1ba42330637b1d812c83a303c5d21d97de3dd62ae",
+      "image_size": "1455551252",
+      "platform": "linux/amd64"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "qiskit-terra==0.19.2",
+        "qiskit-aer==0.10.4",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "summary": "1 passed in 1.57s",
+        "duration_seconds": 5.65,
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelFreeParameters::test_user_parameters"
+        ]
+      },
+      "pass_pass": {
+        "result": "passed",
+        "summary": "3 passed in 2.22s",
+        "duration_seconds": 5.77,
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector"
+        ]
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "summary": "TypeError: QuantumKernel.__init__() got an unexpected keyword argument 'user_parameters'; 1 failed in 1.84s",
+        "duration_seconds": 7.98,
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelFreeParameters::test_user_parameters"
+        ]
+      },
+      "pass_pass": {
+        "result": "passed",
+        "summary": "3 passed in 1.63s",
+        "duration_seconds": 7.63,
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector"
+        ]
+      }
+    }
+  },
+  "notes": "Selected fail-pass is the PR-added QuantumKernel user-parameter case. Pass-pass uses adjacent pre-existing construct_circuit behavior from the same test file. Rebuilt environment with setuptools<70 and pytest<8 so historical qiskit imports retain pkg_resources. Selected use-case-level selectors passed stability: patched fail-pass 3/3, patched pass-pass 3/3, base fail-pass failed 3/3 for missing user_parameters support, base pass-pass passed 3/3."
+}

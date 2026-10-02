@@ -1,0 +1,268 @@
+{
+  "id": 33,
+  "sample_id": "qiskit_machine_learning_400_436",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "ea94895f607065b2eb24a087c710dfa332debc24",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 13,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/output_shape": 6,
+      "quantum_semantics/qnn_gradient_consistency": 2,
+      "interface/property_mutability": 2,
+      "quantum_semantics/qnn_representation_equivalence": 2,
+      "interface/class_label_roundtrip": 1,
+      "general_semantics/model_training_performance": 3,
+      "quantum_semantics/estimator_expectation_values": 1,
+      "interface/unfitted_state_error": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_01__True___default___0__2__True_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Dense/sparse outputs and gradients keep batch and configured output dimensions."
+        }
+      ],
+      "rationale": "Sparse=True, default sampler, raw bitstring output, batch 2, input gradients enabled; _verify_qnn checks result container and gradient shapes at this call."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_04__True___default___1__2__False_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Interpreted output keeps declared dimensions and gradient availability."
+        }
+      ],
+      "rationale": "Sparse=True, default sampler, one-dimensional interpretation, batch 2, input gradients disabled in the latter configurations."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_07__True___shots___0__2__True_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Shot sampler output and gradient containers match their configured dimensions."
+        }
+      ],
+      "rationale": "Sparse=True, finite-shot sampler, raw output, batch 2, input gradients enabled; this test checks structure rather than exact shot probabilities."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_13__False___default___0__2__True_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Dense output and gradients retain batch and bitstring dimensions."
+        }
+      ],
+      "rationale": "Sparse=False, default sampler, raw output, batch 2, input gradients enabled."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_18__False___default___2__2__False_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Dense two-dimensional interpretation retains its declared output shape."
+        }
+      ],
+      "rationale": "Sparse=False, default sampler, 2D interpret function, batch 2, input gradients disabled; the helper asserts shapes and None where appropriate."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_1__True__0__2_",
+      "label": "quantum_semantics/qnn_gradient_consistency",
+      "assertions": [
+        {
+          "line": 258,
+          "expected": "SamplerQNN input and weight gradients agree with finite differences of forward probabilities."
+        }
+      ],
+      "rationale": "Sparse=True, raw output, batch 2; this explicitly differentiates quantum sampling probabilities and compares numeric derivatives."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_4__False__0__2_",
+      "label": "quantum_semantics/qnn_gradient_consistency",
+      "assertions": [
+        {
+          "line": 258,
+          "expected": "Dense SamplerQNN derivatives agree with finite-difference forward probabilities."
+        }
+      ],
+      "rationale": "Sparse=False, raw output, batch 2; same derivative check on a distinct output representation."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 290,
+          "expected": "Input/weight parameter getters and input-gradient setter expose assigned values."
+        }
+      ],
+      "rationale": "The case checks public properties, including false-by-default and true-after-setter."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_1__True__True_",
+      "label": "quantum_semantics/qnn_representation_equivalence",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "SamplerQNN forward probabilities and gradients match CircuitQNN."
+        }
+      ],
+      "rationale": "The selected True/True configuration compares equivalent circuit executions in two QNN representations."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_4__False__False_",
+      "label": "quantum_semantics/qnn_representation_equivalence",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Dense SamplerQNN forward result and gradients match CircuitQNN."
+        }
+      ],
+      "rationale": "The selected False/False configuration independently checks parity between implementations."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_079___sampler___2___zz_feature_map____real_amplitudes___None___binary__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 163,
+          "expected": "Sampler-backed VQC prediction is one of the original binary labels."
+        }
+      ],
+      "rationale": "The selected sampler VQC test also checks score, but the explicit prediction assertion checks exposed class-label representation."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized_2_sampler",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "Sampler-backed VQC with a nonparameterized circuit exceeds the score threshold."
+        }
+      ],
+      "rationale": "This selected sampler branch has a classifier score assertion only."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays_6___sampler____cross_entropy__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 306,
+          "expected": "Sampler VQC on sparse arrays reaches the score threshold."
+        }
+      ],
+      "rationale": "Sparse arrays are input setup; the explicit assertion is predictive score."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 361,
+          "expected": "Default EstimatorQNN observable yields referenced expectation values and derivatives."
+        }
+      ],
+      "rationale": "The delegated helper compares forward expectations and backward derivatives to quantum references."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_01__True__True___statevector___0__1_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 211,
+          "expected": "CircuitQNN keeps the expected result and gradient shapes."
+        }
+      ],
+      "rationale": "The selected CircuitQNN variant delegates to a helper asserting container types and dimensions."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Neural-network input-gradient property changes from false to true."
+        }
+      ],
+      "rationale": "This test checks public getter and setter state."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+      "label": "interface/unfitted_state_error",
+      "assertions": [
+        {
+          "line": 458,
+          "expected": "Unfitted classifier property access raises QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "The selected case checks pre-fit lifecycle errors."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "QSVC scores 0.5."
+        }
+      ],
+      "rationale": "The assertion is an ordinary classifier score."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/algorithms/classifiers/test_qsvc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/algorithms/classifiers/test_vqc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/neural_networks/test_circuit_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/neural_networks/test_circuit_vs_sampler_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/neural_networks/test_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/neural_networks/test_neural_network.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ea94895f607065b2eb24a087c710dfa332debc24/test/neural_networks/test_sampler_qnn.py"
+  ],
+  "rationale": "Each of the 18 selected tests was rechecked, including the SamplerQNN configuration encoded in each parameterized selector and delegated helper assertions."
+}

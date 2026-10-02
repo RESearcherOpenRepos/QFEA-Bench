@@ -1,0 +1,87 @@
+{
+  "rationale": "Test bodies and referenced helpers at the exact patched commit were reviewed individually against the existing primary-assertion protocol. Setup and quantum repository membership do not determine the label. Parametrized cases retain distinct selectors.",
+  "decisions": [
+    {
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 158,
+          "expected": "Boolean-array input yields the exact H2 CASCI total energy including nuclear repulsion."
+        }
+      ],
+      "rationale": "Boolean-array input yields the exact H2 CASCI total energy including nuclear repulsion."
+    },
+    {
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 124,
+          "expected": "Selected CI reproduces the N2 reference energy and spin-square value."
+        },
+        {
+          "line": 125,
+          "expected": "Selected CI reproduces the N2 reference energy and spin-square value."
+        }
+      ],
+      "rationale": "Selected CI reproduces the N2 reference energy and spin-square value."
+    },
+    {
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 229,
+          "expected": "max_dim controls spin-resolved CI dimensions; spin-square is a secondary assertion at 231/255, consistently with ID110."
+        },
+        {
+          "line": 230,
+          "expected": "max_dim controls spin-resolved CI dimensions; spin-square is a secondary assertion at 231/255, consistently with ID110."
+        },
+        {
+          "line": 253,
+          "expected": "max_dim controls spin-resolved CI dimensions; spin-square is a secondary assertion at 231/255, consistently with ID110."
+        },
+        {
+          "line": 254,
+          "expected": "max_dim controls spin-resolved CI dimensions; spin-square is a secondary assertion at 231/255, consistently with ID110."
+        }
+      ],
+      "rationale": "max_dim controls spin-resolved CI dimensions; spin-square is a secondary assertion at 231/255, consistently with ID110."
+    },
+    {
+      "label": "quantum_semantics/hamiltonian_domain_validity",
+      "assertions": [
+        {
+          "line": 290,
+          "expected": "All-zero occupation strings are invalid for the specified nonzero electron sector and must be rejected unless occupancy-based recovery is enabled."
+        }
+      ],
+      "rationale": "The rejected condition is physical electron-number admissibility, not merely an input type or array shape."
+    },
+    {
+      "label": "general_semantics/binary_integer_conversion",
+      "assertions": [
+        {
+          "line": 384,
+          "expected": "57-bit Boolean-to-integer conversion preserves every binary digit."
+        }
+      ],
+      "rationale": "57-bit Boolean-to-integer conversion preserves every binary digit."
+    },
+    {
+      "label": "general_semantics/binary_integer_conversion",
+      "assertions": [
+        {
+          "line": 393,
+          "expected": "64-bit Boolean-to-integer conversion preserves every binary digit."
+        }
+      ],
+      "rationale": "64-bit Boolean-to-integer conversion preserves every binary digit."
+    }
+  ],
+  "review_provenance": {
+    "reviewer": "Codex",
+    "method": "Individual source-assertion review under existing protocol; explicit saved decisions, not automatic keyword classification.",
+    "date": "2026-10-02",
+    "human_agreement": "Author confirmation is recorded separately; these evidence records do not simulate three independent human votes."
+  }
+}

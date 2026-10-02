@@ -1,0 +1,161 @@
+diff --git a/openqaoa/qaoa_parameters/baseparams.py b/openqaoa/qaoa_parameters/baseparams.py
+index c934dcb..13560e8 100644
+--- a/openqaoa/qaoa_parameters/baseparams.py
++++ b/openqaoa/qaoa_parameters/baseparams.py
+@@ -16,8 +16,9 @@ from abc import ABC
+ from typing import List, Union, Tuple, Any, Callable, Iterable, Type
+ import numpy as np
+ 
+-from .operators import Hamiltonian
++from .operators import Hamiltonian, PauliOp
+ from .hamiltonianmapper import HamiltonianMapper
++from .gatemap import RotationGateMap, RXGateMap, RXXGateMap
+ 
+ 
+ 
+@@ -122,11 +123,16 @@ class QAOACircuitParams(VQACircuitParams):
+     ----------    
+     cost_hamiltonian: `Hamiltonian` 
+ 
+-    mixer_hamiltonian: `Hamiltonian`
++    mixer_block: `Union[Hamiltonian, List[RotationGateMap]]`
++        Either a Hamiltonian or a list of RotationGateMap instances defining the mixer.
+ 
+     p: `int`
+         Number of QAOA layers; defaults to 1 if not specified
+ 
++    mixer_coeffs: `List[Union[float, int]]`
++        Coefficients associated with each gate map in the mixer block.
++        If empty, defaults to 1.0 for each term.
++
+     Attributes
+     ----------
+         All the parameters specified above are initialised as attributes in __init__
+@@ -142,14 +148,74 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+     def __init__(self,
+                  cost_hamiltonian: Hamiltonian,
+-                 mixer_hamiltonian: Hamiltonian,
+-                 p: int):
++                 mixer_block: Union[Hamiltonian, List[RotationGateMap]] = None,
++                 p: int = 1,
++                 mixer_coeffs: List[Union[float, int]] = [],
++                 mixer_hamiltonian: Hamiltonian = None):
+ 
+         super().__init__(algorithm='QAOA')
+         self.cost_hamiltonian = cost_hamiltonian
+-        self.mixer_hamiltonian = mixer_hamiltonian
+         self.qureg = cost_hamiltonian.qureg
+         self.p = p
++        
++        # Backward compatibility: support mixer_hamiltonian keyword argument
++        if mixer_hamiltonian is not None:
++            mixer_block = mixer_hamiltonian
++        
++        # Process mixer_block: can be a Hamiltonian or a list of gate maps
++        if isinstance(mixer_block, Hamiltonian):
++            self.mixer_hamiltonian = mixer_block
++            if mixer_coeffs:
++                # If mixer_coeffs provided with a Hamiltonian, validate length
++                expected_len = len(self.mixer_hamiltonian.single_qubit_coeffs) + len(self.mixer_hamiltonian.pair_qubit_coeffs)
++                if len(mixer_coeffs) != expected_len:
++                    raise ValueError(f"Number of mixer coefficients ({len(mixer_coeffs)}) does not match "
++                                     f"the number of mixer terms ({expected_len})")
++        elif isinstance(mixer_block, list):
++            # Validate that all elements are RotationGateMap instances
++            if not all(isinstance(g, RotationGateMap) for g in mixer_block):
++                raise TypeError("All elements of mixer_block must be RotationGateMap instances")
++            
++            # Separate single-qubit and two-qubit gate maps
++            single_qubit_gates = []
++            two_qubit_gates = []
++            for g in mixer_block:
++                if hasattr(g, 'qubit_2'):
++                    two_qubit_gates.append(g)
++                else:
++                    single_qubit_gates.append(g)
++            
++            # Validate mixer_coeffs
++            n_single = len(single_qubit_gates)
++            n_pair = len(two_qubit_gates)
++            n_total = n_single + n_pair
++            
++            if mixer_coeffs:
++                if len(mixer_coeffs) != n_total:
++                    raise ValueError(f"Number of mixer coefficients ({len(mixer_coeffs)}) does not match "
++                                     f"the number of mixer gate maps ({n_total})")
++            else:
++                # Default coefficients: 1.0 for each gate map
++                mixer_coeffs = [1.0] * n_total
++            
++            # Build a synthetic Hamiltonian from the gate maps
++            pauli_terms = []
++            coeffs_list = []
++            
++            for i, g in enumerate(single_qubit_gates):
++                coeff = mixer_coeffs[i]
++                pauli_terms.append(PauliOp('X', (g.qubit_1,)))
++                coeffs_list.append(coeff)
++            
++            for i, g in enumerate(two_qubit_gates):
++                coeff = mixer_coeffs[n_single + i]
++                pauli_terms.append(PauliOp('XX', (g.qubit_1, g.qubit_2)))
++                coeffs_list.append(coeff)
++            
++            self.mixer_hamiltonian = Hamiltonian(pauli_terms, coeffs_list, constant=0)
++            self._mixer_gate_maps = mixer_block
++        else:
++            raise TypeError("mixer_block must be a Hamiltonian or a list of RotationGateMap instances")
+ 
+     def __repr__(self):
+         """Return an overview over the parameters and hyperparameters
+diff --git a/openqaoa/qaoa_parameters/gatemap.py b/openqaoa/qaoa_parameters/gatemap.py
+index 5040547..f7eff5c 100644
+--- a/openqaoa/qaoa_parameters/gatemap.py
++++ b/openqaoa/qaoa_parameters/gatemap.py
+@@ -145,6 +145,21 @@ class RYGateMap(RotationGateMap):
+ 
+ 
+ class RXGateMap(RotationGateMap):
++    """
++    Represents a single-qubit X rotation in a custom mixer.
++    
++    Parameters
++    ----------
++    qubit_1: int
++        The qubit index on which the X rotation acts.
++    pauli_label: List, optional
++        Internal label for the gate. Auto-generated if not provided.
++    """
++
++    def __init__(self, qubit_1: int, pauli_label: List = None):
++        if pauli_label is None:
++            pauli_label = [0]
++        super().__init__(qubit_1, pauli_label)
+ 
+     @property
+     def _decomposition_standard(self) -> List[Tuple]:
+@@ -191,6 +206,23 @@ class TwoQubitRotationGateMap(RotationGateMap):
+ 
+ 
+ class RXXGateMap(TwoQubitRotationGateMap):
++    """
++    Represents a two-qubit XX rotation in a custom mixer.
++    
++    Parameters
++    ----------
++    qubit_1: int
++        The first qubit index.
++    qubit_2: int
++        The second qubit index.
++    pauli_index: List, optional
++        Internal label for the gate. Auto-generated if not provided.
++    """
++
++    def __init__(self, qubit_1: int, qubit_2: int, pauli_index: List = None):
++        if pauli_index is None:
++            pauli_index = [0]
++        super().__init__(qubit_1, qubit_2, pauli_index)
+ 
+     @property
+     def _decomposition_standard(self) -> List[Tuple]:

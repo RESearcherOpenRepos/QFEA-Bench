@@ -1,0 +1,10 @@
+--- a/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
++++ b/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
+@@ -106,6 +106,6 @@
+         svc.fit(kernel_matrix, labels)
+ 
+         # The loss is the classification error (1 - accuracy).
+-        loss = 1.0 - svc.score(kernel_matrix, labels)
++        loss = np.sum(np.abs(svc.dual_coef_[0])) - 0.5 * (svc.dual_coef_[0] @ kernel_matrix[np.ix_(svc.support_, svc.support_)] @ svc.dual_coef_[0])
+ 
+         return float(loss)

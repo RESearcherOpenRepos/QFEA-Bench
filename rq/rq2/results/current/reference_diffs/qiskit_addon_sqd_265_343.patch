@@ -1,0 +1,116 @@
+diff --git a/qiskit_addon_sqd/fermion.py b/qiskit_addon_sqd/fermion.py
+index 567ede6..7a84c0c 100644
+--- a/qiskit_addon_sqd/fermion.py
++++ b/qiskit_addon_sqd/fermion.py
+@@ -1,6 +1,6 @@
+ # This code is a Qiskit project.
+ #
+-# (C) Copyright IBM 2024.
++# (C) Copyright IBM 2024, 2026.
+ #
+ # This code is licensed under the Apache License, Version 2.0. You may
+ # obtain a copy of this license in the LICENSE.txt file in the root directory
+@@ -204,7 +204,7 @@ class _IterationState:
+ def diagonalize_fermionic_hamiltonian(
+     one_body_tensor: np.ndarray,
+     two_body_tensor: np.ndarray,
+-    bit_array: BitArray,
++    bit_array: BitArray | np.ndarray,
+     samples_per_batch: int,
+     norb: int,
+     nelec: tuple[int, int],
+@@ -231,10 +231,11 @@ def diagonalize_fermionic_hamiltonian(
+     Args:
+         one_body_tensor: The one-body tensor of the Hamiltonian.
+         two_body_tensor: The two-body tensor of the Hamiltonian.
+-        bit_array: Array of sampled bitstrings. Each bitstring should have both the
+-            alpha part and beta part concatenated together, with the alpha part
+-            concatenated on the right-hand side, like this:
+-            ``[b_N, ..., b_0, a_N, ..., a_0]``.
++        bit_array: Array of sampled bitstrings, provided as either a Qiskit
++            :class:`~qiskit.primitives.BitArray` or a two-dimensional NumPy boolean
++            array. Each bitstring should have both the alpha part and beta part
++            concatenated together, with the alpha part concatenated on the right-hand
++            side, like this: ``[b_N, ..., b_0, a_N, ..., a_0]``.
+         samples_per_batch: The number of bitstrings to include in each subsampled batch
+             of bitstrings.
+         norb: The number of spatial orbitals.
+@@ -392,8 +393,12 @@ def diagonalize_fermionic_hamiltonian(
+     carryover_strings_a = np.array([], dtype=np.int64)
+     carryover_strings_b = np.array([], dtype=np.int64)
+ 
+-    # Convert BitArray into bitstring and probability arrays
+-    raw_bitstrings, raw_probs = bit_array_to_arrays(bit_array)
++    # Convert the samples into bitstring and probability arrays
++    if isinstance(bit_array, BitArray):
++        raw_bitstrings, raw_probs = bit_array_to_arrays(bit_array)
++    else:
++        raw_bitstrings, counts = np.unique(bit_array, axis=0, return_counts=True)
++        raw_probs = counts / len(bit_array)
+ 
+     # Bundle the loop-invariant configuration once, so the per-iteration helper
+     # calls only need to pass the values that change between iterations.
+diff --git a/releasenotes/notes/accept-numpy-bitstrings-d944a5825e0ea36f.yaml b/releasenotes/notes/accept-numpy-bitstrings-d944a5825e0ea36f.yaml
+new file mode 100644
+index 0000000..0ad2b93
+--- /dev/null
++++ b/releasenotes/notes/accept-numpy-bitstrings-d944a5825e0ea36f.yaml
+@@ -0,0 +1,6 @@
++---
++features:
++  - |
++    :func:`qiskit_addon_sqd.fermion.diagonalize_fermionic_hamiltonian` now accepts
++    sampled bitstrings as a two-dimensional NumPy boolean array in addition to a
++    Qiskit :class:`~qiskit.primitives.BitArray`.
+diff --git a/test/test_fermion.py b/test/test_fermion.py
+index dcb3777..65e763b 100644
+--- a/test/test_fermion.py
++++ b/test/test_fermion.py
+@@ -1,6 +1,6 @@
+ # This code is a Qiskit project.
+ #
+-# (C) Copyright IBM 2024.
++# (C) Copyright IBM 2024, 2026.
+ #
+ # This code is licensed under the Apache License, Version 2.0. You may
+ # obtain a copy of this license in the LICENSE.txt file in the root directory
+@@ -124,6 +124,39 @@ class TestFermion(unittest.TestCase):
+         self.assertAlmostEqual(result.energy + nuclear_repulsion_energy, exact_energy, places=2)
+         self.assertAlmostEqual(result.sci_state.spin_square(), expected_spin_square)
+ 
++    def test_diagonalize_fermionic_hamiltonian_numpy_bitstrings(self):
++        """Test diagonalization with bitstrings stored in a NumPy array."""
++        mol = pyscf.gto.Mole()
++        mol.build(
++            atom=[["H", (0, 0, 0)], ["H", (0, 0, 0.735)]],
++            basis="sto-3g",
++        )
++
++        scf = pyscf.scf.RHF(mol).run()
++        norb = mol.nao_nr()
++        nelec = (1, 1)
++        cas = pyscf.mcscf.CASCI(scf, norb, nelec)
++        hcore, nuclear_repulsion_energy = cas.get_h1cas()
++        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(), norb)
++        cas.kernel()
++
++        bitstrings = BitArray.from_samples(
++            ["0101", "0110", "1001", "1010"], num_bits=2 * norb
++        ).to_bool_array()
++
++        result = diagonalize_fermionic_hamiltonian(
++            hcore,
++            eri,
++            bitstrings,
++            samples_per_batch=4,
++            norb=norb,
++            nelec=nelec,
++            max_iterations=1,
++            seed=self.rng,
++        )
++
++        self.assertAlmostEqual(result.energy + nuclear_repulsion_energy, cas.e_tot)
++
+     def test_diagonalize_fermionic_hamiltonian_max_dim(self):
+         """Test diagonalize_fermionic_hamiltonian with maximum dimension."""
+         # Build N2 molecule

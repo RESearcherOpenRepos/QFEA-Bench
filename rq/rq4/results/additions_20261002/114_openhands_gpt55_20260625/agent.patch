@@ -1,0 +1,170 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..1056759
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,87 @@
++"""Cross-entropy loss for QNN classifiers."""
++
++from typing import Union
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for probability-valued classifier outputs."""
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self.eps = eps
++
++    @property
++    def loss_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for cross-entropy loss calculation."""
++        return ("f",)
++
++    @property
++    def gradient_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for cross-entropy loss gradient calculation."""
++        if self._opt_param_op:
++            return ("f", "dfdp", "dfdop")
++        return ("f", "dfdp")
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        """Calculates binary or multiple-output cross-entropy loss."""
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        f = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++        weights = self._get_weights(ground_truth, kwargs)
++
++        if self._is_multiple_output(f, ground_truth, kwargs):
++            return -np.sum(weights * ground_truth * np.log(f))
++
++        return -np.sum(weights * (ground_truth * np.log(f) + (1 - ground_truth) * np.log(1 - f)))
++
++    def gradient(
++        self, value_dict: dict, **kwargs
++    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
++        """Calculates gradients from supplied model-output derivatives."""
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        f = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++        weights = self._get_weights(ground_truth, kwargs)
++        multiple_output = self._is_multiple_output(f, ground_truth, kwargs)
++
++        if multiple_output:
++            diff = -weights * ground_truth / f
++            d_p = self._contract_multiple(diff, value_dict["dfdp"])
++        else:
++            diff = weights * ((1 - ground_truth) / (1 - f) - ground_truth / f)
++            d_p = self._contract_single(diff, value_dict["dfdp"])
++
++        if not self._opt_param_op:
++            return d_p
++
++        if multiple_output:
++            d_op = self._contract_multiple(diff, value_dict["dfdop"])
++        else:
++            d_op = self._contract_single(diff, value_dict["dfdop"])
++        return d_p, d_op
++
++    def _get_weights(self, ground_truth: np.ndarray, kwargs: dict) -> np.ndarray:
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            return np.asarray(kwargs["weights"])
++        return np.ones_like(ground_truth)
++
++    def _is_multiple_output(self, f: np.ndarray, ground_truth: np.ndarray, kwargs: dict) -> bool:
++        return bool(kwargs.get("multiple_output", False)) or (f.ndim > 1 and ground_truth.ndim > 1)
++
++    def _contract_single(self, diff: np.ndarray, derivative: np.ndarray) -> np.ndarray:
++        if derivative.shape[0] == 0:
++            return np.array([])
++        return np.einsum("j,jk->k", diff, derivative)
++
++    def _contract_multiple(self, diff: np.ndarray, derivative: np.ndarray) -> np.ndarray:
++        if derivative.shape[0] == 0:
++            return np.array([])
++        return np.einsum("ij,ijk->k", diff, derivative)
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 9f173c0..1e2ee48 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -22,7 +22,7 @@ else:
+ from tqdm import tqdm
+ 
+ from .base_qnn import BaseQNN
+-from .loss import VarianceLoss
++from .loss import CrossEntropyLoss, VarianceLoss
+ from .loss.qnn_loss_base import QNNLossBase
+ from .util.training import train_mini_batch, train, ShotControlBase
+ 
+@@ -169,6 +169,10 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             np.ndarray : The predicted values.
+         """
+         pred = self._predict(X)
++        if isinstance(self.loss, CrossEntropyLoss):
++            pred = np.clip(pred, self.loss.eps, 1.0 - self.loss.eps)
++            if pred.ndim == 1:
++                pred = pred >= 0.5
+         return self._label_binarizer.inverse_transform(pred)
+ 
+     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+@@ -181,6 +185,8 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             np.ndarray : The probabilities
+         """
+         pred = self._predict(X)
++        if isinstance(self.loss, CrossEntropyLoss):
++            pred = np.clip(pred, self.loss.eps, 1.0 - self.loss.eps)
+         if pred.ndim == 1:
+             return np.vstack([1 - pred, pred]).T
+ 

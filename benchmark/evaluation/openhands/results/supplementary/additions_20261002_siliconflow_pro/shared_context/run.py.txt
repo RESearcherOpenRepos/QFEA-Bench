@@ -1,0 +1,191 @@
+"""One authorized recovery workflow per pending Pro sample; retain existing evidence."""
+import copy, datetime, hashlib, json, os, shutil, subprocess, sys, time
+from collections import Counter
+from pathlib import Path
+B=Path(__file__).resolve().parent
+ROOT=B.parents[2]
+sys.path.insert(0,str(ROOT))
+from benchmark.evaluation.scripts import evaluate_agent_preds as ev
+from benchmark.evaluation.common.run_io import update_prediction_files
+from benchmark.evaluation.common.token_usage import token_counts_from_usage
+SAMPLES=ROOT/'benchmark/dataset/samples'
+LEDGER=ROOT/'benchmark/evaluation/additions_20261001_aliyun/billing_jobs.json'
+def read(p):return json.loads(Path(p).read_text())
+def lines(p):return [json.loads(l) for l in Path(p).read_text().splitlines() if l.strip()] if Path(p).exists() else []
+def save(p,d):
+ p=Path(p);t=p.with_suffix(p.suffix+'.tmp');t.write_text(json.dumps(d,indent=2)+'\n');t.replace(p)
+def status(phase,**kw):
+ d={'time':datetime.datetime.now().isoformat(),'phase':phase,**kw};save(B/'status.json',d);print(json.dumps(d),flush=True)
+def good_source(agent,p,sid):
+ t=p/sid/(sid+'.traj.json')
+ if not t.exists():return False
+ if agent=='minisweagent':return read(t)['info']['exit_status'] in {'Submitted','LimitsExceeded','RepeatedCommandLoop'}
+ rows=[r for r in lines(p/'output.critic_attempt_1.jsonl') if r['instance_id']==sid]
+ return len(rows)==1 and not rows[0].get('error')
+def prepare():
+ jobs=[]
+ for agent in ['minisweagent','openhands']:
+  j=next(j for j in read(LEDGER) if j['id']==agent+'_deepseek_v4_pro')
+  old=ROOT/j['out'];run=old.parent;out=run/'additions_20261002_siliconflow';out.mkdir(exist_ok=True)
+  ids=j['pending_ids'];ret=read(j['result_source']);pred=read(j['preds_source'])['predictions']
+  assert len(ids)==(1 if agent=='minisweagent' else 7)
+  assert len(ret['results'])+len(ids)==13 and {r['instance_id'] for r in ret['results']}==set(pred)
+  assert set(pred).isdisjoint(ids)
+  assert read(ROOT/j['target'])==read(old/'results.before_additions.json')
+  assert read(run/'preds.json')==read(old/'preds.json.before_additions')
+  sources={}
+  for sid in pred:
+   matches=[]
+   for name in ['generation','approved_generation','first_attempt_generation']:
+    p=old/name
+    if (p/'preds.json').exists() and read(p/'preds.json')['predictions'].get(sid)==pred[sid] and good_source(agent,p,sid):matches.append(p)
+   assert matches,(sid,'no verified retained source')
+   sources[sid]=str(matches[-1]);assert not (run/sid).exists()
+  for name in ['results.before_additions.json','preds.json.before_additions','preds.jsonl.before_additions']:
+   if not (out/name).exists():shutil.copy2(old/name,out/name)
+  save(out/'results_retained.json',ret);save(out/'preds_retained.json',{'predictions':pred});save(out/'retained_sources.json',sources)
+  allinstances=lines(old/'instances.secure.jsonl');byid={(r['instance_id'] if 'instance_id' in r else r['problem_statement']['id']):r for r in allinstances}
+  save(out/'sample_ids.json',ids);save(out/'cohort_ids.json',list(byid))
+  (out/'instances.secure.jsonl').write_text(''.join(json.dumps(byid[sid])+'\n' for sid in ids))
+  suffix='yaml' if agent=='minisweagent' else 'json';config=ROOT/f'benchmark/evaluation/{agent}/config/siliconflow_deepseek_v4_pro_once.{suffix}'
+  shutil.copy2(config,out/('model.'+suffix))
+  stages={}
+  for sid in ids:
+   p=Path('/private/tmp')/f'qfea-siliconflow-pro-{agent}-20261002-{sid}.jsonl';p.write_text(json.dumps(byid[sid])+'\n');stages[sid]=str(p)
+  manifest=read(old/'manifest.json');manifest.update(provider='siliconflow',config=str(out/('model.'+suffix)),config_sha256=hashlib.sha256(config.read_bytes()).hexdigest(),retained_count=len(pred),pending_ids=ids,note='One authorized recovery per pending sample. Retained results unchanged; three validations per applicable patch. No outcome-based reruns.')
+  save(out/'manifest.json',manifest)
+  jobs.append({'id':j['id'],'agent':agent,'out':str(out),'old':str(old),'target':str(ROOT/j['target']),'ids':ids,'stages':stages})
+ save(B/'jobs.json',jobs);print('Prepared',[(j['agent'],len(j['ids'])) for j in jobs])
+def health():
+ subprocess.run(['docker','run','--rm','--network','none','--platform','linux/arm64','benchmark-minisweagent-qiskit_addon_sqd_148_230:latest','python','-c',"import tempfile,os;f=tempfile.TemporaryFile();f.write(b'health');f.flush();os.fsync(f.fileno())"],check=True,capture_output=True,timeout=30)
+def containers(image):return set(subprocess.check_output(['docker','ps','--filter','ancestor='+image,'--format','{{.ID}}'],text=True,timeout=20).split())
+def collect(j,sid):
+ out=Path(j['out']);gen=out/'generation';p=out/'attempts'/sid
+ assert good_source(j['agent'],p,sid),(sid,'incomplete workflow')
+ text=(p/sid/(sid+'.traj.json')).read_text().lower()
+ assert 'input/output error' not in text and 'read-only file system' not in text,(sid,'storage error')
+ pred=read(p/'preds.json')['predictions'];assert set(pred)=={sid}
+ if not (gen/sid).exists():shutil.copytree(p/sid,gen/sid)
+ update_prediction_files(gen,pred[sid])
+ if j['agent']=='openhands':
+  for name in ['output.jsonl','output.critic_attempt_1.jsonl']:
+   old={r['instance_id']:r for r in lines(gen/name)};fresh=lines(p/name);assert len(fresh)==1
+   old[sid]=fresh[0];(gen/name).write_text(''.join(json.dumps(r)+'\n' for r in old.values()))
+ save(out/(sid+'.collected.json'),{'workflow_complete':True,'instance_id':sid})
+def provider(j,sid):
+ p=Path(j['out'])/'providers.json'
+ return read(p).get(sid,'siliconflow') if p.exists() else 'siliconflow'
+def accounting(j):
+ out=Path(j['out']);gen=out/'generation';rows=[]
+ for sid in j['ids']:
+  if not (out/(sid+'.collected.json')).exists():continue
+  if j['agent']=='openhands':
+   raw=next(r for r in lines(gen/'output.critic_attempt_1.jsonl') if r['instance_id']==sid);u=token_counts_from_usage(raw['metrics']['accumulated_token_usage'])
+  else:
+   messages=read(gen/sid/(sid+'.traj.json'))['messages'];usages=[token_counts_from_usage(((m.get('extra') or {}).get('response') or {}).get('usage')) for m in messages if m.get('role')=='assistant']
+   u={k:sum(x[k] for x in usages) for k in ['input_tokens','cached_input_tokens','output_tokens']}
+  pt,ct,cached=u['input_tokens'],u['output_tokens'],u['cached_input_tokens'];assert pt>=cached>=0 and pt>0 and ct>0
+  pr=provider(j,sid)
+  rows.append({'instance_id':sid,'provider':pr,**u,'estimated_cost_cny':round(((pt-cached)*12+cached+ct*24)/1e6,9) if pr=='siliconflow' else None})
+ official=[r for r in rows if r['provider']=='deepseek-official']
+ sf=sum(r['estimated_cost_cny'] for r in rows if r['provider']=='siliconflow')
+ d={'provider':'mixed' if official else 'siliconflow','workflows':rows,'estimated_workflow_cost_cny':None if official else round(sf,9),'siliconflow_completed_workflow_cost_cny':round(sf,9),'official_cost_estimate':None,'actual_billed_cost':None,'siliconflow_per_million_tokens_cny':{'uncached_input':12,'cached_input':1,'output':24},'pricing_source':'https://siliconflow.cn/pricing','unpriced_official_instance_ids':[r['instance_id'] for r in official],'excluded_interrupted_attempts':[str(p) for p in out.glob('*quota_interrupted*')],'interrupted_attempt_cost':None,'note':'Observed completed-workflow usage only. Official usage is recorded separately and awaits verified official pricing; never priced at SiliconFlow rates. Archived incomplete OpenHands usage may be missing; its cost is unknown, not zero. Actual account bill unavailable.'};save(out/'cost_accounting.json',d);return d
+
+def evaluate(j):
+ out=Path(j['out']);p=out/'results_siliconflow.json'
+ if p.exists():shutil.copy2(p,p.with_suffix('.json.partial'))
+ d=ev.evaluate_predictions(out/'generation/preds.json',SAMPLES,p,timeout=600,workers=1,stable_runs=3,setup_retries=1,resume=True)
+ for r in d['results']:
+  assert not r.get('eval_infra_failed') and not r.get('timed_out'),r['instance_id']
+  if r['patch_applied']:
+   assert len(r['eval_runs'])==3 and r['resolved']==all(e['resolved'] for e in r['eval_runs'])
+   assert all(not e.get('eval_infra_failed') and not e.get('timed_out') for e in r['eval_runs'])
+  pr=provider(j,r['instance_id'])
+  r.update(new_agent_runs=1,valid_agent_runs=1,generation_provider=pr,generation_endpoint=('https://api.deepseek.com' if pr=='deepseek-official' else 'https://api.siliconflow.cn/v1'),cohort=out.name)
+ frozen=out/'results_siliconflow.before_official.json'
+ if frozen.exists():
+  retained={r['instance_id']:r for r in read(frozen)['results']}
+  for idx,r in enumerate(d['results']):
+   if r['instance_id'] in retained:
+    orig=retained[r['instance_id']]
+    assert r['resolved']==orig['resolved'] and r['eval_runs']==orig['eval_runs']
+    d['results'][idx]=copy.deepcopy(orig)
+ d['run_provenance']={'provider':'mixed' if any(provider(j,sid)=='deepseek-official' for sid in j['ids']) else 'siliconflow','new_agent_runs_per_sample':1,'patch_validation_runs':3,'pending_count':len(j['ids']),'completed_count':len(d['results'])};save(p,d);return d
+
+def finish(j,d):
+ out=Path(j['out']);run=out.parent;gen=out/'generation';combined=out/'combined_generation';combined.mkdir(exist_ok=True)
+ before=read(out/'results.before_additions.json');oldpred=read(out/'preds.json.before_additions')['predictions'];ret=read(out/'results_retained.json');rp=read(out/'preds_retained.json')['predictions'];fresh=read(gen/'preds.json')['predictions'];ids=read(out/'cohort_ids.json')
+ assert set(fresh)==set(j['ids']) and {r['instance_id'] for r in d['results']}==set(fresh)
+ assert read(j['target'])==before and read(run/'preds.json')['predictions']==oldpred
+ assert read(Path(j['old'])/'results_billing_valid_subset.json')==ret
+ predictions=rp|fresh;assert set(predictions)==set(ids) and len(ids)==13
+ sources=read(out/'retained_sources.json');raw=[]
+ for sid in ids:
+  source=gen if sid in fresh else Path(sources[sid]);assert good_source(j['agent'],source,sid)
+  assert read(source/'preds.json')['predictions'][sid]==predictions[sid]
+  assert not (run/sid).exists();shutil.copytree(source/sid,combined/sid);update_prediction_files(combined,predictions[sid])
+  if j['agent']=='openhands':raw.append(next(r for r in lines(source/'output.critic_attempt_1.jsonl') if r['instance_id']==sid))
+ if raw:
+  for name in ['output.jsonl','output.critic_attempt_1.jsonl']:(combined/name).write_text(''.join(json.dumps(r)+'\n' for r in raw))
+ rows=copy.deepcopy(ret['results']+d['results']);paths={read(p)['instance']['instance_id']:p for p in ev.sample_files(SAMPLES)}
+ def payload(rs,predfile,total):
+  meta={r['instance_id']:ev.sample_repo_metadata(paths[r['instance_id']]) for r in rs};v=ev.build_evaluation_payload(results=copy.deepcopy(rs),predictions=ev.load_predictions(predfile),sample_metadata_by_id=meta,expected_total=total,model_name_or_path='deepseek-v4-pro');v['results']=rs;return v
+ cost=accounting(j);provenance={'cohort_status':'completed','provider_counts':dict(Counter({'aliyun-dashscope':len(rp)})+Counter(provider(j,sid) for sid in fresh)),'recovery_ids':j['ids'],'retained_rows_unchanged':len(rp),'original_results_preserved':106,'new_patch_validation_runs':3,'provider_cost_estimate_cny':cost['estimated_workflow_cost_cny'],'cost_accounting':cost,'actual_provider_billed_cost':None,'prior_attempts_preserved':j['old'],'source_generations':{**sources,**{sid:str(gen) for sid in fresh}}}
+ cohort=payload(rows,combined/'preds.json',13);cohort['run_provenance']=provenance;save(out/'results_additions.json',cohort)
+ assert len(before['results'])==106 and len(oldpred)==106
+ for sid in ids:shutil.copytree(combined/sid,run/sid);update_prediction_files(run,predictions[sid])
+ merged=before['results']+rows;full=payload(merged,run/'preds.json',119);full['run_provenance']=provenance;save(j['target'],full)
+ after=read(run/'preds.json')['predictions'];assert len(after)==119 and all(after[k]==v for k,v in oldpred.items()) and all(after[k]==v for k,v in rp.items())
+ assert full['results'][:106]==before['results'] and cohort['results'][:len(rp)]==ret['results']
+ assert all((out/(sid+'.launch.json')).exists() for sid in j['ids'])
+ verification={'original_results_preserved':106,'original_predictions_preserved':106,'retained_results_preserved':len(rp),'merged_total':119,'recovery_resolved':d['summary']['resolved'],'cohort_resolved':cohort['summary']['resolved'],'actual_recovery_validation_runs':sum(len(r.get('eval_runs',[])) for r in d['results']),**{'provider_cost_estimate_cny':cost['estimated_workflow_cost_cny'],'actual_billed_cost':None,'cost_accounting':cost}}
+ save(out/'final_verification.json',verification)
+ ledger=read(LEDGER);entry=next(x for x in ledger if x['id']==j['id']);assert entry['pending_ids']==j['ids'];shutil.copy2(LEDGER,out/'billing_jobs.before_merge.json')
+ entry.update(completed_workflows=13,pending_ids=[],not_completed_ids=[],prior_account_rejections=entry['account_rejected'],account_rejected={},recovery_provider=('mixed' if any(provider(j,sid)=='deepseek-official' for sid in fresh) else 'siliconflow'),recovery_out=str(out),recovery_status='completed',result_source=str(out/'results_additions.json'),preds_source=str(combined/'preds.json'),provider_counts=provenance['provider_counts']);save(LEDGER,ledger)
+ report=['# DeepSeek V4 Pro / '+j['agent'],'','One recovery workflow per pending sample; three validations per applicable patch. Retained results and original 106 verified unchanged.','','| Instance | Resolved | F2P | P2P |','|---|---|---|---|']
+ for r in rows:report.append(f"| {r['instance_id']} | {r['resolved']} | {r['fail_pass']['summary']} | {r['pass_pass']['summary']} |")
+ report+=['',json.dumps(verification,indent=2),'','Cost is estimated from observed tokens; actual provider billing unavailable.'];(out/'REPORT.md').write_text('\n'.join(report)+'\n')
+ status('group_completed',agent=j['agent'],**verification)
+def main():
+ os.chdir(ROOT);assert os.environ.get('SILICONFLOW_API_KEY');health()
+ awake=subprocess.Popen(['caffeinate','-im','-w',str(os.getpid())]);proc=None;image=None;baseline=set()
+ try:
+  for j in read(B/'jobs.json'):
+   out=Path(j['out']);gen=out/'generation';gen.mkdir(exist_ok=True);(out/'attempts').mkdir(exist_ok=True)
+   if (out/'final_verification.json').exists():continue
+   result=None
+   for index,sid in enumerate(j['ids']):
+    assert not (B/'user_pause.json').exists(),'User pause'
+    if (out/(sid+'.collected.json')).exists():result=evaluate(j);continue
+    marker=out/(sid+'.launch.json');assert not marker.exists(),f'{sid}: already launched; inspect before any rerun'
+    health();inst=read(j['stages'][sid]);image=inst['image_name'] if j['agent']=='openhands' else inst['env']['deployment']['image'];baseline=containers(image)
+    attempt=out/'attempts'/sid
+    if j['agent']=='openhands':cmd=[str(ROOT/'external/OpenHands-benchmarks/.venv/bin/python'),'benchmark/evaluation/openhands/scripts/run_openhands.py','--dataset',j['stages'][sid],'--output-dir',str(attempt.relative_to(ROOT)),'--model-config',str(out/'model.json'),'--num-workers','1','--n-critic-runs','1','--no-finish-max-attempts','1','--max-retries','0']
+    else:cmd=[str(ROOT/'.venv/bin/python'),'benchmark/evaluation/minisweagent/scripts/run_minisweagent.py','--instances',j['stages'][sid],'--output-dir',str(attempt.relative_to(ROOT)),'--model-config',str(out/'model.yaml'),'--workers','1']
+    # Write the launch reservation first: interruptions can never silently cause a paid rerun.
+    save(marker,{'started_at':datetime.datetime.now().isoformat(),'command':cmd,'status':'reserved'})
+    with (out/(sid+'.agents.log')).open('w') as log:
+     proc=subprocess.Popen(cmd,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT);save(marker,{'pid':proc.pid,'started_at':datetime.datetime.now().isoformat(),'command':cmd,'status':'launched'})
+     status('generating',agent=j['agent'],instance=sid,completed=index,total=len(j['ids']),pid=proc.pid);last=time.monotonic()
+     while proc.poll() is None:
+      time.sleep(10)
+      if time.monotonic()-last>=60:health();last=time.monotonic()
+     assert proc.returncode==0,(sid,proc.returncode)
+    collect(j,sid);cost=accounting(j);status('validating',agent=j['agent'],instance=sid,completed_agents=index+1,provider_cost_estimate_cny=cost['estimated_workflow_cost_cny']);result=evaluate(j)
+    status('sample_complete',agent=j['agent'],instance=sid,completed=index+1,total=len(j['ids']),resolved=result['summary']['resolved'])
+   finish(j,result)
+  status('completed',completed_recovery_workflows=8,remaining=0)
+ except Exception as exc:
+  if proc is not None and proc.poll() is None:
+   proc.terminate()
+   try:proc.wait(timeout=15)
+   except subprocess.TimeoutExpired:proc.kill()
+  if image:
+   try:
+    for cid in containers(image)-baseline:subprocess.run(['docker','stop',cid],capture_output=True,timeout=30)
+   except Exception:pass
+  status('needs_attention',error=str(exc),actual_billed_cost=None);raise
+ finally:awake.terminate()
+if __name__=='__main__':
+ if '--prepare' in sys.argv:prepare()
+ else:main()

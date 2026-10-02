@@ -1,0 +1,141 @@
+{
+  "instance": {
+    "id": 60,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_45_50",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/45",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/50",
+    "base_commit": "41d31c17b8ee4d7dee5330ec5a230a8e1f3d18b2",
+    "patch": "5355cdfa825d696404902c81e965b021667b70bc"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task performs active-space electronic-structure reduction with reduced integrals, electron counts, and inactive-energy shifts."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/qmolecule.py",
+      "qiskit_nature/transformers/__init__.py",
+      "qiskit_nature/transformers/active_space_transformer.py",
+      "qiskit_nature/transformers/base_transformer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature can already load molecular electronic-structure data into a QMolecule, but users still lack a reusable active-space reduction utility that trims a molecule down to a chosen subset of orbitals and electrons before downstream algorithm steps. Users should be able to configure an active-space transformer, apply it to QMolecule instances loaded from HDF5 data, and obtain reduced integrals together with the correct electron counts and accumulated inactive-space energy shift.",
+    "requirements": [
+      "Provide an ActiveSpaceTransformer abstraction for QMolecule-based active-space reduction workflows.",
+      "ActiveSpaceTransformer must accept the configured number of active electrons and orbitals, and optionally a separate number of active alpha electrons or an explicit list of active orbital indices.",
+      "ActiveSpaceTransformer.transform must reduce a QMolecule to the requested active space and return a new QMolecule containing the reduced molecular-orbital integrals and updated orbital and particle counts.",
+      "When the requested active space matches the full space, the returned QMolecule must preserve the original molecular-orbital integrals and record a zero ActiveSpaceTransformer energy shift.",
+      "When reducing to a smaller active space, the returned QMolecule must expose the expected reduced one- and two-electron integrals together with the correct inactive-space energy shift under the ActiveSpaceTransformer key.",
+      "ActiveSpaceTransformer must support QMolecule inputs that do not provide mo_occ by constructing the occupation information from the molecular electron counts.",
+      "Existing HDF5Driver loading and QMolecule save-load behavior for nearby molecular integral data must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "ActiveSpaceTransformer",
+        "Path": "qiskit_nature/transformers/active_space_transformer.py",
+        "Input": "constructor: num_electrons, num_orbitals, num_alpha=None, active_orbitals=None",
+        "Output": "",
+        "Description": "Represents a configurable active-space reduction over QMolecule instances."
+      },
+      {
+        "Type": "Method",
+        "Name": "ActiveSpaceTransformer.transform",
+        "Path": "qiskit_nature/transformers/active_space_transformer.py",
+        "Input": "self, q_molecule",
+        "Output": "QMolecule",
+        "Description": "Returns a reduced QMolecule whose active-space integrals, particle counts, orbital counts, and ActiveSpaceTransformer energy shift match the configured reduction."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_45_50",
+      "image_id": "sha256:4cfc4acba30b245a77c64e3caf8bc26d9087d550155f8cb0c60ba955e8147912",
+      "image_size": "1210952793"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "qiskit-aqua==0.9.5",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2"
+        ],
+        "summary": "5 passed in 34.03s",
+        "duration_seconds": 48
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_hf_energy",
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_num_orbitals",
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_mo_onee_ints",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_hf_energy",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_onee_ints",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_eri_ints"
+        ],
+        "summary": "6 passed in 39.85s",
+        "duration_seconds": 55
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2"
+        ],
+        "summary": "5 selected selectors failed with ModuleNotFoundError because qiskit_nature.transformers is absent on base.",
+        "duration_seconds": 51
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_hf_energy",
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_num_orbitals",
+          "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_mo_onee_ints",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_hf_energy",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_onee_ints",
+          "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_eri_ints"
+        ],
+        "summary": "6 passed in 37.05s",
+        "duration_seconds": 55
+      }
+    }
+  }
+}

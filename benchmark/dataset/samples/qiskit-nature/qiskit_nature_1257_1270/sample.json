@@ -1,0 +1,294 @@
+{
+  "instance": {
+    "id": 46,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_1257_1270",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/1257",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1270",
+    "base_commit": "d59bdb2f88a7324fdfdb61283f56097d315a1afc",
+    "patch": "27a14604f04484261a522fcf7865e16dcee639f5"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines Majorana operator algebra, including fermion-to-Majorana conversion and sign-sensitive simplification semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/fermionic_op.py",
+      "qiskit_nature/second_q/operators/majorana_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantization operator stack already supports fermionic, bosonic, spin, and vibrational operators, but it does not provide a standalone representation for Majorana fermion operators. This prevents users from expressing Majorana terms directly and from using Majorana operators as a foundation for Majorana-based mappers and related transformations. The repository should support a first-class Majorana operator that works consistently with the existing sparse operator algebra.",
+    "requirements": [
+      "The new operator must represent weighted sums of Majorana terms using sparse labels with underscore-prefixed mode indices.",
+      "Construction must support explicit mode counts, automatic mode-count inference, optional validation skipping, and optional by-reference storage of input data.",
+      "Invalid labels or labels whose indices exceed the declared mode count must raise the repository's standard operator validation error when validation is enabled.",
+      "The operator must preserve existing sparse-label operator semantics for scalar arithmetic, addition, subtraction, composition, tensoring, expansion, powers, adjoints, equivalence checks, and induced norms.",
+      "Simplification must cancel repeated Majorana factors within a label without reordering labels, while index ordering must produce equivalent terms ordered by mode index with the correct sign changes.",
+      "The operator must support parameterized coefficients where existing sparse-label arithmetic supports them, and hermiticity checks must reject parameterized operators.",
+      "The operator must convert to and from structured term iterators without changing the represented operator.",
+      "The operator must be constructible from polynomial tensor data whose keys consist only of Majorana placeholders.",
+      "The operator must be constructible from fermionic operators using the standard Majorana convention, with the resulting mode count twice the fermionic spin-orbital count and with caller-controlled simplification behavior.",
+      "Mode-index permutation must return an equivalent operator over the same mode count with every term index remapped by the provided permutation.",
+      "The operator must be available from the public second-quantized operators API."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MajoranaOp",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "constructor: data: Mapping[str, coeff], num_modes: int | None = None, copy: bool = True, validate: bool = True",
+        "Output": "",
+        "Description": "Sparse-label operator representing weighted Majorana fermion terms, including inferred num_modes/register_length, configurable tolerance attributes, arithmetic operations, exact equality, composition with @, tensor product with ^, and power behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.from_fermionic_op",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "op: FermionicOp, simplify: bool = True",
+        "Output": "MajoranaOp",
+        "Description": "Constructs a Majorana operator from a fermionic operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.from_polynomial_tensor",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "tensor: PolynomialTensor",
+        "Output": "MajoranaOp",
+        "Description": "Constructs a Majorana operator from polynomial tensor data."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.from_terms",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "terms: Sequence[tuple[list[tuple[str, int]], coeff]]",
+        "Output": "MajoranaOp",
+        "Description": "Constructs a Majorana operator from structured term and coefficient pairs."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.terms",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self",
+        "Output": "Iterator[tuple[list[tuple[str, int]], coeff]]",
+        "Description": "Iterates over structured Majorana term and coefficient pairs."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.compose",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, other: MajoranaOp, qargs = None, front: bool = False",
+        "Output": "MajoranaOp",
+        "Description": "Returns the composed Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.tensor",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, other: MajoranaOp",
+        "Output": "MajoranaOp",
+        "Description": "Returns the tensor product with another Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.expand",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, other: MajoranaOp",
+        "Output": "MajoranaOp",
+        "Description": "Returns the reversed tensor product with another Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.transpose",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self",
+        "Output": "MajoranaOp",
+        "Description": "Returns the transpose of the Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.simplify",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, atol: float | None = None",
+        "Output": "MajoranaOp",
+        "Description": "Returns an equivalent operator with repeated Majorana factors simplified within each label."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.index_order",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self",
+        "Output": "MajoranaOp",
+        "Description": "Returns an equivalent operator with each label ordered by mode index."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.is_hermitian",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, atol: float | None = None",
+        "Output": "bool",
+        "Description": "Returns whether the operator is Hermitian up to an absolute tolerance."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.adjoint",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self",
+        "Output": "MajoranaOp",
+        "Description": "Returns the adjoint of the Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.equiv",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, other: MajoranaOp, atol: float | None = None, rtol: float | None = None",
+        "Output": "bool",
+        "Description": "Returns whether two Majorana operators are equivalent within configured tolerances."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.induced_norm",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, order: int = 1",
+        "Output": "float",
+        "Description": "Returns the induced norm of the Majorana operator coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.permute_indices",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "self, permutation: Sequence[int]",
+        "Output": "MajoranaOp",
+        "Description": "Returns an equivalent operator with every mode index remapped by the provided permutation."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.zero",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "",
+        "Output": "MajoranaOp",
+        "Description": "Constructs the additive identity Majorana operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "MajoranaOp.one",
+        "Path": "qiskit_nature/second_q/operators/majorana_op.py",
+        "Input": "",
+        "Output": "MajoranaOp",
+        "Description": "Constructs the multiplicative identity Majorana operator."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_1257_1270",
+      "image_id": "sha256:72b657ab31e6ed2cacde8074118ecfe4a0c8cafb055449e738e72f155552eeed",
+      "image_size": "1557715521"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "qiskit==1.0.0",
+        "qiskit-algorithms==0.3.0",
+        "qiskit-aer==0.14.2",
+        "pytest"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_num_modes",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_validate_16____2___2__False_",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_validate",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_copy",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_compose",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_tensor",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_simplify",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_index_order",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_hermiticity",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_terms",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_polynomial_tensor",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_fermionic_op",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_permute_indices"
+        ],
+        "summary": "13 passed, 36 subtests passed in 2.98s.",
+        "duration_seconds": 7.28
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_permute_indices",
+          "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_simplify",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_terms",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_automatic_num_modals",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_no_num_spin_orbitals",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_index_order",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_terms"
+        ],
+        "summary": "14 passed in 6.51s",
+        "duration_seconds": 10.07
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_num_modes",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_validate_16____2___2__False_",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_validate",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_copy",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_compose",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_tensor",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_simplify",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_index_order",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_hermiticity",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_terms",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_polynomial_tensor",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_fermionic_op",
+          "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_permute_indices"
+        ],
+        "summary": "ImportError during collection: cannot import name 'MajoranaOp' from qiskit_nature.second_q.operators; 1 error in 2.57s.",
+        "duration_seconds": 10.0
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_permute_indices",
+          "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_simplify",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_terms",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_automatic_num_modals",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_no_num_spin_orbitals",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_index_order",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_terms"
+        ],
+        "summary": "14 passed in 6.28s",
+        "duration_seconds": 11.72
+      }
+    }
+  }
+}

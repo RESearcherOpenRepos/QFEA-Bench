@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 3.9282312099999217,
+  "items": [
+    "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00844845899973734,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.23069645900022806,
+      "wasxfail": null,
+      "longrepr": "self = <tests.qrc.test_qrc_regressor.TestQRCRegressor object at 0x7fffe20e2c20>\ndata = (array([[0.43274505],\n       [0.14365581],\n       [0.50147978],\n       [0.10000747],\n       [0.9       ],\n       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,\n       -1.36004738]))\nml_model = 'mlp'\n\n    @pytest.mark.parametrize(\n        \"ml_model\",\n        [\n            \"linear\",\n            \"mlp\",\n            \"kernel\",\n        ],\n    )\n    def test_serialization(self, data, ml_model):\n        \"\"\"Tests concerning the serialization of the QRCRegressor.\"\"\"\n        X, y = data\n        qrc_regressor = self.qrc_regressor(ml_model)\n        qrc_regressor.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       qrc_regressor.dump(buffer)\nE       AttributeError: 'QRCRegressor' object has no attribute 'dump'\n\ntests/qrc/test_qrc_regressor.py:80: AttributeError"
+    },
+    {
+      "nodeid": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.00044770899967261357,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

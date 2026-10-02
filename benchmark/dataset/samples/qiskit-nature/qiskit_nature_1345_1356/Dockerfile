@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=benchmark-base:qiskit_nature_1345_1356
+FROM ${BASE_IMAGE}
+
+ENV SAMPLE_ID=qiskit_nature_1345_1356
+ENV REPOSITORY=qiskit-community/qiskit-nature
+ENV REPOSITORY_URL=https://github.com/qiskit-community/qiskit-nature.git
+ENV ISSUE_URL=https://github.com/qiskit-community/qiskit-nature/issues/1345
+ENV PR_URL=https://github.com/qiskit-community/qiskit-nature/pull/1356
+ENV BASE_COMMIT=249d2da45c58103a3a588b39d93a302094874718
+ENV PATCHED_COMMIT=3221b5c56cc25bd83f95b5c9932f801e79f249ee
+ENV PR_HEAD_COMMIT=53322a4e4d47dceb56e81b81e5bfbf6e59e72bae
+ENV FAIL_PASS_TEST_PATHS="test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_1 test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_5 test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_7 test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_9 test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_1 test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_7"
+ENV PASS_PASS_TEST_PATHS="test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_1 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_2 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_3 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_4 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_5 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_6 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_7 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_8 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_9 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_1 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_2 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_3 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_4 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_5 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_6 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_7 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_8 test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_9 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7 test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_overwrite_reg_len"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

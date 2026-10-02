@@ -1,0 +1,203 @@
+diff --git a/src/squlearn/kernel/ml/qgpc.py b/src/squlearn/kernel/ml/qgpc.py
+index 2ac9164..86b68da 100644
+--- a/src/squlearn/kernel/ml/qgpc.py
++++ b/src/squlearn/kernel/ml/qgpc.py
+@@ -63,17 +63,39 @@ class QGPC(GaussianProcessClassifier):
+         self._quantum_kernel = quantum_kernel
+ 
+         # Apply kwargs to set_params of quantum kernel
+-        quantum_kernel_update_params = self.quantum_kernel.get_params().keys() & kwargs.keys()
+-        if quantum_kernel_update_params:
+-            self.quantum_kernel.set_params(
+-                **{key: kwargs[key] for key in quantum_kernel_update_params}
+-            )
+-            # remove quantum_kernel_kwargs for SVR initialization
+-            for key in quantum_kernel_update_params:
+-                kwargs.pop(key, None)
++        if isinstance(self.quantum_kernel, KernelMatrixBase):
++            quantum_kernel_update_params = self.quantum_kernel.get_params().keys() & kwargs.keys()
++            if quantum_kernel_update_params:
++                self.quantum_kernel.set_params(
++                    **{key: kwargs[key] for key in quantum_kernel_update_params}
++                )
++                # remove quantum_kernel_kwargs for SVR initialization
++                for key in quantum_kernel_update_params:
++                    kwargs.pop(key, None)
+ 
+         super().__init__(**kwargs)
+-        self.kernel = kernel_wrapper(self._quantum_kernel)
++        if isinstance(self._quantum_kernel, KernelMatrixBase):
++            self.kernel = kernel_wrapper(self._quantum_kernel)
++
++    def fit(self, X, y):
++        """Fit Gaussian process classification model.
++
++        Args:
++            X : Training data
++            y : Target values
++
++        Returns:
++            self : object
++        """
++        # Handle KernelOptimizer wrapper
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X, y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self._optimal_parameters = self._kernel_optimizer.get_optimal_parameters()
++            self.kernel = kernel_wrapper(self._quantum_kernel)
++
++        return super().fit(X, y)
+ 
+     @classmethod
+     def _get_param_names(cls):
+diff --git a/src/squlearn/kernel/ml/qgpr.py b/src/squlearn/kernel/ml/qgpr.py
+index 430fb84..98d85fa 100644
+--- a/src/squlearn/kernel/ml/qgpr.py
++++ b/src/squlearn/kernel/ml/qgpr.py
+@@ -132,6 +132,13 @@ class QGPR(BaseEstimator, RegressorMixin):
+ 
+         self.X_train = X
+ 
++        # Handle KernelOptimizer wrapper
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X, y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self._optimal_parameters = self._kernel_optimizer.get_optimal_parameters()
++
+         if isinstance(self._quantum_kernel, str):
+             if self._quantum_kernel == "precomputed":
+                 self.K_train = X
+diff --git a/src/squlearn/kernel/ml/qkrr.py b/src/squlearn/kernel/ml/qkrr.py
+index 3c8ab7e..0b79f62 100644
+--- a/src/squlearn/kernel/ml/qkrr.py
++++ b/src/squlearn/kernel/ml/qkrr.py
+@@ -128,6 +128,13 @@ class QKRR(BaseEstimator, RegressorMixin):
+ 
+         self.X_train = X
+ 
++        # Handle KernelOptimizer wrapper
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X, y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self._optimal_parameters = self._kernel_optimizer.get_optimal_parameters()
++
+         if isinstance(self._quantum_kernel, str):
+             if self._quantum_kernel == "precomputed":
+                 self.k_train = X
+diff --git a/src/squlearn/kernel/ml/qsvc.py b/src/squlearn/kernel/ml/qsvc.py
+index cf5da5b..06d8119 100644
+--- a/src/squlearn/kernel/ml/qsvc.py
++++ b/src/squlearn/kernel/ml/qsvc.py
+@@ -91,9 +91,37 @@ class QSVC(SVC):
+                 kernel=self.quantum_kernel.evaluate,
+                 **kwargs,
+             )
++        elif isinstance(self.quantum_kernel, KernelOptimizer):
++            # For KernelOptimizer, we'll handle the kernel in fit()
++            super().__init__(kernel="precomputed", **kwargs)
+         else:
+             super().__init__(kernel="precomputed", **kwargs)
+ 
++    def fit(self, X, y, sample_weight=None):
++        """Fit the SVM model according to the given training data.
++
++        Args:
++            X : Training vectors, where n_samples is the number of samples
++                and n_features is the number of features.
++            y : Target values (class labels in classification, real numbers in
++                regression)
++            sample_weight : Per-sample weights. Rescale C per sample. Higher weights
++                force the classifier to put more emphasis on these points.
++
++        Returns:
++            self : object
++        """
++        # Handle KernelOptimizer wrapper
++        if isinstance(self.quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self.quantum_kernel
++            self._kernel_optimizer.run_optimization(X, y)
++            self.quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self._optimal_parameters = self._kernel_optimizer.get_optimal_parameters()
++            # Set the kernel to the optimized kernel's evaluate method
++            self.kernel = self.quantum_kernel.evaluate
++
++        return super().fit(X, y, sample_weight=sample_weight)
++
+     @classmethod
+     def _get_param_names(cls):
+         names = SVC._get_param_names()
+diff --git a/src/squlearn/kernel/ml/qsvr.py b/src/squlearn/kernel/ml/qsvr.py
+index bf62914..9c2e005 100644
+--- a/src/squlearn/kernel/ml/qsvr.py
++++ b/src/squlearn/kernel/ml/qsvr.py
+@@ -90,9 +90,37 @@ class QSVR(SVR):
+                 kernel=self.quantum_kernel.evaluate,
+                 **kwargs,
+             )
++        elif isinstance(self.quantum_kernel, KernelOptimizer):
++            # For KernelOptimizer, we'll handle the kernel in fit()
++            super().__init__(kernel="precomputed", **kwargs)
+         else:
+             super().__init__(kernel="precomputed", **kwargs)
+ 
++    def fit(self, X, y, sample_weight=None):
++        """Fit the SVM model according to the given training data.
++
++        Args:
++            X : Training vectors, where n_samples is the number of samples
++                and n_features is the number of features.
++            y : Target values (class labels in classification, real numbers in
++                regression)
++            sample_weight : Per-sample weights. Rescale C per sample. Higher weights
++                force the classifier to put more emphasis on these points.
++
++        Returns:
++            self : object
++        """
++        # Handle KernelOptimizer wrapper
++        if isinstance(self.quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self.quantum_kernel
++            self._kernel_optimizer.run_optimization(X, y)
++            self.quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self._optimal_parameters = self._kernel_optimizer.get_optimal_parameters()
++            # Set the kernel to the optimized kernel's evaluate method
++            self.kernel = self.quantum_kernel.evaluate
++
++        return super().fit(X, y, sample_weight=sample_weight)
++
+     @classmethod
+     def _get_param_names(cls):
+         names = SVR._get_param_names()
+diff --git a/src/squlearn/kernel/optimization/kernel_optimizer.py b/src/squlearn/kernel/optimization/kernel_optimizer.py
+index ec9f185..cbb87fe 100644
+--- a/src/squlearn/kernel/optimization/kernel_optimizer.py
++++ b/src/squlearn/kernel/optimization/kernel_optimizer.py
+@@ -59,6 +59,14 @@ class KernelOptimizer(KernelOptimizerBase):
+         if self._initial_parameters is None:
+             self._initial_parameters = self._quantum_kernel.parameters
+ 
++    def get_optimal_parameters(self) -> np.ndarray:
++        """Returns the optimized kernel parameters after fitting.
++
++        Returns:
++            np.ndarray: The optimized kernel parameters.
++        """
++        return self._optimal_point
++
+     def run_optimization(self, X: np.ndarray, y: np.ndarray = None):
+         """Run the optimization and return the result.
+ 
+@@ -81,6 +89,10 @@ class KernelOptimizer(KernelOptimizerBase):
+         self._optimal_value = opt_result.fun
+         self._optimal_point = opt_result.x
+         self._opt_result = opt_result
++        self._optimal_parameters = opt_result.x
++
++        # Assign optimal parameters to the quantum kernel
++        self._quantum_kernel.assign_parameters(self._optimal_point)
+ 
+         return self._opt_result
+ 

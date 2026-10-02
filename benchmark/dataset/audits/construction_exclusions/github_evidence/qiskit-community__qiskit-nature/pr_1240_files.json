@@ -1,0 +1,122 @@
+[
+  {
+    "sha": "e73035dcd05ccb93965230221dcd87a4b10d972b",
+    "filename": "qiskit_nature/second_q/operators/bosonic_op.py",
+    "status": "modified",
+    "additions": 9,
+    "deletions": 5,
+    "changes": 14,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fbosonic_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fbosonic_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fsecond_q%2Foperators%2Fbosonic_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -132,10 +132,10 @@ class BosonicOp(SparseLabelOp):\n     pairs describing the terms contained in the operator.\n \n     Attributes:\n-        num_modes: the number of modes on which this operator acts. This is\n-            considered a lower bound, which means that mathematical operations acting on two or more\n-            operators will result in a new operator with the maximum number of modes of any\n-            of the involved operators.\n+        num_modes (int | None): the number of modes on which this operator acts. This is considered\n+            a lower bound, which means that mathematical operations acting on two or more operators\n+            will result in a new operator with the maximum number of modes of any of the involved\n+            operators.\n \n     .. note::\n \n@@ -175,7 +175,11 @@ def __init__(\n         super().__init__(data, copy=copy, validate=validate)\n \n     @property\n-    def register_length(self) -> int | None:\n+    def register_length(self) -> int:\n+        if self.num_modes is None:\n+            max_index = max(int(term[2:]) for key in self._data for term in key.split())\n+            return max_index + 1\n+\n         return self.num_modes\n \n     def _new_instance("
+  },
+  {
+    "sha": "f5254a8cdcfaa52ced1fe7281a361eb7f3dc8645",
+    "filename": "qiskit_nature/second_q/operators/fermionic_op.py",
+    "status": "modified",
+    "additions": 9,
+    "deletions": 5,
+    "changes": 14,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Ffermionic_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Ffermionic_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fsecond_q%2Foperators%2Ffermionic_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -135,10 +135,10 @@ class FermionicOp(SparseLabelOp):\n     pairs describing the terms contained in the operator.\n \n     Attributes:\n-        num_spin_orbitals: the number of spin orbitals on which this operator acts. This is\n-            considered a lower bound, which means that mathematical operations acting on two or more\n-            operators will result in a new operator with the maximum number of spin orbitals of any\n-            of the involved operators.\n+        num_spin_orbitals (int | None): the number of spin orbitals on which this operator acts.\n+            This is considered a lower bound, which means that mathematical operations acting on two\n+            or more operators will result in a new operator with the maximum number of spin orbitals\n+            of any of the involved operators.\n \n     .. note::\n \n@@ -179,7 +179,11 @@ def __init__(\n         super().__init__(data, copy=copy, validate=validate)\n \n     @property\n-    def register_length(self) -> int | None:\n+    def register_length(self) -> int:\n+        if self.num_spin_orbitals is None:\n+            max_index = max(int(term[2:]) for key in self._data for term in key.split())\n+            return max_index + 1\n+\n         return self.num_spin_orbitals\n \n     def _new_instance("
+  },
+  {
+    "sha": "71003df6c26d6f5df4576225e7354affcf93a825",
+    "filename": "qiskit_nature/second_q/operators/sparse_label_op.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fsparse_label_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fsparse_label_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fsecond_q%2Foperators%2Fsparse_label_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -103,7 +103,7 @@ def __init__(\n \n     @property\n     @abstractmethod\n-    def register_length(self) -> int | None:\n+    def register_length(self) -> int:\n         \"\"\"Returns the register length\"\"\"\n \n     @abstractmethod"
+  },
+  {
+    "sha": "8df839a7fb0c1bba58f9ce356e7efeb6f74aa1e2",
+    "filename": "qiskit_nature/second_q/operators/spin_op.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 1,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fspin_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fspin_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fsecond_q%2Foperators%2Fspin_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -229,7 +229,11 @@ def __init__(\n         super().__init__(data, copy=copy, validate=validate)\n \n     @property\n-    def register_length(self) -> int | None:\n+    def register_length(self) -> int:\n+        if self.num_spins is None:\n+            max_index = max(int(term[2:]) for key in self._data for term in key.split())\n+            return max_index + 1\n+\n         return self.num_spins\n \n     def _new_instance(self, data: Mapping[str, _TCoeff], *, other: SpinOp | None = None) -> SpinOp:"
+  },
+  {
+    "sha": "f9f9ee5287003e3d0fe3d523953b5f228c828738",
+    "filename": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "status": "modified",
+    "additions": 24,
+    "deletions": 7,
+    "changes": 31,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fvibrational_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/qiskit_nature%2Fsecond_q%2Foperators%2Fvibrational_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/qiskit_nature%2Fsecond_q%2Foperators%2Fvibrational_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -177,7 +177,7 @@ def __init__(\n             data: the operator data, mapping string-based keys to numerical values.\n             num_modals: number of modals - described by a sequence of integers where each integer\n                 describes the number of modals in the corresponding mode; the total number of modals\n-                defines a ``register_length``.\n+                defines the ``register_length``.\n             copy: when set to False the `data` will not be copied and the dictionary will be\n                 stored by reference rather than by value (which is the default; ``copy=True``). Note,\n                 that this requires you to not change the contents of the dictionary after\n@@ -194,7 +194,7 @@ def __init__(\n         super().__init__(data, copy=copy, validate=validate)\n \n     @property\n-    def num_modals(self) -> Sequence[int]:\n+    def num_modals(self) -> Sequence[int] | None:\n         \"\"\"The number of modals for each mode on which this operator acts.\n \n         This is an optional sequence of integers which are considered lower bounds. That means that\n@@ -207,11 +207,27 @@ def num_modals(self) -> Sequence[int]:\n \n     @num_modals.setter\n     def num_modals(self, num_modals: Sequence[int] | None):\n-        self._num_modals = list(num_modals) if num_modals is not None else []\n+        self._num_modals = list(num_modals) if num_modals is not None else None\n \n     @property\n-    def register_length(self) -> int | None:\n-        return sum(self.num_modals) if self.num_modals is not None else None\n+    def register_length(self) -> int:\n+        if self._num_modals is None:\n+            num_modals: list[int] = []\n+            for key in self._data:\n+                for term in key.split():\n+                    _, mode_index_str, modal_index_str = term.split(\"_\")\n+                    mode_index = int(mode_index_str)\n+                    modal_index = int(modal_index_str)\n+\n+                    if mode_index + 1 > len(num_modals):\n+                        num_modals += [0] * (mode_index + 1 - len(num_modals))\n+\n+                    if modal_index > num_modals[mode_index] - 1:\n+                        num_modals[mode_index] = modal_index + 1\n+\n+            return sum(num_modals)\n+\n+        return sum(self.num_modals)\n \n     def _new_instance(\n         self, data: Mapping[str, _TCoeff], *, other: VibrationalOp | None = None\n@@ -228,13 +244,14 @@ def pad_to_length(a, b):\n             def elementwise_max(a, b):\n                 return [max(i, j) for i, j in zip(*pad_to_length(a, b))]\n \n-            num_modals = elementwise_max(num_modals, other_num_modals)\n+            if num_modals is not None and other_num_modals is not None:\n+                num_modals = elementwise_max(num_modals, other_num_modals)\n \n         return self.__class__(data, copy=False, num_modals=num_modals)\n \n     def _validate_keys(self, keys: Collection[str]) -> None:\n         super()._validate_keys(keys)\n-        num_modals = list(self.num_modals)\n+        num_modals = self._num_modals if self._num_modals is not None else []\n \n         for key in keys:\n             # 0. explicitly allow the empty key"
+  },
+  {
+    "sha": "742791d396ccc0050df2567ac5d514e205e3e4da",
+    "filename": "releasenotes/notes/improve-register-length-handling-cb55f644da136828.yaml",
+    "status": "added",
+    "additions": 7,
+    "deletions": 0,
+    "changes": 7,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/releasenotes%2Fnotes%2Fimprove-register-length-handling-cb55f644da136828.yaml",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/releasenotes%2Fnotes%2Fimprove-register-length-handling-cb55f644da136828.yaml",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/releasenotes%2Fnotes%2Fimprove-register-length-handling-cb55f644da136828.yaml?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -0,0 +1,7 @@\n+---\n+features:\n+  - |\n+    The :attr:`.SparseLabelOp.register_length` attribute (and by extension that of its subclasses, too)\n+    can no longer take ``None`` as its value. However, the attributes which this one might rely on\n+    (e.g. :attr:`.FermionicOp.num_spin_orbitals` or :attr:`.BosonicOp.num_modes`) can remain ``None``.\n+    This ensures that the lower-bound behavior works as intended."
+  },
+  {
+    "sha": "4a6b8b24ae008d25e03a0b06df709e13b4f5efd1",
+    "filename": "test/second_q/operators/test_bosonic_op.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_bosonic_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_bosonic_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/test%2Fsecond_q%2Foperators%2Ftest_bosonic_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -639,6 +639,12 @@ def test_permute_indices(self):\n \n             self.assertEqual(permuted_op, BosonicOp({\"+_2 -_1\": 1, \"+_1 -_3\": 2}, num_modes=4))\n \n+    def test_reg_len_with_skipped_key_validation(self):\n+        \"\"\"Test the behavior of `register_length` after key validation was skipped.\"\"\"\n+        new_op = BosonicOp({\"+_0 -_1\": 1}, validate=False)\n+        self.assertIsNone(new_op.num_modes)\n+        self.assertEqual(new_op.register_length, 2)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  },
+  {
+    "sha": "e89f7602580f11638046be1f7e33fb5cf3cdc47c",
+    "filename": "test/second_q/operators/test_fermionic_op.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_fermionic_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_fermionic_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/test%2Fsecond_q%2Foperators%2Ftest_fermionic_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -672,6 +672,12 @@ def test_permute_indices(self):\n                 permuted_op, FermionicOp({\"+_2 -_1\": 1, \"+_1 -_3\": 2}, num_spin_orbitals=4)\n             )\n \n+    def test_reg_len_with_skipped_key_validation(self):\n+        \"\"\"Test the behavior of `register_length` after key validation was skipped.\"\"\"\n+        new_op = FermionicOp({\"+_0 -_1\": 1}, validate=False)\n+        self.assertIsNone(new_op.num_spin_orbitals)\n+        self.assertEqual(new_op.register_length, 2)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  },
+  {
+    "sha": "48a3b0531c963a2d7b1f1d91d0c034aaa946734f",
+    "filename": "test/second_q/operators/test_spin_op.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_spin_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_spin_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/test%2Fsecond_q%2Foperators%2Ftest_spin_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -302,6 +302,12 @@ def test_permute_indices(self):\n \n             self.assertEqual(permuted_op, SpinOp({\"X_2 Y_1\": 1, \"Z_1 X_3\": 2}, num_spins=4))\n \n+    def test_reg_len_with_skipped_key_validation(self):\n+        \"\"\"Test the behavior of `register_length` after key validation was skipped.\"\"\"\n+        new_op = SpinOp({\"X_0 Y_1\": 1}, validate=False)\n+        self.assertIsNone(new_op.num_spins)\n+        self.assertEqual(new_op.register_length, 2)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  },
+  {
+    "sha": "b31d91da3429ffb4aaea961cafc18f67d9e9ef24",
+    "filename": "test/second_q/operators/test_vibrational_op.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-nature/blob/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_vibrational_op.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-nature/raw/5a69c60af3e63d26dda6edcecc487f0bcf9d9575/test%2Fsecond_q%2Foperators%2Ftest_vibrational_op.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/contents/test%2Fsecond_q%2Foperators%2Ftest_vibrational_op.py?ref=5a69c60af3e63d26dda6edcecc487f0bcf9d9575",
+    "patch": "@@ -398,6 +398,12 @@ def test_permute_indices(self):\n         with self.assertRaises(NotImplementedError):\n             VibrationalOp({\"+_0_0 -_1_0\": 2}).permute_indices([1, 0])\n \n+    def test_reg_len_with_skipped_key_validation(self):\n+        \"\"\"Test the behavior of `register_length` after key validation was skipped.\"\"\"\n+        new_op = VibrationalOp({\"+_0_0 -_1_1\": 1}, validate=False)\n+        self.assertIsNone(new_op.num_modals)\n+        self.assertEqual(new_op.register_length, 3)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  }
+]

@@ -1,0 +1,143 @@
+{
+  "id": 87,
+  "sample_id": "qiskit_nature_919_920",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "c393383e1203c2da1b57c3c0c8dde9b828030796",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "quantum_semantics/reduced_density_matrix": 6,
+      "quantum_semantics/particle_number_operator": 1,
+      "quantum_semantics/magnetization_operator": 1,
+      "quantum_semantics/angular_momentum_operator": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_1_True",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Occupation [1,0] in both spins yields expected one- and two-body density blocks."
+        }
+      ],
+      "rationale": "The True variant checks 1-RDM and 2-RDM content."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_2_False",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Occupation [1,0] in both spins yields only expected one-body density blocks."
+        }
+      ],
+      "rationale": "The False variant checks omitted 2-RDM physical data."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_1_True",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "With 2-RDM enabled, auxiliary operators cover required alpha, beta, and mixed-spin ladder terms."
+        }
+      ],
+      "rationale": "The term set reflects spin-block RDM structure."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_2_False",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "With 2-RDM disabled, auxiliary operators contain only one-body alpha/beta ladder terms."
+        }
+      ],
+      "rationale": "The term set reflects selected RDM order."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_1_True",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 147,
+          "expected": "Interpreted one- and two-body RDM values fill the expected spin blocks."
+        }
+      ],
+      "rationale": "The True variant checks reconstruction of physical density tensors."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_2_False",
+      "label": "quantum_semantics/reduced_density_matrix",
+      "assertions": [
+        {
+          "line": 147,
+          "expected": "Interpreted RDM values fill only expected one-body spin blocks."
+        }
+      ],
+      "rationale": "The False variant checks reconstruction without 2-RDM."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/properties/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+      "label": "quantum_semantics/particle_number_operator",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "ParticleNumber property generates the expected fermionic counting operator."
+        }
+      ],
+      "rationale": "The exact ladder terms encode particle number."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/properties/test_magnetization.py::TestMagnetization::test_second_q_ops",
+      "label": "quantum_semantics/magnetization_operator",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "Magnetization property generates the expected spin-resolved fermionic operator."
+        }
+      ],
+      "rationale": "The exact terms encode spin magnetization."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/properties/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops",
+      "label": "quantum_semantics/angular_momentum_operator",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "AngularMomentum property generates the expected second-q operator."
+        }
+      ],
+      "rationale": "The exact terms encode physical angular momentum."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/c393383e1203c2da1b57c3c0c8dde9b828030796/test/second_q/properties/test_angular_momentum.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c393383e1203c2da1b57c3c0c8dde9b828030796/test/second_q/properties/test_electronic_density.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c393383e1203c2da1b57c3c0c8dde9b828030796/test/second_q/properties/test_magnetization.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c393383e1203c2da1b57c3c0c8dde9b828030796/test/second_q/properties/test_particle_number.py"
+  ],
+  "rationale": "Read each of 9 selected exact-patch tests, including parameterized occupation, mapper, and excitation variants."
+}

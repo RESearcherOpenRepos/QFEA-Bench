@@ -1,0 +1,201 @@
+{
+  "instance": {
+    "id": 33,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_400_436",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/400",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/436",
+    "base_commit": "670bc12ac7b696acdf4b1ea3e9f4242953a8555d",
+    "patch": "ea94895f607065b2eb24a087c710dfa332debc24"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a sampler-primitive quantum neural-network workflow, with validation focused on primitive integration, shapes, and gradients."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+      "qiskit_machine_learning/neural_networks/__init__.py",
+      "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+      "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+      "qiskit_machine_learning/neural_networks/neural_network.py",
+      "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+      "qiskit_machine_learning/neural_networks/sampling_neural_network.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository already provides quantum neural network abstractions, but users do not yet have a neural network implementation built directly on Qiskit's Sampler primitive. Users should be able to construct a sampling neural network from a parameterized circuit, evaluate probability-like outputs, compute gradients for training, and use this sampler-backed network through the variational quantum classifier workflow.",
+    "requirements": [
+      "Provide a sampler-backed quantum neural network that is available from the neural network package.",
+      "The sampler-backed neural network must accept a parameterized quantum circuit, optional sampler primitive, input parameters, weight parameters, optional sparsity setting, optional interpretation function, optional output shape, optional gradient object, and an input-gradient setting.",
+      "When no sampler is supplied, the neural network must use a default Sampler primitive.",
+      "The neural network must support dense and sparse outputs.",
+      "The neural network must support raw bitstring-probability outputs as well as interpreted one-dimensional and multi-dimensional outputs.",
+      "Forward evaluation must return outputs with shapes determined by batch size and output shape.",
+      "Backward evaluation must return weight gradients and must return input gradients only when input-gradient computation is enabled.",
+      "The neural network must support circuits with only input parameters, only weight parameters, or both kinds of parameters.",
+      "SamplerQNN results and gradients must agree with the existing CircuitQNN behavior for equivalent circuits and interpret functions.",
+      "The variational quantum classifier must support a sampler-backed construction path while preserving the existing quantum-instance-based workflow."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SamplerQNN",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "constructor: circuit, sampler=None, input_params=None, weight_params=None, sparse: bool = False, interpret=None, output_shape=None, gradient=None, input_gradients: bool = False",
+        "Output": "",
+        "Description": "Sampler-primitive neural network for sampling-probability outputs from parameterized circuits, exposing sparse, output_shape, input_params, weight_params, num_inputs, num_weights, and input_gradients behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "SamplerQNN.forward",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "forward pass output",
+        "Description": "Evaluates sampler outputs for input data and weights."
+      },
+      {
+        "Type": "Method",
+        "Name": "SamplerQNN.backward",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "input gradients and weight gradients",
+        "Description": "Evaluates sampler-gradient backward results for input data and weights."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "constructor: num_qubits=None, feature_map=None, ansatz=None, loss='cross_entropy', optimizer=None, warm_start: bool = False, quantum_instance=None, initial_point=None, callback=None, sampler=None",
+        "Output": "",
+        "Description": "Variational quantum classifier that can use either the existing quantum-instance path or a sampler-backed neural network and exposes feature_map, ansatz, num_qubits, and num_classes behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.fit",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "self, X, y",
+        "Output": "self",
+        "Description": "Fits the variational classifier on classification data using the configured neural network and optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.score",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "self, X, y, sample_weight=None",
+        "Output": "float",
+        "Description": "Scores the fitted variational classifier on classification data."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.predict",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "self, X",
+        "Output": "np.ndarray",
+        "Description": "Predicts labels for classification data."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC._get_interpret",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "self, num_classes: int",
+        "Output": "callable",
+        "Description": "Returns the parity-style interpretation callable used to map sampler outputs to class indices."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_400_436",
+      "image_id": "sha256:b4f89323180c50bdeb8a31a6f9e17399781006eaeb433cbbfa2b50210176af35",
+      "image_size": "1702393886"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2",
+        "sparse",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_01__True___default___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_04__True___default___1__2__False_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_07__True___shots___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_13__False___default___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_18__False___default___2__2__False_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_1__True__0__2_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_4__False__0__2_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters",
+          "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_1__True__True_",
+          "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_4__False__False_",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_079___sampler___2___zz_feature_map____real_amplitudes___None___binary__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized_2_sampler",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays_6___sampler____cross_entropy__"
+        ],
+        "summary": "13 passed, 3 subtests passed in 18.94s.",
+        "duration_seconds": 25.08
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_01__True__True___statevector___0__1_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc"
+        ],
+        "summary": "5 passed, 2 warnings, 3 subtests passed in 4.22s.",
+        "duration_seconds": 9.33
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_01__True___default___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_04__True___default___1__2__False_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_07__True___shots___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_13__False___default___0__2__True_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_18__False___default___2__2__False_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_1__True__0__2_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_sampler_qnn_gradient_4__False__0__2_",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters",
+          "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_1__True__True_",
+          "test/neural_networks/test_circuit_vs_sampler_qnn.py::TestCircuitQNNvsSamplerQNN::test_new_vs_old_4__False__False_",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_079___sampler___2___zz_feature_map____real_amplitudes___None___binary__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized_2_sampler",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays_6___sampler____cross_entropy__"
+        ],
+        "summary": "Failed during collection because the base version does not provide qiskit_machine_learning.neural_networks.sampler_qnn.SamplerQNN or export SamplerQNN from the neural_networks package.",
+        "duration_seconds": 9.98
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_01__True__True___statevector___0__1_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc"
+        ],
+        "summary": "5 passed, 2 warnings, 3 subtests passed in 3.48s.",
+        "duration_seconds": 10.06
+      }
+    }
+  }
+}

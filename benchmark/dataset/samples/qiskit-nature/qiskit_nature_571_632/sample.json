@@ -1,0 +1,150 @@
+{
+  "instance": {
+    "id": 68,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_571_632",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/571",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/632",
+    "base_commit": "dfeeab6cf4983ecf7718d309f30b97fdad0fa8f5",
+    "patch": "68fa5fbd45bb950b5693aca0933a8369fe6f4934"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a Hartree-Fock initial-point utility for UCC workflows, with validation centered on initial-point plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+      "qiskit_nature/algorithms/initial_points/__init__.py",
+      "qiskit_nature/algorithms/initial_points/hf_initial_point.py",
+      "qiskit_nature/algorithms/initial_points/initial_point.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature's VQE UCC workflow does not preserve a Hartree-Fock-compatible default initial point when users rely on the built-in factory behavior. Users who construct a VQE UCC ground-state solver without supplying an explicit initial point need the factory to provide a reusable Hartree-Fock initial-point object so the default parameterization remains the all-zero UCC point associated with an HF initial state.",
+    "requirements": [
+      "Provide an HF-specific initial-point utility for UCC ansatzes that computes an all-zero parameter vector with the correct excitation-list length.",
+      "The HF initial-point utility must raise a clear error if neither an ansatz nor an excitation list has been provided before computation.",
+      "The HF initial-point utility must accept a grouped property containing electronic energy data and expose the Hartree-Fock reference energy when available.",
+      "VQEUCCFactory must default to an HF initial-point utility instead of leaving the initial point unset when the user does not provide one.",
+      "When VQEUCCFactory is used through GroundStateEigensolver with the default UCC workflow, the stored initial point must remain accessible as an initial-point utility and resolve to the all-zero UCC parameter vector.",
+      "Existing UCC-based ground-state solver behavior without the new HF initial-point path must keep working."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HFInitialPoint",
+        "Path": "qiskit_nature/algorithms/initial_points/hf_initial_point.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Initial-point utility for UCC ansatzes that represents the Hartree-Fock starting point as an all-zero parameter vector."
+      },
+      {
+        "Type": "Method",
+        "Name": "HFInitialPoint.compute",
+        "Path": "qiskit_nature/algorithms/initial_points/hf_initial_point.py",
+        "Input": "self, ansatz=None, grouped_property=None",
+        "Output": "",
+        "Description": "Computes the Hartree-Fock initial point from a UCC ansatz or a pre-set excitation list and optional grouped-property metadata."
+      },
+      {
+        "Type": "Method",
+        "Name": "HFInitialPoint.to_numpy_array",
+        "Path": "qiskit_nature/algorithms/initial_points/hf_initial_point.py",
+        "Input": "self",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the computed all-zero UCC parameter vector, computing it on demand if needed."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQEUCCFactory",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+        "Input": "constructor: quantum_instance, optimizer=None, initial_point=None, gradient=None, expectation=None, include_custom=False, ansatz=None, initial_state=None, callback=None, **kwargs",
+        "Output": "",
+        "Description": "Factory for VQE UCC ground-state solvers whose default initial point must be a Hartree-Fock-compatible initial-point utility when none is provided by the user."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_571_632",
+      "image_id": "sha256:8b69620477c05c2f911325f1132952bb08ad76d375ee7cbd141595fd08dda1ba",
+      "image_size": "1073557928"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "scikit-learn>=0.20.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_missing_ansatz",
+          "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_compute",
+          "test/algorithms/ground_state_solvers/minimum_eigensolver_factories/test_vqe_ucc_factory.py::TestVQEUCCFactory::test_setters_getters",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_default_initial_point"
+        ],
+        "summary": "4 selectors passed individually on patched; per-selector pytest times: 1.98s, 1.72s, 2.12s, 2.51s.",
+        "duration_seconds": 9.6
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_aux_ops_reusability",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single"
+        ],
+        "summary": "5 selectors passed individually on patched; per-selector pytest times: 3.67s, 2.90s, 2.75s, 1.85s, 4.58s.",
+        "duration_seconds": 23.22
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_missing_ansatz",
+          "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_compute",
+          "test/algorithms/ground_state_solvers/minimum_eigensolver_factories/test_vqe_ucc_factory.py::TestVQEUCCFactory::test_setters_getters",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_default_initial_point"
+        ],
+        "summary": "4 selectors failed individually on base: 3 import/collection failures due to missing HFInitialPoint export and 1 AttributeError on solver.initial_point.to_numpy_array().",
+        "duration_seconds": 9.94
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_aux_ops_reusability",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single"
+        ],
+        "summary": "5 selectors passed individually on base; per-selector pytest times: 2.96s, 2.78s, 2.73s, 3.42s, 3.18s.",
+        "duration_seconds": 24.37
+      }
+    }
+  }
+}

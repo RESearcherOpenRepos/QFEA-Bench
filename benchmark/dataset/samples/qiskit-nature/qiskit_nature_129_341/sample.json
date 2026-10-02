@@ -1,0 +1,118 @@
+{
+  "instance": {
+    "id": 48,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_129_341",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/129",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/341",
+    "base_commit": "a06f378a219d650d96e16db96d763ea4aec9cfc2",
+    "patch": "357fe78db796414292a51bd720e813cf57cbc170"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task converts fermionic operators to full-Fock-space matrices with occupation-basis ordering and fermionic sign conventions."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/second_quantization/fermionic_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Second-quantized fermionic operators in Qiskit Nature already support symbolic algebra, but users still lack a direct way to turn a FermionicOp into its matrix representation on the full fermionic Fock space. This blocks straightforward spectral checks and matrix-based downstream workflows that are already available for related operator types. FermionicOp should expose a public to_matrix conversion that produces the operator matrix in occupation-number basis and preserves the existing nearby operator behavior.",
+    "requirements": [
+      "FermionicOp must provide a public to_matrix conversion over the full fermionic Fock space in occupation-number basis.",
+      "The basis ordering used by to_matrix must be the increasing bitstring order of the occupation-number basis states.",
+      "FermionicOp.to_matrix must support returning either a sparse matrix representation or a dense numpy array.",
+      "The matrix representation must correctly handle identity, number, emptiness, creation, annihilation, and multi-term operators with fermionic sign conventions.",
+      "Matrix conversion for physically relevant fermionic Hamiltonian terms must preserve the expected spectrum and particle-number structure of the resulting states.",
+      "Existing FermionicOp multi-term construction, addition, matrix multiplication, reduction, and hermiticity behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.to_matrix",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "self, sparse=True",
+        "Output": "scipy.sparse.csc_matrix or numpy.ndarray",
+        "Description": "Returns the full-Fock-space matrix representation of the fermionic operator in occupation-number basis, optionally as a dense array."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_129_341",
+      "image_id": "sha256:d61c73e381ef6f062a71b799995063a242f76a425ad4860b06be6db2ce7b2e9e",
+      "image_size": "1104961120"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ],
+        "summary": "1 selected selector passed.",
+        "duration_seconds": 5.46
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 19.15
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ],
+        "summary": "1 selected selector failed with AttributeError because FermionicOp does not implement to_matrix.",
+        "duration_seconds": 8.27
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 18.26
+      }
+    }
+  }
+}

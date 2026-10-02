@@ -1,0 +1,212 @@
+{
+  "instance": {
+    "id": 78,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_828_891",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/828",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/891",
+    "base_commit": "a57992859df038541e7938faf8fdb52db600f7e4",
+    "patch": "a56898c8a32e15373bd9ff4fe830bffc104fe43c"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task preserves symbolic coefficients through second-quantized operator operations and Jordan-Wigner mapping."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/mappers/qubit_mapper.py",
+      "qiskit_nature/second_q/operators/fermionic_op.py",
+      "qiskit_nature/second_q/operators/sparse_label_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Second-quantized sparse-label operators currently assume numeric coefficients. Users need these operators to accept qiskit circuit Parameters and ParameterExpressions as coefficients, preserve those symbols through algebraic operator operations, expose and assign stored parameters, and allow qubit mapping of parameterized fermionic operators.",
+    "requirements": [
+      "SparseLabelOp-compatible operators must accept Parameter and ParameterExpression coefficients alongside numeric coefficients.",
+      "Scalar multiplication, scalar division, composition, powers, simplification, and normal ordering must preserve parameter expressions when operating on FermionicOp instances.",
+      "SparseLabelOp must expose whether it contains parameters, return its stored parameters, and support assigning parameters to numeric values or other parameter expressions without mutating the original operator.",
+      "SparseLabelOp and FermionicOp methods that rely on numerical comparison, norms, matrix conversion, or hermiticity checks must reject unbound parameterized operators with a clear parameter-related error instead of silently coercing symbols.",
+      "Coefficient chopping must ignore symbolic coefficients while continuing to chop small real and imaginary numeric parts.",
+      "JordanWignerMapper must map parameterized FermionicOp coefficients into object-typed SparsePauliOp coefficients without forcing symbols to complex values.",
+      "Existing second-quantized operator and mapper behavior in the same directories must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SparseLabelOp",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "constructor: data, copy=True, validate=True",
+        "Output": "",
+        "Description": "Sparse labeled operator base class accepting numeric and parameter-expression coefficients while preserving label-to-coefficient mappings."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.is_parameterized",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether any coefficient in the operator is a parameter expression."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.parameters",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "list",
+        "Description": "Returns the parameter-expression coefficients stored by the operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.assign_parameters",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, parameters",
+        "Output": "SparseLabelOp",
+        "Description": "Returns a same-type operator whose coefficients matching keys in the supplied mapping are replaced by the mapped values."
+      },
+      {
+        "Type": "Class",
+        "Name": "FermionicOp",
+        "Path": "qiskit_nature/second_q/operators/fermionic_op.py",
+        "Input": "constructor: data, num_spin_orbitals=None, copy=True, validate=True",
+        "Output": "",
+        "Description": "Fermionic sparse-label operator supporting parameterized coefficients through scalar multiplication, scalar division, composition, powers, simplification, and normal ordering."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.to_matrix",
+        "Path": "qiskit_nature/second_q/operators/fermionic_op.py",
+        "Input": "self, sparse=True",
+        "Output": "matrix",
+        "Description": "Converts numeric fermionic operators to matrices and raises a parameter-related error for unbound parameterized operators."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.is_hermitian",
+        "Path": "qiskit_nature/second_q/operators/fermionic_op.py",
+        "Input": "self, atol=None",
+        "Output": "bool",
+        "Description": "Checks numeric fermionic-operator hermiticity and raises a parameter-related error when parameters are present."
+      },
+      {
+        "Type": "Class",
+        "Name": "JordanWignerMapper",
+        "Path": "qiskit_nature/second_q/mappers/jordan_wigner_mapper.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Mapper whose map method must preserve parameterized FermionicOp coefficients in the resulting qubit operator."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_828_891",
+      "image_id": "sha256:d3a4cbab4c30849ea8f1c16390a61404edae8b4e59bdb109c010e43178b2d102",
+      "image_size": "1217583800"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_chop",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_induced_norm",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_parameterized",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_parameters",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_div",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_normal_order",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op"
+        ],
+        "summary": "16 passed in 10.32s",
+        "duration_seconds": 21.79
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_expand"
+        ],
+        "summary": "8 passed in 6.06s",
+        "duration_seconds": 21.25
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_chop",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_induced_norm",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_parameterized",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_parameters",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_div",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_normal_order",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op"
+        ],
+        "summary": "16 failed in 14.71s; failures cover missing parameter APIs, symbolic coefficient handling, parameter-aware FermionicOp operations, and JordanWignerMapper parameter preservation",
+        "duration_seconds": 26.78
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_expand"
+        ],
+        "summary": "8 passed in 3.08s",
+        "duration_seconds": 17.91
+      }
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "instance": {
+    "id": 64,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_47_77",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/47",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/77",
+    "base_commit": "8b91da7a52d5b7881a096c52cf59fb07d7a5eefc",
+    "patch": "f6ae3a23c5c3435eaf7861dc84aa6ca11b409279"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements freeze-core electronic-structure reduction with transformed integrals and energy-shift bookkeeping."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/drivers/qmolecule.py",
+      "qiskit_nature/transformers/active_space_transformer.py",
+      "qiskit_nature/transformers/freeze_core_transformer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Electronic-structure workflows can already reduce a problem to a user-chosen active space, but there is no dedicated transformer for the common freeze-core workflow. Users should be able to freeze chemically identified core orbitals, optionally remove additional unoccupied orbitals, and obtain the reduced QMolecule directly through a dedicated FreezeCoreTransformer instead of manually configuring an equivalent active-space reduction.",
+    "requirements": [
+      "The repository must expose a dedicated FreezeCoreTransformer for reducing QMolecule instances by freezing core orbitals.",
+      "FreezeCoreTransformer must accept a freeze_core convenience setting that removes the QMolecule core orbitals and returns the expected reduced QMolecule.",
+      "When all orbitals remain active, FreezeCoreTransformer must preserve the original QMolecule data while keeping the expected transformer bookkeeping keys available for comparison.",
+      "FreezeCoreTransformer must accept an additional remove_orbitals list so users can remove extra unoccupied orbitals alongside the frozen core orbitals.",
+      "The reduced QMolecule produced by FreezeCoreTransformer must preserve the expected transformed integrals and energy-shift bookkeeping for the freeze-core reduction.",
+      "Existing ActiveSpaceTransformer behavior for manually configured active spaces must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "FreezeCoreTransformer",
+        "Path": "qiskit_nature/transformers/freeze_core_transformer.py",
+        "Input": "constructor: freeze_core=True, remove_orbitals=None",
+        "Output": "",
+        "Description": "Constructs a transformer that freezes QMolecule core orbitals and can additionally remove specified unoccupied orbitals."
+      },
+      {
+        "Type": "Method",
+        "Name": "FreezeCoreTransformer.transform",
+        "Path": "qiskit_nature/transformers/freeze_core_transformer.py",
+        "Input": "self, molecule_data",
+        "Output": "QMolecule",
+        "Description": "Reduces a QMolecule by freezing core orbitals, optionally removing additional unoccupied orbitals, and returning the transformed QMolecule."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_47_77",
+      "image_id": "sha256:55e687efe3921ef71e03ba07c8172c7c2c4b4bb7ad2edda0a3984ad9d1d85382",
+      "image_size": "1098658739"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "compatibility shim: qiskit.algorithms.variational_forms.VariationalForm"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals"
+        ],
+        "summary": "3 passed in 1.84s",
+        "duration_seconds": 13.43
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2"
+        ],
+        "summary": "4 passed in 1.71s",
+        "duration_seconds": 12.37
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+          "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals"
+        ],
+        "summary": "3 failed in 1.83s; base misses QMolecule dipole-shift bookkeeping fields on the full-active-space path and does not accept freeze_core or remove_orbitals",
+        "duration_seconds": 7.1
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2"
+        ],
+        "summary": "4 passed in 1.76s",
+        "duration_seconds": 5.33
+      }
+    }
+  }
+}

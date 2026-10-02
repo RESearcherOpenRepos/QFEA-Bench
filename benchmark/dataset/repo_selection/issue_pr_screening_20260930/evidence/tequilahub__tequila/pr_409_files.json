@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "b2f3d22f72faca78f02ef855e59d19a0e5f938e9",
+    "filename": "src/tequila/quantumchemistry/pyscf_interface.py",
+    "status": "modified",
+    "additions": 41,
+    "deletions": 2,
+    "changes": 43,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/src%2Ftequila%2Fquantumchemistry%2Fpyscf_interface.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/src%2Ftequila%2Fquantumchemistry%2Fpyscf_interface.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fquantumchemistry%2Fpyscf_interface.py?ref=19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c",
+    "patch": "@@ -1,11 +1,36 @@\n-from tequila import TequilaException\n+from tequila import TequilaException, QubitWaveFunction\n from tequila.quantumchemistry.qc_base import QuantumChemistryBase\n from tequila.quantumchemistry import ParametersQC, NBodyTensor\n import pyscf\n \n import numpy, typing\n \n \n+def _merge_alpha_beta_strs(alpha_str, beta_str, norb):\n+    \"\"\"\n+    Merge alpha and beta bitstrings into a single string and compute the resulting phase.\n+\n+    Args:\n+        alpha_str (int): Bitstring representing alpha electrons.\n+        beta_str (int): Bitstring representing beta electrons.\n+        norb (int): Number of orbitals.\n+\n+    Returns:\n+        tuple:\n+            merged_str (int): Interleaved bitstring.\n+            phase (int): Phase factor (+1 or -1) from fermionic antisymmetry.\n+    \"\"\"\n+    # Interleave the alpha and beta strings\n+    alpha_str_b = bin(alpha_str)[2:].zfill(norb)\n+    beta_str_b = bin(beta_str)[2:].zfill(norb)\n+    merged_str = \"\".join([alpha_str_b[i] + beta_str_b[i] for i in range(norb)])[::-1]\n+\n+    # Position of filled orbitals\n+    set_bits_beta = [i for i in range(norb) if (beta_str >> i) & 1]\n+    phase = (-1) ** sum([(alpha_str & 2**i - 1).bit_count() for i in set_bits_beta])\n+    return int(merged_str, 2), phase\n+\n+\n class OpenVQEEPySCFException(TequilaException):\n     pass\n \n@@ -82,12 +107,26 @@ def __init__(self, parameters: ParametersQC,\n \n         super().__init__(parameters=parameters, transformation=transformation, *args, **kwargs)\n \n-    def compute_fci(self, *args, **kwargs):\n+    def compute_fci(self, get_wfn=False, **kwargs):\n         from pyscf import fci\n         c, h1, h2 = self.get_integrals(ordering=\"chem\")\n         norb = self.n_orbitals\n         nelec = self.n_electrons\n         e, fcivec = fci.direct_spin1.kernel(h1, h2.elems, norb, nelec, **kwargs)\n+\n+        if get_wfn:\n+            alpha_strs = fci.cistring.make_strings(range(norb), nelec // 2)\n+            beta_strs = alpha_strs.copy()\n+            wfn_dim = 2 ** (2 * norb)\n+            wfn = numpy.zeros(wfn_dim)\n+            for i, alpha_str in enumerate(alpha_strs):\n+                for j, beta_str in enumerate(beta_strs):\n+                    merged_str, phase = _merge_alpha_beta_strs(\n+                        alpha_str, beta_str, norb\n+                    )\n+                    wfn[merged_str] = phase * fcivec[i, j]\n+            return e + c, QubitWaveFunction.from_array(wfn)\n+\n         return e + c\n \n     def compute_energy(self, method: str, *args, **kwargs) -> float:"
+  },
+  {
+    "sha": "911d3afb1b0c034acd58694dcc82e205b87ab24d",
+    "filename": "src/tequila/quantumchemistry/qc_base.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 0,
+    "changes": 3,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py?ref=19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c",
+    "patch": "@@ -1695,6 +1695,9 @@ def compute_energy(self, method, *args, **kwargs):\n                 from tequila.quantumchemistry import QuantumChemistryPySCF\n                 molx = QuantumChemistryPySCF.from_tequila(self)\n                 return molx.compute_energy(method=method)\n+    \n+    def compute_fci(self, *args, **kwargs):\n+        raise NotImplementedError(\"compute_fci only implemented for the 'pyscf' backend\")\n \n     def compute_fock_matrix(self):\n         c, h, g = self.get_integrals()"
+  },
+  {
+    "sha": "2459f704876a12e455dcab1c232270de4da35bb7",
+    "filename": "tests/test_chemistry.py",
+    "status": "modified",
+    "additions": 25,
+    "deletions": 0,
+    "changes": 25,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/tests%2Ftest_chemistry.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c/tests%2Ftest_chemistry.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/tests%2Ftest_chemistry.py?ref=19d5dd6663caa2c6a71e1820f19eca6a38dd0e3c",
+    "patch": "@@ -455,6 +455,31 @@ def test_pyscf_methods(method, geometry, basis_set):\n     assert numpy.isclose(e1, e3, atol=1.e-4)\n \n \n+@pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"pyscf not found\")\n+@pytest.mark.parametrize(\n+    \"geometry\",\n+    [\n+        \"H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6\",\n+        \"Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5\",\n+        \"Be 0.0 0.0 0.0\",\n+    ],\n+)\n+def test_wfn_fci(geometry):\n+    mol = tq.Molecule(geometry=geometry, basis_set=\"sto-3g\", backend=\"pyscf\")\n+    H = mol.make_hamiltonian()\n+    v, vv = numpy.linalg.eigh(H.to_matrix())\n+\n+    # ground state wavefunction\n+    wfn = tq.QubitWaveFunction.from_array(vv[:, 0])\n+    energy = v[0]\n+\n+    fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)\n+\n+    fidelity = abs(fci_wfn.inner(wfn)) ** 2\n+    assert numpy.isclose(fidelity, 1.0)\n+    assert numpy.isclose(fci_energy, energy)\n+\n+\n @pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"pyscf not found\")\n def test_orbital_optimization():\n     from tequila.quantumchemistry import optimize_orbitals"
+  }
+]

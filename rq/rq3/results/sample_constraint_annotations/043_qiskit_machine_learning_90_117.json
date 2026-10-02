@@ -1,0 +1,349 @@
+{
+  "id": 43,
+  "sample_id": "qiskit_machine_learning_90_117",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "9f7588b45ebba76e017a117e74fffe662de17b9d",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 20,
+    "subtype_test_counts": {
+      "interface/property_mutability": 1,
+      "interface/hybrid_module_training_contract": 3,
+      "interface/output_shape": 11,
+      "interface/gradient_shape": 10
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 138,
+          "expected": "Constructor-supplied input-gradient value is exposed and remains settable."
+        }
+      ],
+      "rationale": "The base-network test directly checks default false, setter true and constructor true."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/connectors/test_torch_connector.py::TestTorchConnector::test_opflow_qnn_1_1_1_sv",
+      "label": "interface/hybrid_module_training_contract",
+      "assertions": [
+        {
+          "line": 190,
+          "expected": "Statevector one-output TorchConnector preserves output shapes and backward gradients."
+        }
+      ],
+      "rationale": "The 1x1 opflow selected statevector case delegates to shape and backward helpers."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/connectors/test_torch_connector.py::TestTorchConnector::test_opflow_qnn_2_2_1_sv",
+      "label": "interface/hybrid_module_training_contract",
+      "assertions": [
+        {
+          "line": 278,
+          "expected": "Statevector two-output TorchConnector preserves output shapes and backward gradients."
+        }
+      ],
+      "rationale": "The 2x2 opflow case checks the same connector contract with a vector observable output."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/connectors/test_torch_connector.py::TestTorchConnector::test_circuit_qnn_1_1_1__None__None__False___sv__",
+      "label": "interface/hybrid_module_training_contract",
+      "assertions": [
+        {
+          "line": 335,
+          "expected": "Statevector CircuitQNN TorchConnector preserves output shapes and backward gradients."
+        }
+      ],
+      "rationale": "The selected dense, uninterpreted CircuitQNN case exercises constructor-enabled input gradients."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/connectors/test_torch_connector.py::TestTorchConnector::test_circuit_qnn_sampling_1_None",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 494,
+          "expected": "Sampling CircuitQNN TorchConnector retains unbatched and batched output dimensions."
+        }
+      ],
+      "rationale": "The selected None-interpret sampling variant explicitly asserts both tensor shapes."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "No-input, no-weight base network returns declared forward shape."
+        }
+      ],
+      "rationale": "First P2P forward configuration has no trainable dimensions."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "No-input, one-weight base network returns declared forward shape."
+        }
+      ],
+      "rationale": "Second configuration changes the weight count."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "No-input base network returns two output values."
+        }
+      ],
+      "rationale": "Third configuration changes declared output dimension to two."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "No-input base network returns a 2x2 output."
+        }
+      ],
+      "rationale": "Fourth configuration checks multidimensional output."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_05___1__0__True__1___0_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "One-input, no-weight base network returns declared forward shape."
+        }
+      ],
+      "rationale": "Fifth configuration passes a scalar input."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_06___1__1__True__1___0_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "One-input, one-weight base network returns declared forward shape."
+        }
+      ],
+      "rationale": "Sixth configuration checks scalar output."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_07___1__1__True__2___0_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "One-input base network returns two output values."
+        }
+      ],
+      "rationale": "Seventh configuration checks vector output."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_08___1__1__True___2__2____0_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "One-input base network returns a 2x2 output."
+        }
+      ],
+      "rationale": "Eighth configuration checks matrix-shaped output."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_09___2__2__True___2__2_____0__0__",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Two-input base network returns a 2x2 output."
+        }
+      ],
+      "rationale": "Ninth configuration uses an unbatched two-input vector."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_10___2__2__True___2__2______0__0____1__1___",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Two-row batch retains batch dimension in forward output."
+        }
+      ],
+      "rationale": "Tenth configuration supplies two input rows."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "No-input, no-weight network returns None gradients."
+        }
+      ],
+      "rationale": "First P2P backward configuration has no input or weight parameters."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "No-input, one-weight network returns only a weight gradient."
+        }
+      ],
+      "rationale": "Second configuration has a weight parameter but no inputs."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "No-input network returns a two-output weight gradient."
+        }
+      ],
+      "rationale": "Third configuration uses vector output."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "No-input network returns a 2x2-output weight gradient."
+        }
+      ],
+      "rationale": "Fourth configuration checks multidimensional output."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_05___1__0__True__1___0_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "One-input, no-weight network returns an input gradient and no weight gradient."
+        }
+      ],
+      "rationale": "Fifth configuration has only an input parameter."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_06___1__1__True__1___0_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "One-input, one-weight network returns both gradient shapes."
+        }
+      ],
+      "rationale": "Sixth configuration has both parameter kinds."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_07___1__1__True__2___0_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "One-input network returns gradients for two outputs."
+        }
+      ],
+      "rationale": "Seventh configuration checks vector output gradient shape."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_08___1__1__True___2__2____0_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "One-input network returns gradients for 2x2 output."
+        }
+      ],
+      "rationale": "Eighth configuration checks matrix-shaped output gradients."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_09___2__2__True___2__2_____0__0__",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Two-input network returns gradients for 2x2 output."
+        }
+      ],
+      "rationale": "Ninth configuration checks two inputs and two weights."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_10___2__2__True___2__2______0__0____1__1___",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Two-row batch retains its batch dimension in gradients."
+        }
+      ],
+      "rationale": "Tenth configuration supplies a batch of two input vectors."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/9f7588b45ebba76e017a117e74fffe662de17b9d/test/connectors/test_torch_connector.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/9f7588b45ebba76e017a117e74fffe662de17b9d/test/neural_networks/test_neural_network.py"
+  ],
+  "rationale": "Individually checked the five new constructor/TorchConnector cases and 20 retained forward/backward shape parameterizations."
+}

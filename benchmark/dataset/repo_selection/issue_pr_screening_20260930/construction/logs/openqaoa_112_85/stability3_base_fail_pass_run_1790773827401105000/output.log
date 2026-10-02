@@ -1,0 +1,65 @@
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  b1463b9 Merge pull request #85 from entropicalabs/dev_alternate_ansatz
+  c53c170 Added Notebook 11 to documentation
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> b1463b9
+
+HEAD is now at a463e69 Merge pull request #133 from entropicalabs/dev_hotfix
+Removing openqaoa.egg-info/
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________ TestingQAOACircuitParams.test_QAOACircuitParams ________________
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams>
+
+    def setUp(self):
+    
+        self.p = 2
+        self.cost_hamil = Hamiltonian([PauliOp('ZZ', (0, 1)), PauliOp('ZZ', (1, 2)),
+                                       PauliOp('ZZ', (0, 2)), PauliOp('Z', (0, ))],
+                                      [1, 1, 1, 0.5], 1)
+        self.mixer_hamil = X_mixer_hamiltonian(n_qubits = 3)
+>       self.mixer_gatemap = [RXGateMap(0), RXGateMap(1), RXGateMap(2)]
+E       TypeError: RotationGateMap.__init__() missing 1 required positional argument: 'pauli_label'
+
+tests/test_parameters.py:52: TypeError
+_ TestingQAOACircuitParams.test_QAOACircuitParams_mixer_coeffs_selector_gatemap _
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams_mixer_coeffs_selector_gatemap>
+
+    def setUp(self):
+    
+        self.p = 2
+        self.cost_hamil = Hamiltonian([PauliOp('ZZ', (0, 1)), PauliOp('ZZ', (1, 2)),
+                                       PauliOp('ZZ', (0, 2)), PauliOp('Z', (0, ))],
+                                      [1, 1, 1, 0.5], 1)
+        self.mixer_hamil = X_mixer_hamiltonian(n_qubits = 3)
+>       self.mixer_gatemap = [RXGateMap(0), RXGateMap(1), RXGateMap(2)]
+E       TypeError: RotationGateMap.__init__() missing 1 required positional argument: 'pauli_label'
+
+tests/test_parameters.py:52: TypeError
+_____ TestingQAOACircuitParams.test_QAOACircuitParams_assign_coefficients ______
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams_assign_coefficients>
+
+    def setUp(self):
+    
+        self.p = 2
+        self.cost_hamil = Hamiltonian([PauliOp('ZZ', (0, 1)), PauliOp('ZZ', (1, 2)),
+                                       PauliOp('ZZ', (0, 2)), PauliOp('Z', (0, ))],
+                                      [1, 1, 1, 0.5], 1)
+        self.mixer_hamil = X_mixer_hamiltonian(n_qubits = 3)
+>       self.mixer_gatemap = [RXGateMap(0), RXGateMap(1), RXGateMap(2)]
+E       TypeError: RotationGateMap.__init__() missing 1 required positional argument: 'pauli_label'
+
+tests/test_parameters.py:52: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_mixer_coeffs_selector_gatemap
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_assign_coefficients
+3 failed, 2 warnings in 4.11s

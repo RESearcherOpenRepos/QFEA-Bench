@@ -1,0 +1,82 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  297f65a Accept NumPy bitstrings in fermionic diagonalization (#343)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 297f65a
+
+HEAD is now at f65e80a add release note for bumping Qiskit to 2.0 (#372)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ TestFermion.test_diagonalize_fermionic_hamiltonian_numpy_bitstrings ______
+
+self = <test.test_fermion.TestFermion testMethod=test_diagonalize_fermionic_hamiltonian_numpy_bitstrings>
+
+    def test_diagonalize_fermionic_hamiltonian_numpy_bitstrings(self):
+        """Test diagonalization with bitstrings stored in a NumPy array."""
+        mol = pyscf.gto.Mole()
+        mol.build(
+            atom=[["H", (0, 0, 0)], ["H", (0, 0, 0.735)]],
+            basis="sto-3g",
+        )
+    
+        scf = pyscf.scf.RHF(mol).run()
+        norb = mol.nao_nr()
+        nelec = (1, 1)
+        cas = pyscf.mcscf.CASCI(scf, norb, nelec)
+        hcore, nuclear_repulsion_energy = cas.get_h1cas()
+        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(), norb)
+        cas.kernel()
+    
+        bitstrings = BitArray.from_samples(
+            ["0101", "0110", "1001", "1010"], num_bits=2 * norb
+        ).to_bool_array()
+    
+>       result = diagonalize_fermionic_hamiltonian(
+            hcore,
+            eri,
+            bitstrings,
+            samples_per_batch=4,
+            norb=norb,
+            nelec=nelec,
+            max_iterations=1,
+            seed=self.rng,
+        )
+
+test/test_fermion.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+qiskit_addon_sqd/fermion.py:396: in diagonalize_fermionic_hamiltonian
+    raw_bitstrings, raw_probs = bit_array_to_arrays(bit_array)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bit_array = array([[False,  True, False,  True],
+       [False,  True,  True, False],
+       [ True, False, False,  True],
+       [ True, False,  True, False]])
+
+    def bit_array_to_arrays(bit_array: BitArray) -> tuple[np.ndarray, np.ndarray]:
+        """Convert a bit array into a bitstring matrix and a probability array.
+    
+        Args:
+            bit_array: The bit array to convert
+    
+        Returns:
+            - A 2D array representing the sampled bitstrings. Each row represents a
+              bitstring, and each element is a ``bool`` representation of the
+              bit's value
+            - A 1D array containing the probability with which each bitstring was sampled
+        """
+        # TODO can use bit_array.to_bool_array() when it's available
+>       bool_array = np.unpackbits(bit_array.array, axis=-1)[..., -bit_array.num_bits :].astype(bool)
+E       AttributeError: 'numpy.ndarray' object has no attribute 'array'
+
+qiskit_addon_sqd/counts.py:58: AttributeError
+----------------------------- Captured stdout call -----------------------------
+converged SCF energy = -1.116998996754
+CASCI E = -1.13730603575340  E(CI) = -1.85727503020238  S^2 = 0.0000000
+=========================== short test summary info ============================
+FAILED test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings
+1 failed in 3.66s

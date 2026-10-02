@@ -1,0 +1,16 @@
+## Skills
+
+You have access to local skills stored under `{{ skills_root }}`.
+
+Available skills:
+
+{% for skill in skills -%}
+- `{{ skill.name }}`: {{ skill.description }}
+  - Instructions: `{{ skill.path }}`
+{% endfor %}
+
+Use a skill only when its description matches the current task. Do not apply the
+skill when the task does not require it.
+
+If a skill matches, read its `SKILL.md` before editing. Follow the workflow in
+that skill and use it to guide the implementation and tests.

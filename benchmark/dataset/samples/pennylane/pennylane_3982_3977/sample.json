@@ -1,0 +1,131 @@
+{
+  "instance": {
+    "id": 15,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_3982_3977",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/3982",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/3977",
+    "base_commit": "4d549faae969b8fd8c243fcc480963ddfdb66dda",
+    "patch": "258e729e3a445b2c06de45a5948e9ca1cf06d5e0"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task changes Hamiltonian tapering execution while preserving tapered observables and expectation-value semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/qchem/tapering.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The qchem tapering workflow can require excessive peak memory when tapering Hamiltonians with many Pauli terms because the Clifford-transformed PauliSentence is multiplied through the whole Hamiltonian at once. The tapering implementation should keep the same physical result while reducing peak memory by processing the Hamiltonian in smaller PauliSentence chunks.",
+    "requirements": [
+      "Tapering a Hamiltonian must continue to return the same tapered Hamiltonian as the PauliSentence-based tapering path.",
+      "The PauliSentence tapering path must be able to process large PauliSentence inputs in bounded-size chunks rather than materializing the full transformed expression at once.",
+      "Splitting a PauliSentence into chunks must preserve every original PauliWord and coefficient exactly when the chunks are recombined.",
+      "The public qchem tapering workflow must preserve expectation values for representative tapered observables and Hartree-Fock states."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "taper",
+        "Path": "pennylane/qchem/tapering.py",
+        "Input": "h, generators, paulixops, paulix_sector",
+        "Output": "Hamiltonian",
+        "Description": "Transforms and tapers a Hamiltonian while using the memory-bounded PauliSentence tapering path."
+      },
+      {
+        "Type": "Function",
+        "Name": "_taper_pauli_sentence",
+        "Path": "pennylane/qchem/tapering.py",
+        "Input": "ps_h, generators, paulixops, paulix_sector",
+        "Output": "Hamiltonian",
+        "Description": "Internal PauliSentence tapering helper used by the public taper workflow."
+      },
+      {
+        "Type": "Function",
+        "Name": "_split_pauli_sentence",
+        "Path": "pennylane/qchem/tapering.py",
+        "Input": "pl_sentence, max_size=15000",
+        "Output": "Iterable[PauliSentence]",
+        "Description": "Splits a PauliSentence into smaller chunks without dropping terms."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_3982_3977",
+      "image_id": "sha256:b8651b1b494e03ccb5fb7e98819461d7dd1695a90120b5d9a21b0fdc5a1c88ef",
+      "image_size": "845946764"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "autoray>=0.3.1,<0.7",
+        "pytest==7.4.4"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/test_tapering.py::test_split_pauli_sentence[190-49]",
+          "tests/qchem/test_tapering.py::test_split_pauli_sentence[40-13]",
+          "tests/qchem/test_tapering.py::test_taper_obs[symbols0-geometry0-0]"
+        ],
+        "summary": "3 passed in 1.21s",
+        "duration_seconds": 13.05
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/test_tapering.py::test_reduced_row_echelon[binary_matrix0-result0]",
+          "tests/qchem/test_tapering.py::test_kernel[binary_matrix0-result0]",
+          "tests/qchem/test_tapering.py::test_generate_paulis[generators0-4-result0]",
+          "tests/qchem/test_tapering.py::test_cliford[generator0-paulixops0-result0]",
+          "tests/qchem/test_tapering.py::test_transform_hamiltonian[symbols0-geometry0-generator0-paulixops0-paulix_sector0-ham_ref0]",
+          "tests/qchem/test_tapering.py::test_transform_hf[generators0-paulixops0-paulix_sector0-2-4-result0]"
+        ],
+        "summary": "6 passed in 0.76s",
+        "duration_seconds": 13.0
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qchem/test_tapering.py::test_split_pauli_sentence[190-49]",
+          "tests/qchem/test_tapering.py::test_split_pauli_sentence[40-13]",
+          "tests/qchem/test_tapering.py::test_taper_obs[symbols0-geometry0-0]"
+        ],
+        "summary": "3 selected selectors failed during collection: ImportError cannot import _split_pauli_sentence from pennylane.qchem.tapering in 0.42s",
+        "duration_seconds": 14.48
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/test_tapering.py::test_reduced_row_echelon[binary_matrix0-result0]",
+          "tests/qchem/test_tapering.py::test_kernel[binary_matrix0-result0]",
+          "tests/qchem/test_tapering.py::test_generate_paulis[generators0-4-result0]",
+          "tests/qchem/test_tapering.py::test_cliford[generator0-paulixops0-result0]",
+          "tests/qchem/test_tapering.py::test_transform_hamiltonian[symbols0-geometry0-generator0-paulixops0-paulix_sector0-ham_ref0]",
+          "tests/qchem/test_tapering.py::test_transform_hf[generators0-paulixops0-paulix_sector0-2-4-result0]"
+        ],
+        "summary": "6 passed in 0.54s",
+        "duration_seconds": 14.68
+      }
+    }
+  }
+}

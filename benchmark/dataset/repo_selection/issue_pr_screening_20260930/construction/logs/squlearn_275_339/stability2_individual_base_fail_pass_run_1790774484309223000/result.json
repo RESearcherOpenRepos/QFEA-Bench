@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.250181960000191,
+  "items": [
+    "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.009025667000059912,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.502012958999785,
+      "wasxfail": null,
+      "longrepr": "self = <tests.kernel.ml.test_qgpc.TestQGPC object at 0x7fffe1a5e140>\nqgpc = 'qgpc_pqk'\nrequest = <FixtureRequest for <Function test_serialization[qgpc_pqk]>>\ndata = (array([[0.12394968, 0.81758165],\n       [0.9       , 0.1       ],\n       [0.69982171, 0.21117187],\n       [0.82821029, 0.21911751],\n       [0.30850417, 0.9       ],\n       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))\n\n    @pytest.mark.parametrize(\"qgpc\", [\"qgpc_fidelity\", \"qgpc_pqk\"])\n    def test_serialization(self, qgpc, request, data):\n        \"\"\"Tests concerning the serialization of the QGPC.\"\"\"\n        instance = request.getfixturevalue(qgpc)\n        X, y = data\n        instance.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       instance.dump(buffer)\nE       AttributeError: 'QGPC' object has no attribute 'dump'\n\ntests/kernel/ml/test_qgpc.py:256: AttributeError"
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0005441670000436716,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

@@ -1,0 +1,110 @@
+"""Verify and summarize all nine agent/model cohorts after generation completes."""
+import json
+import hashlib
+import shutil
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+jobs = json.loads((HERE / "jobs.json").read_text())
+models = ["deepseek-v4-pro", "deepseek-v4-flash", "glm-5.2"]
+acr_runs = ["deepseek_v4_pro_20260610", "deepseek_v4_flash_20260609", "glm5_2_openrouter_20260628"]
+entries = []
+for model, run in zip(models, acr_runs):
+    base = ROOT / "benchmark/evaluation/autocoderover"
+    entries.append({"agent": "autocoderover", "model": model,
+                    "out": str(base / "runs" / run / "additions_20261001_aliyun"),
+                    "target": str(base / "results" / ("results_" + run + ".json")),
+                    "backup": "results_" + run + ".before_additions.json"})
+entries += [dict(job, backup="results.before_additions.json") for job in jobs]
+rows = []
+for entry in entries:
+    out = ROOT / entry["out"]
+    assert (out / "final_verification.json").exists(), "Not finished: " + str(out)
+    cohort = json.loads((out / "results_additions.json").read_text())
+    full = json.loads((ROOT / entry["target"]).read_text())
+    backup = json.loads((out / entry["backup"]).read_text())
+    before = json.loads((out / "preds.json.before_additions").read_text())["predictions"]
+    after = json.loads((out.parent / "preds.json").read_text())["predictions"]
+    assert len(cohort["results"]) == 13 and len(full["results"]) == 119
+    assert full["results"][:106] == backup["results"]
+    assert len(after) == 119 and len(before) == 106 and all(after[k] == v for k, v in before.items())
+    recovery = {}
+    if (out / "approved_recovery_audit.json").exists():
+        recovery = json.loads((out / "approved_recovery_audit.json").read_text())
+        for sid, digest in recovery["retained_prediction_hashes"].items():
+            assert hashlib.sha256(json.dumps(after[sid], sort_keys=True).encode()).hexdigest() == digest
+        for result in cohort["results"]:
+            retried = result["instance_id"] in recovery["approved_paid_retries"]
+            assert result["agent_runs"] == 1 + int(retried)
+            assert result["valid_agent_runs"] == 1
+            assert result["interrupted_agent_runs"] == int(retried)
+    actual_runs = 0
+    for result in cohort["results"]:
+        assert not result.get("eval_infra_failed") and not result.get("timed_out")
+        runs = result.get("eval_runs", [])
+        actual_runs += len(runs)
+        if result["patch_applied"]:
+            assert len(runs) == 3
+            assert result["resolved"] == all(r["resolved"] for r in runs)
+            assert all(not r["eval_infra_failed"] and not r["timed_out"] for r in runs)
+    if (out / "prevalidation_audit.json").exists():
+        audit = json.loads((out / "prevalidation_audit.json").read_text())
+        cached = json.loads((out / "prevalidation_results.json").read_text())["results"]
+        final_rows = {r["instance_id"]: r for r in cohort["results"]}
+        assert len(cached) == len(audit["instance_ids"])
+        for r in cached:
+            sid = r["instance_id"]
+            if sid in recovery.get("invalidated_validation_ids", []):
+                continue
+            assert final_rows[sid].get("eval_runs") == r.get("eval_runs")
+            assert hashlib.sha256(json.dumps(after[sid], sort_keys=True).encode()).hexdigest() == audit["prediction_hashes"][sid]
+    stats = cohort["summary"]
+    errors = cohort["run_provenance"].get("generation_errors", {})
+    initial = []
+    if (out / "zero_call_startup_audit.json").exists():
+        initial.append(json.loads((out / "zero_call_startup_audit.json").read_text()))
+        assert (out / "platform_repair_done.json").exists()
+    if (out / "startup_error_dataset_path").exists():
+        initial.append({"reason": "Dataset path glob expansion", "model_calls": 0})
+    rows.append({"agent": entry["agent"], "model": entry["model"], "provider": "aliyun-dashscope",
+                 "resolved": stats["resolved"], "total": 13, "submitted": stats["submitted"],
+                 "applicable_patches": stats["patch_applied"], "actual_validation_runs": actual_runs,
+                 "F2P": stats["fail_pass"]["summary"], "P2P": stats["pass_pass"]["summary"],
+                 "generation_errors": errors,
+                 "resolved_ids": [r["instance_id"] for r in cohort["results"] if r["resolved"]],
+                 "original_results_preserved": 106, "original_predictions_preserved": 106,
+                 "merged_total": 119, "invalid_zero_call_startups": initial,
+                 "authorized_paid_retries": recovery.get("approved_paid_retries", []),
+                 "valid_agent_workflows": 13,
+                 "report": str(out / "REPORT.md")})
+
+assert sum(len(r["authorized_paid_retries"]) for r in rows) == 9
+(HERE / "comparison.json").write_text(json.dumps({"cohorts": rows, "valid_agent_workflows": 117,
+    "archived_interrupted_paid_workflows": 9,
+    "retry_authorization": json.loads((HERE / "retry_approval_pending.json").read_text()),
+    "note": "ACR reuses the completed cohorts. Each agent/model/sample contributes one selected valid workflow. Nine workflows interrupted after model calls by Docker storage failures were rerun with explicit user authorization; their earlier attempts remain archived. Each applicable patch is validated three times. All selected tests remain in the denominator."}, indent=2) + "\n")
+labels = {"autocoderover": "ACR", "minisweagent": "Mini-SWE-Agent", "openhands": "OpenHands"}
+lines = ["# Three agents × three Alibaba Cloud models: 13 additions", "",
+         "Each agent/model/sample contributes one selected valid workflow. Applicable patches are validated three times; resolved requires all three validations to pass.", "",
+         "| Agent | DeepSeek V4 Pro | DeepSeek V4 Flash | GLM-5.2 |", "|---|---|---|---|"]
+for agent in labels:
+    values = [next(r for r in rows if r["agent"] == agent and r["model"] == model) for model in models]
+    lines.append("| " + labels[agent] + " | " + " | ".join(f"{r['resolved']}/13 ({r['resolved']/13:.1%})" for r in values) + " |")
+lines += ["", "| Agent | Model | Submitted | Applicable | Actual validations | F2P | P2P | Generation errors |",
+          "|---|---|---|---|---|---|---|---|"]
+for row in rows:
+    lines.append("| " + " | ".join(map(str, [labels[row["agent"]], row["model"], row["submitted"], row["applicable_patches"], row["actual_validation_runs"], row["F2P"], row["P2P"], len(row["generation_errors"])])) + " |")
+lines += ["", "All nine main result files contain 119 instances. Every original 106-row result set and prediction set was verified unchanged.",
+          "Nine workflows interrupted after model calls by Docker storage failures were rerun with explicit user authorization on 2026-10-01. The interrupted attempts remain archived, and per-sample metadata records two total attempts and one valid workflow for these samples. Existing completed workflows were retained.",
+          "Six Mini ARM container startup failures and one OpenHands dataset-loading failure occurred before any model call; their logs are also archived separately.",
+          "Actual Alibaba billing is not exposed by the inference API. Token-based estimates for selected workflows exclude archived interrupted attempts and are not total billed amounts.", "", "Authorized retries:"]
+lines += [f"- {labels[r['agent']]} / {r['model']}: {', '.join(r['authorized_paid_retries'])}" for r in rows if r["authorized_paid_retries"]]
+lines += ["", "Detailed cohort reports:"]
+lines += [f"- [{labels[r['agent']]} / {r['model']}](<{r['report']}>)" for r in rows]
+previous_report = HERE / "second_storage_incident/REPORT.before_approved.md"
+if (HERE / "REPORT.md").exists() and not previous_report.exists():
+    previous_report.parent.mkdir(exist_ok=True)
+    shutil.copy2(HERE / "REPORT.md", previous_report)
+(HERE / "REPORT.md").write_text("\n".join(lines) + "\n")
+print(json.dumps({"cohorts": [{k: r[k] for k in ["agent", "model", "resolved", "F2P", "P2P"]} for r in rows], "actual_validation_runs": sum(r["actual_validation_runs"] for r in rows)}, indent=2))

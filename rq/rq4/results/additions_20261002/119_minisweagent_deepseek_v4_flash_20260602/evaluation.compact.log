@@ -1,0 +1,1169 @@
+Patch applied: true
+Running fail-pass tests...
+FFFFFF................F.F.                                               [100%]
+=================================== FAILURES ===================================
+_________________ TestQNNRegressor.test_serialization[qiskit] __________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe19e19c0>
+request = <FixtureRequest for <Function test_serialization[qiskit]>>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+framework = 'qiskit'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNRegressor."""
+    
+        X, y = data
+        qnn_regressor = self.get_qnn_regressor(framework)
+        qnn_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_regressor.dump(buffer)
+
+tests/qnn/test_qnnr.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7ffffe306500>
+obj = <_io.TextIOWrapper name="<_io.FileIO name=12 mode='rb+' closefd=True>" mode='r+' encoding='utf-8'>
+save_persistent_id = True
+
+    def save(self, obj, save_persistent_id=True):
+        self.framer.commit_frame()
+    
+        # Check for persistent id (defined by a subclass)
+        pid = self.persistent_id(obj)
+        if pid is not None and save_persistent_id:
+            self.save_pers(pid)
+            return
+    
+        # Check the memo
+        x = self.memo.get(id(obj))
+        if x is not None:
+            self.write(self.get(x[0]))
+            return
+    
+        rv = NotImplemented
+        reduce = getattr(self, "reducer_override", None)
+        if reduce is not None:
+            rv = reduce(obj)
+    
+        if rv is NotImplemented:
+            # Check the type dispatch table
+            t = type(obj)
+            f = self.dispatch.get(t)
+            if f is not None:
+                f(self, obj)  # Call unbound method with explicit self
+                return
+    
+            # Check private dispatch table if any, or else
+            # copyreg.dispatch_table
+            reduce = getattr(self, 'dispatch_table', dispatch_table).get(t)
+            if reduce is not None:
+                rv = reduce(obj)
+            else:
+                # Check for a class with a custom metaclass; treat as regular
+                # class
+                if issubclass(t, type):
+                    self.save_global(obj)
+                    return
+    
+                # Check for a __reduce_ex__ method, fall back to __reduce__
+                reduce = getattr(obj, "__reduce_ex__", None)
+                if reduce is not None:
+>                   rv = reduce(self.proto)
+E                   TypeError: cannot pickle 'EncodedFile' object
+
+/usr/local/lib/python3.10/pickle.py:578: TypeError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit:  50%|█████     | 1/2 [00:00<00:00,  5.89it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00,  7.68it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00,  7.34it/s]
+------------------------------ Captured log call -------------------------------
+________________ TestQNNRegressor.test_serialization[pennylane] ________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe19e1930>
+request = <FixtureRequest for <Function test_serialization[pennylane]>>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+framework = 'pennylane'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNRegressor."""
+    
+        X, y = data
+        qnn_regressor = self.get_qnn_regressor(framework)
+        qnn_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_regressor.dump(buffer)
+
+tests/qnn/test_qnnr.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7fffe03e4d00>
+obj = <_io.TextIOWrapper name="<_io.FileIO name=12 mode='rb+' closefd=True>" mode='r+' encoding='utf-8'>
+save_persistent_id = True
+
+    def save(self, obj, save_persistent_id=True):
+        self.framer.commit_frame()
+    
+        # Check for persistent id (defined by a subclass)
+        pid = self.persistent_id(obj)
+        if pid is not None and save_persistent_id:
+            self.save_pers(pid)
+            return
+    
+        # Check the memo
+        x = self.memo.get(id(obj))
+        if x is not None:
+            self.write(self.get(x[0]))
+            return
+    
+        rv = NotImplemented
+        reduce = getattr(self, "reducer_override", None)
+        if reduce is not None:
+            rv = reduce(obj)
+    
+        if rv is NotImplemented:
+            # Check the type dispatch table
+            t = type(obj)
+            f = self.dispatch.get(t)
+            if f is not None:
+                f(self, obj)  # Call unbound method with explicit self
+                return
+    
+            # Check private dispatch table if any, or else
+            # copyreg.dispatch_table
+            reduce = getattr(self, 'dispatch_table', dispatch_table).get(t)
+            if reduce is not None:
+                rv = reduce(obj)
+            else:
+                # Check for a class with a custom metaclass; treat as regular
+                # class
+                if issubclass(t, type):
+                    self.save_global(obj)
+                    return
+    
+                # Check for a __reduce_ex__ method, fall back to __reduce__
+                reduce = getattr(obj, "__reduce_ex__", None)
+                if reduce is not None:
+>                   rv = reduce(self.proto)
+E                   TypeError: cannot pickle 'EncodedFile' object
+
+/usr/local/lib/python3.10/pickle.py:578: TypeError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 24.05it/s]
+------------------------------ Captured log call -------------------------------
+_________________ TestQNNRegressor.test_serialization[qulacs] __________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe19e09d0>
+request = <FixtureRequest for <Function test_serialization[qulacs]>>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+framework = 'qulacs'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNRegressor."""
+    
+        X, y = data
+        qnn_regressor = self.get_qnn_regressor(framework)
+        qnn_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_regressor.dump(buffer)
+
+tests/qnn/test_qnnr.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1157: in _save_with_postproc
+    pickler.save_reduce(*reduction)
+/usr/local/lib/python3.10/pickle.py:692: in save_reduce
+    save(args)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:887: in save_tuple
+    save(element)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1157: in _save_with_postproc
+    pickler.save_reduce(*reduction)
+/usr/local/lib/python3.10/pickle.py:692: in save_reduce
+    save(args)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:887: in save_tuple
+    save(element)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:932: in save_list
+    self._batch_appends(obj)
+/usr/local/lib/python3.10/pickle.py:956: in _batch_appends
+    save(x)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1150: in _save_with_postproc
+    pickler._batch_setitems(iter(source.items()))
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:387: in save_numpy_ufunc
+    StockPickler.save_global(pickler, obj, name=name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7fffe021d720>
+obj = <ufunc 'assoc_legendre_p'>, name = 'assoc_legendre_p'
+
+    def save_global(self, obj, name=None):
+        write = self.write
+        memo = self.memo
+    
+        if name is None:
+            name = getattr(obj, '__qualname__', None)
+        if name is None:
+            name = obj.__name__
+    
+        module_name = whichmodule(obj, name)
+        try:
+            __import__(module_name, level=0)
+            module = sys.modules[module_name]
+            obj2, parent = _getattribute(module, name)
+        except (ImportError, KeyError, AttributeError):
+>           raise PicklingError(
+                "Can't pickle %r: it's not found as %s.%s" %
+                (obj, module_name, name)) from None
+E           _pickle.PicklingError: Can't pickle <ufunc 'assoc_legendre_p'>: it's not found as __main__.assoc_legendre_p
+
+/usr/local/lib/python3.10/pickle.py:1071: PicklingError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 99.93it/s]
+------------------------------ Captured log call -------------------------------
+_________________ TestQNNClassifier.test_serialization[qiskit] _________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19e4130>
+request = <FixtureRequest for <Function test_serialization[qiskit]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'qiskit'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+
+tests/qnn/test_qnnc.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7fffe16b53f0>
+obj = <_io.TextIOWrapper name="<_io.FileIO name=12 mode='rb+' closefd=True>" mode='r+' encoding='utf-8'>
+save_persistent_id = True
+
+    def save(self, obj, save_persistent_id=True):
+        self.framer.commit_frame()
+    
+        # Check for persistent id (defined by a subclass)
+        pid = self.persistent_id(obj)
+        if pid is not None and save_persistent_id:
+            self.save_pers(pid)
+            return
+    
+        # Check the memo
+        x = self.memo.get(id(obj))
+        if x is not None:
+            self.write(self.get(x[0]))
+            return
+    
+        rv = NotImplemented
+        reduce = getattr(self, "reducer_override", None)
+        if reduce is not None:
+            rv = reduce(obj)
+    
+        if rv is NotImplemented:
+            # Check the type dispatch table
+            t = type(obj)
+            f = self.dispatch.get(t)
+            if f is not None:
+                f(self, obj)  # Call unbound method with explicit self
+                return
+    
+            # Check private dispatch table if any, or else
+            # copyreg.dispatch_table
+            reduce = getattr(self, 'dispatch_table', dispatch_table).get(t)
+            if reduce is not None:
+                rv = reduce(obj)
+            else:
+                # Check for a class with a custom metaclass; treat as regular
+                # class
+                if issubclass(t, type):
+                    self.save_global(obj)
+                    return
+    
+                # Check for a __reduce_ex__ method, fall back to __reduce__
+                reduce = getattr(obj, "__reduce_ex__", None)
+                if reduce is not None:
+>                   rv = reduce(self.proto)
+E                   TypeError: cannot pickle 'EncodedFile' object
+
+/usr/local/lib/python3.10/pickle.py:578: TypeError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit:  50%|█████     | 1/2 [00:00<00:00,  4.22it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00,  4.94it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00,  4.82it/s]
+------------------------------ Captured log call -------------------------------
+_______________ TestQNNClassifier.test_serialization[pennylane] ________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19e6aa0>
+request = <FixtureRequest for <Function test_serialization[pennylane]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'pennylane'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+
+tests/qnn/test_qnnc.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7fffe154c2e0>
+obj = <_io.TextIOWrapper name="<_io.FileIO name=12 mode='rb+' closefd=True>" mode='r+' encoding='utf-8'>
+save_persistent_id = True
+
+    def save(self, obj, save_persistent_id=True):
+        self.framer.commit_frame()
+    
+        # Check for persistent id (defined by a subclass)
+        pid = self.persistent_id(obj)
+        if pid is not None and save_persistent_id:
+            self.save_pers(pid)
+            return
+    
+        # Check the memo
+        x = self.memo.get(id(obj))
+        if x is not None:
+            self.write(self.get(x[0]))
+            return
+    
+        rv = NotImplemented
+        reduce = getattr(self, "reducer_override", None)
+        if reduce is not None:
+            rv = reduce(obj)
+    
+        if rv is NotImplemented:
+            # Check the type dispatch table
+            t = type(obj)
+            f = self.dispatch.get(t)
+            if f is not None:
+                f(self, obj)  # Call unbound method with explicit self
+                return
+    
+            # Check private dispatch table if any, or else
+            # copyreg.dispatch_table
+            reduce = getattr(self, 'dispatch_table', dispatch_table).get(t)
+            if reduce is not None:
+                rv = reduce(obj)
+            else:
+                # Check for a class with a custom metaclass; treat as regular
+                # class
+                if issubclass(t, type):
+                    self.save_global(obj)
+                    return
+    
+                # Check for a __reduce_ex__ method, fall back to __reduce__
+                reduce = getattr(obj, "__reduce_ex__", None)
+                if reduce is not None:
+>                   rv = reduce(self.proto)
+E                   TypeError: cannot pickle 'EncodedFile' object
+
+/usr/local/lib/python3.10/pickle.py:578: TypeError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 19.86it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 19.81it/s]
+------------------------------ Captured log call -------------------------------
+_________________ TestQNNClassifier.test_serialization[qulacs] _________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19e6b60>
+request = <FixtureRequest for <Function test_serialization[qulacs]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'qulacs'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+
+tests/qnn/test_qnnc.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:34: in dump
+    self._dump_to_stream(target)
+src/squlearn/util/serialization/serializable_model_mixin.py:45: in _dump_to_stream
+    pickle.dump(state, stream)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:261: in dump
+    Pickler(file, protocol, **_kwds).dump(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1157: in _save_with_postproc
+    pickler.save_reduce(*reduction)
+/usr/local/lib/python3.10/pickle.py:692: in save_reduce
+    save(args)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:887: in save_tuple
+    save(element)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1157: in _save_with_postproc
+    pickler.save_reduce(*reduction)
+/usr/local/lib/python3.10/pickle.py:692: in save_reduce
+    save(args)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:887: in save_tuple
+    save(element)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:932: in save_list
+    self._batch_appends(obj)
+/usr/local/lib/python3.10/pickle.py:956: in _batch_appends
+    save(x)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1150: in _save_with_postproc
+    pickler._batch_setitems(iter(source.items()))
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:387: in save_numpy_ufunc
+    StockPickler.save_global(pickler, obj, name=name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <dill._dill.Pickler object at 0x7fffe1592e30>
+obj = <ufunc 'assoc_legendre_p'>, name = 'assoc_legendre_p'
+
+    def save_global(self, obj, name=None):
+        write = self.write
+        memo = self.memo
+    
+        if name is None:
+            name = getattr(obj, '__qualname__', None)
+        if name is None:
+            name = obj.__name__
+    
+        module_name = whichmodule(obj, name)
+        try:
+            __import__(module_name, level=0)
+            module = sys.modules[module_name]
+            obj2, parent = _getattribute(module, name)
+        except (ImportError, KeyError, AttributeError):
+>           raise PicklingError(
+                "Can't pickle %r: it's not found as %s.%s" %
+                (obj, module_name, name)) from None
+E           _pickle.PicklingError: Can't pickle <ufunc 'assoc_legendre_p'>: it's not found as __main__.assoc_legendre_p
+
+/usr/local/lib/python3.10/pickle.py:1071: PicklingError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 156.85it/s]
+------------------------------ Captured log call -------------------------------
+_______________________ test_executor_removed_by_pickler _______________________
+
+executor_obj = <squlearn.util.executor.Executor object at 0x7fffe03d80d0>
+
+    def test_executor_removed_by_pickler(executor_obj):
+        dummy = DummyExecutorHolder(executor_obj)
+    
+        buffer = io.BytesIO()
+        dummy.dump(buffer)
+    
+        # raw load with dill, which should ignore the persistent IDs
+        buffer.seek(0)
+        dummpy_pickler = DummyUnpickler(buffer)
+        raw = dummpy_pickler.load()
+    
+>       assert hasattr(raw, "executor")
+E       AssertionError: assert False
+E        +  where False = hasattr({}, 'executor')
+
+tests/util/serialization/test_model_pickler.py:35: AssertionError
+------------------------------ Captured log setup ------------------------------
+______________________ test_multiple_executor_references _______________________
+
+executor_obj = <squlearn.util.executor.Executor object at 0x7fffe16f5e70>
+
+    def test_multiple_executor_references(executor_obj):
+        class Holder(SerializableModelMixin):
+            def __init__(self, executor):
+                self.level1 = DummyExecutorHolder(executor)
+                self.level2 = DummyExecutorHolder(executor)
+    
+        holder = Holder(executor_obj)
+    
+        buffer = io.BytesIO()
+        holder.dump(buffer)
+    
+        # raw load all executor references should be None
+        buffer.seek(0)
+        dummy_pickler = DummyUnpickler(buffer)
+        raw = dummy_pickler.load()
+>       assert raw.level1.executor is None
+E       AttributeError: 'dict' object has no attribute 'level1'
+
+tests/util/serialization/test_model_pickler.py:69: AttributeError
+------------------------------ Captured log setup ------------------------------
+=============================== warnings summary ===============================
+src/squlearn/kernel/lowlevel_kernel/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/lowlevel_kernel/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+tests/qnn/test_qnnr.py: 1 warning
+tests/qnn/test_qnnc.py: 1 warning
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/qasm_simulator.py:433: PendingDeprecationWarning: The `QasmSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend.
+    warn(
+
+tests/qnn/test_qnnr.py: 1 warning
+tests/qnn/test_qnnc.py: 1 warning
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/statevector_simulator.py:242: PendingDeprecationWarning: The `StatevectorSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="statevector")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_qnnr.py: 1 warning
+tests/qnn/test_qnnc.py: 1 warning
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/unitary_simulator.py:228: PendingDeprecationWarning: The `UnitarySimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="unitary")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]
+  /workspace/repo/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py:69: UserWarning: Primitive argument is not supported for Qulacs. Ignoring...
+    warn("Primitive argument is not supported for Qulacs. Ignoring...")
+
+tests/qnn/test_qnnc.py: 3 warnings
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/qrc/test_qrc_classifier.py: 3 warnings
+tests/qrc/test_qrc_regressor.py: 3 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 10 warnings
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[mlp]
+  /usr/local/lib/python3.10/site-packages/sklearn/neural_network/_multilayer_perceptron.py:691: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qiskit]
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[pennylane]
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qiskit]
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[pennylane]
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]
+FAILED tests/util/serialization/test_model_pickler.py::test_executor_removed_by_pickler
+FAILED tests/util/serialization/test_model_pickler.py::test_multiple_executor_references
+8 failed, 18 passed, 68 warnings in 18.39s
+
+
+Running pass-pass tests...
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]
+tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 2 warnings in 2.96s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)

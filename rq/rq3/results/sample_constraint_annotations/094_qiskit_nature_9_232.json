@@ -1,0 +1,129 @@
+{
+  "id": 94,
+  "sample_id": "qiskit_nature_9_232",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "28728860f9d6154a55bcda6a31936f7f26a25b33",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/bksf_edge_operator": 2,
+      "quantum_semantics/fermion_qubit_mapping": 4,
+      "interface/mapper_capability_flag": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_bi",
+      "label": "quantum_semantics/bksf_edge_operator",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "BKSF vertex-edge operators b_i match all four Pauli references."
+        }
+      ],
+      "rationale": "BKSF vertex-edge operators b_i match all four Pauli references."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_aij",
+      "label": "quantum_semantics/bksf_edge_operator",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "BKSF edge operators a_ij match all six Pauli references."
+        }
+      ],
+      "rationale": "BKSF edge operators a_ij match all six Pauli references."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 153,
+          "expected": "The H2 fermionic operator maps to the expected BKSF Pauli sum."
+        }
+      ],
+      "rationale": "The H2 fermionic operator maps to the expected BKSF Pauli sum."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "Existing Bravyi-Kitaev H2 mapping retains its reference output."
+        }
+      ],
+      "rationale": "Existing Bravyi-Kitaev H2 mapping retains its reference output."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_flag",
+      "assertions": [
+        {
+          "line": 69,
+          "expected": "Bravyi-Kitaev mapper reports no two-qubit reduction support."
+        }
+      ],
+      "rationale": "Bravyi-Kitaev mapper reports no two-qubit reduction support."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "Existing Jordan-Wigner H2 mapping retains its reference output."
+        }
+      ],
+      "rationale": "Existing Jordan-Wigner H2 mapping retains its reference output."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "Existing parity H2 mapping retains its reference output."
+        }
+      ],
+      "rationale": "Existing parity H2 mapping retains its reference output."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_flag",
+      "assertions": [
+        {
+          "line": 69,
+          "expected": "Parity mapper reports two-qubit reduction support."
+        }
+      ],
+      "rationale": "Parity mapper reports two-qubit reduction support."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/28728860f9d6154a55bcda6a31936f7f26a25b33/test/mappers/second_quantization/test_bksf_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/28728860f9d6154a55bcda6a31936f7f26a25b33/test/mappers/second_quantization/test_bravyi_kitaev_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/28728860f9d6154a55bcda6a31936f7f26a25b33/test/mappers/second_quantization/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/28728860f9d6154a55bcda6a31936f7f26a25b33/test/mappers/second_quantization/test_parity_mapper.py"
+  ],
+  "rationale": "Every selected test was inspected individually against the task and test assertion."
+}

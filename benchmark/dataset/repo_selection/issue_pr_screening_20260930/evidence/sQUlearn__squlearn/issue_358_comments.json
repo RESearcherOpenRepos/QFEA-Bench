@@ -1,0 +1,49 @@
+[
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/issues/comments/3635927912",
+    "html_url": "https://github.com/sQUlearn/squlearn/issues/358#issuecomment-3635927912",
+    "issue_url": "https://api.github.com/repos/sQUlearn/squlearn/issues/358",
+    "id": 3635927912,
+    "node_id": "IC_kwDOJkEH0s7Yt9to",
+    "user": {
+      "login": "DennisKleinhans",
+      "id": 44137912,
+      "node_id": "MDQ6VXNlcjQ0MTM3OTEy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44137912?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/DennisKleinhans",
+      "html_url": "https://github.com/DennisKleinhans",
+      "followers_url": "https://api.github.com/users/DennisKleinhans/followers",
+      "following_url": "https://api.github.com/users/DennisKleinhans/following{/other_user}",
+      "gists_url": "https://api.github.com/users/DennisKleinhans/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/DennisKleinhans/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/DennisKleinhans/subscriptions",
+      "organizations_url": "https://api.github.com/users/DennisKleinhans/orgs",
+      "repos_url": "https://api.github.com/users/DennisKleinhans/repos",
+      "events_url": "https://api.github.com/users/DennisKleinhans/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/DennisKleinhans/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "created_at": "2025-12-10T08:26:08Z",
+    "updated_at": "2025-12-10T08:26:08Z",
+    "body": "### Observations\n\n- Using sQUlearn with the **Qulacs** backend the process RSS grows continuously during long runs (grid-search / many models). Growth sometimes appears as sudden large jumps.\n- Using **PennyLane** the memory does **not** grow over time: temporary allocations occur during an iteration but are released afterwards; overall RSS stays stable.\n- Running **pure Qulacs** (no sQUlearn) does **not** reproduce the persistent growth.\n\n### What was tested\n\n- Measured RSS and Python allocations while: (a) running the sQUlearn workload with Qulacs, (b) running the same workload with PennyLane, and (c) running a minimal pure-Qulacs workload. Only (a) showed persistent RSS growth.\n\n### Most likely root cause\n\n- The evidence points **not** to a Qulacs native bug alone, but to how sQUlearn constructs/uses Qulacs circuits: some objects or closures created by sQUlearn keep references to Qulacs-native objects (or to closures that capture `self`), preventing the native-level memory from being freed. In short: **retention inside sQUlearn prevents C-level resources from being released.**",
+    "author_association": "COLLABORATOR",
+    "pin": null,
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/issues/comments/3635927912/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "performed_via_github_app": null,
+    "minimized": null
+  }
+]

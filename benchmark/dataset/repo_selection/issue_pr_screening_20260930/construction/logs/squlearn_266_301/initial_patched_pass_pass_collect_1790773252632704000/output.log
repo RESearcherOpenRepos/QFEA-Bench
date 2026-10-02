@@ -1,0 +1,63 @@
+HEAD is now at 1b0adcd Remove need for `num_features` before fitting  (#301)
+ERROR: found no collectors for /workspace/repo/tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict
+
+ERROR: found no collectors for /workspace/repo/tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+
+
+==================================== ERRORS ====================================
+________________ ERROR collecting tests/kernel/ml/test_qkrr.py _________________
+ImportError while importing test module '/workspace/repo/tests/kernel/ml/test_qkrr.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/kernel/ml/test_qkrr.py:10: in <module>
+    from squlearn import Executor
+src/squlearn/__init__.py:3: in <module>
+    from .util import Executor
+src/squlearn/util/__init__.py:1: in <module>
+    from .executor import Executor
+src/squlearn/util/executor.py:47: in <module>
+    from qiskit_algorithms.utils import algorithm_globals as qiskit_algorithm_globals
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/__init__.py:307: in <module>
+    from .minimum_eigensolvers import (
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/__init__.py:15: in <module>
+    from .adapt_vqe import AdaptVQE, AdaptVQEResult
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py:25: in <module>
+    from qiskit.circuit.library import EvolvedOperatorAnsatz, evolved_operator_ansatz
+E   ImportError: cannot import name 'evolved_operator_ansatz' from 'qiskit.circuit.library' (/usr/local/lib/python3.10/site-packages/qiskit/circuit/library/__init__.py)
+___________________ ERROR collecting tests/qnn/test_qnnr.py ____________________
+ImportError while importing test module '/workspace/repo/tests/qnn/test_qnnr.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/qnn/test_qnnr.py:10: in <module>
+    from squlearn import Executor
+src/squlearn/__init__.py:4: in <module>
+    from . import observables, encoding_circuit, kernel, optimizers, qnn, util
+src/squlearn/kernel/__init__.py:1: in <module>
+    from .lowlevel_kernel import FidelityKernel, ProjectedQuantumKernel, KernelOptimizer
+src/squlearn/kernel/lowlevel_kernel/__init__.py:1: in <module>
+    from .fidelity_kernel import FidelityKernel
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:21: in <module>
+    from .fidelity_kernel_expectation_value import FidelityKernelExpectationValue
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py:15: in <module>
+    from ...qnn.lowlevel_qnn import LowLevelQNN
+src/squlearn/qnn/__init__.py:4: in <module>
+    from .qnnc import QNNClassifier
+src/squlearn/qnn/qnnc.py:24: in <module>
+    from .base_qnn import BaseQNN
+src/squlearn/qnn/base_qnn.py:27: in <module>
+    from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+src/squlearn/optimizers/__init__.py:5: in <module>
+    from .optimizers_wrapper import SLSQP, SPSA, LBFGSB
+src/squlearn/optimizers/optimizers_wrapper.py:4: in <module>
+    import qiskit_algorithms.optimizers as qiskit_optimizers
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/__init__.py:307: in <module>
+    from .minimum_eigensolvers import (
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/__init__.py:15: in <module>
+    from .adapt_vqe import AdaptVQE, AdaptVQEResult
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py:25: in <module>
+    from qiskit.circuit.library import EvolvedOperatorAnsatz, evolved_operator_ansatz
+E   ImportError: cannot import name 'evolved_operator_ansatz' from 'qiskit.circuit.library' (/usr/local/lib/python3.10/site-packages/qiskit/circuit/library/__init__.py)
+=========================== short test summary info ============================
+ERROR tests/kernel/ml/test_qkrr.py
+ERROR tests/qnn/test_qnnr.py
+no tests collected, 2 errors in 7.87s

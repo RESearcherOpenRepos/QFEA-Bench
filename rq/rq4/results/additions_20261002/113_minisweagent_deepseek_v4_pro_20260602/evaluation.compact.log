@@ -1,0 +1,632 @@
+===== evaluation run 1/3 =====
+Patch applied: true
+Running fail-pass tests...
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_kernel_optimizer_for_regressor_classes[QGPR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe2439840>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qgpr.QGPR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QKRR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe2439840>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qkrr.QKRR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QSVR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe2439840>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qsvr.QSVR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QGPC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd4eda0>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qgpc.QGPC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QSVC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd4eda0>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qsvc.QSVC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+=============================== warnings summary ===============================
+src/squlearn/util/executor.py:1602
+  /workspace/repo/src/squlearn/util/executor.py:1602: DeprecationWarning: invalid escape sequence '\ '
+    """Parameters of the quantum circuits.
+
+src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182
+  /workspace/repo/src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182: DeprecationWarning: invalid escape sequence '\p'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+src/squlearn/kernel/matrix/projected_quantum_kernel.py:869
+  /workspace/repo/src/squlearn/kernel/matrix/projected_quantum_kernel.py:869: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/ml/qkrr.py:15
+  /workspace/repo/src/squlearn/kernel/ml/qkrr.py:15: DeprecationWarning: invalid escape sequence '\_'
+    """
+
+tests/kernel/matrix/test_kernel_optimizer.py: 48 warnings
+  /workspace/repo/src/squlearn/optimizers/approximated_gradients.py:82: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    g[i] = (self.fun(x + dx) - self.fun(x - dx)) / (2.0 * self.eps)
+
+tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+  /workspace/repo/src/squlearn/kernel/ml/qgpr.py:159: UserWarning: The regularization of the quantum kernel is set to tikhonov. If full_regularization is True, best results are achieved with no additional quantum kernel regularization.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QKRR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QSVR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QGPC]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QSVC]
+5 failed, 55 warnings in 8.26s
+
+
+Running pass-pass tests...
+......                                                                   [100%]
+6 passed in 2.48s
+
+
+
+===== evaluation run 2/3 =====
+Patch applied: true
+Running fail-pass tests...
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_kernel_optimizer_for_regressor_classes[QGPR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22a5180>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qgpr.QGPR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QKRR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22a5180>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qkrr.QKRR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QSVR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22a5180>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qsvr.QSVR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QGPC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd3ec80>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qgpc.QGPC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QSVC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd3ec80>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qsvc.QSVC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+=============================== warnings summary ===============================
+src/squlearn/util/executor.py:1602
+  /workspace/repo/src/squlearn/util/executor.py:1602: DeprecationWarning: invalid escape sequence '\ '
+    """Parameters of the quantum circuits.
+
+src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182
+  /workspace/repo/src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182: DeprecationWarning: invalid escape sequence '\p'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+src/squlearn/kernel/matrix/projected_quantum_kernel.py:869
+  /workspace/repo/src/squlearn/kernel/matrix/projected_quantum_kernel.py:869: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/ml/qkrr.py:15
+  /workspace/repo/src/squlearn/kernel/ml/qkrr.py:15: DeprecationWarning: invalid escape sequence '\_'
+    """
+
+tests/kernel/matrix/test_kernel_optimizer.py: 48 warnings
+  /workspace/repo/src/squlearn/optimizers/approximated_gradients.py:82: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    g[i] = (self.fun(x + dx) - self.fun(x - dx)) / (2.0 * self.eps)
+
+tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+  /workspace/repo/src/squlearn/kernel/ml/qgpr.py:159: UserWarning: The regularization of the quantum kernel is set to tikhonov. If full_regularization is True, best results are achieved with no additional quantum kernel regularization.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QKRR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QSVR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QGPC]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QSVC]
+5 failed, 55 warnings in 7.88s
+
+
+Running pass-pass tests...
+......                                                                   [100%]
+6 passed in 2.46s
+
+
+
+===== evaluation run 3/3 =====
+Patch applied: true
+Running fail-pass tests...
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_kernel_optimizer_for_regressor_classes[QGPR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22b73a0>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qgpr.QGPR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QKRR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22b73a0>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qkrr.QKRR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+______________ test_kernel_optimizer_for_regressor_classes[QSVR] _______________
+
+setup_kernel_optimizer_for_regressor = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffe22b73a0>, (array([[-0.15135721, -0.97727788...24.29059955,
+       -113.02732943,   68.37468355,  127.21168061,   47.1944118 ,
+         13.09687362,   20.05591364])))
+high_level_class = <class 'squlearn.kernel.ml.qsvr.QSVR'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPR, QKRR, QSVR])
+    def test_kernel_optimizer_for_regressor_classes(
+        setup_kernel_optimizer_for_regressor,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level regression methods.
+    
+        Args:
+            setup_kernel_optimizer_for_regressor: A fixture that returns a kernel optimizer and
+                                                    regression data.
+            high_level_class: A high-level regression class
+        """
+        kernel_optimizer, regression_data = setup_kernel_optimizer_for_regressor
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(regression_data[0], regression_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:67: AttributeError
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QGPC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd60b50>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qgpc.QGPC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+------------------------------ Captured log setup ------------------------------
+------------------------------ Captured log call -------------------------------
+____________ test_kernel_opimizer_for_classification_classes[QSVC] _____________
+
+setup_kernel_optimizer_for_classifier = (<squlearn.kernel.matrix.kernel_optimizer.KernelOptimizer object at 0x7fffdfd60b50>, (array([[-0.01669425, -0.84862223...9,  1.22140561],
+       [-0.0568887 ,  1.20960511, -0.98740462,  0.99958558]]), array([0, 1, 0, 0, 1, 1, 0, 0, 1, 1])))
+high_level_class = <class 'squlearn.kernel.ml.qsvc.QSVC'>
+
+    @pytest.mark.parametrize("high_level_class", [QGPC, QSVC])
+    def test_kernel_opimizer_for_classification_classes(
+        setup_kernel_optimizer_for_classifier,
+        high_level_class,
+    ):
+        """Test kernel optimizer for high-level classification methods.
+    
+        Args:
+            setup_kernel_optimizer_for_classifier: A fixture that returns a kernel optimizer and
+                                                    classification data.
+            high_level_class: A high-level classification class
+        """
+        kernel_optimizer, classification_data = setup_kernel_optimizer_for_classifier
+        model = high_level_class(quantum_kernel=kernel_optimizer)
+        model.fit(classification_data[0], classification_data[1])
+        assert kernel_optimizer.get_optimal_parameters() is not None
+        assert kernel_optimizer._optimizer is not None
+>       assert kernel_optimizer.is_fitted is True
+E       AttributeError: 'KernelOptimizer' object has no attribute 'is_fitted'
+
+tests/kernel/matrix/test_kernel_optimizer.py:87: AttributeError
+=============================== warnings summary ===============================
+src/squlearn/util/executor.py:1602
+  /workspace/repo/src/squlearn/util/executor.py:1602: DeprecationWarning: invalid escape sequence '\ '
+    """Parameters of the quantum circuits.
+
+src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182
+  /workspace/repo/src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182: DeprecationWarning: invalid escape sequence '\p'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+src/squlearn/kernel/matrix/projected_quantum_kernel.py:869
+  /workspace/repo/src/squlearn/kernel/matrix/projected_quantum_kernel.py:869: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/ml/qkrr.py:15
+  /workspace/repo/src/squlearn/kernel/ml/qkrr.py:15: DeprecationWarning: invalid escape sequence '\_'
+    """
+
+tests/kernel/matrix/test_kernel_optimizer.py: 48 warnings
+  /workspace/repo/src/squlearn/optimizers/approximated_gradients.py:82: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    g[i] = (self.fun(x + dx) - self.fun(x - dx)) / (2.0 * self.eps)
+
+tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+  /workspace/repo/src/squlearn/kernel/ml/qgpr.py:159: UserWarning: The regularization of the quantum kernel is set to tikhonov. If full_regularization is True, best results are achieved with no additional quantum kernel regularization.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QGPR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QKRR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes[QSVR]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QGPC]
+FAILED tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes[QSVC]
+5 failed, 55 warnings in 7.63s
+
+
+Running pass-pass tests...
+......                                                                   [100%]
+6 passed in 2.46s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)

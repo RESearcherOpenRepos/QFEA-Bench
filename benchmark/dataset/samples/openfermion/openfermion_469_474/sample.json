@@ -1,0 +1,162 @@
+{
+  "instance": {
+    "id": 9,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_469_474",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/469",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/474",
+    "base_commit": "e3b7236b2061b8f87222fd7ab23040cb2e5a77ee",
+    "patch": "8a790335cc2ac7f82c53a22f821ce51e8486e79d"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task extends Hubbard lattice edge handling, but the main change is directional API and parameter plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/utils/_lattice.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion's square-lattice Hubbard utilities need to distinguish horizontal and vertical nearest-neighbor edges so users can assign different tunneling and interaction coefficients along the two lattice directions instead of treating every nearest-neighbor bond as a single undifferentiated edge type.",
+    "requirements": [
+      "Extend HubbardSquareLattice so square-lattice edge handling distinguishes onsite, generic neighbor, horizontal_neighbor, and vertical_neighbor edge types.",
+      "Allow HubbardSquareLattice to enumerate and count horizontal and vertical nearest-neighbor site pairs independently while preserving the existing generic neighbor behavior.",
+      "Allow FermiHubbardModel on a HubbardSquareLattice to accept tunneling and interaction parameter tuples keyed by horizontal_neighbor and vertical_neighbor edge types.",
+      "Generate Hamiltonian terms for direction-specific square-lattice neighbor parameters with the same multiplicity rules used for the corresponding onsite and generic-neighbor terms."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HubbardSquareLattice",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "constructor: x_dimension, y_dimension, n_dofs=1, spinless=False, periodic=True",
+        "Output": "",
+        "Description": "Represents a square Hubbard lattice and exposes direction-aware nearest-neighbor edge categories."
+      },
+      {
+        "Type": "Method",
+        "Name": "edge_types",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "self",
+        "Output": "tuple[str, ...]",
+        "Description": "Returns the supported square-lattice edge-type labels, including horizontal_neighbor and vertical_neighbor."
+      },
+      {
+        "Type": "Method",
+        "Name": "validate_edge_type",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "self, edge_type",
+        "Output": "",
+        "Description": "Accepts the supported square-lattice edge-type labels and rejects unsupported ones."
+      },
+      {
+        "Type": "Method",
+        "Name": "site_pairs_iter",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "self, edge_type, ordered=True",
+        "Output": "iterator",
+        "Description": "Enumerates onsite, generic neighbor, horizontal-neighbor, or vertical-neighbor site pairs for a square lattice."
+      },
+      {
+        "Type": "Method",
+        "Name": "n_horizontal_neighbor_pairs",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "self, ordered=True",
+        "Output": "int",
+        "Description": "Returns the number of horizontal nearest-neighbor site pairs on the square lattice."
+      },
+      {
+        "Type": "Method",
+        "Name": "n_vertical_neighbor_pairs",
+        "Path": "src/openfermion/utils/_lattice.py",
+        "Input": "self, ordered=True",
+        "Output": "int",
+        "Description": "Returns the number of vertical nearest-neighbor site pairs on the square lattice."
+      },
+      {
+        "Type": "Class",
+        "Name": "FermiHubbardModel",
+        "Path": "src/openfermion/hamiltonians/_general_hubbard.py",
+        "Input": "constructor: lattice, tunneling_parameters=None, interaction_parameters=None, potential_parameters=None",
+        "Output": "",
+        "Description": "Builds a lattice Hubbard model from edge-typed tunneling and interaction parameter tuples defined on the supplied lattice."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_469_474",
+      "image_id": "sha256:7474e7bbe311ba62d05b76efa59e0e50895389517f35a7c06c1a5788eab2ba51",
+      "image_size": "464221787"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_edge_types",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice0-parameters0-True]",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice2-parameters2-True]"
+        ],
+        "summary": "3 passed, 39 warnings in 2.09s",
+        "duration_seconds": 8.7
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_defaults",
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_dof_validation[1]",
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_2x2",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_default_parameters",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_bad_parameters"
+        ],
+        "summary": "5 passed, 39 warnings in 2.08s",
+        "duration_seconds": 8.7
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_edge_types",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice0-parameters0-True]",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_square_lattice_random_parameters[lattice2-parameters2-True]"
+        ],
+        "summary": "3 failed, 39 warnings in 2.15s",
+        "duration_seconds": 8.77
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_defaults",
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_dof_validation[1]",
+          "src/openfermion/utils/_lattice_test.py::test_hubbard_square_lattice_2x2",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_default_parameters",
+          "src/openfermion/hamiltonians/_general_hubbard_test.py::test_fermi_hubbard_bad_parameters"
+        ],
+        "summary": "5 passed, 39 warnings in 2.08s",
+        "duration_seconds": 8.74
+      }
+    }
+  }
+}

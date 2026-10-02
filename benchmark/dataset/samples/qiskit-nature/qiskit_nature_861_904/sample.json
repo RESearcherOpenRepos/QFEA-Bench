@@ -1,0 +1,154 @@
+{
+  "instance": {
+    "id": 82,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_861_904",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/861",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/904",
+    "base_commit": "dff4a30581f0451ae970525cbbc54bb0c6b0e4d9",
+    "patch": "aedf3472e2e6f3e729204c099503fefd073c9d2b"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds coefficient rounding for sparse-label operators, a numeric helper over existing operator data."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/sparse_label_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "SparseLabelOp currently provides utilities such as chopping small coefficients, but it does not provide a direct way to round operator coefficients. Users need a round utility on SparseLabelOp instances so approximate real or complex coefficients can be rounded to a chosen decimal precision while preserving the operator type and labels.",
+    "requirements": [
+      "SparseLabelOp instances must expose a round operation that returns an operator of the same concrete type with the same labels.",
+      "Calling round without an explicit precision must round each coefficient to the nearest integer value.",
+      "Calling round with a decimal precision must round each real or complex coefficient to that many decimal places.",
+      "Rounding must work for coefficients with real parts, imaginary parts, and combined complex values.",
+      "Existing SparseLabelOp behavior unrelated to rounding must remain compatible with the other second-quantized operator tests."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SparseLabelOp",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "constructor: data, validate=True",
+        "Output": "",
+        "Description": "Base sparse labeled operator container whose concrete subclasses store label-to-coefficient mappings and support creating same-type transformed instances."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.round",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, decimals=0",
+        "Output": "SparseLabelOp",
+        "Description": "Returns a same-type operator with every coefficient rounded to the requested decimal precision while preserving the labels."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_861_904",
+      "image_id": "sha256:c589363e08beb5b17c023a7e05bbbfb129f6a905cea823bec8339b89e167a5c8",
+      "image_size": "1217381724"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_round"
+        ],
+        "summary": "1 passed in 2.31s",
+        "duration_seconds": 10.74
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_div",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_neg",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify"
+        ],
+        "summary": "20 passed in 1.43s",
+        "duration_seconds": 6.44
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_round"
+        ],
+        "summary": "1 failed with AttributeError: 'DummySparseLabelOp' object has no attribute 'round' in 2.97s",
+        "duration_seconds": 12.16
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_div",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_neg",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify"
+        ],
+        "summary": "20 passed in 1.32s",
+        "duration_seconds": 8.0
+      }
+    }
+  }
+}

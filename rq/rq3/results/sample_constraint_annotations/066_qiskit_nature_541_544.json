@@ -1,0 +1,101 @@
+{
+  "id": 66,
+  "sample_id": "qiskit_nature_541_544",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "9ed79a56cf4205f3bb1e1ca8310414c021cb71a1",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/operator_term_representation": 2,
+      "interface/input_format_equivalence": 1,
+      "interface/register_length_contract": 1,
+      "general_semantics/symbolic_operator_arithmetic": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "Term iteration yields action/index pairs with coefficients."
+        }
+      ],
+      "rationale": "The selected new test specifies an iterator return format."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "Existing string-labeled operators retain the expected public term list."
+        }
+      ],
+      "rationale": "The selected control checks to_list encoding."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Tuple and list action/index labels preserve the same internal term content."
+        }
+      ],
+      "rationale": "The selected control checks accepted structured input forms."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 162,
+          "expected": "Mode index one gives inferred register length two."
+        }
+      ],
+      "rationale": "The assertion checks public register metadata."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 175,
+          "expected": "Right and left scalar multiplication scale the stored coefficients."
+        }
+      ],
+      "rationale": "The check is ordinary coefficient arithmetic."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "Operator addition combines term coefficients."
+        }
+      ],
+      "rationale": "The selected test checks generic symbolic aggregation."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/9ed79a56cf4205f3bb1e1ca8310414c021cb71a1/test/operators/second_quantization/test_fermionic_op.py"
+  ],
+  "rationale": "Read the task and each of the 6 selected test cases at the exact patch; each record has one primary constraint."
+}

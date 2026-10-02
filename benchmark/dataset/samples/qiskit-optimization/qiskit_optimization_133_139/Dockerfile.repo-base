@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1.7
+ARG PYTHON_VERSION=3.8
+FROM python:${PYTHON_VERSION}-slim AS python_runtime
+
+FROM debian:trixie-slim
+COPY --from=python_runtime /usr/local /usr/local
+
+WORKDIR /workspace
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PATH=/usr/local/bin:${PATH}
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+ENV REPO_DIR=/workspace/repo
+
+ARG REPOSITORY_URL=https://github.com/qiskit-community/qiskit-optimization.git
+ARG DEPENDENCY_COMMIT=00fd67e029ded6b76e1a9f73eb17ccc628a4f776
+
+RUN set -eux; \
+    if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
+        sed -i "s|http://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|http://deb.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|https://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|https://deb.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g" /etc/apt/sources.list.d/debian.sources; \
+    fi; \
+    apt-get -o Acquire::Retries=5 update \
+    && apt-get install -y --no-install-recommends build-essential git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip \
+    for attempt in 1 2 3; do \
+        git clone --filter=blob:none "${REPOSITORY_URL}" "${REPO_DIR}" && break; \
+        if [ "$attempt" = "3" ]; then exit 1; fi; \
+        rm -rf "${REPO_DIR}"; \
+        sleep 3; \
+    done \
+    && cd "${REPO_DIR}" \
+    && git checkout --force "${DEPENDENCY_COMMIT}" \
+    && python -m pip install --upgrade "pip<24" "setuptools<69" wheel \
+    && python -m pip install "numpy<1.24" "scipy<1.11" "qiskit-terra==0.17.4" "docplex==2.21.207" "cplex" "networkx<3" "pytest<8" ddt \
+    && python -m pip install --no-deps --no-build-isolation -e .

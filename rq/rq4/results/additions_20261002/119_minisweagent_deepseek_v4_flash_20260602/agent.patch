@@ -1,0 +1,346 @@
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..e7d9a76 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -4,11 +4,12 @@ from sklearn.gaussian_process import GaussianProcessClassifier
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(SerializableModelMixin, GaussianProcessClassifier):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..9a9c899 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -21,11 +21,12 @@ else:
+         return self._validate_data(*args, **kwargs)
+ 
+ 
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.regularization import regularize_full_kernel
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..02d81f9 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -18,10 +18,11 @@ else:
+         return self._validate_data(*args, **kwargs)
+ 
+ 
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..92e2532 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -5,10 +5,11 @@ from typing import Union, Optional
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SerializableModelMixin, SVC):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..4f600c2 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -6,10 +6,11 @@ from typing import Union, Optional
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SerializableModelMixin, SVR):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index a57b369..12d9cdd 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -26,6 +26,7 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ 
+ from .loss.qnn_loss_base import QNNLossBase
+ 
+@@ -33,7 +34,7 @@ from .lowlevel_qnn import LowLevelQNN
+ from .util.training import ShotControlBase
+ 
+ 
+-class BaseQNN(BaseEstimator, ABC):
++class BaseQNN(SerializableModelMixin, BaseEstimator, ABC):
+     """Base Class for Quantum Neural Networks.
+ 
+     Args:
+diff --git a/src/squlearn/qrc/base_qrc.py b/src/squlearn/qrc/base_qrc.py
+index 62312ed..9c4ee78 100644
+--- a/src/squlearn/qrc/base_qrc.py
++++ b/src/squlearn/qrc/base_qrc.py
+@@ -23,11 +23,12 @@ from ..observables.observable_base import ObservableBase
+ from ..observables import CustomObservable, SinglePauli
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ from ..qnn.lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ..qnn.lowlevel_qnn import LowLevelQNN
+ 
+ 
+-class BaseQRC(BaseEstimator, ABC):
++class BaseQRC(SerializableModelMixin, BaseEstimator, ABC):
+     """Base class for Quantum Reservoir Computing (QRC) models.
+ 
+     Args:
+diff --git a/src/squlearn/util/__init__.py b/src/squlearn/util/__init__.py
+index 21e7a8f..0585730 100644
+--- a/src/squlearn/util/__init__.py
++++ b/src/squlearn/util/__init__.py
+@@ -1,4 +1,5 @@
+ from .executor import Executor
+ from .optree import OpTree
++from . import serialization
+ 
+-__all__ = ["Executor", "OpTree"]
++__all__ = ["Executor", "OpTree", "serialization"]
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..8d5f1bb
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,3 @@
++from .serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..4640b4a
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,194 @@
++"""SerializableModelMixin for saving and restoring quantum-learning models."""
++
++import io
++import copy
++import dill as pickle
++from typing import Union, IO
++
++
++class SerializableModelMixin:
++    """Mixin that supplies serialization (save/restore) to quantum-learning model classes.
++
++    The mixin provides ``dump`` and ``load`` class methods that serialize the model's
++    learned parameters, quantum circuit and observable representations while excluding
++    executor instances from the payload. On loading, a new executor is supplied and
++    reinserted into the model.
++    """
++
++    def dump(self, target: Union[str, IO[bytes]]) -> None:
++        """Serialize the model to a file path or binary stream.
++
++        The executor instance is removed from the serialized payload so that the
++        serialized representation is independent of the live execution environment.
++
++        Args:
++            target: A string file path or a binary IOBase stream to write to.
++
++        Raises:
++            TypeError: If the target type is not supported.
++        """
++        if isinstance(target, str):
++            with open(target, "wb") as f:
++                self._dump_to_stream(f)
++        elif isinstance(target, io.IOBase):
++            self._dump_to_stream(target)
++        else:
++            raise TypeError(
++                f"Unsupported target type: {type(target)}. "
++                "Expected a file path (str) or a binary IOBase stream."
++            )
++
++    def _dump_to_stream(self, stream: IO[bytes]) -> None:
++        """Internal helper that writes the serialized model to *stream*."""
++        # Build a dictionary of the model state that excludes the executor.
++        state = self._get_serializable_state()
++        pickle.dump(state, stream)
++
++    def _get_serializable_state(self) -> dict:
++        """Collect model attributes that should be serialized, excluding executors.
++
++        Returns:
++            A dictionary containing all relevant model state except executor instances.
++        """
++        state = {}
++
++        # Collect all attributes from the instance that are not executors.
++        for key, value in self.__dict__.items():
++            if self._is_executor(value):
++                continue
++            # Recursively handle lists/tuples that may contain executors
++            if isinstance(value, (list, tuple)):
++                cleaned = []
++                for item in value:
++                    if self._is_executor(item):
++                        cleaned.append(None)
++                    else:
++                        cleaned.append(item)
++                state[key] = type(value)(cleaned) if isinstance(value, tuple) else cleaned
++            else:
++                state[key] = value
++
++        # Also handle properties that are important for reconstruction
++        for attr in ("_param", "_param_op", "_is_fitted", "param_ini", "param_op_ini",
++                     "X_train", "y_train", "K_train", "K_test", "K_testtrain",
++                     "dual_coeff_", "_alpha", "_LU", "_piv",
++                     "k_train", "k_testtrain",
++                     "classes_", "_label_binarizer",
++                     "_ml_model", "_operators",
++                     "encoding_circuit", "operator", "loss", "optimizer",
++                     "variance", "shot_control", "parameter_seed",
++                     "caching", "pretrained", "primitive",
++                     "opt_param_op", "batch_size", "epochs", "shuffle",
++                     "sigma", "normalize_y", "full_regularization",
++                     "alpha", "ml_model", "ml_model_options",
++                     "num_operators", "operator_seed",
++                     "_quantum_kernel", "_kernel_params",
++                     "_post_processing", "callback",
++                     "_is_lowlevel_qnn_initialized"):
++            if hasattr(self, attr):
++                val = getattr(self, attr)
++                if not self._is_executor(val):
++                    state[attr] = val
++
++        return state
++
++    @staticmethod
++    def _is_executor(obj) -> bool:
++        """Check whether *obj* is an Executor instance (or contains one)."""
++        # Avoid importing Executor at module level to prevent circular imports.
++        from squlearn.util.executor import Executor
++        return isinstance(obj, Executor)
++
++    @classmethod
++    def load(cls, source: Union[str, IO[bytes]], executor) -> "SerializableModelMixin":
++        """Deserialize a model from a file path or binary stream.
++
++        Args:
++            source: A string file path or a binary IOBase stream to read from.
++            executor: The executor instance to inject into the restored model.
++
++        Returns:
++            A restored model instance with the supplied executor.
++
++        Raises:
++            TypeError: If the source type is not supported.
++        """
++        if isinstance(source, str):
++            with open(source, "rb") as f:
++                return cls._load_from_stream(f, executor)
++        elif isinstance(source, io.IOBase):
++            return cls._load_from_stream(source, executor)
++        else:
++            raise TypeError(
++                f"Unsupported source type: {type(source)}. "
++                "Expected a file path (str) or a binary IOBase stream."
++            )
++
++    @classmethod
++    def _load_from_stream(cls, stream: IO[bytes], executor) -> "SerializableModelMixin":
++        """Internal helper that reads the serialized model from *stream*."""
++        state = pickle.load(stream)
++
++        # Create a new instance without calling __init__ (we will restore state directly).
++        instance = cls.__new__(cls)
++
++        # Restore all state attributes.
++        for key, value in state.items():
++            object.__setattr__(instance, key, value)
++
++        # Inject the executor into all relevant places.
++        instance._inject_executor(executor)
++
++        return instance
++
++    def _inject_executor(self, executor) -> None:
++        """Replace all executor references in the model with the supplied *executor*.
++
++        This handles direct references (``self.executor``), references inside
++        kernel matrices (``self._quantum_kernel._executor``), and nested references
++        inside composed kernel matrices.
++        """
++        # Direct executor attribute - always set it
++        object.__setattr__(self, "executor", executor)
++
++        # Executor inside the quantum kernel (KernelMatrixBase)
++        if hasattr(self, "_quantum_kernel") and self._quantum_kernel is not None:
++            self._inject_executor_into_kernel(self._quantum_kernel, executor)
++
++        # Executor inside the low-level QNN
++        if hasattr(self, "_qnn") and self._qnn is not None:
++            if hasattr(self._qnn, "executor"):
++                object.__setattr__(self._qnn, "executor", executor)
++            if hasattr(self._qnn, "_executor"):
++                object.__setattr__(self._qnn, "_executor", executor)
++
++        # Executor in the encoding circuit (some circuits may hold a reference)
++        if hasattr(self, "encoding_circuit") and self.encoding_circuit is not None:
++            if hasattr(self.encoding_circuit, "executor"):
++                object.__setattr__(self.encoding_circuit, "executor", executor)
++            if hasattr(self.encoding_circuit, "_executor"):
++                object.__setattr__(self.encoding_circuit, "_executor", executor)
++
++        # Executor in the operator
++        if hasattr(self, "operator") and self.operator is not None:
++            if isinstance(self.operator, list):
++                for op in self.operator:
++                    if hasattr(op, "executor"):
++                        object.__setattr__(op, "executor", executor)
++                    if hasattr(op, "_executor"):
++                        object.__setattr__(op, "_executor", executor)
++            else:
++                if hasattr(self.operator, "executor"):
++                    object.__setattr__(self.operator, "executor", executor)
++                if hasattr(self.operator, "_executor"):
++                    object.__setattr__(self.operator, "_executor", executor)
++
++    def _inject_executor_into_kernel(self, kernel, executor) -> None:
++        """Recursively inject executor into a kernel matrix (including composed kernels)."""
++        if hasattr(kernel, "_executor"):
++            object.__setattr__(kernel, "_executor", executor)
++        # Handle composed kernels (ComposedKernelMatrix)
++        if hasattr(kernel, "_km1"):
++            self._inject_executor_into_kernel(kernel._km1, executor)
++        if hasattr(kernel, "_km2"):
++            self._inject_executor_into_kernel(kernel._km2, executor)

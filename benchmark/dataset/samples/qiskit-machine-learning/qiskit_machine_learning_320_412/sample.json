@@ -1,0 +1,159 @@
+{
+  "instance": {
+    "id": 26,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_320_412",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/320",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/412",
+    "base_commit": "3e1ed39e3f4d9b650db181866b6d12865a496613",
+    "patch": "41bcc3b2af9b14dde3553b8e7acd0c8bacb7c507"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts VQC label encoding and decoding around a quantum classifier workflow without changing quantum circuit semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+      "qiskit_machine_learning/algorithms/classifiers/vqc.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "VQC currently requires users to provide one-hot encoded labels, which makes ordinary classification workflows inconvenient when labels are already represented as integers or categorical strings. Users should be able to train, score, and predict with VQC using plain class labels while preserving the original label representation in predictions.",
+    "requirements": [
+      "VQC must accept one-dimensional integer class labels without requiring callers to one-hot encode them first.",
+      "VQC must accept categorical string labels and train them through the same classifier workflow.",
+      "Predictions from VQC and NeuralNetworkClassifier must be decoded back to the original label representation when labels were encoded during fitting.",
+      "Existing one-hot label validation and class-count behavior must continue to work for classifier workflows."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "VQC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "constructor: num_qubits, feature_map, ansatz, loss, optimizer, quantum_instance, initial_point, callback",
+        "Output": "VQC classifier instance",
+        "Description": "Creates a variational quantum classifier that accepts one-hot labels, integer class labels, or categorical string labels for training."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.fit",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "X, y",
+        "Output": "self",
+        "Description": "Fits the classifier after validating and internally encoding integer or categorical labels as needed."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.predict",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "X",
+        "Output": "predicted labels",
+        "Description": "Returns predicted labels using the original label representation learned during fitting."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQC.score",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "X, y, sample_weight",
+        "Output": "score",
+        "Description": "Scores predictions against labels supplied in the same plain, categorical, or one-hot representation accepted by fitting."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss, one_hot, optimizer, warm_start, initial_point, callback",
+        "Output": "classifier instance",
+        "Description": "Provides classifier label validation, encoding, fitting, prediction, and scoring for quantum neural network classifiers."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.predict",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "X",
+        "Output": "predicted labels",
+        "Description": "Returns predictions decoded to categorical labels when the classifier was fit with categorical targets."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_320_412",
+      "image_id": "sha256:966d302531b3a074d3f8022e167e89bea24f6135715bf73118532f5a037bd892",
+      "image_size": "1416981823"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_1__True___absolute_error__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_003___statevector___2___zz_feature_map____real_amplitudes____cobyla____no_one_hot__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_categorical"
+        ],
+        "summary": "3 passed in 6.52s",
+        "duration_seconds": 10.46
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_bad_one_hot_data",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_1_True",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_2_False",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_3__True___cross_entropy__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_4__False___absolute_error__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_5__False___squared_error__"
+        ],
+        "summary": "8 passed in 14.36s",
+        "duration_seconds": 17.65
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_1__True___absolute_error__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_003___statevector___2___zz_feature_map____real_amplitudes____cobyla____no_one_hot__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_categorical"
+        ],
+        "summary": "3 failed in 4.01s: categorical prediction remains encoded, VQC rejects non-one-hot integer labels, and VQC categorical labels hit a prediction/target shape mismatch.",
+        "duration_seconds": 9.28
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_bad_one_hot_data",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_1_True",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_2_False",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_3__True___cross_entropy__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_4__False___absolute_error__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_5__False___squared_error__"
+        ],
+        "summary": "8 passed in 14.25s",
+        "duration_seconds": 20.37
+      }
+    }
+  }
+}

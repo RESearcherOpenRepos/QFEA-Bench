@@ -1,0 +1,236 @@
+{
+  "id": 90,
+  "sample_id": "qiskit_nature_956_1027",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "660bfdba911a3b9226301e3ab22f4f99a03c595a",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 15,
+    "subtype_test_counts": {
+      "general_semantics/graph_topology": 14,
+      "interface/input_validation": 1,
+      "general_semantics/graph_adjacency_matrix": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_hexagonal_lattice.py::TestHexagonalLattice::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "Hexagonal lattice has ten nodes and the specified weighted edges."
+        }
+      ],
+      "rationale": "The decisive assertions describe graph structure; adjacency is supporting evidence."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py::TestHyperCubic::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "Hyper-cubic lattice has eight sites and expected periodic weighted edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_open",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "Open Kagome lattice has expected nodes and edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_periodic",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 161,
+          "expected": "Periodic Kagome lattice includes expected boundary edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_x_periodic",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 207,
+          "expected": "X-periodic Kagome lattice includes only x-wrap edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_y_periodic",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Y-periodic Kagome lattice includes only y-wrap edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_copy",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "Lattice copy preserves weighted graph isomorphism."
+        }
+      ],
+      "rationale": "The selected regression checks graph content."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_edges_removed",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 182,
+          "expected": "Lattice built after edge deletion retains only remaining edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph content."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "Node-and-edge construction preserves weighted connectivity."
+        }
+      ],
+      "rationale": "The selected regression checks graph content."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "PyGraph lattice retains node and weighted-edge lists."
+        }
+      ],
+      "rationale": "The selected regression checks graph structure."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "Nonnumeric lattice edge weight raises ValueError."
+        }
+      ],
+      "rationale": "The selected regression checks input rejection."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+      "label": "general_semantics/graph_adjacency_matrix",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Weighted and unweighted adjacency matrices match references."
+        }
+      ],
+      "rationale": "The selected regression checks numeric graph matrices."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_line_lattice.py::TestLineLattice::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Line lattice produces expected six-node weighted edge set."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_square_lattice.py::TestSquareLattice::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Square lattice produces expected six-node weighted edge set."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_open",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Open triangular lattice produces expected six-node edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_periodic",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 172,
+          "expected": "Periodic triangular lattice includes the expected wrapped edges."
+        }
+      ],
+      "rationale": "The selected regression checks graph topology."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_hexagonal_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_kagome_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_line_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_square_lattice.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/660bfdba911a3b9226301e3ab22f4f99a03c595a/test/second_q/hamiltonians/lattices/test_triangular_lattice.py"
+  ],
+  "rationale": "Individually reviewed all 16 selected exact-patch cases. Graph construction is classified from graph assertions; tensor contractions from numeric assertions."
+}

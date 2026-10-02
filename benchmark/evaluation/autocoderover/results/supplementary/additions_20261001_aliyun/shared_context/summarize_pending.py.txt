@@ -1,0 +1,45 @@
+"""Summarize completed authorized work without treating six interruptions as failures."""
+import json,hashlib
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2]
+rows=[]
+for model,run in [('deepseek-v4-pro','deepseek_v4_pro_20260610'),('deepseek-v4-flash','deepseek_v4_flash_20260609'),('glm-5.2','glm5_2_openrouter_20260628')]:
+ base=ROOT/'benchmark/evaluation/autocoderover';p=base/'runs'/run/'additions_20261001_aliyun'
+ d=json.loads((p/'results_additions.json').read_text());full=json.loads((base/'results'/('results_'+run+'.json')).read_text());old=json.loads((p/('results_'+run+'.before_additions.json')).read_text())
+ assert len(d['results'])==13 and len(full['results'])==119 and full['results'][:106]==old['results']
+ rows.append({'agent':'autocoderover','model':model,'valid_samples':13,'blocked_instance':None,'data':d,'source':str(p/'results_additions.json')})
+for j in json.loads((B/'first_attempt_jobs.json').read_text()):
+ p=ROOT/j['out'];assert (p/'completed_subset_verification.json').exists(),j['id']+' still running'
+ d=json.loads((p/'results_completed_subset.json').read_text());assert len(d['results'])==12
+ old=json.loads((p/'results.before_additions.json').read_text());assert json.loads((ROOT/j['target']).read_text())==old
+ before=json.loads((p/'preds.json.before_additions').read_text())['predictions'];assert json.loads((p.parent/'preds.json').read_text())['predictions']==before
+ predictions=json.loads((p/'generation/preds.json').read_text())['predictions'];audit=json.loads((p/'storage_recovery_audit.json').read_text())
+ for sid,digest in audit['retained_prediction_hashes'].items():assert hashlib.sha256(json.dumps(predictions[sid],sort_keys=True).encode()).hexdigest()==digest
+ cached=json.loads((p/'prevalidation_results.json').read_text())['results'];byid={r['instance_id']:r for r in d['results']}
+ for r in cached:assert byid[r['instance_id']].get('eval_runs')==r.get('eval_runs')
+ rows.append({'agent':j['agent'],'model':j['model'],'valid_samples':12,'blocked_instance':j['blocked_instance'],'data':d,'source':str(p/'results_completed_subset.json')})
+for row in rows:
+ d=row.pop('data');s=d['summary'];actual=0
+ for r in d['results']:
+  assert not r.get('eval_infra_failed') and not r.get('timed_out')
+  runs=r.get('eval_runs',[]);actual+=len(runs)
+  if r['patch_applied']:
+   assert len(runs)==3 and r['resolved']==all(e['resolved'] for e in runs)
+   assert all(not e.get('eval_infra_failed') and not e.get('timed_out') for e in runs)
+ row.update(provider='aliyun-dashscope',resolved=s['resolved'],submitted=s['submitted'],applicable=s['patch_applied'],F2P=s['fail_pass']['summary'],P2P=s['pass_pass']['summary'],actual_validation_runs=actual,resolved_ids=[r['instance_id'] for r in d['results'] if r['resolved']])
+(B/'comparison_pending.json').write_text(json.dumps({'status':'six_paid_reruns_await_user_approval','cohorts':rows,'valid_workflows':111,'invalidated_paid_workflows':6,'original_106_preserved':True,'note':'ACR has all 13 results. Other combinations have 12 valid results each; the excluded sample differs. Do not interpret their partial counts as final 13-sample resolved rates.'},indent=2)+'\n')
+labels={'autocoderover':'ACR','minisweagent':'Mini-SWE-Agent','openhands':'OpenHands'};models=['deepseek-v4-pro','deepseek-v4-flash','glm-5.2']
+lines=['# Alibaba Cloud models: completed work and pending interruptions','',
+'ACR is complete for all 13 samples. Mini-SWE-Agent and OpenHands each have 12 valid samples per model; one Docker-interrupted paid workflow per combination awaits explicit rerun approval. Counts below are solved instances, not final comparable 13-sample rates.','',
+'| Agent | DeepSeek V4 Pro | DeepSeek V4 Flash | GLM-5.2 |','|---|---|---|---|']
+for agent,label in labels.items():
+ values=[next(r for r in rows if r['agent']==agent and r['model']==m) for m in models]
+ lines.append('| '+label+' | '+' | '.join(f"{r['resolved']} solved / {r['valid_samples']} valid" for r in values)+' |')
+lines += ['', 'Applicable patches received three actual validations; solved requires all three to pass. Failed Docker startup calls are archived and excluded from the validation count.','',
+'| Agent | Model | Submitted | Applicable | F2P | P2P | Actual validations | Pending sample |','|---|---|---|---|---|---|---|---|']
+for r in rows:lines.append('| '+' | '.join(map(str,[labels[r['agent']],r['model'],r['submitted'],r['applicable'],r['F2P'],r['P2P'],r['actual_validation_runs'],r['blocked_instance'] or 'None']))+' |')
+lines += ['', 'Test denominators exclude pending samples and therefore differ between combinations. Original 106 result/prediction rows are preserved. ACR main files contain 119 entries; the six incomplete combinations remain at their original 106 main entries, with new valid results saved separately until the pending workflows are addressed.','', 'Result files:']
+lines += [f"- [{labels[r['agent']]} / {r['model']}](<{r['source']}>)" for r in rows]
+lines += ['', 'Automatic approval review rejected restarting six workflows that had already made paid model calls, because this could exceed the single-attempt request. The 28 remaining first-time workflows have completed; the six retries were not performed.']
+(B/'REPORT_pending.md').write_text('\n'.join(lines)+'\n')
+print(json.dumps([{k:r[k] for k in ['agent','model','resolved','valid_samples','blocked_instance']} for r in rows],indent=2))

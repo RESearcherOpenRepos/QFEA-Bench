@@ -1,0 +1,116 @@
+{
+  "id": 79,
+  "sample_id": "qiskit_nature_82_96",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "1d0d3d3579a06463e3a2f35ffa31f4746354c438",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/fermion_qubit_parity_mapping": 2,
+      "quantum_semantics/hamiltonian_tapering": 2,
+      "interface/mapper_capability_property": 2,
+      "quantum_semantics/fermion_qubit_mapping": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Parity converter reduces H2 Hamiltonian by two qubits when particle counts are supplied."
+        }
+      ],
+      "rationale": "The expected reduced Pauli operator follows parity encoding and particle sector."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry",
+      "label": "quantum_semantics/hamiltonian_tapering",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Jordan-Wigner H2 Hamiltonian tapers to the specified Z2 sector."
+        }
+      ],
+      "rationale": "The exact tapered Pauli Hamiltonian is primary."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry",
+      "label": "quantum_semantics/hamiltonian_tapering",
+      "assertions": [
+        {
+          "line": 183,
+          "expected": "Parity reduction followed by Z2 tapering yields the reference H2 operator and matched conversions."
+        }
+      ],
+      "rationale": "The physical reduced Hamiltonian is primary; invalid-sector errors are secondary."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 65,
+          "expected": "ParityMapper reports that it allows two-qubit reduction."
+        }
+      ],
+      "rationale": "The assertion checks a public capability flag."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "ParityMapper maps H2 terms to the reference Pauli operator."
+        }
+      ],
+      "rationale": "The selected control checks physical mapping output."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 65,
+          "expected": "JordanWignerMapper reports no two-qubit reduction support."
+        }
+      ],
+      "rationale": "The assertion checks a public capability flag."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "JordanWignerMapper maps H2 terms to the reference Pauli operator."
+        }
+      ],
+      "rationale": "The selected control checks physical mapping output."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/1d0d3d3579a06463e3a2f35ffa31f4746354c438/test/mappers/second_quantization/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/1d0d3d3579a06463e3a2f35ffa31f4746354c438/test/mappers/second_quantization/test_parity_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/1d0d3d3579a06463e3a2f35ffa31f4746354c438/test/operators/second_quantization/test_qubit_converter.py"
+  ],
+  "rationale": "Individually reviewed all 7 selected exact-patch tests; the primary label follows the explicit behavior checked."
+}

@@ -1,0 +1,160 @@
+{
+  "id": 20,
+  "sample_id": "qiskit_finance_54_57",
+  "repo": "qiskit-community/qiskit-finance",
+  "patch_commit": "027401b87718aa8ad76263aa26afd3544b1885f3",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "general_semantics/quadratic_program_construction": 1,
+      "interface/input_validation": 4,
+      "interface/property_mutability": 3,
+      "general_semantics/portfolio_selection_decoding": 1,
+      "general_semantics/portfolio_metrics": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_to_quadratic_program",
+      "label": "general_semantics/quadratic_program_construction",
+      "assertions": [
+        {
+          "line": 92,
+          "expected": "Default binary-asset portfolio builds the expected objective and budget quadratic program"
+        },
+        {
+          "line": 112,
+          "expected": "Bounded integer-asset portfolio builds the expected objective and budget quadratic program"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_1___1_____1____1____0_5__2__None_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "An incompatible covariance dimension raises QiskitFinanceError"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_2___1_____1__1____0_5__2__None_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "An incompatible covariance shape raises QiskitFinanceError"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_3___1__2_____1__2____3__4____0_5__2____0__2____3__1___",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "Bounds with upper smaller than lower raise QiskitFinanceError"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_4___1__2_____1__2____3__4____0_5__2____0__2____0__2____0__2___",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "A bounds list with the wrong asset count raises QiskitFinanceError"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_bounds",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 174,
+          "expected": "The bounds property retains an assigned list of per-asset intervals"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_interpret",
+      "label": "general_semantics/portfolio_selection_decoding",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Binary asset decisions decode to the selected asset indices"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_expected_value",
+      "label": "general_semantics/portfolio_metrics",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Portfolio expected value equals the return-vector dot product"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_variance",
+      "label": "general_semantics/portfolio_metrics",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Portfolio variance equals the covariance quadratic form"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_risk_factor",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 158,
+          "expected": "The risk-factor property returns its newly assigned value"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_budget",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "The budget property returns its newly assigned value"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-finance/blob/027401b87718aa8ad76263aa26afd3544b1885f3/test/applications/test_portfolio_optimization.py"
+  ],
+  "rationale": "The portfolio tests assert ordinary quadratic-program modeling, vector decoding, and financial objective calculations, not quantum mechanics. Invalid argument combinations and mutable configuration properties specify the public interface."
+}

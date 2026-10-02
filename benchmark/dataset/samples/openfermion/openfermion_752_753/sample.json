@@ -1,0 +1,126 @@
+{
+  "instance": {
+    "id": 12,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_752_753",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/752",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/753",
+    "base_commit": "d3734cf27d518708d445788bd05b85349b1957cd",
+    "patch": "6ee2c96e0054d1af75a24515c1f65270229ad605"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task extends Bravyi-Kitaev mapping to InteractionOperator while preserving FermionOperator-equivalent qubit semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/transforms/opconversions/bravyi_kitaev.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion can apply the Bravyi-Kitaev transform to FermionOperator and MajoranaOperator inputs, but chemistry workflows that already use InteractionOperator still have to convert through a FermionOperator first. Users need Bravyi-Kitaev support to work directly on InteractionOperator instances, including the same validation around qubit counts and the same transformed qubit operator semantics as the existing FermionOperator path.",
+    "requirements": [
+      "Allow bravyi_kitaev to accept an InteractionOperator directly.",
+      "When given an InteractionOperator, produce the same QubitOperator as applying bravyi_kitaev to the equivalent FermionOperator for one-body, Coulomb/exchange, number-excitation, double-excitation, and complex-valued interaction terms.",
+      "Preserve the existing n_qubits validation behavior for InteractionOperator inputs and raise ValueError when the requested qubit count is too small.",
+      "Keep the existing Bravyi-Kitaev behavior for FermionOperator and MajoranaOperator inputs working."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "bravyi_kitaev",
+        "Path": "src/openfermion/transforms/opconversions/bravyi_kitaev.py",
+        "Input": "operator: FermionOperator | MajoranaOperator | InteractionOperator, n_qubits=None",
+        "Output": "QubitOperator",
+        "Description": "Transforms supported fermionic operator representations into the Bravyi-Kitaev qubit representation while preserving the existing qubit-count validation rules."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_752_753",
+      "image_id": "sha256:e8f19d023a5b044500d9629def59771576f41c6e0efecbc39786317bb01b051d",
+      "image_size": "795702081"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_case_one_body_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_coulomb_and_exchange_ops_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_number_excitation_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_double_excitation_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_consistency_for_complex_numbers"
+        ],
+        "summary": "6 passed in 4.04s",
+        "duration_seconds": 13.17
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operators",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator_scaled",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_hopping_operator",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_majoranas",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration_original",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_bad_type",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::test_bravyi_kitaev_majorana_op_consistent"
+        ],
+        "summary": "12 passed in 0.60s",
+        "duration_seconds": 9.31
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_case_one_body_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_coulomb_and_exchange_ops_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_number_excitation_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_double_excitation_op_success",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_consistency_for_complex_numbers"
+        ],
+        "summary": "6 failed in 0.29s because base bravyi_kitaev rejects InteractionOperator inputs with TypeError.",
+        "duration_seconds": 10.99
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operators",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator_scaled",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_hopping_operator",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_majoranas",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration_original",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_bad_type",
+          "src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::test_bravyi_kitaev_majorana_op_consistent"
+        ],
+        "summary": "12 passed in 0.71s",
+        "duration_seconds": 11.2
+      }
+    }
+  }
+}

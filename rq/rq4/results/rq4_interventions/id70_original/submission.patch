@@ -1,0 +1,176 @@
+diff --git a/qiskit_nature/second_q/mappers/__init__.py b/qiskit_nature/second_q/mappers/__init__.py
+index 82550a7..88ed5d5 100644
+--- a/qiskit_nature/second_q/mappers/__init__.py
++++ b/qiskit_nature/second_q/mappers/__init__.py
+@@ -91,6 +91,7 @@ after the mapping to qubit operators, you can use the following wrapper for symm
+    :nosignatures:
+ 
+    TaperedQubitMapper
++   TernaryTreeMapper
+ 
+ MixedOp Mappers
+ +++++++++++++++
+@@ -116,6 +117,7 @@ from .qubit_mapper import QubitMapper
+ from .mode_based_mapper import ModeBasedMapper
+ from .interleaved_qubit_mapper import InterleavedQubitMapper
+ from .tapered_qubit_mapper import TaperedQubitMapper
++from .ternary_tree_mapper import TernaryTreeMapper
+ from .mixed_mapper import MixedMapper
+ 
+ __all__ = [
+@@ -132,5 +134,6 @@ __all__ = [
+     "QubitMapper",
+     "InterleavedQubitMapper",
+     "TaperedQubitMapper",
++    "TernaryTreeMapper",
+     "ModeBasedMapper",
+ ]
+diff --git a/qiskit_nature/second_q/mappers/ternary_tree_mapper.py b/qiskit_nature/second_q/mappers/ternary_tree_mapper.py
+new file mode 100644
+index 0000000..3016bbe
+--- /dev/null
++++ b/qiskit_nature/second_q/mappers/ternary_tree_mapper.py
+@@ -0,0 +1,143 @@
++# This code is part of a Qiskit project.
++#
++# (C) Copyright IBM 2025.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""The Ternary-Tree Mapper."""
++
++from __future__ import annotations
++
++from functools import lru_cache
++
++import numpy as np
++
++from qiskit.quantum_info.operators import Pauli, SparsePauliOp
++
++from qiskit_nature.second_q.operators import MajoranaOp, SparseLabelOp
++
++from .mode_based_mapper import PauliType
++from .qubit_mapper import ListOrDictType, QubitMapper
++
++
++class TernaryTreeMapper(QubitMapper):
++    """The ternary-tree Majorana-to-qubit mapping.
++
++    This mapper assigns Majorana operators to leaves of a ternary tree as described by
++    Jiang, Kalev, Mruczkiewicz, and Neven.  Each internal node of the tree is represented by one
++    qubit and its three outgoing edges are labelled by the Pauli operators selected by
++    ``pauli_priority``.  The Pauli operator for a Majorana mode is the product of the edge labels on
++    the path from the root to the corresponding leaf.
++
++    Args:
++        pauli_priority: A permutation of ``"XYZ"`` specifying the order in which Pauli labels are
++            assigned to the branches of the ternary tree.
++
++    Raises:
++        ValueError: If ``pauli_priority`` is not one of the six permutations of ``"XYZ"``.
++    """
++
++    _VALID_PRIORITIES = frozenset({"XYZ", "XZY", "YXZ", "YZX", "ZXY", "ZYX"})
++
++    def __init__(self, pauli_priority: str = "XYZ") -> None:
++        if pauli_priority not in self._VALID_PRIORITIES:
++            raise ValueError(
++                "Invalid Pauli priority. Expected one of the six permutations of 'XYZ', "
++                f"but received {pauli_priority!r}."
++            )
++        self.pauli_priority = pauli_priority
++
++    def map(
++        self,
++        second_q_ops: MajoranaOp | ListOrDictType[MajoranaOp],
++        *,
++        register_length: int | None = None,
++    ) -> SparsePauliOp | ListOrDictType[SparsePauliOp]:
++        return super().map(second_q_ops, register_length=register_length)
++
++    def _map_single(
++        self, second_q_op: SparseLabelOp, *, register_length: int | None = None
++    ) -> SparsePauliOp:
++        if not isinstance(second_q_op, MajoranaOp):
++            raise TypeError(
++                "TernaryTreeMapper only supports MajoranaOp inputs, "
++                f"not {type(second_q_op).__name__}."
++            )
++
++        if register_length is None:
++            register_length = second_q_op.register_length
++
++        qubit_paulis = self._majorana_pauli_table(register_length, self.pauli_priority)
++        num_qubits = self._num_qubits(register_length)
++
++        # make sure ret_op_list is not empty by including a zero op
++        ret_op_list = [SparsePauliOp("I" * num_qubits, coeffs=[0])]
++
++        for terms, coeff in second_q_op.terms():
++            ret_op = SparsePauliOp("I" * num_qubits, coeffs=np.array([coeff]))
++            for _, position in terms:
++                ret_op = ret_op.compose(qubit_paulis[position], front=True).simplify()
++            ret_op_list.append(ret_op)
++
++        return SparsePauliOp.sum(ret_op_list).simplify()
++
++    def pauli_table(self, register_length: int) -> list[tuple[PauliType, PauliType]]:
++        """Return the ternary-tree Pauli lookup table.
++
++        Args:
++            register_length: The number of fermionic modes for which to generate the table.
++
++        Returns:
++            A list of Pauli pairs. The pair at index ``i`` contains the Pauli strings assigned to
++            Majorana modes ``2*i`` and ``2*i + 1``.
++        """
++        majorana_paulis = self._majorana_pauli_table(2 * register_length, self.pauli_priority)
++        return [(majorana_paulis[2 * i], majorana_paulis[2 * i + 1]) for i in range(register_length)]
++
++    @staticmethod
++    def _num_qubits(register_length: int) -> int:
++        if register_length == 0:
++            return 0
++        return max(1, register_length // 2)
++
++    @classmethod
++    @lru_cache(maxsize=32)
++    def _majorana_pauli_table(cls, register_length: int, pauli_priority: str) -> tuple[Pauli, ...]:
++        if register_length < 0:
++            raise ValueError("register_length must be non-negative.")
++
++        num_qubits = cls._num_qubits(register_length)
++        if register_length == 0:
++            return ()
++
++        leaves = cls._ternary_tree_leaves(num_qubits, pauli_priority)
++        return tuple(Pauli(label) for label in leaves[:register_length])
++
++    @staticmethod
++    def _ternary_tree_leaves(num_qubits: int, pauli_priority: str) -> list[str]:
++        if num_qubits == 0:
++            return []
++
++        leaves: list[str] = []
++        queue: list[tuple[int, list[str]]] = [(0, ["I"] * num_qubits)]
++        next_internal = 1
++
++        while queue:
++            node, paulis = queue.pop(0)
++            for pauli in pauli_priority:
++                child_paulis = paulis.copy()
++                child_paulis[node] = pauli
++
++                if next_internal < num_qubits:
++                    queue.append((next_internal, child_paulis))
++                    next_internal += 1
++                else:
++                    leaves.append("".join(child_paulis))
++
++        return leaves

@@ -1,0 +1,124 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..ee92c7d 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,12 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import ConstantLoss, CrossEntropyLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..fb40b72
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,81 @@
++"""Cross-entropy loss for quantum neural network classifiers."""
++
++import numpy as np
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for binary and multi-class classification.
++
++    Computes the cross-entropy between model predictions (probabilities) and
++    ground-truth labels. The loss supports both binary classification (single
++    output) and multi-class classification (multiple outputs).
++
++    Args:
++        eps (float): Small constant to clip probabilities for numerical stability.
++                     Default is 1e-8.
++    """
++
++    def __init__(self, eps: float = 1e-8) -> None:
++        super().__init__()
++        self._eps = eps
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        """Compute the cross-entropy loss.
++
++        Args:
++            value_dict (dict): Dictionary containing the model outputs under key "f"
++                               and the ground truth labels under key "ground_truth".
++            **kwargs: Additional keyword arguments (e.g., multiple_output).
++
++        Returns:
++            float: The cross-entropy loss value.
++        """
++        f = value_dict["f"]
++        y = value_dict["ground_truth"]
++
++        # Clip predictions to avoid log(0)
++        f = np.clip(f, self._eps, 1.0 - self._eps)
++
++        multiple_output = kwargs.get("multiple_output", False)
++
++        if multiple_output:
++            # Multi-class case: y is one-hot encoded, f has shape (n_samples, n_classes)
++            loss = -np.sum(y * np.log(f)) / y.shape[0]
++        else:
++            # Binary case: y is a vector of 0/1, f is a vector of probabilities
++            loss = -np.mean(y * np.log(f) + (1 - y) * np.log(1 - f))
++
++        return loss
++
++    def gradient(self, value_dict: dict, **kwargs) -> np.ndarray:
++        """Compute the gradient of the cross-entropy loss w.r.t. model parameters.
++
++        Args:
++            value_dict (dict): Dictionary containing the model outputs under key "f",
++                               the ground truth labels under key "ground_truth",
++                               and the model-output derivatives under key "df".
++            **kwargs: Additional keyword arguments (e.g., multiple_output).
++
++        Returns:
++            np.ndarray: The gradient of the loss w.r.t. the model parameters.
++        """
++        f = value_dict["f"]
++        y = value_dict["ground_truth"]
++        df = value_dict["df"]
++
++        # Clip predictions to avoid division by zero
++        f = np.clip(f, self._eps, 1.0 - self._eps)
++
++        multiple_output = kwargs.get("multiple_output", False)
++
++        if multiple_output:
++            # Multi-class case
++            # Gradient: (f - y) / n_samples, then chain rule with df
++            grad = np.mean((f - y)[:, :, np.newaxis] * df, axis=(0, 1))
++        else:
++            # Binary case
++            # Gradient: (f - y) / (f * (1 - f)) * df, then average
++            grad = np.mean((f - y)[:, np.newaxis] * df / (f * (1 - f))[:, np.newaxis], axis=0)
++
++        return grad

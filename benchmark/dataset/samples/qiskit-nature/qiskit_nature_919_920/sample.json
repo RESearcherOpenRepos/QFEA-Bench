@@ -1,0 +1,147 @@
+{
+  "instance": {
+    "id": 87,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_919_920",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/919",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/920",
+    "base_commit": "e3c8d4c60d39af91cf02a02aa805697f2166273a",
+    "patch": "c393383e1203c2da1b57c3c0c8dde9b828030796"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task changes ElectronicDensity reduced-density-matrix spin-block generation and interpretation semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/properties/electronic_density.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized ElectronicDensity property needs more efficient and configurable reduced-density-matrix handling. Users should be able to initialize an electronic density without measuring or storing the two-body RDM when it is not needed, and generated auxiliary operators should avoid redundant spin-block entries while preserving correct interpretation of measured one- and two-body density results.",
+    "requirements": [
+      "Allow ElectronicDensity.from_orbital_occupation to optionally omit two-body RDM data.",
+      "When two-body RDM data is omitted, construct an ElectronicDensity containing only valid one-body alpha and beta density blocks.",
+      "Generate second-quantized RDM auxiliary operators only for required alpha-alpha, beta-beta, and beta-alpha spin-block indices instead of all spin-orbital index combinations.",
+      "When two-body RDM data is present, preserve correct alpha, beta, and beta-alpha two-body density blocks.",
+      "Interpret evaluated RDM auxiliary values back into ElectronicDensity objects with the same spin-block semantics.",
+      "Keep neighboring second-quantized property operator generation behavior working."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "ElectronicDensity",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Electronic density property represented by one- and optional two-body electronic integrals."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.from_orbital_occupation",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "alpha_occupation, beta_occupation, *, include_rdm2: bool = True",
+        "Output": "ElectronicDensity",
+        "Description": "Creates an electronic density from alpha and beta orbital occupations, optionally excluding two-body RDM terms."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.second_q_ops",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "",
+        "Output": "Mapping[str, FermionicOp]",
+        "Description": "Builds auxiliary RDM measurement operators for the density blocks represented by the object."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.interpret",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "result: EigenstateResult",
+        "Output": "",
+        "Description": "Reads evaluated RDM auxiliary operator values and stores the interpreted electronic density on the result."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_919_920",
+      "image_id": "sha256:9abe01fb697864b974bb532b43d21d10c3a46261a496b7f72cabf5b64ecc47b7",
+      "image_size": "1234824534"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_2_False",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_2_False",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_2_False"
+        ],
+        "summary": "6 passed in 2.44s",
+        "duration_seconds": 7.53
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/properties/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+          "test/second_q/properties/test_magnetization.py::TestMagnetization::test_second_q_ops",
+          "test/second_q/properties/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops"
+        ],
+        "summary": "3 passed in 2.39s",
+        "duration_seconds": 5.88
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation_2_False",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops_2_False",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_1_True",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret_2_False"
+        ],
+        "summary": "6 failed in 3.96s; base ElectronicDensity.from_orbital_occupation rejects include_rdm2",
+        "duration_seconds": 11.03
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/properties/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+          "test/second_q/properties/test_magnetization.py::TestMagnetization::test_second_q_ops",
+          "test/second_q/properties/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops"
+        ],
+        "summary": "3 passed in 2.05s",
+        "duration_seconds": 8.3
+      }
+    }
+  }
+}

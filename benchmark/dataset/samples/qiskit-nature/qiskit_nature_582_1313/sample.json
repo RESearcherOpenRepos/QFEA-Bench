@@ -1,0 +1,148 @@
+{
+  "instance": {
+    "id": 70,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_582_1313",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/582",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1313",
+    "base_commit": "07dcedcf7fb74f025177ef9c76366a264a1a955c",
+    "patch": "1d9ed904c5337c8330a6d41b69fbfbabb5e5ec4e"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements ternary-tree Majorana-to-qubit mapping while preserving Majorana anticommutation semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/mappers/__init__.py",
+      "qiskit_nature/second_q/mappers/bosonic_linear_mapper.py",
+      "qiskit_nature/second_q/mappers/bosonic_mapper.py",
+      "qiskit_nature/second_q/mappers/majorana_mapper.py",
+      "qiskit_nature/second_q/mappers/mode_based_mapper.py",
+      "qiskit_nature/second_q/mappers/ternary_tree_mapper.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature can represent Majorana operators, but it does not provide the ternary-tree qubit mapping described by Jiang, Kalev, Mruczkiewicz, and Neven. Users need a mapper that turns Majorana operators into SparsePauliOp qubit operators, supports configurable Pauli priority, and works consistently for single operators and mapped containers.",
+    "requirements": [
+      "A TernaryTreeMapper must be available as a second-quantization mapper for MajoranaOp inputs.",
+      "The mapper must generate ternary-tree Pauli operators that satisfy the Majorana anticommutation relations.",
+      "Mapping a MajoranaOp must produce the expected SparsePauliOp for individual Majorana labels, parameterized coefficients, empty operators, constant operators, and register-length overrides.",
+      "Mapping lists or dictionaries of MajoranaOp instances must preserve the input container type and map each operator value.",
+      "The mapper must accept Pauli priority strings made from the six permutations of X, Y, and Z, and reject invalid priority strings with ValueError.",
+      "Existing Jordan-Wigner mapper behavior for FermionicOp inputs must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TernaryTreeMapper",
+        "Path": "qiskit_nature/second_q/mappers/ternary_tree_mapper.py",
+        "Input": "constructor: pauli_priority",
+        "Output": "",
+        "Description": "Configures ternary-tree mapping for MajoranaOp inputs with a Pauli priority chosen from the six permutations of X, Y, and Z."
+      },
+      {
+        "Type": "Method",
+        "Name": "TernaryTreeMapper.map",
+        "Path": "qiskit_nature/second_q/mappers/ternary_tree_mapper.py",
+        "Input": "second_q_ops, register_length=None",
+        "Output": "SparsePauliOp or same container type",
+        "Description": "Maps a MajoranaOp, list of MajoranaOp instances, or dictionary of MajoranaOp instances to SparsePauliOp qubit operators."
+      },
+      {
+        "Type": "Method",
+        "Name": "TernaryTreeMapper.pauli_table",
+        "Path": "qiskit_nature/second_q/mappers/ternary_tree_mapper.py",
+        "Input": "register_length",
+        "Output": "list[tuple[PauliType, PauliType]]",
+        "Description": "Returns the ternary-tree Pauli lookup table used for compatibility with mode-based mapper behavior."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_582_1313",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:582c9736770863f3d07fa83122a5606c8ee5a64bc335c51a5490c10d15859818",
+      "image_size": "1149150966"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "qiskit==1.4.2",
+        "qiskit-algorithms>=0.2.1",
+        "numpy<2",
+        "scipy",
+        "h5py",
+        "rustworkx",
+        "pytest",
+        "ddt",
+        "pyscf==2.8.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_pauli_table",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_overwrite_reg_len",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_pauli_priority"
+        ],
+        "result": "passed",
+        "summary": "7 passed in 2.93s",
+        "duration_seconds": 6.52
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_overwrite_reg_len"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 2.79s",
+        "duration_seconds": 6.72
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_pauli_table",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_overwrite_reg_len",
+          "test/second_q/mappers/test_ternary_tree_mapper.py::TestTernaryTreeMapper::test_mapping_pauli_priority"
+        ],
+        "result": "failed",
+        "summary": "1 error in 1.95s; ImportError: cannot import name 'TernaryTreeMapper' from qiskit_nature.second_q.mappers",
+        "duration_seconds": 7.59
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_overwrite_reg_len"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 2.83s",
+        "duration_seconds": 8.46
+      }
+    }
+  }
+}

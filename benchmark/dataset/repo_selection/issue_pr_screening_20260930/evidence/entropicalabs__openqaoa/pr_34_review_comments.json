@@ -1,0 +1,560 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906931144",
+    "pull_request_review_id": 1019549691,
+    "id": 906931144,
+    "node_id": "PRRC_kwDOHMYLyM42DqvI",
+    "diff_hunk": "@@ -0,0 +1,126 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+from logging.config import dictConfig\n+from re import I\n+import matplotlib.pyplot as plt\n+from typing import Type\n+import numpy as np\n+\n+from .logger_vqa import Logger\n+from ..qaoa_parameters.operators import Hamiltonian\n+from ..utilities import qaoa_probabilities, bitstring_energy\n+\n+def most_probable_bitstring(cost_hamiltonian, measurement_outcomes):",
+    "path": "openqaoa/optimizers/result.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm wondering if there is a way to do this without passing cost_hamiltonian into the Result Object. ",
+    "created_at": "2022-06-27T02:51:59Z",
+    "updated_at": "2022-06-27T03:10:26Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r906931144",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906931144"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r906931144"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906931144/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 25,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906935502",
+    "pull_request_review_id": 1019549691,
+    "id": 906935502,
+    "node_id": "PRRC_kwDOHMYLyM42DrzO",
+    "diff_hunk": "@@ -0,0 +1,30 @@\n+import unittest\n+import networkx as nx\n+\n+from openqaoa.problems.problem import MinimumVertexCover\n+from openqaoa.workflows.optimizer import QAOA  \n+\n+class TestingLoggerClass(unittest.TestCase):\n+\n+    def test_attribute_existence(self):\n+        \"\"\"\n+        This test checks that 'solution', 'evals', 'intermediate', 'optimized' are correctly\n+        created by the default workflow\n+        \"\"\"\n+\n+        # Create the problem\n+        g = nx.circulant_graph(6, [1])\n+        vc = MinimumVertexCover(g, field =1.0, penalty=10).get_pubo_problem()\n+        \n+        q = QAOA()\n+        q.compile(vc, verbose=False)\n+        q.optimize()\n+\n+        for k in ['most_probable_states', 'evals', 'intermediate', 'optimized']:\n+            if k in [a for a in dir(q.results) if not a.startswith('__')]:",
+    "path": "tests/test_result_object.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm not sure about having an if-else statement branching this way in a unittest. Do you think its possible to do this check without one?",
+    "created_at": "2022-06-27T03:05:14Z",
+    "updated_at": "2022-06-27T03:11:42Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r906935502",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906935502"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r906935502"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/906935502/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 24,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907010645",
+    "pull_request_review_id": 1019656673,
+    "id": 907010645,
+    "node_id": "PRRC_kwDOHMYLyM42D-JV",
+    "diff_hunk": "@@ -0,0 +1,126 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+from logging.config import dictConfig\n+from re import I\n+import matplotlib.pyplot as plt\n+from typing import Type\n+import numpy as np\n+\n+from .logger_vqa import Logger\n+from ..qaoa_parameters.operators import Hamiltonian\n+from ..utilities import qaoa_probabilities, bitstring_energy\n+\n+def most_probable_bitstring(cost_hamiltonian, measurement_outcomes):",
+    "path": "openqaoa/optimizers/result.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Well, you need the solution and the problem class or the hamiltonian class. \r\n\r\nBesides utilities, the two other logical places are the problem class and somewhere that contains the cost. \r\n\r\nIn the workflows, we could have this as a class method and we already have everything there. For the factory, we would need to think.",
+    "created_at": "2022-06-27T06:16:53Z",
+    "updated_at": "2022-06-27T06:16:53Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907010645",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907010645"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907010645"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907010645/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "in_reply_to_id": 906931144,
+    "author_association": "MEMBER",
+    "original_position": 25,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907012978",
+    "pull_request_review_id": 1019660211,
+    "id": 907012978,
+    "node_id": "PRRC_kwDOHMYLyM42D-ty",
+    "diff_hunk": "@@ -0,0 +1,30 @@\n+import unittest\n+import networkx as nx\n+\n+from openqaoa.problems.problem import MinimumVertexCover\n+from openqaoa.workflows.optimizer import QAOA  \n+\n+class TestingLoggerClass(unittest.TestCase):\n+\n+    def test_attribute_existence(self):\n+        \"\"\"\n+        This test checks that 'solution', 'evals', 'intermediate', 'optimized' are correctly\n+        created by the default workflow\n+        \"\"\"\n+\n+        # Create the problem\n+        g = nx.circulant_graph(6, [1])\n+        vc = MinimumVertexCover(g, field =1.0, penalty=10).get_pubo_problem()\n+        \n+        q = QAOA()\n+        q.compile(vc, verbose=False)\n+        q.optimize()\n+\n+        for k in ['most_probable_states', 'evals', 'intermediate', 'optimized']:\n+            if k in [a for a in dir(q.results) if not a.startswith('__')]:",
+    "path": "tests/test_result_object.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "How about:\r\n`assert set(['most_probable_states', 'evals', 'intermediate', 'optimized']) <= set([a for a in dir(q.results) if not a.startswith('__')])`\r\n\r\nthe point of this test is to check right away that the naming convention between the attributes has been correctly implemented ",
+    "created_at": "2022-06-27T06:21:26Z",
+    "updated_at": "2022-06-27T06:22:24Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907012978",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907012978"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907012978"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907012978/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 24,
+    "side": "RIGHT",
+    "in_reply_to_id": 906935502,
+    "author_association": "MEMBER",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907017821",
+    "pull_request_review_id": 1019667153,
+    "id": 907017821,
+    "node_id": "PRRC_kwDOHMYLyM42D_5d",
+    "diff_hunk": "@@ -0,0 +1,30 @@\n+import unittest\n+import networkx as nx\n+\n+from openqaoa.problems.problem import MinimumVertexCover\n+from openqaoa.workflows.optimizer import QAOA  \n+\n+class TestingLoggerClass(unittest.TestCase):\n+\n+    def test_attribute_existence(self):\n+        \"\"\"\n+        This test checks that 'solution', 'evals', 'intermediate', 'optimized' are correctly\n+        created by the default workflow\n+        \"\"\"\n+\n+        # Create the problem\n+        g = nx.circulant_graph(6, [1])\n+        vc = MinimumVertexCover(g, field =1.0, penalty=10).get_pubo_problem()\n+        \n+        q = QAOA()\n+        q.compile(vc, verbose=False)\n+        q.optimize()\n+\n+        for k in ['most_probable_states', 'evals', 'intermediate', 'optimized']:\n+            if k in [a for a in dir(q.results) if not a.startswith('__')]:",
+    "path": "tests/test_result_object.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Oh I think that assert solution looks much better. It does the job and keeps out ambiguous if-else statements in the unittests.",
+    "created_at": "2022-06-27T06:29:44Z",
+    "updated_at": "2022-06-27T06:29:45Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907017821",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907017821"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907017821"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907017821/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 24,
+    "side": "RIGHT",
+    "in_reply_to_id": 906935502,
+    "author_association": "COLLABORATOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907036463",
+    "pull_request_review_id": 1019692990,
+    "id": 907036463,
+    "node_id": "PRRC_kwDOHMYLyM42EEcv",
+    "diff_hunk": "@@ -0,0 +1,126 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+from logging.config import dictConfig\n+from re import I\n+import matplotlib.pyplot as plt\n+from typing import Type\n+import numpy as np\n+\n+from .logger_vqa import Logger\n+from ..qaoa_parameters.operators import Hamiltonian\n+from ..utilities import qaoa_probabilities, bitstring_energy\n+\n+def most_probable_bitstring(cost_hamiltonian, measurement_outcomes):",
+    "path": "openqaoa/optimizers/result.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Hmmm looks like there really isnt an elegant way to deal with this.\r\n\r\nWhat do you think about computing the `bitstring_energy` through a class method of the Result class rather than in the init function. \r\n\r\nIn the workflow, you can pass the hamiltonian class directly into that class method to compute the `bitstring_energy` if it is requested.\r\n\r\nIn the factory method, the user would have to manually do it himself.\r\n\r\nAlthough I guess, if we want the Result Object to just provide this information from the moment the Result Object is created in `OptimizeVQA`, then this current implementation works for that purpose.",
+    "created_at": "2022-06-27T06:57:40Z",
+    "updated_at": "2022-06-27T06:57:40Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907036463",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907036463"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907036463"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907036463/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "in_reply_to_id": 906931144,
+    "author_association": "COLLABORATOR",
+    "original_position": 25,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907109192",
+    "pull_request_review_id": 1019796780,
+    "id": 907109192,
+    "node_id": "PRRC_kwDOHMYLyM42EWNI",
+    "diff_hunk": "@@ -0,0 +1,126 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+from logging.config import dictConfig\n+from re import I\n+import matplotlib.pyplot as plt\n+from typing import Type\n+import numpy as np\n+\n+from .logger_vqa import Logger\n+from ..qaoa_parameters.operators import Hamiltonian\n+from ..utilities import qaoa_probabilities, bitstring_energy\n+\n+def most_probable_bitstring(cost_hamiltonian, measurement_outcomes):",
+    "path": "openqaoa/optimizers/result.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok, I would leave it like this for this moment: I feel the result object will be updated further (especially at the level of the workflows). \r\n\r\nBut yes, I think it could be a class method. Shall I open an issue about this? ",
+    "created_at": "2022-06-27T08:22:56Z",
+    "updated_at": "2022-06-27T08:22:56Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907109192",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907109192"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907109192"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907109192/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "in_reply_to_id": 906931144,
+    "author_association": "MEMBER",
+    "original_position": 25,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907117855",
+    "pull_request_review_id": 1019808739,
+    "id": 907117855,
+    "node_id": "PRRC_kwDOHMYLyM42EYUf",
+    "diff_hunk": "@@ -0,0 +1,126 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+from logging.config import dictConfig\n+from re import I\n+import matplotlib.pyplot as plt\n+from typing import Type\n+import numpy as np\n+\n+from .logger_vqa import Logger\n+from ..qaoa_parameters.operators import Hamiltonian\n+from ..utilities import qaoa_probabilities, bitstring_energy\n+\n+def most_probable_bitstring(cost_hamiltonian, measurement_outcomes):",
+    "path": "openqaoa/optimizers/result.py",
+    "commit_id": "74ce69e51d1904863a7d00528f35c57ac2326553",
+    "original_commit_id": "fd8d49295911d296d5f1cfdbd02b6be9e89a758a",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yup I think opening an issue sounds good. ",
+    "created_at": "2022-06-27T08:31:18Z",
+    "updated_at": "2022-06-27T08:31:19Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907117855",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907117855"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/34#discussion_r907117855"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/34"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/907117855/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 25,
+    "side": "RIGHT",
+    "in_reply_to_id": 906931144,
+    "author_association": "COLLABORATOR",
+    "original_position": 25,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

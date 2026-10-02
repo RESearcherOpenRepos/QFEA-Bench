@@ -1,0 +1,328 @@
+{
+  "id": 77,
+  "sample_id": "qiskit_nature_795_1188",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "bade0896005e0df3a36bc71b6354c13f21e3c726",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 15,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "general_semantics/symbolic_operator_arithmetic": 8,
+      "general_semantics/mixed_operator_composition": 1,
+      "interface/container_mapping_contract": 6,
+      "interface/input_validation": 1,
+      "quantum_semantics/mixed_particle_mapping": 4,
+      "quantum_semantics/fermionic_operator_algebra": 2,
+      "quantum_semantics/fermion_qubit_mapping": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "MixedOp addition retains terms in the same and distinct named registers."
+        }
+      ],
+      "rationale": "This checks keyed term aggregation without a physical identity."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_compose",
+      "label": "general_semantics/mixed_operator_composition",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "MixedOp composition records ordered component products across register keys."
+        }
+      ],
+      "rationale": "The expected structure is generic product bookkeeping."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_div",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 53,
+          "expected": "Dividing a fermionic term by two halves its coefficient."
+        }
+      ],
+      "rationale": "The selected mixed-operator regression checks scalar arithmetic."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "Left and right scalar multiplication scale MixedOp coefficients."
+        }
+      ],
+      "rationale": "The selected test checks numeric scaling."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_neg",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 35,
+          "expected": "Negation changes the MixedOp term coefficient sign."
+        }
+      ],
+      "rationale": "The selected test checks generic negation."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_mixed_op.py::TestFermionicOp::test_sub",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "MixedOp subtraction negates and combines same/different register terms."
+        }
+      ],
+      "rationale": "The selected test checks generic keyed arithmetic."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_1",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "For boson creation and fermion creation, mapper preserves dict and list output types and values."
+        }
+      ],
+      "rationale": "The selected case focuses on container handling."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_2",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "For boson annihilation and fermion annihilation, mapper preserves dict and list output types."
+        }
+      ],
+      "rationale": "The selected case focuses on container handling."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_3",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "For boson number and fermion creation, mapper preserves dict and list output types."
+        }
+      ],
+      "rationale": "The selected case focuses on container handling."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_list_or_dict_4",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "For reversed boson number and fermion annihilation, mapper preserves dict and list output types."
+        }
+      ],
+      "rationale": "The selected case focuses on container handling."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_map_multiple_fermionic_operators",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "Two fermionic register types in MixedMapper configuration raise ValueError."
+        }
+      ],
+      "rationale": "The assertion checks constructor rejection of unsupported configuration."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_1",
+      "label": "quantum_semantics/mixed_particle_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Boson creation times fermion creation maps to the tensor of component Pauli images."
+        }
+      ],
+      "rationale": "The case checks a mixed-Hilbert-space quantum mapping rule."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_2",
+      "label": "quantum_semantics/mixed_particle_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Boson annihilation times fermion annihilation maps to component Pauli images."
+        }
+      ],
+      "rationale": "The case checks a second ladder combination."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_3",
+      "label": "quantum_semantics/mixed_particle_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Boson number times fermion creation maps to component Pauli images."
+        }
+      ],
+      "rationale": "The case checks a number/ladder combination."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_mixed_mapper.py::TestMixedMapper::test_relative_mapping_4",
+      "label": "quantum_semantics/mixed_particle_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Reversed boson number times fermion annihilation maps to component Pauli images."
+        }
+      ],
+      "rationale": "The case checks ordered mixed-operator mapping."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 58,
+          "expected": "Fermionic scalar multiplication preserves numeric or symbolic coefficients."
+        }
+      ],
+      "rationale": "The selected control checks coefficient scaling."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "Fermionic addition combines numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "The selected control checks term aggregation."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_sub",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "Fermionic subtraction combines numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "The selected control checks term subtraction."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "Fermionic composition produces the prescribed reordered terms and minus signs."
+        }
+      ],
+      "rationale": "The multi-compose case exercises fermionic operator signs."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "Fermionic tensor product preserves ordered ladder operators across registers."
+        }
+      ],
+      "rationale": "The expected operator ordering is a fermionic product contract."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 65,
+          "expected": "Jordan-Wigner maps individual fermionic ladder operators to expected Pauli images."
+        }
+      ],
+      "rationale": "The selected control compares physical mapping results."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Jordan-Wigner mapper preserves list output structure."
+        }
+      ],
+      "rationale": "The selected control targets list mapping."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 136,
+          "expected": "Jordan-Wigner mapper preserves dictionary keys and values."
+        }
+      ],
+      "rationale": "The selected control targets dict mapping."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/bade0896005e0df3a36bc71b6354c13f21e3c726/test/second_q/mappers/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/bade0896005e0df3a36bc71b6354c13f21e3c726/test/second_q/mappers/test_mixed_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/bade0896005e0df3a36bc71b6354c13f21e3c726/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/bade0896005e0df3a36bc71b6354c13f21e3c726/test/second_q/operators/test_mixed_op.py"
+  ],
+  "rationale": "Reviewed all 23 selected exact-patch tests, including inherited methods and parameterized variants. Each label follows its explicit assertion."
+}

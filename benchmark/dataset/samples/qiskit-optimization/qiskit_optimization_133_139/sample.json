@@ -1,0 +1,125 @@
+{
+  "instance": {
+    "id": 95,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_133_139",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/133",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/139",
+    "base_commit": "e7f7132d0add6787fb86266140f194284317b0cb",
+    "patch": "00fd67e029ded6b76e1a9f73eb17ccc628a4f776"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds CPLEX parameter plumbing and no-solution handling for a classical optimizer."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/cplex_optimizer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "CplexOptimizer could solve QuadraticProgram instances through CPLEX, but users could not pass CPLEX solver parameters such as optimality target, time limit, thread count, or random seed through the optimizer API. This made it awkward to handle non-convex quadratic programs and warm-start workflows that require CPLEX options. The optimizer also assumed that CPLEX always returned a solution, instead of producing a structured failure result when no solution was found.",
+    "requirements": [
+      "Extend CplexOptimizer so users can provide CPLEX parameters as a dictionary through the public optimizer API.",
+      "Store and expose the CPLEX parameter dictionary through a cplex_parameters property with a setter.",
+      "Pass the configured cplex_parameters into docplex.mp.model.Model.solve when solving a QuadraticProgram.",
+      "Continue respecting the disp flag by forwarding it as log_output to the DOcplex solve call.",
+      "When CPLEX returns no solution, return an OptimizationResult with zero-valued variables, an objective value evaluated at that fallback point, FAILURE status, and raw_results set to None.",
+      "When CPLEX returns a solution, preserve the existing OptimizationResult behavior, including objective value, variable values, feasibility-derived status, and raw solver result.",
+      "Keep CplexOptimizer unavailable with a MissingOptionalLibraryError when the cplex package is not installed.",
+      "Add tests that exercise normal CPLEX solving and no-solution handling through cplex_parameters."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "CplexOptimizer",
+        "Path": "qiskit_optimization/algorithms/cplex_optimizer.py",
+        "Input": "constructor: disp: bool = False, cplex_parameters: dict[str, Any] | None = None",
+        "Output": "",
+        "Description": "OptimizationAlgorithm wrapper around CPLEX with configurable solver parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "CplexOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/cplex_optimizer.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "OptimizationResult",
+        "Description": "Solves a quadratic program with DOcplex/CPLEX, forwarding display and CPLEX parameter settings and returning a structured failure result if no solution is found."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_133_139",
+      "image_id": "sha256:0b673d4f6cbc8b7d46bb97cb3aa93f40776d049afe709d40febe8b498625565a",
+      "image_size": "984860196"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "qiskit-terra==0.17.4",
+        "docplex==2.21.207",
+        "cplex",
+        "networkx<3",
+        "pytest<8",
+        "ddt"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_no_solution_1___op_ip1_lp____0__2___6_"
+        ],
+        "summary": "1 passed in 5.42s",
+        "duration_seconds": 13.57
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_1___op_ip1_lp____0__2___6_",
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_2___op_mip1_lp____1__1__0___6_",
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_3___op_lp1_lp____0_25__1_75___5_875_",
+          "test/algorithms/test_cobyla_optimizer.py::TestCobylaOptimizer::test_cobyla_optimizer",
+          "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer",
+          "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_bounded"
+        ],
+        "summary": "6 passed in 1.97s",
+        "duration_seconds": 5.11
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_no_solution_1___op_ip1_lp____0__2___6_"
+        ],
+        "summary": "1 failed with TypeError: __init__() got an unexpected keyword argument 'cplex_parameters' in 4.64s",
+        "duration_seconds": 17.1
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_1___op_ip1_lp____0__2___6_",
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_2___op_mip1_lp____1__1__0___6_",
+          "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_3___op_lp1_lp____0_25__1_75___5_875_",
+          "test/algorithms/test_cobyla_optimizer.py::TestCobylaOptimizer::test_cobyla_optimizer",
+          "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer",
+          "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_bounded"
+        ],
+        "summary": "6 passed in 1.78s",
+        "duration_seconds": 6.69
+      }
+    }
+  }
+}

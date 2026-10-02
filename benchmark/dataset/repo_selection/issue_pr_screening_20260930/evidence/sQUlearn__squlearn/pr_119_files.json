@@ -1,0 +1,86 @@
+[
+  {
+    "sha": "d7c2275902f5c205eed81cbb4a30ad15f9a69453",
+    "filename": "src/squlearn/kernel/matrix/fidelity_kernel.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 1,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -212,7 +212,9 @@ def evaluate(self, x: np.ndarray, y: Union[np.ndarray, None] = None) -> np.ndarr\n                 elif self._mit_depol_noise == \"mmean\":\n                     kernel_matrix = self._get_mmean_kernel(kernel_matrix)\n \n-        if self._regularization is not None:\n+        if (self._regularization is not None) and (\n+            kernel_matrix.shape[0] == kernel_matrix.shape[1]\n+        ):\n             kernel_matrix = self._regularize_matrix(kernel_matrix)\n         return kernel_matrix\n "
+  },
+  {
+    "sha": "4f8b60c8351a7615165bc569a03208dddbfec332",
+    "filename": "src/squlearn/kernel/matrix/projected_quantum_kernel.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 1,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -454,7 +454,9 @@ def evaluate(self, x: np.ndarray, y: np.ndarray = None) -> np.ndarray:\n             raise ValueError(\"Parameters have not been set yet!\")\n \n         kernel_matrix = self._outer_kernel(self._qnn, self._parameters, x, y)\n-        if self._regularization is not None:\n+        if (self._regularization is not None) and (\n+            kernel_matrix.shape[0] == kernel_matrix.shape[1]\n+        ):\n             kernel_matrix = self._regularize_matrix(kernel_matrix)\n         return kernel_matrix\n "
+  },
+  {
+    "sha": "97f9cbc02e17c544cedd580997b77316b7ebd75b",
+    "filename": "src/squlearn/kernel/ml/qgpc.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -133,6 +133,7 @@ def set_params(self, **params) -> None:\n                 param_dict[key] = value\n         if len(param_dict) > 0:\n             self._quantum_kernel.set_params(**param_dict)\n+        return self\n \n     @property\n     def quantum_kernel(self) -> KernelMatrixBase:"
+  },
+  {
+    "sha": "25978e6ab32c4408209051ed585597cb0f7e8b47",
+    "filename": "src/squlearn/kernel/ml/qgpr.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -249,3 +249,4 @@ def set_params(self, **params) -> None:\n                 param_dict[key] = value\n         if len(param_dict) > 0:\n             self._quantum_kernel.set_params(**param_dict)\n+        return self"
+  },
+  {
+    "sha": "1a12b5bb436cfff9c9596a892d480e09c57ad43a",
+    "filename": "src/squlearn/kernel/ml/qkrr.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -189,3 +189,4 @@ def set_params(self, **params) -> None:\n                 param_dict[key] = value\n         if len(param_dict) > 0:\n             self._quantum_kernel.set_params(**param_dict)\n+        return self"
+  },
+  {
+    "sha": "83c0baf5238adc9d5aed973744ef7623005e46af",
+    "filename": "src/squlearn/kernel/ml/qsvc.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -153,3 +153,4 @@ def set_params(self, **params) -> None:\n                 param_dict[key] = value\n         if len(param_dict) > 0:\n             self.quantum_kernel.set_params(**param_dict)\n+        return self"
+  },
+  {
+    "sha": "b8bc552c587f47f9e5d574c5efc74c515455856c",
+    "filename": "src/squlearn/kernel/ml/qsvr.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/99fc6032b5b7e718cfaa332e7862c895ba65c6b8/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py?ref=99fc6032b5b7e718cfaa332e7862c895ba65c6b8",
+    "patch": "@@ -152,3 +152,4 @@ def set_params(self, **params) -> None:\n                 param_dict[key] = value\n         if len(param_dict) > 0:\n             self.quantum_kernel.set_params(**param_dict)\n+        return self"
+  }
+]

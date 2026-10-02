@@ -1,0 +1,71 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________________ TestQNNRegressor.test_serialization[qiskit] __________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe1e71d50>
+request = <FixtureRequest for <Function test_serialization[qiskit]>>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+framework = 'qiskit'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNRegressor."""
+    
+        X, y = data
+        qnn_regressor = self.get_qnn_regressor(framework)
+        qnn_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_regressor.dump(buffer)
+E       AttributeError: 'QNNRegressor' object has no attribute 'dump'
+
+tests/qnn/test_qnnr.py:227: AttributeError
+----------------------------- Captured stdout call -----------------------------
+fit:   0%|          | 0/2 [00:00<?, ?it/s]fit:  50%|█████     | 1/2 [00:00<00:00,  5.05it/s]fit: 100%|██████████| 2/2 [00:00<00:00,  6.11it/s]fit: 100%|██████████| 2/2 [00:00<00:00,  5.92it/s]
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:1600 Executor runs estimator with job: 490574e5-e91c-4d7a-9397-62ffd8a8afca
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: a6fa1924-5f7e-474d-966d-30fa64b6bb3f
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 4aa905f0-05ec-4c5d-9d47-a81400cdc3f6
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 67f451f0-5a22-4551-a554-3497c90aa061
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: a251a658-78a4-4511-bc37-831880281f14
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: c281fe3a-966f-46ba-aff7-96e58a25a5c2
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: af2c87a0-715d-4e50-8d06-1b006cf7df2f
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+=========================== short test summary info ============================
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qiskit]
+1 failed, 5 warnings in 4.03s

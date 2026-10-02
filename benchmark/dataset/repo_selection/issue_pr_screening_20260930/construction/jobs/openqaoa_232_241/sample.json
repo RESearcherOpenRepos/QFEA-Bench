@@ -1,0 +1,126 @@
+{
+  "instance": {
+    "id": 116,
+    "repo": "entropicalabs/openqaoa",
+    "instance_id": "openqaoa_232_241",
+    "status": "completed",
+    "issue_url": "https://github.com/entropicalabs/openqaoa/issues/232",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/entropicalabs/openqaoa/pull/241",
+    "base_commit": "cf30131c4d7927e86daf6104399ee612cd6f78ec",
+    "patch": "137d3f0a10391adce5bb23cf7536f2d221defb79"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "Adds requested sparse matrix representation of Hamiltonian Pauli terms; added test compares the full complex 16x16 matrix to explicit expected entries."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Users need an explicit matrix representation of an OpenQAOA Hamiltonian, including sums of mixed Pauli terms acting on nonadjacent qubits, to compare and manipulate the corresponding quantum operator.",
+    "requirements": [
+      "Expose the Hamiltonian as a sparse matrix in the repository computational-basis convention.",
+      "Combine Pauli terms with their coefficients while preserving tensor-product ordering and complex phases.",
+      "Preserve existing Hamiltonian and Pauli-operator behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "Hamiltonian.as_matrix",
+        "Path": "src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py",
+        "Input": "self (property access)",
+        "Output": "scipy.sparse matrix",
+        "Description": "Property returning the Hamiltonian matrix; supports toarray() for dense conversion."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-openqaoa_232_241:latest",
+      "image_id": "sha256:16223cb8fcc926eeb69a4f554c7e7e4c30a8f7dca90fd89a365e59a3ddc5ff55",
+      "image_size": "1345401951",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": [
+        "Install core/local backend dependencies explicitly. Azure/QDK/QIR/IonQ integrations are optional plugin paths and not used by operator-matrix tests; resolving all historical cloud SDK extras together causes unrelated dependency backtracking. No selected test is skipped."
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix"
+        ],
+        "summary": "1 failed in 6.14s",
+        "duration_seconds": 8.001
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_init",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_qureg",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_divide_into_singlets_pairs",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_str",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_len",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_expression",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_add",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_squared",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_dict",
+          "tests/test_operators.py::TestingOperators::test_pauli_matrix"
+        ],
+        "summary": "10 passed in 5.98s",
+        "duration_seconds": 8.211
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix"
+        ],
+        "summary": "1 passed in 5.99s",
+        "duration_seconds": 8.871
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_init",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_qureg",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_divide_into_singlets_pairs",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_str",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_len",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_expression",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_add",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_squared",
+          "tests/test_operators.py::TestingOperators::test_hamiltonian_dict",
+          "tests/test_operators.py::TestingOperators::test_pauli_matrix"
+        ],
+        "summary": "10 passed in 6.05s",
+        "duration_seconds": 7.86
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/openqaoa_232_241",
+    "selector_exclusions": {}
+  }
+}

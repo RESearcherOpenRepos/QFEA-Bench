@@ -1,0 +1,182 @@
+{
+  "instance": {
+    "id": 34,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_401_470",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/401",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/470",
+    "base_commit": "2629e70c75f59bb7315cdd012dc8ed65898ffaf9",
+    "patch": "670bc12ac7b696acdf4b1ea3e9f4242953a8555d"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds an estimator-primitive quantum neural-network workflow, with correctness mainly in primitive integration, observables, shapes, and gradients."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/regressors/vqr.py",
+      "qiskit_machine_learning/neural_networks/__init__.py",
+      "qiskit_machine_learning/neural_networks/estimator_qnn.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository already provides quantum neural network abstractions and regressor algorithms, but users do not yet have a neural network implementation built directly on Qiskit's Estimator primitive. Users should be able to construct a neural network from a parameterized circuit and observables, evaluate expectation-value outputs, compute gradients for training, and use this estimator-backed network through the existing variational quantum regressor workflow.",
+    "requirements": [
+      "Provide an estimator-backed quantum neural network that is available from the neural network package.",
+      "The estimator-backed neural network must accept a parameterized quantum circuit, optional estimator primitive, optional observables, input parameters, weight parameters, optional gradient object, and an input-gradient setting.",
+      "When no estimator is supplied, the neural network must use a default Estimator primitive.",
+      "When no observables are supplied, the neural network must use a default Z observable over all circuit qubits.",
+      "The neural network must support one or more observables and return outputs with the corresponding output dimension.",
+      "Forward evaluation must handle scalar, vector, batched, and nested input data shapes consistently with the existing neural network API.",
+      "Backward evaluation must return weight gradients and must return input gradients only when input-gradient computation is enabled.",
+      "The neural network must support circuits with only input parameters, only weight parameters, both kinds of parameters, or no parameters.",
+      "VQR must be able to construct and train with the estimator-backed neural network when no quantum instance is supplied or when an estimator is supplied.",
+      "VQR must preserve its existing quantum-instance workflow and reject observable types that are incompatible with the selected execution path."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "EstimatorQNN",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "constructor: circuit, estimator=None, observables=None, input_params=None, weight_params=None, gradient=None, input_gradients: bool = False",
+        "Output": "",
+        "Description": "Estimator-primitive neural network for expectation-value outputs from parameterized circuits, exposing circuit, observables, input_params, weight_params, and input_gradients behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "EstimatorQNN.forward",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "forward pass output",
+        "Description": "Evaluates estimator expectation values for input data and weights."
+      },
+      {
+        "Type": "Method",
+        "Name": "EstimatorQNN.backward",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "input gradients and weight gradients",
+        "Description": "Evaluates estimator-gradient backward results for input data and weights."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQR",
+        "Path": "qiskit_machine_learning/algorithms/regressors/vqr.py",
+        "Input": "constructor: num_qubits=None, feature_map=None, ansatz=None, observable=None, loss='squared_error', optimizer=None, warm_start: bool = False, quantum_instance=None, initial_point=None, callback=None, estimator=None",
+        "Output": "",
+        "Description": "Variational quantum regressor that can use either the existing quantum-instance path or an estimator-backed neural network and exposes feature_map, ansatz, and num_qubits."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQR.fit",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "self, X, y",
+        "Output": "self",
+        "Description": "Fits the variational regressor on regression data using the configured neural network and optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQR.score",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "self, X, y",
+        "Output": "float",
+        "Description": "Scores the fitted variational regressor on regression data."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_401_470",
+      "image_id": "sha256:4d3cfd5a523d34a87499516b99e537099786363e3379ac8aaa0b051b6540d2c1",
+      "image_size": "1507238304"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_2",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_2",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_input_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_weight_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_single_observable",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_incorrect_observable",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_properties",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_5__None__True_",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_6__None__False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_incorrect_observable"
+        ],
+        "summary": "15 passed, 29 warnings, 32 subtests passed in 4.24s.",
+        "duration_seconds": 9.68
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr"
+        ],
+        "summary": "4 passed in 2.87s",
+        "duration_seconds": 6.97
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_2",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_2",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_input_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_weight_parameters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_single_observable",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_incorrect_observable",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_properties",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_5__None__True_",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_6__None__False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_incorrect_observable"
+        ],
+        "summary": "Failed during collection because the base version does not provide qiskit_machine_learning.neural_networks.estimator_qnn.EstimatorQNN.",
+        "duration_seconds": 9.84
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr"
+        ],
+        "summary": "4 passed in 2.60s",
+        "duration_seconds": 8.08
+      }
+    }
+  }
+}

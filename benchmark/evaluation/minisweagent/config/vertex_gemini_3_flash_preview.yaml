@@ -1,0 +1,17 @@
+prediction_model_name: gemini-3-flash-preview
+_model_source: vertex
+model:
+  model_class: litellm
+  model_name: gemini/gemini-3-flash-preview
+  cost_tracking: ignore_errors
+  model_kwargs:
+    api_key: "$GoogleVertaxAI_API_KEY"
+    api_base: "https://aiplatform.googleapis.com/v1/projects/$GoogleProjectID/locations/global/publishers/google"
+    temperature: 0.0
+    max_tokens: 16384
+    timeout: 300
+    extra_body:
+      generationConfig:
+        thinkingConfig:
+          thinkingLevel: minimal
+          includeThoughts: false

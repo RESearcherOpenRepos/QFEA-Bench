@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=benchmark-base:openfermion_246_306
+FROM ${BASE_IMAGE}
+
+ENV SAMPLE_ID=openfermion_246_306
+ENV REPOSITORY=quantumlib/OpenFermion
+ENV REPOSITORY_URL=https://github.com/quantumlib/OpenFermion.git
+ENV ISSUE_URL=https://github.com/quantumlib/OpenFermion/issues/246
+ENV PR_URL=https://github.com/quantumlib/OpenFermion/pull/306
+ENV BASE_COMMIT=46acb076bf34a0bc267a9e1b3f57b8d167cbc6d1
+ENV PATCHED_COMMIT=78c379106b0626a9212d2ac3483a44df4f01187f
+ENV PR_HEAD_COMMIT=a7e60db6ede270dfcf9ef78c0f178670c96ddea7
+ENV FAIL_PASS_TEST_PATHS="src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions src/openfermion/transforms/_conversion_test.py::GetSparseOperatorDiagonalCoulombHamiltonianTest::test_diagonal_coulomb_hamiltonian src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_hubbard src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_random_quadratic"
+ENV PASS_PASS_TEST_PATHS="src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian_bad_term src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_not_hermitian src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_bad_input src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_too_few_qubits src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body_twoterm src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body_distinct"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

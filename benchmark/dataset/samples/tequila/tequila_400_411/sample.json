@@ -1,0 +1,142 @@
+{
+  "instance": {
+    "id": 107,
+    "repo": "tequilahub/tequila",
+    "instance_id": "tequila_400_411",
+    "status": "completed",
+    "issue_url": "https://github.com/tequilahub/tequila/issues/400",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/tequilahub/tequila/pull/411",
+    "base_commit": "a257bc0f49d3fa2d8262ecffc172074ac1812fff",
+    "patch": "2d0f1b862d842ab83bea3c53c676a1b9bbea999c"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "Extends optimized QubitExcitation decomposition beyond single/double excitations. Added test checks lower circuit depth and unit state fidelity against Pauli decomposition for triple and five-fold excitations including random complex states."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/tequila/circuit/gates.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Higher-order qubit excitations currently fall back to a large Pauli decomposition. Users need optimized decompositions for excitations beyond singles and doubles while preserving the action on the quantum state, including arbitrary complex input states.",
+    "requirements": [
+      "Compile higher-order qubit excitations with smaller circuit depth than their Pauli decomposition.",
+      "Preserve the state transformation of the Pauli decomposition for triple and five-fold excitations, including normalized complex input states and numerical rotation angles.",
+      "Preserve existing elementary-gate decomposition behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "QubitExcitation",
+        "Path": "src/tequila/circuit/gates.py",
+        "Input": "angle, target, control=None, assume_real=False, compile_options=\"optimize\"",
+        "Output": "QCircuit",
+        "Description": "Constructs a qubit excitation; target indices form excitation pairs and compile_options=\"pauli\" selects the reference decomposition."
+      },
+      {
+        "Type": "Function",
+        "Name": "compile_circuit",
+        "Path": "src/tequila/circuit/__init__.py",
+        "Input": "U, *args, **kwargs",
+        "Output": "QCircuit",
+        "Description": "Compiles a circuit and exposes its depth and simulation-compatible action."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-tequila_400_411:latest",
+      "image_id": "sha256:a2e8a8ac1e82f3a47a0b377ef819b2c91e370e88789723c7bed6ea9e23db16a8",
+      "image_size": "1168233873",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/test_recompilation_routines.py::test_compile_qubit_excitations"
+        ],
+        "summary": "1 failed in 15.00s",
+        "duration_seconds": 18.93
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_recompilation_routines.py::test_compile_swap",
+          "tests/test_recompilation_routines.py::test_compile_ry[2-4-3.14]",
+          "tests/test_recompilation_routines.py::test_compile_ry[1-0-0.4487989505128276]",
+          "tests/test_recompilation_routines.py::test_compile_ry[1-None-0.6283185307179586]",
+          "tests/test_recompilation_routines.py::test_compile_ry[5-None-1.093]",
+          "tests/test_recompilation_routines.py::test_compile_y[2-4-1.5]",
+          "tests/test_recompilation_routines.py::test_compile_y[4-0-1.0]",
+          "tests/test_recompilation_routines.py::test_compile_y[0-5-2.9]",
+          "tests/test_recompilation_routines.py::test_compile_y[1-None-4.2]",
+          "tests/test_recompilation_routines.py::test_compile_y[5-None-3.9]",
+          "tests/test_recompilation_routines.py::test_compile_ch[2-4-1.5]",
+          "tests/test_recompilation_routines.py::test_compile_ch[4-2-1.0]",
+          "tests/test_recompilation_routines.py::test_compile_ch[0-5-2.9]",
+          "tests/test_recompilation_routines.py::test_compile_ch[1-None-4.2]",
+          "tests/test_recompilation_routines.py::test_compile_ch[5-None-3.9]"
+        ],
+        "summary": "15 passed in 9.02s",
+        "duration_seconds": 12.981
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_recompilation_routines.py::test_compile_qubit_excitations"
+        ],
+        "summary": "1 passed in 33.71s",
+        "duration_seconds": 36.625
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_recompilation_routines.py::test_compile_swap",
+          "tests/test_recompilation_routines.py::test_compile_ry[2-4-3.14]",
+          "tests/test_recompilation_routines.py::test_compile_ry[1-0-0.4487989505128276]",
+          "tests/test_recompilation_routines.py::test_compile_ry[1-None-0.6283185307179586]",
+          "tests/test_recompilation_routines.py::test_compile_ry[5-None-1.093]",
+          "tests/test_recompilation_routines.py::test_compile_y[2-4-1.5]",
+          "tests/test_recompilation_routines.py::test_compile_y[4-0-1.0]",
+          "tests/test_recompilation_routines.py::test_compile_y[0-5-2.9]",
+          "tests/test_recompilation_routines.py::test_compile_y[1-None-4.2]",
+          "tests/test_recompilation_routines.py::test_compile_y[5-None-3.9]",
+          "tests/test_recompilation_routines.py::test_compile_ch[2-4-1.5]",
+          "tests/test_recompilation_routines.py::test_compile_ch[4-2-1.0]",
+          "tests/test_recompilation_routines.py::test_compile_ch[0-5-2.9]",
+          "tests/test_recompilation_routines.py::test_compile_ch[1-None-4.2]",
+          "tests/test_recompilation_routines.py::test_compile_ch[5-None-3.9]"
+        ],
+        "summary": "15 passed in 5.65s",
+        "duration_seconds": 9.319
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/tequila_400_411",
+    "selector_exclusions": {}
+  }
+}

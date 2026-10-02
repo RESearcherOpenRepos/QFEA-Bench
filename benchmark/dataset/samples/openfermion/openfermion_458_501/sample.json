@@ -1,0 +1,151 @@
+{
+  "instance": {
+    "id": 8,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_458_501",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/458",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/501",
+    "base_commit": "2789aecbb3e5b1aeebead434b73e4605c3864f83",
+    "patch": "6fb280c9d223522ed5ce5e90f5cd809beda7f177"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines native Majorana operator representation and canonical algebraic semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/__init__.py",
+      "src/openfermion/ops/_majorana_operator.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion needs a native Majorana-operator representation so users can express fermionic models directly in the Majorana basis instead of encoding these products indirectly through other operator classes. The implementation should provide a MajoranaOperator type with the expected canonical term normalization, algebraic operations, string formatting, and public package export.",
+    "requirements": [
+      "Provide a MajoranaOperator class that canonicalizes Majorana terms by sorting indices, removing repeated pairs, and applying the corresponding parity sign change.",
+      "Allow MajoranaOperator instances to test commutation, add, subtract, multiply, divide by scalars, and format themselves in a canonical Majorana representation, including empty products as `()` and the zero operator as `0`.",
+      "Allow scalar and operator multiplication to combine Majorana terms with the correct coefficient updates and merged-term parity.",
+      "Expose MajoranaOperator through the public openfermion package import path."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MajoranaOperator",
+        "Path": "src/openfermion/ops/_majorana_operator.py",
+        "Input": "constructor: term=None, coefficient=1.0",
+        "Output": "",
+        "Description": "Represents linear combinations of Majorana-operator products and normalizes single-term inputs into canonical order."
+      },
+      {
+        "Type": "Method",
+        "Name": "commutes_with",
+        "Path": "src/openfermion/ops/_majorana_operator.py",
+        "Input": "self, other",
+        "Output": "bool",
+        "Description": "Tests commutation against another MajoranaOperator and rejects unsupported operand types."
+      },
+      {
+        "Type": "Method",
+        "Name": "__mul__",
+        "Path": "src/openfermion/ops/_majorana_operator.py",
+        "Input": "self, other",
+        "Output": "MajoranaOperator",
+        "Description": "Supports multiplication by another MajoranaOperator or by numeric scalars using Majorana-term merge rules."
+      },
+      {
+        "Type": "Method",
+        "Name": "__truediv__",
+        "Path": "src/openfermion/ops/_majorana_operator.py",
+        "Input": "self, other",
+        "Output": "MajoranaOperator",
+        "Description": "Supports division of a MajoranaOperator by numeric scalars."
+      },
+      {
+        "Type": "Method",
+        "Name": "__str__",
+        "Path": "src/openfermion/ops/_majorana_operator.py",
+        "Input": "self",
+        "Output": "str",
+        "Description": "Formats MajoranaOperator terms in the canonical human-readable representation: coefficients followed by parenthesized Majorana index tuples, with the identity or empty product rendered as `()` and the zero operator rendered as `0`."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_458_501",
+      "image_id": "sha256:b60e26f391e8f04c9fbacb27300fe784bf502a42d4001edf2534986deb78a03c",
+      "image_size": "464271381"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_init",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_commutes_with",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_multiply",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_divide",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_str"
+        ],
+        "summary": "5 passed, 40 warnings in 1.64s",
+        "duration_seconds": 5.5
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_zero_is_additive_identity",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_mul_out_of_place",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest2::test_str_multiple_terms"
+        ],
+        "summary": "5 passed, 40 warnings in 1.66s",
+        "duration_seconds": 5.49
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_init",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_commutes_with",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_multiply",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_divide",
+          "src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_str"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/ops/_majorana_operator_test.py::test_majorana_operator_str",
+        "duration_seconds": 5.54
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_zero_is_additive_identity",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_mul_out_of_place",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest2::test_str_multiple_terms"
+        ],
+        "summary": "5 passed, 39 warnings in 1.65s",
+        "duration_seconds": 5.52
+      }
+    }
+  }
+}

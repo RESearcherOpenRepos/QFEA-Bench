@@ -1,0 +1,123 @@
+{
+  "instance": {
+    "id": 47,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_129_161",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/129",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/161",
+    "base_commit": "c1de5bd9d0aa07fdf2a4ad83d5c3ae310cff3768",
+    "patch": "6847323f65a785bc9b0e8a767c91ca6a5d0cdfdf"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task checks Hermiticity as an algebraic invariant across second-quantized operator families."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/second_quantization/second_quantized_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature's second-quantized operator classes already support algebraic manipulation, adjoints, and reduction, but users still lack a direct way to ask whether a constructed operator is Hermitian. This makes it awkward to validate operator expressions before handing them to downstream algorithms. Second-quantized operators should expose a public hermiticity check that works consistently across the FermionicOp, SpinOp, and VibrationalOp families while preserving nearby operator behavior.",
+    "requirements": [
+      "Provide a public hermiticity check for second-quantized operators.",
+      "The hermiticity check must be available on SecondQuantizedOp-based operator types including FermionicOp, SpinOp, and VibrationalOp.",
+      "Hermiticity checking must correctly account for reduced operator contents, including cases where equivalent terms appear multiple times before simplification.",
+      "Hermiticity checking must return true for representative Hermitian second-quantized operator expressions and false for representative non-Hermitian expressions across the supported operator families.",
+      "Existing nearby reduction, ladder-operator expansion, vibrational-label parsing, and operator addition behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "SecondQuantizedOp.is_hermitian",
+        "Path": "qiskit_nature/operators/second_quantization/second_quantized_op.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether the second-quantized operator is Hermitian after comparing its reduced terms against the reduced terms of its adjoint."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_129_161",
+      "image_id": "sha256:4ef5abd3044831bf50779e243452371911d62c80a5693740158e0164d84f4b61",
+      "image_size": "1098217582"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_hermiticity",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_hermiticity"
+        ],
+        "summary": "3 selected selectors passed.",
+        "duration_seconds": 12.24
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_reduce",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_flatten_ladder_ops",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_init_pm_label",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_add"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 20.42
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_hermiticity",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_hermiticity"
+        ],
+        "summary": "3 selected selectors failed with AttributeError because is_hermitian is missing on base.",
+        "duration_seconds": 12.84
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_reduce",
+          "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_flatten_ladder_ops",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_init_pm_label",
+          "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_add"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 18.88
+      }
+    }
+  }
+}

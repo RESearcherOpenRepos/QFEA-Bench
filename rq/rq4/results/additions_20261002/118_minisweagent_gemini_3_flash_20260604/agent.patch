@@ -1,0 +1,162 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..15916c0 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -117,3 +117,79 @@ class BaseQNN(BaseEstimator, ABC):
+     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Internal fit function."""
+         raise NotImplementedError()
++
++    def get_params(self, deep: bool = True) -> dict:
++        """Returns the dictionary of the hyper-parameters of the QNN.
++
++        Args:
++            deep (bool): If True, also the parameters for
++                         contained objects are returned (default=True).
++
++        Returns:
++            dict: Dictionary with hyper-parameters and values.
++        """
++        params = super().get_params(deep=False)
++        params.update(self._qnn.get_params(deep=deep))
++        if not deep:
++            # Add the objects themselves if not deep
++            params["pqc"] = self.pqc
++            params["operator"] = self.operator
++            params["loss"] = self.loss
++            params["optimizer"] = self.optimizer
++            params["executor"] = self.executor
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Sets the hyper-parameters of the QNN.
++
++        Args:
++            params: Hyper-parameters and their values, e.g. ``num_qubits=2``.
++
++        Returns:
++            BaseQNN: The updated QNN instance.
++        """
++        # Check if pqc or operator are in params and update them first
++        if "pqc" in params:
++            self.pqc = params.pop("pqc")
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            self.param = self.param_ini.copy()
++            self._qnn.pqc = self._qnn.pqc.__class__(self.pqc, self._qnn.backend)
++        if "operator" in params:
++            self.operator = params.pop("operator")
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(seed=self.parameter_seed)
++            self.param_op = self.param_op_ini.copy()
++            self._qnn.operator = self.operator
++
++        # Update other parameters
++        super().set_params(**params)
++
++        # Update the internal QNN
++        self._qnn.set_params(**params)
++
++        # Re-initialize parameters if pqc or operator hyperparameters were changed
++        # (e.g. num_qubits, num_layers)
++        # We check if the number of parameters has changed
++        if len(self.param) != self.pqc.num_parameters:
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            num_op_params = sum([op.num_parameters for op in self.operator])
++        else:
++            num_op_params = self.operator.num_parameters
++
++        if len(self.param_op) != num_op_params:
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(seed=self.parameter_seed)
++            self.param_op = self.param_op_ini.copy()
++
++        return self
+diff --git a/src/squlearn/qnn/qnn.py b/src/squlearn/qnn/qnn.py
+index 27d776a..a6dd290 100644
+--- a/src/squlearn/qnn/qnn.py
++++ b/src/squlearn/qnn/qnn.py
+@@ -274,17 +274,19 @@ class QNN:
+         params = dict(num_qubits=self.num_qubits)
+ 
+         if deep:
+-            params.update(self.pqc.get_params())
++            pqc_params = self.pqc.get_params()
++            for key, value in pqc_params.items():
++                params["pqc__" + key] = value
+             if isinstance(self.operator, list):
+                 for i, oper in enumerate(self.operator):
+                     oper_dict = oper.get_params()
+                     for key, value in oper_dict.items():
+-                        if key != "num_qubits":
+-                            params["op" + str(i) + "__" + key] = value
++                        params["op" + str(i) + "__" + key] = value
+             else:
+-                params.update(self.operator.get_params())
++                oper_dict = self.operator.get_params()
++                for key, value in oper_dict.items():
++                    params["operator__" + key] = value
+         return params
+-
+     def set_params(self, **params) -> None:
+         """Sets the hyper-parameters of the QNN
+ 
+@@ -308,8 +310,10 @@ class QNN:
+         # Set parameters of the PQC
+         dict_pqc = {}
+         for key, value in params.items():
+-            if key in self.pqc.get_params():
+-                dict_pqc[key] = value
++            if key.startswith("pqc__"):
++                dict_pqc[key[5:]] = value
++            if key == "num_qubits":
++                dict_pqc["num_qubits"] = value
+         if len(dict_pqc) > 0:
+             self.pqc.set_params(**dict_pqc)
+ 
+@@ -320,21 +324,21 @@ class QNN:
+                 for key, value in params.items():
+                     if key == "num_qubits":
+                         dict_operator[key] = value
+-                    else:
+-                        if key.startswith("op" + str(i) + "__"):
+-                            dict_operator[key.split("__", 1)[1]] = value
++                    elif key.startswith("op" + str(i) + "__"):
++                        dict_operator[key.split("__", 1)[1]] = value
+                 if len(dict_operator) > 0:
+                     oper.set_params(**dict_operator)
+         else:
+             dict_operator = {}
+             for key, value in params.items():
+-                if key in self.operator.get_params():
++                if key == "num_qubits":
+                     dict_operator[key] = value
++                elif key.startswith("operator__"):
++                    dict_operator[key[10:]] = value
+             if len(dict_operator) > 0:
+                 self.operator.set_params(**dict_operator)
+ 
+         self._initilize_derivative()
+-
+     def _initilize_derivative(self):
+         """Initializes the derivative classes"""
+ 
+@@ -914,7 +918,7 @@ class QNN:
+         # return dictionary for input data, it will be empty
+         # if the combination of x,param,param_op is touched the first time
+         if self._result_caching == True:
+-            caching_tuple = (to_tuple(x), to_tuple(param), to_tuple(param_op))
++            caching_tuple = (hash(str(x)), hash(param.tobytes()), hash(param_op.tobytes()))
+             value_dict = self.result_container.get(caching_tuple, {})
+         else:
+             value_dict = {}

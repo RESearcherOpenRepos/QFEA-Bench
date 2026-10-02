@@ -1,0 +1,190 @@
+{
+  "id": 88,
+  "sample_id": "qiskit_nature_91_729",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "d59bab1f54a28c902818da4600e62cca7cbbfd57",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "quantum_semantics/ucc_excitation_pool": 12,
+      "quantum_semantics/ucc_singlet_validity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 180,
+          "expected": "Mirrored six-orbital SUCCD groups paired double excitations into shared generators."
+        }
+      ],
+      "rationale": "The expected fermionic excitation list is quantum-specific."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_ansatz_generalized_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 284,
+          "expected": "Generalized mirrored SUCCD yields the reference six-orbital excitation generators."
+        }
+      ],
+      "rationale": "The expected generalized pool contains symmetry-paired double excitations."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "Mirrored SUCCD with alpha and beta singles yields both singles plus mirrored doubles."
+        }
+      ],
+      "rationale": "This True/True variant checks excitation content."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_2",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "Mirrored SUCCD with alpha singles only yields selected singles and mirrored doubles."
+        }
+      ],
+      "rationale": "This True/False variant checks excitation content."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succ_mirror_with_singles_3",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "Mirrored SUCCD with beta singles only yields selected singles and mirrored doubles."
+        }
+      ],
+      "rationale": "This False/True variant checks excitation content."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 152,
+          "expected": "Generalized six-orbital SUCCD at one alpha/one beta electron yields reference doubles."
+        }
+      ],
+      "rationale": "This existing variant checks physical excitation generators."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_puccd_ansatz_generalized_2",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 152,
+          "expected": "Generalized six-orbital SUCCD at two alpha/two beta electrons yields reference doubles."
+        }
+      ],
+      "rationale": "This existing variant checks a distinct occupation sector."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_raise_non_singlet",
+      "label": "quantum_semantics/ucc_singlet_validity",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "SUCCD rejects unequal alpha and beta electron counts."
+        }
+      ],
+      "rationale": "The ansatz requires a singlet-paired electron sector."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "Four-orbital SUCCD yields one expected singlet double generator."
+        }
+      ],
+      "rationale": "This existing variant checks the minimal excitation pool."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_2",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "Eight-orbital SUCCD yields ten expected singlet double generators."
+        }
+      ],
+      "rationale": "This existing variant checks a larger excitation pool."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_1",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Four-orbital SUCCD with alpha and beta singles yields both singles plus one double."
+        }
+      ],
+      "rationale": "This True/True existing variant checks excitation content."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_2",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Four-orbital SUCCD with alpha singles only yields alpha single plus double."
+        }
+      ],
+      "rationale": "This True/False existing variant checks excitation content."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/ansatzes/test_succd.py::TestSUCCD::test_succd_ansatz_with_singles_3",
+      "label": "quantum_semantics/ucc_excitation_pool",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Four-orbital SUCCD with beta singles only yields beta single plus double."
+        }
+      ],
+      "rationale": "This False/True existing variant checks excitation content."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/d59bab1f54a28c902818da4600e62cca7cbbfd57/test/second_q/circuit/library/ansatzes/test_succd.py"
+  ],
+  "rationale": "Read each of 13 selected exact-patch tests, including parameterized occupation, mapper, and excitation variants."
+}

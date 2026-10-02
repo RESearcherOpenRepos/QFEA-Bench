@@ -1,0 +1,138 @@
+.                                                                      [100%]
+=================================== FAILURES ===================================
+____________ TestQuantumKernelTrainer.test_qkt [check default fit] _____________
+test/kernels/algorithms/test_qkernel_trainer.py:72: in test_qkt
+    qkt_result = qkt.fit(self.sample_train, self.label_train)
+qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py:107: in fit
+    optimizer_result = self._optimizer.minimize(
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:551: in minimize
+    fx_estimate, update = self._compute_update(fun, x, k, next(eps), lse_solver)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:486: in _compute_update
+    value, gradient, hessian = self._point_estimate(loss, x, eps, num_samples)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:463: in _point_estimate
+    value_sample, gradient_sample, hessian_sample = self._point_sample(
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:424: in _point_sample
+    values = _batch_evaluate(loss, points, self._max_evals_grouped)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:691: in _batch_evaluate
+    return [
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:692: in <listcomp>
+    function(*point) if isinstance(point, tuple) else function(point) for point in points
+qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py:103: in objective
+    return self._loss.evaluate(
+/diagnose.py:67: in traced
+    value = original(self, parameter_values, quantum_kernel, data, labels)
+qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py:64: in evaluate
+    kernel_matrix = quantum_kernel.evaluate(data)
+qiskit_machine_learning/kernels/quantum_kernel.py:422: in evaluate
+    parameterized_circuit = self._quantum_instance.transpile(parameterized_circuit)[0]
+/usr/local/lib/python3.10/site-packages/qiskit/utils/quantum_instance.py:436: in transpile
+    transpiled_circuits = compiler.transpile(
+/usr/local/lib/python3.10/site-packages/qiskit/compiler/transpiler.py:304: in transpile
+    circuits = parallel_map(_transpile_circuit, list(zip(circuits, transpile_args)))
+/usr/local/lib/python3.10/site-packages/qiskit/tools/parallel.py:129: in parallel_map
+    return [task(values[0], *task_args, **task_kwargs)]
+/usr/local/lib/python3.10/site-packages/qiskit/compiler/transpiler.py:389: in _transpile_circuit
+    result = pass_manager.run(
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passmanager.py:222: in run
+    return self._run_single_circuit(circuits, output_name, callback)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passmanager.py:277: in _run_single_circuit
+    result = running_passmanager.run(circuit, output_name=output_name, callback=callback)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:124: in run
+    dag = self._do_pass(pass_, dag, passset.options)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:157: in _do_pass
+    dag = self._run_this_pass(pass_, dag)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:186: in _run_this_pass
+    new_dag = pass_.run(dag)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:168: in run
+    new_basis, new_circ = self._resynthesize_run(run)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:78: in _resynthesize_run
+    new_circs = {k: v._decompose(operator) for k, v in self._decomposers.items()}
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:78: in <dictcomp>
+    new_circs = {k: v._decompose(operator) for k, v in self._decomposers.items()}
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:166: in _decompose
+    theta, phi, lam, phase = self._params(unitary)
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:286: in _params_u3
+    theta, phi, lam, phase = OneQubitEulerDecomposer._params_zyz(mat)
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:227: in _params_zyz
+    coeff = la.det(mat) ** (-0.5)
+/usr/local/lib/python3.10/site-packages/scipy/linalg/_basic.py:1235: in det
+    a1 = np.asarray_chkfinite(a) if check_finite else np.asarray(a)
+/usr/local/lib/python3.10/site-packages/numpy/lib/function_base.py:630: in asarray_chkfinite
+    raise ValueError(
+E   ValueError: array must not contain infs or NaNs
+__________ TestQuantumKernelTrainer.test_qkt [check fit with params] ___________
+test/kernels/algorithms/test_qkernel_trainer.py:83: in test_qkt
+    qkt_result = qkt.fit(self.sample_train, self.label_train)
+qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py:107: in fit
+    optimizer_result = self._optimizer.minimize(
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:551: in minimize
+    fx_estimate, update = self._compute_update(fun, x, k, next(eps), lse_solver)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:486: in _compute_update
+    value, gradient, hessian = self._point_estimate(loss, x, eps, num_samples)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:463: in _point_estimate
+    value_sample, gradient_sample, hessian_sample = self._point_sample(
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:424: in _point_sample
+    values = _batch_evaluate(loss, points, self._max_evals_grouped)
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:691: in _batch_evaluate
+    return [
+/usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:692: in <listcomp>
+    function(*point) if isinstance(point, tuple) else function(point) for point in points
+qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py:103: in objective
+    return self._loss.evaluate(
+/diagnose.py:67: in traced
+    value = original(self, parameter_values, quantum_kernel, data, labels)
+qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py:64: in evaluate
+    kernel_matrix = quantum_kernel.evaluate(data)
+qiskit_machine_learning/kernels/quantum_kernel.py:422: in evaluate
+    parameterized_circuit = self._quantum_instance.transpile(parameterized_circuit)[0]
+/usr/local/lib/python3.10/site-packages/qiskit/utils/quantum_instance.py:436: in transpile
+    transpiled_circuits = compiler.transpile(
+/usr/local/lib/python3.10/site-packages/qiskit/compiler/transpiler.py:304: in transpile
+    circuits = parallel_map(_transpile_circuit, list(zip(circuits, transpile_args)))
+/usr/local/lib/python3.10/site-packages/qiskit/tools/parallel.py:129: in parallel_map
+    return [task(values[0], *task_args, **task_kwargs)]
+/usr/local/lib/python3.10/site-packages/qiskit/compiler/transpiler.py:389: in _transpile_circuit
+    result = pass_manager.run(
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passmanager.py:222: in run
+    return self._run_single_circuit(circuits, output_name, callback)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passmanager.py:277: in _run_single_circuit
+    result = running_passmanager.run(circuit, output_name=output_name, callback=callback)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:124: in run
+    dag = self._do_pass(pass_, dag, passset.options)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:157: in _do_pass
+    dag = self._run_this_pass(pass_, dag)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/runningpassmanager.py:186: in _run_this_pass
+    new_dag = pass_.run(dag)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:168: in run
+    new_basis, new_circ = self._resynthesize_run(run)
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:78: in _resynthesize_run
+    new_circs = {k: v._decompose(operator) for k, v in self._decomposers.items()}
+/usr/local/lib/python3.10/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py:78: in <dictcomp>
+    new_circs = {k: v._decompose(operator) for k, v in self._decomposers.items()}
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:166: in _decompose
+    theta, phi, lam, phase = self._params(unitary)
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:286: in _params_u3
+    theta, phi, lam, phase = OneQubitEulerDecomposer._params_zyz(mat)
+/usr/local/lib/python3.10/site-packages/qiskit/quantum_info/synthesis/one_qubit_decompose.py:227: in _params_zyz
+    coeff = la.det(mat) ** (-0.5)
+/usr/local/lib/python3.10/site-packages/scipy/linalg/_basic.py:1235: in det
+    a1 = np.asarray_chkfinite(a) if check_finite else np.asarray(a)
+/usr/local/lib/python3.10/site-packages/numpy/lib/function_base.py:630: in asarray_chkfinite
+    raise ValueError(
+E   ValueError: array must not contain infs or NaNs
+=============================== warnings summary ===============================
+test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+  /usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:344: RuntimeWarning: divide by zero encountered in scalar divide
+    a = target_magnitude / avg_magnitudes
+
+test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+  /usr/local/lib/python3.10/site-packages/qiskit/algorithms/optimizers/spsa.py:560: RuntimeWarning: invalid value encountered in multiply
+    update = update * next(eta)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SUBFAILED[check default fit] test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+SUBFAILED[check fit with params] test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt
+2 failed, 1 passed, 4 warnings in 4.67s

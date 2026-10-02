@@ -1,0 +1,131 @@
+{
+  "instance": {
+    "id": 28,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_328_348",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/328",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/348",
+    "base_commit": "2edc1f106c72a41ae2e99b58ee1edb85aa97d8bf",
+    "patch": "a56158452e32354dfbc1f4835a0b362446af4eba"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task makes sparse arrays compatible with QNN classifier workflows, with validation centered on data-format handling."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "QNN-based classifiers can train on dense labels, including one-hot encoded labels, but they fail when users provide sparse arrays such as the output of common one-hot encoders. This prevents workflows that naturally produce sparse feature or label matrices from being used directly with classifiers like VQC. Classifiers should accept sparse input arrays in the same user-facing training and scoring workflows that already work for dense arrays.",
+    "requirements": [
+      "QNN-based classifiers must accept sparse feature arrays during fitting.",
+      "QNN-based classifiers must accept sparse label arrays during fitting.",
+      "QNN-based classifiers must accept sparse feature and label arrays during scoring.",
+      "Sparse arrays must be converted to dense arrays before they reach objective and loss computations that use NumPy operations.",
+      "Sparse one-hot labels must work with squared-error, absolute-error, and cross-entropy losses.",
+      "The sparse-array behavior must be available through both the generic neural-network classifier and VQC."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss='squared_error', one_hot: bool = False, optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "QNN-based classifier whose fit and score workflows accept sparse feature and label arrays by converting them to dense arrays for downstream numerical computations."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.fit",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "self, X, y",
+        "Output": "self",
+        "Description": "Fits the classifier from dense or sparse feature and label arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.score",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "self, X, y, sample_weight=None",
+        "Output": "float",
+        "Description": "Scores the classifier using dense or sparse feature and label arrays."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "constructor: num_qubits=None, feature_map=None, ansatz=None, loss='cross_entropy', optimizer=None, quantum_instance=None, callback=None",
+        "Output": "",
+        "Description": "Variational quantum classifier that inherits sparse feature and sparse label handling from the neural-network classifier workflow."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_328_348",
+      "image_id": "sha256:2c59d7081e243087d9e9aa864e124754f1c25601252f6a32eb77542a1db2b4f9",
+      "image_size": "1470430151"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "setuptools<81",
+        "qiskit-terra==0.20.2",
+        "qiskit-aer==0.10.4",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_sparse_arrays",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays"
+        ],
+        "summary": "2 passed in 26.86s.",
+        "duration_seconds": 30.97
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_5__None___statevector__"
+        ],
+        "summary": "2 passed in 6.96s.",
+        "duration_seconds": 11.63
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_sparse_arrays",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays"
+        ],
+        "summary": "2 selected selectors failed via 12 subtest failures with IndexError: sparse arrays are not converted to dense before CircuitQNN parameter indexing in 5.33s.",
+        "duration_seconds": 11.28
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_5__None___statevector__"
+        ],
+        "summary": "2 passed in 5.70s.",
+        "duration_seconds": 12.25
+      }
+    }
+  }
+}

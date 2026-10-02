@@ -1,0 +1,124 @@
+{
+  "instance": {
+    "id": 5,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_259_283",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/259",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/283",
+    "base_commit": "5c2c44b09878eda626a7838ae5fc7b7e2a86f2b6",
+    "patch": "889bc9c2a70b877014261d76237a4b88de63e66e"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements a Bravyi-Kitaev tree fermion-to-qubit mapping with spectral-equivalence requirements."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/transforms/__init__.py",
+      "src/openfermion/transforms/_bravyi_kitaev_tree.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion needs a tree-based Bravyi-Kitaev transform so users can convert fermionic operators with the Bravyi-Kitaev tree formulation, especially when working with systems whose mode count is not a power of two, while preserving the existing Bravyi-Kitaev API expectations around identities, qubit-count validation, and spectral equivalence for simple observables.",
+    "requirements": [
+      "Provide a bravyi_kitaev_tree transform for FermionOperator inputs.",
+      "Allow bravyi_kitaev_tree to map the identity operator to the identity QubitOperator.",
+      "Reject bravyi_kitaev_tree calls whose explicit n_qubits is smaller than the operator requires.",
+      "Produce tree-based Bravyi-Kitaev qubit operators whose number-operator spectra agree with the corresponding Jordan-Wigner results.",
+      "Keep the existing bravyi_kitaev transform behavior unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "bravyi_kitaev_tree",
+        "Path": "src/openfermion/transforms/_bravyi_kitaev_tree.py",
+        "Input": "operator, n_qubits=None",
+        "Output": "QubitOperator",
+        "Description": "Applies the tree-based Bravyi-Kitaev transform to a fermionic operator."
+      },
+      {
+        "Type": "Class",
+        "Name": "FenwickTree",
+        "Path": "src/openfermion/transforms/_fenwick_tree.py",
+        "Input": "constructor: n_qubits",
+        "Output": "",
+        "Description": "Represents the Fenwick-tree data structure used by the tree-based Bravyi-Kitaev transform."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_259_283",
+      "image_id": "sha256:6f6278c7200c6037f83b0eefa268d73c5dfbae92231e6851107caeea504881c9",
+      "image_size": "463220174"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_tree_transform",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator"
+        ],
+        "summary": "4 passed, 51 warnings in 1.21s",
+        "duration_seconds": 4.52
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator"
+        ],
+        "summary": "4 passed, 51 warnings in 1.21s",
+        "duration_seconds": 4.54
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_tree_transform",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/transforms/_bravyi_kitaev_tree_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator",
+        "duration_seconds": 4.64
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator"
+        ],
+        "summary": "4 passed, 51 warnings in 1.17s",
+        "duration_seconds": 4.48
+      }
+    }
+  }
+}

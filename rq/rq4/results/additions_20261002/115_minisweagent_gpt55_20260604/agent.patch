@@ -1,0 +1,148 @@
+diff --git a/openqaoa/qaoa_parameters/baseparams.py b/openqaoa/qaoa_parameters/baseparams.py
+index c934dcb..ad04ab0 100644
+--- a/openqaoa/qaoa_parameters/baseparams.py
++++ b/openqaoa/qaoa_parameters/baseparams.py
+@@ -13,11 +13,13 @@
+ #   limitations under the License.
+ 
+ from abc import ABC
++import copy
+ from typing import List, Union, Tuple, Any, Callable, Iterable, Type
+ import numpy as np
+ 
+ from .operators import Hamiltonian
+ from .hamiltonianmapper import HamiltonianMapper
++from .gatemap import RotationGateMap
+ 
+ 
+ 
+@@ -142,15 +144,42 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+     def __init__(self,
+                  cost_hamiltonian: Hamiltonian,
+-                 mixer_hamiltonian: Hamiltonian,
+-                 p: int):
++                 mixer_block: Union[Hamiltonian, List[RotationGateMap]],
++                 p: int,
++                 mixer_coeffs=[]):
+ 
+         super().__init__(algorithm='QAOA')
+         self.cost_hamiltonian = cost_hamiltonian
+-        self.mixer_hamiltonian = mixer_hamiltonian
++        self.mixer_block = mixer_block
+         self.qureg = cost_hamiltonian.qureg
+         self.p = p
+ 
++        if isinstance(mixer_block, Hamiltonian):
++            self.mixer_hamiltonian = mixer_block
++            self.mixer_gate_maps = HamiltonianMapper.get_gate_maps(mixer_block, ['mixer'])
++            self.mixer_1q_coeffs = mixer_block.single_qubit_coeffs
++            self.mixer_2q_coeffs = mixer_block.pair_qubit_coeffs
++        elif isinstance(mixer_block, list) and all(isinstance(gate_map, RotationGateMap) for gate_map in mixer_block):
++            if len(mixer_coeffs) != len(mixer_block):
++                raise ValueError('Number of mixer coefficients must match number of mixer gate maps')
++            self.mixer_hamiltonian = None
++            self.mixer_gate_maps = mixer_block
++            self.mixer_1q_coeffs = [coeff for gate_map, coeff in zip(mixer_block, mixer_coeffs)
++                                    if gate_map.pauli_label[0] == '1q']
++            self.mixer_2q_coeffs = [coeff for gate_map, coeff in zip(mixer_block, mixer_coeffs)
++                                    if gate_map.pauli_label[0] == '2q']
++        else:
++            raise TypeError('mixer_block must be a Hamiltonian or a list of RotationGateMap objects')
++
++        self.mixer_qubits_singles = [gate.qubit_1 for gate in self.mixer_gate_maps
++                                     if gate.pauli_label[0] == '1q']
++        self.mixer_qubits_pairs = [(gate.qubit_1, gate.qubit_2) for gate in self.mixer_gate_maps
++                                   if gate.pauli_label[0] == '2q']
++        self.mixer_1q_gate_names = [type(gate).__name__ for gate in self.mixer_gate_maps
++                                    if gate.pauli_label[0] == '1q']
++        self.mixer_2q_gate_names = [type(gate).__name__ for gate in self.mixer_gate_maps
++                                    if gate.pauli_label[0] == '2q']
++
+     def __repr__(self):
+         """Return an overview over the parameters and hyperparameters
+ 
+@@ -175,13 +204,13 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+         string += "Mixer Hamiltonian:\n"
+         string += "\tmixer_qubits_singles: " + \
+-            str(self.mixer_hamiltonian.qubits_singles) + "\n"
++            str(self.mixer_qubits_singles) + "\n"
+         string += "\tmixer_single_qubit_coeffs: " + \
+-            str(self.mixer_hamiltonian.single_qubit_coeffs) + "\n"
++            str(self.mixer_1q_coeffs) + "\n"
+         string += "\tmixer_qubits_pairs: " + \
+-            str(self.mixer_hamiltonian.qubits_pairs) + "\n"
++            str(self.mixer_qubits_pairs) + "\n"
+         string += "\tmixer_pair_qubit_coeffs: " + \
+-            str(self.mixer_hamiltonian.pair_qubit_coeffs) + "\n"
++            str(self.mixer_2q_coeffs) + "\n"
+ 
+         return string
+ 
+@@ -190,8 +219,25 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+         cost_gate_map_list = HamiltonianMapper.repeat_gate_maps(
+             self.cost_hamiltonian, 'cost', self.p)
+-        mixer_gate_map_list = HamiltonianMapper.repeat_gate_maps(
+-            self.mixer_hamiltonian, 'mixer', self.p)
++        mixer_gate_map_list = []
++        if self.mixer_hamiltonian is not None:
++            mixer_gate_map_list = HamiltonianMapper.repeat_gate_maps(
++                self.mixer_hamiltonian, 'mixer', self.p)
++        else:
++            for each_p in range(self.p):
++                layer_gate_maps = []
++                one_qubit_count = 0
++                two_qubit_count = 0
++                for gate_map in self.mixer_gate_maps:
++                    gate_map_copy = copy.copy(gate_map)
++                    if gate_map_copy.pauli_label[0] == '1q':
++                        gate_map_copy.pauli_label = ['mixer', each_p, one_qubit_count]
++                        one_qubit_count += 1
++                    elif gate_map_copy.pauli_label[0] == '2q':
++                        gate_map_copy.pauli_label = ['mixer', each_p, two_qubit_count]
++                        two_qubit_count += 1
++                    layer_gate_maps.append(gate_map_copy)
++                mixer_gate_map_list.append(layer_gate_maps)
+ 
+         _abstract_circuit = []
+         for each_p in range(self.p):
+@@ -228,8 +274,8 @@ class QAOAVariationalBaseParams(ABC):
+         self.p = self.qaoa_circuit_params.p
+         self.cost_1q_coeffs = qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs
+         self.cost_2q_coeffs = qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs
+-        self.mixer_1q_coeffs = qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs
+-        self.mixer_2q_coeffs = qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs
++        self.mixer_1q_coeffs = qaoa_circuit_params.mixer_1q_coeffs
++        self.mixer_2q_coeffs = qaoa_circuit_params.mixer_2q_coeffs
+ 
+     def __len__(self):
+         """
+diff --git a/openqaoa/qaoa_parameters/gatemap.py b/openqaoa/qaoa_parameters/gatemap.py
+index 5040547..2df79e0 100644
+--- a/openqaoa/qaoa_parameters/gatemap.py
++++ b/openqaoa/qaoa_parameters/gatemap.py
+@@ -111,11 +111,11 @@ class SWAPGateMap(GateMap):
+     
+ class RotationGateMap(GateMap):
+ 
+-    def __init__(self, qubit_1: int, pauli_label: List):
++    def __init__(self, qubit_1: int, pauli_label: List = None):
+ 
+         super().__init__(qubit_1)
+ 
+-        self.pauli_label = pauli_label
++        self.pauli_label = [] if pauli_label is None else pauli_label
+         self.rotation_angle = None
+ 
+     @property
+@@ -164,7 +164,7 @@ class RZGateMap(RotationGateMap):
+ 
+ class TwoQubitRotationGateMap(RotationGateMap):
+ 
+-    def __init__(self, qubit_1: int, qubit_2: int, pauli_index: int):
++    def __init__(self, qubit_1: int, qubit_2: int, pauli_index: List = None):
+ 
+         super().__init__(qubit_1, pauli_index)
+         self.qubit_2 = qubit_2

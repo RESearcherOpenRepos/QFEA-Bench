@@ -1,0 +1,353 @@
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..ba99f0d 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -6,9 +6,10 @@ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(SerializableModelMixin, GaussianProcessClassifier):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..9671c8c 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -23,9 +23,10 @@ else:
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.regularization import regularize_full_kernel
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..dd672b5 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -19,9 +19,10 @@ else:
+ 
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..b2892c2 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -6,9 +6,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SerializableModelMixin, SVC):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..d53d0c8 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -7,9 +7,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SerializableModelMixin, SVR):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index a57b369..12d9cdd 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -26,6 +26,7 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ 
+ from .loss.qnn_loss_base import QNNLossBase
+ 
+@@ -33,7 +34,7 @@ from .lowlevel_qnn import LowLevelQNN
+ from .util.training import ShotControlBase
+ 
+ 
+-class BaseQNN(BaseEstimator, ABC):
++class BaseQNN(SerializableModelMixin, BaseEstimator, ABC):
+     """Base Class for Quantum Neural Networks.
+ 
+     Args:
+diff --git a/src/squlearn/qrc/base_qrc.py b/src/squlearn/qrc/base_qrc.py
+index 62312ed..9c4ee78 100644
+--- a/src/squlearn/qrc/base_qrc.py
++++ b/src/squlearn/qrc/base_qrc.py
+@@ -23,11 +23,12 @@ from ..observables.observable_base import ObservableBase
+ from ..observables import CustomObservable, SinglePauli
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ from ..qnn.lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ..qnn.lowlevel_qnn import LowLevelQNN
+ 
+ 
+-class BaseQRC(BaseEstimator, ABC):
++class BaseQRC(SerializableModelMixin, BaseEstimator, ABC):
+     """Base class for Quantum Reservoir Computing (QRC) models.
+ 
+     Args:
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..8d5f1bb
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,3 @@
++from .serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..f5e7c15
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,219 @@
++"""Serialization mixin for quantum machine learning models.
++
++This module provides the :class:`SerializableModelMixin` which supplies
++serialization capabilities to the supported model classes (quantum neural
++networks, kernel models and reservoir-computing models). The serialization
++excludes the live execution environment (i.e. the :class:`Executor` instances)
++from the payload and reinserts a supplied executor when the model is loaded.
++"""
++
++from __future__ import annotations
++
++import copy
++import io
++from typing import Any, Union
++
++import dill as pickle
++
++from ..executor import Executor
++
++
++class _ExecutorPlaceholder:
++    """Placeholder used to mark the position of an executor in a serialized payload.
++
++    Instances of this class are substituted for :class:`Executor` instances when a
++    model is dumped and are replaced by the supplied executor when the model is
++    loaded. The placeholder is a lightweight marker and does not carry any
++    execution state.
++    """
++
++    def __init__(self) -> None:
++        pass
++
++
++def _replace_executors(obj: Any, memo: dict) -> Any:
++    """Recursively replace :class:`Executor` instances with placeholders.
++
++    The ``memo`` dictionary maps the identity of already visited objects to their
++    (possibly replaced) counterparts. This preserves repeated and nested
++    references so that a single executor referenced multiple times is replaced by
++    a single placeholder.
++
++    Args:
++        obj: The object to traverse.
++        memo: Mapping from ``id(obj)`` to the processed object.
++
++    Returns:
++        The object with all executor references replaced by placeholders.
++    """
++    if isinstance(obj, Executor):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        placeholder = _ExecutorPlaceholder()
++        memo[id(obj)] = placeholder
++        return placeholder
++
++    # Only traverse containers and objects that can hold references.
++    if isinstance(obj, dict):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        new_dict = {}
++        memo[id(obj)] = new_dict
++        for key, value in obj.items():
++            new_dict[_replace_executors(key, memo)] = _replace_executors(value, memo)
++        return new_dict
++
++    if isinstance(obj, (list, tuple, set, frozenset)):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        new_list = [_replace_executors(item, memo) for item in obj]
++        memo[id(obj)] = new_list
++        if isinstance(obj, tuple):
++            return tuple(new_list)
++        if isinstance(obj, set):
++            return set(new_list)
++        if isinstance(obj, frozenset):
++            return frozenset(new_list)
++        return new_list
++
++    # Handle arbitrary objects via their __dict__.
++    if hasattr(obj, "__dict__"):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        memo[id(obj)] = obj
++        for key, value in list(vars(obj).items()):
++            try:
++                setattr(obj, key, _replace_executors(value, memo))
++            except (AttributeError, TypeError):
++                # Some attributes are read-only; leave them untouched.
++                pass
++        return obj
++
++    return obj
++
++
++def _restore_executors(obj: Any, executor: Executor, memo: dict) -> Any:
++    """Recursively replace :class:`_ExecutorPlaceholder` instances with the executor.
++
++    Args:
++        obj: The object to traverse.
++        executor: The executor to insert in place of placeholders.
++        memo: Mapping from ``id(obj)`` to the processed object.
++
++    Returns:
++        The object with all placeholders replaced by the supplied executor.
++    """
++    if isinstance(obj, _ExecutorPlaceholder):
++        memo[id(obj)] = executor
++        return executor
++
++    if isinstance(obj, dict):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        new_dict = {}
++        memo[id(obj)] = new_dict
++        for key, value in obj.items():
++            new_dict[_restore_executors(key, executor, memo)] = _restore_executors(
++                value, executor, memo
++            )
++        return new_dict
++
++    if isinstance(obj, (list, tuple, set, frozenset)):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        new_list = [_restore_executors(item, executor, memo) for item in obj]
++        memo[id(obj)] = new_list
++        if isinstance(obj, tuple):
++            return tuple(new_list)
++        if isinstance(obj, set):
++            return set(new_list)
++        if isinstance(obj, frozenset):
++            return frozenset(new_list)
++        return new_list
++
++    if hasattr(obj, "__dict__"):
++        if id(obj) in memo:
++            return memo[id(obj)]
++        memo[id(obj)] = obj
++        for key, value in list(vars(obj).items()):
++            try:
++                setattr(obj, key, _restore_executors(value, executor, memo))
++            except (AttributeError, TypeError):
++                pass
++        return obj
++
++    return obj
++
++
++class SerializableModelMixin:
++    """Mixin supplying serialization to the supported model classes.
++
++    The mixin provides :meth:`dump` and :meth:`load` methods that serialize a
++    model to a file path or a binary stream while excluding the live execution
++    environment (executor instances) from the payload. On loading, a supplied
++    executor is reinserted into all positions previously occupied by an executor.
++    """
++
++    def dump(self, target: Union[str, io.IOBase]) -> None:
++        """Serialize the model to a file path or a binary stream.
++
++        Executor references are removed from the payload before serialization.
++
++        Args:
++            target: A string file path or a binary (``IOBase``) stream to which
++                the serialized model is written.
++
++        Raises:
++            TypeError: If ``target`` is neither a string path nor a binary stream.
++        """
++        if isinstance(target, str):
++            with open(target, "wb") as file:
++                self._dump_to_stream(file)
++        elif isinstance(target, io.IOBase):
++            self._dump_to_stream(target)
++        else:
++            raise TypeError(
++                "target must be a string file path or a binary IOBase stream, "
++                f"got {type(target)!r}."
++            )
++
++    def _dump_to_stream(self, stream: io.IOBase) -> None:
++        """Serialize the model to an open binary stream with executors removed."""
++        # Work on a copy so that the original model is left untouched.
++        payload = copy.deepcopy(self)
++        payload = _replace_executors(payload, {})
++        pickle.dump(payload, stream)
++
++    @classmethod
++    def load(cls, source: Union[str, io.IOBase], executor: Executor):
++        """Restore a model from a file path or a binary stream.
++
++        All executor references are reinserted from the supplied ``executor``.
++
++        Args:
++            source: A string file path or a binary (``IOBase``) stream from which
++                the serialized model is read.
++            executor: The executor instance to reinsert into the restored model.
++
++        Returns:
++            The restored model instance.
++
++        Raises:
++            TypeError: If ``source`` is neither a string path nor a binary stream.
++        """
++        if isinstance(source, str):
++            with open(source, "rb") as file:
++                return cls._load_from_stream(file, executor)
++        elif isinstance(source, io.IOBase):
++            return cls._load_from_stream(source, executor)
++        else:
++            raise TypeError(
++                "source must be a string file path or a binary IOBase stream, "
++                f"got {type(source)!r}."
++            )
++
++    @classmethod
++    def _load_from_stream(cls, stream: io.IOBase, executor: Executor):
++        """Restore a model from an open binary stream and reinsert the executor."""
++        payload = pickle.load(stream)
++        return _restore_executors(payload, executor, {})

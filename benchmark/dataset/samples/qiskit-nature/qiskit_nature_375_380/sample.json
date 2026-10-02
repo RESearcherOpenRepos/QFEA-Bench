@@ -1,0 +1,156 @@
+{
+  "instance": {
+    "id": 57,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_375_380",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/375",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/380",
+    "base_commit": "aeef5f94876c2950ce4036952e3eebbc87fe7c2a",
+    "patch": "2590ee8f015a842649036cfa6cf6c76b863c8dc0"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task forwards VQE callbacks through quantum-chemistry solver factories, so correctness is mainly factory API plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+      "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_uvcc_factory.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Minimum eigensolver factories make it convenient to construct VQE-based solvers for electronic and vibrational structure problems, but they do not expose VQE's callback hook. Users who need to observe optimization progress, collect intermediate energies, or monitor long hardware-backed runs cannot pass a callback through these factories. The factories should support the same callback behavior as VQE while keeping their existing solver construction behavior.",
+    "requirements": [
+      "VQEUCCFactory must accept an optional callback argument and expose it through a callback property.",
+      "VQEUVCCFactory must accept an optional callback argument and expose it through a callback property.",
+      "When either factory constructs a VQE solver, the configured callback must be passed to that VQE so it is invoked during optimization with the VQE callback arguments.",
+      "Additional keyword arguments supplied to the VQE-based factories must be forwarded to the constructed VQE solver.",
+      "Existing VQEUCCFactory and VQEUVCCFactory solver construction, ansatz setup, initial state handling, optimizer configuration, and energy calculation behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "VQEUCCFactory",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+        "Input": "constructor: quantum_instance, optimizer=None, initial_point=None, gradient=None, expectation=None, include_custom=False, ansatz=None, initial_state=None, callback=None, **kwargs",
+        "Output": "",
+        "Description": "Constructs a VQE UCC minimum eigensolver factory while preserving callback and extra VQE keyword arguments for solver creation."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQEUCCFactory.callback",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+        "Input": "self",
+        "Output": "Optional[Callable]",
+        "Description": "Gets or sets the callback passed to VQE solvers created by the factory."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQEUCCFactory.get_solver",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_ucc_factory.py",
+        "Input": "self, problem, qubit_converter",
+        "Output": "VQE",
+        "Description": "Returns a VQE configured for the electronic structure problem, including the factory callback and forwarded VQE keyword arguments."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQEUVCCFactory",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_uvcc_factory.py",
+        "Input": "constructor: quantum_instance, optimizer=None, initial_point=None, gradient=None, expectation=None, include_custom=False, ansatz=None, initial_state=None, callback=None, **kwargs",
+        "Output": "",
+        "Description": "Constructs a VQE UVCC minimum eigensolver factory while preserving callback and extra VQE keyword arguments for solver creation."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQEUVCCFactory.callback",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_uvcc_factory.py",
+        "Input": "self",
+        "Output": "Optional[Callable]",
+        "Description": "Gets or sets the callback passed to VQE solvers created by the factory."
+      },
+      {
+        "Type": "Method",
+        "Name": "VQEUVCCFactory.get_solver",
+        "Path": "qiskit_nature/algorithms/ground_state_solvers/minimum_eigensolver_factories/vqe_uvcc_factory.py",
+        "Input": "self, problem, qubit_converter",
+        "Output": "VQE",
+        "Description": "Returns a VQE configured for the vibrational structure problem, including the factory callback and forwarded VQE keyword arguments."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_375_380",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:c8b154603b8430b7d5fd152df16f66339144788424718e8ada2979b155ec43c3",
+      "image_size": "1082548926"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.18.3",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+          "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_with_callback"
+        ],
+        "result": "passed",
+        "summary": "2 passed in 6.57s",
+        "duration_seconds": 9.8
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+          "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_factory"
+        ],
+        "result": "passed",
+        "summary": "3 passed in 6.97s",
+        "duration_seconds": 10.13
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+          "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_with_callback"
+        ],
+        "result": "failed",
+        "summary": "2 failed in 2.26s; TypeError: __init__() got an unexpected keyword argument 'callback'",
+        "duration_seconds": 7.5
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+          "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_factory"
+        ],
+        "result": "passed",
+        "summary": "3 passed in 6.62s",
+        "duration_seconds": 11.61
+      }
+    }
+  }
+}

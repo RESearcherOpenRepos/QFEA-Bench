@@ -1,0 +1,397 @@
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..ee0e8e4 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -6,9 +6,10 @@ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(SerializableModelMixin, GaussianProcessClassifier):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..b89cedc 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -23,9 +23,10 @@ else:
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.regularization import regularize_full_kernel
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..58d9956 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -19,9 +19,10 @@ else:
+ 
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..fcec4e7 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -6,9 +6,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SerializableModelMixin, SVC):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..4708919 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -7,9 +7,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SerializableModelMixin, SVR):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index f8cc139..32b9a7e 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -31,9 +31,10 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QNNClassifier(BaseQNN, ClassifierMixin):
++class QNNClassifier(SerializableModelMixin, BaseQNN, ClassifierMixin):
+     """Quantum Neural Network for Classification.
+ 
+     This class implements a quantum neural network (QNN) for classification with a scikit-learn
+diff --git a/src/squlearn/qnn/qnnr.py b/src/squlearn/qnn/qnnr.py
+index 8eeec69..691aaf1 100644
+--- a/src/squlearn/qnn/qnnr.py
++++ b/src/squlearn/qnn/qnnr.py
+@@ -30,9 +30,10 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QNNRegressor(BaseQNN, RegressorMixin):
++class QNNRegressor(SerializableModelMixin, BaseQNN, RegressorMixin):
+     """Quantum Neural Network for Regression.
+ 
+     This class implements a quantum neural network (QNN) for regression with a scikit-learn
+diff --git a/src/squlearn/qrc/qrc_classifier.py b/src/squlearn/qrc/qrc_classifier.py
+index 8984f23..f1e4da1 100644
+--- a/src/squlearn/qrc/qrc_classifier.py
++++ b/src/squlearn/qrc/qrc_classifier.py
+@@ -11,9 +11,10 @@ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ 
+ from .base_qrc import BaseQRC
+ from ..util import Executor
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QRCClassifier(BaseQRC, ClassifierMixin):
++class QRCClassifier(SerializableModelMixin, BaseQRC, ClassifierMixin):
+     """Quantum Reservoir Computing for classification.
+ 
+     This class implements a Quantum Reservoir Computing (QRC) framework designed for
+diff --git a/src/squlearn/qrc/qrc_regressor.py b/src/squlearn/qrc/qrc_regressor.py
+index 5bc705f..29472c3 100644
+--- a/src/squlearn/qrc/qrc_regressor.py
++++ b/src/squlearn/qrc/qrc_regressor.py
+@@ -11,9 +11,10 @@ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ 
+ from .base_qrc import BaseQRC
+ from ..util import Executor
++from squlearn.util.serialization import SerializableModelMixin
+ 
+ 
+-class QRCRegressor(BaseQRC, RegressorMixin):
++class QRCRegressor(SerializableModelMixin, BaseQRC, RegressorMixin):
+     """Quantum Reservoir Computing for regression.
+ 
+     This class implements a Quantum Reservoir Computing (QRC) framework designed for
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..22d75e7
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,5 @@
++"""Serialization utilities for squlearn models."""
++
++from .serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..959d11d
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,236 @@
++"""Serialization support for trained squlearn models.
++
++The executor often owns live backend/session/primitive objects that should not be
++part of a persisted model.  This mixin temporarily removes every reference to an
++:class:`~squlearn.util.executor.Executor` found in the object graph, pickles the
++model, and restores the references afterwards.  Loading performs the inverse
++operation by inserting the executor supplied by the caller at all recorded
++locations.
++"""
++
++from __future__ import annotations
++
++import io
++import pickle
++from typing import Any
++
++from squlearn.util.executor import Executor
++
++
++class _ExecutorPlaceholder:
++    """Pickleable sentinel used in place of executor instances."""
++
++
++_PLACEHOLDER = _ExecutorPlaceholder()
++
++
++class SerializableModelMixin:
++    """Mixin adding executor-free pickle serialization to model classes."""
++
++    def dump(self, target) -> None:
++        """Serialize the model to *target*.
++
++        Args:
++            target: String/path-like file name or binary ``IOBase`` stream.
++
++        Raises:
++            TypeError: If *target* is not a supported output object.
++        """
++
++        replacements = []
++        self._replace_executors(self, _PLACEHOLDER, replacements, set())
++        try:
++            if isinstance(target, (str, bytes, bytearray)) or hasattr(target, "__fspath__"):
++                with open(target, "wb") as file:
++                    pickle.dump(self, file, protocol=pickle.HIGHEST_PROTOCOL)
++            elif isinstance(target, io.IOBase) and target.writable():
++                pickle.dump(self, target, protocol=pickle.HIGHEST_PROTOCOL)
++            else:
++                raise TypeError("target must be a file path or writable binary IOBase stream")
++        finally:
++            for container, key, value in reversed(replacements):
++                self._assign(container, key, value)
++
++    @classmethod
++    def load(cls, source, executor: Executor):
++        """Load a serialized model from *source* and insert *executor*.
++
++        Args:
++            source: String/path-like file name or binary ``IOBase`` stream.
++            executor: Executor instance to use for all restored executor references.
++
++        Returns:
++            The restored model instance.
++
++        Raises:
++            TypeError: If *source*, *executor*, or the loaded object type is unsupported.
++        """
++
++        if not isinstance(executor, Executor):
++            raise TypeError("executor must be an Executor instance")
++        if isinstance(source, (str, bytes, bytearray)) or hasattr(source, "__fspath__"):
++            with open(source, "rb") as file:
++                model = pickle.load(file)
++        elif isinstance(source, io.IOBase) and source.readable():
++            model = pickle.load(source)
++        else:
++            raise TypeError("source must be a file path or readable binary IOBase stream")
++
++        if not isinstance(model, cls):
++            raise TypeError(f"serialized object is not an instance of {cls.__name__}")
++        cls._replace_placeholders(model, executor, set())
++        return model
++
++    @classmethod
++    def _replace_executors(cls, obj: Any, placeholder: Any, replacements: list, seen: set) -> None:
++        if isinstance(obj, Executor) or id(obj) in seen:
++            return
++        seen.add(id(obj))
++
++        if isinstance(obj, dict):
++            for key, value in list(obj.items()):
++                if isinstance(value, Executor):
++                    replacements.append((obj, key, value))
++                    obj[key] = placeholder
++                elif isinstance(value, tuple) and cls._contains_executor(value, set()):
++                    replacements.append((obj, key, value))
++                    obj[key] = cls._tuple_replace(value, placeholder, set())
++                else:
++                    cls._replace_executors(value, placeholder, replacements, seen)
++            return
++        if isinstance(obj, list):
++            for index, value in enumerate(obj):
++                if isinstance(value, Executor):
++                    replacements.append((obj, index, value))
++                    obj[index] = placeholder
++                elif isinstance(value, tuple) and cls._contains_executor(value, set()):
++                    replacements.append((obj, index, value))
++                    obj[index] = cls._tuple_replace(value, placeholder, set())
++                else:
++                    cls._replace_executors(value, placeholder, replacements, seen)
++            return
++        if isinstance(obj, set):
++            for value in list(obj):
++                if isinstance(value, Executor):
++                    obj.remove(value)
++                    obj.add(placeholder)
++                    replacements.append((obj, placeholder, value))
++                else:
++                    cls._replace_executors(value, placeholder, replacements, seen)
++            return
++        if isinstance(obj, tuple):
++            return
++        state = getattr(obj, "__dict__", None)
++        if state is not None:
++            for key, value in list(state.items()):
++                if isinstance(value, Executor):
++                    replacements.append((state, key, value))
++                    state[key] = placeholder
++                elif isinstance(value, tuple) and cls._contains_executor(value, set()):
++                    replacements.append((state, key, value))
++                    state[key] = cls._tuple_replace(value, placeholder, set())
++                    cls._replace_executors(state[key], placeholder, replacements, seen)
++                else:
++                    cls._replace_executors(value, placeholder, replacements, seen)
++
++    @classmethod
++    def _replace_placeholders(cls, obj: Any, executor: Executor, seen: set) -> None:
++        if id(obj) in seen:
++            return
++        seen.add(id(obj))
++        if isinstance(obj, dict):
++            for key, value in list(obj.items()):
++                if isinstance(value, _ExecutorPlaceholder):
++                    obj[key] = executor
++                elif isinstance(value, tuple) and cls._contains_placeholder(value, set()):
++                    obj[key] = cls._tuple_restore(value, executor, set())
++                else:
++                    cls._replace_placeholders(value, executor, seen)
++            return
++        if isinstance(obj, list):
++            for index, value in enumerate(obj):
++                if isinstance(value, _ExecutorPlaceholder):
++                    obj[index] = executor
++                elif isinstance(value, tuple) and cls._contains_placeholder(value, set()):
++                    obj[index] = cls._tuple_restore(value, executor, set())
++                else:
++                    cls._replace_placeholders(value, executor, seen)
++            return
++        if isinstance(obj, set):
++            for value in list(obj):
++                if isinstance(value, _ExecutorPlaceholder):
++                    obj.remove(value)
++                    obj.add(executor)
++                else:
++                    cls._replace_placeholders(value, executor, seen)
++            return
++        if isinstance(obj, tuple):
++            return
++        state = getattr(obj, "__dict__", None)
++        if state is not None:
++            for key, value in list(state.items()):
++                if isinstance(value, _ExecutorPlaceholder):
++                    state[key] = executor
++                elif isinstance(value, tuple) and cls._contains_placeholder(value, set()):
++                    state[key] = cls._tuple_restore(value, executor, set())
++                    cls._replace_placeholders(state[key], executor, seen)
++                else:
++                    cls._replace_placeholders(value, executor, seen)
++
++    @classmethod
++    def _contains_executor(cls, obj: Any, seen: set) -> bool:
++        if isinstance(obj, Executor):
++            return True
++        if id(obj) in seen:
++            return False
++        seen.add(id(obj))
++        if isinstance(obj, (tuple, list, set)):
++            return any(cls._contains_executor(v, seen) for v in obj)
++        if isinstance(obj, dict):
++            return any(cls._contains_executor(v, seen) for v in obj.values())
++        return any(cls._contains_executor(v, seen) for v in getattr(obj, "__dict__", {}).values())
++
++    @classmethod
++    def _contains_placeholder(cls, obj: Any, seen: set) -> bool:
++        if isinstance(obj, _ExecutorPlaceholder):
++            return True
++        if id(obj) in seen:
++            return False
++        seen.add(id(obj))
++        if isinstance(obj, (tuple, list, set)):
++            return any(cls._contains_placeholder(v, seen) for v in obj)
++        if isinstance(obj, dict):
++            return any(cls._contains_placeholder(v, seen) for v in obj.values())
++        return any(cls._contains_placeholder(v, seen) for v in getattr(obj, "__dict__", {}).values())
++
++    @classmethod
++    def _tuple_replace(cls, obj: tuple, placeholder: Any, seen: set) -> tuple:
++        values = []
++        for value in obj:
++            if isinstance(value, Executor):
++                values.append(placeholder)
++            elif isinstance(value, tuple):
++                values.append(cls._tuple_replace(value, placeholder, seen))
++            else:
++                values.append(value)
++        return tuple(values)
++
++    @classmethod
++    def _tuple_restore(cls, obj: tuple, executor: Executor, seen: set) -> tuple:
++        values = []
++        for value in obj:
++            if isinstance(value, _ExecutorPlaceholder):
++                values.append(executor)
++            elif isinstance(value, tuple):
++                values.append(cls._tuple_restore(value, executor, seen))
++            else:
++                values.append(value)
++        return tuple(values)
++
++    @staticmethod
++    def _assign(container: Any, key: Any, value: Any) -> None:
++        if isinstance(container, set):
++            container.remove(key)
++            container.add(value)
++        else:
++            container[key] = value

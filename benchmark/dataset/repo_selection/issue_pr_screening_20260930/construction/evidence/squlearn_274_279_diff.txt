@@ -1,0 +1,24 @@
+ docs/modules/classes.rst                           |  10 +-
+ docs/user_guide/kernel_methods.rst                 |  75 +++------
+ examples/kernel/qgpr_optimization_workflow.ipynb   |  50 ++----
+ src/squlearn/kernel/__init__.py                    |   6 +-
+ src/squlearn/kernel/loss/__init__.py               |   4 +
+ src/squlearn/kernel/loss/kernel_loss_base.py       |  41 +++++
+ .../negative_log_likelihood.py                     |  34 ++--
+ .../{optimization => loss}/target_alignment.py     |  44 +++---
+ src/squlearn/kernel/matrix/__init__.py             |   3 +-
+ src/squlearn/kernel/matrix/kernel_matrix_base.py   |  13 +-
+ src/squlearn/kernel/matrix/kernel_optimizer.py     | 174 +++++++++++++++++++++
+ src/squlearn/kernel/ml/qgpc.py                     |  22 +++
+ src/squlearn/kernel/ml/qgpr.py                     |  11 +-
+ src/squlearn/kernel/ml/qkrr.py                     |  10 +-
+ src/squlearn/kernel/ml/qsvc.py                     |  25 +++
+ src/squlearn/kernel/ml/qsvr.py                     |  25 +++
+ src/squlearn/kernel/optimization/__init__.py       |   5 -
+ .../kernel/optimization/kernel_loss_base.py        |  24 ---
+ .../optimization/kernel_optimization_base.py       |  41 -----
+ .../kernel/optimization/kernel_optimizer.py        |  96 ------------
+ src/squlearn/optimizers/approximated_gradients.py  |  10 +-
+ src/squlearn/qnn/base_qnn.py                       |   1 -
+ tests/kernel/matrix/test_kernel_optimizer.py       |  87 +++++++++++
+ 23 files changed, 499 insertions(+), 312 deletions(-)

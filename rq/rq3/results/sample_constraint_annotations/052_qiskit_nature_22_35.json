@@ -1,0 +1,170 @@
+{
+  "id": 52,
+  "sample_id": "qiskit_nature_22_35",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "88ad9f95907377296a0cd9f9d3da63379fa867f2",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "interface/return_representation": 2,
+      "interface/input_format_equivalence": 1,
+      "quantum_semantics/spin_operator_algebra": 1,
+      "quantum_semantics/spin_matrix_representation": 1,
+      "quantum_semantics/spin_pauli_equivalence": 1,
+      "general_semantics/symbolic_operator_arithmetic": 2,
+      "quantum_semantics/fermionic_operator_algebra": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/test_spin_op.py::TestSpinOp::test_init_label_2_X",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Sparse X_0 spin label is exposed unchanged by to_list."
+        }
+      ],
+      "rationale": "The selected single-X constructor case inspects the public label list."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/operators/test_spin_op.py::TestSpinOp::test_init_dense_label_11_XY",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Dense XY label represents the same spin operator as X_1 Y_0."
+        }
+      ],
+      "rationale": "The test compares two accepted public label formats; register order is recorded in the expected form."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/operators/test_spin_op.py::TestSpinOp::test_init_pm_label",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "Spin raising/lowering labels expand into X and ±iY with correct coefficients."
+        }
+      ],
+      "rationale": "The six subcases include plus, minus and two-mode products; ladder algebra is primary."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/operators/test_spin_op.py::TestSpinOp::test_to_matrix_two_qutrit_07_XY",
+      "label": "quantum_semantics/spin_matrix_representation",
+      "assertions": [
+        {
+          "line": 255,
+          "expected": "Two-qutrit XY matrix equals the tensor product of single-spin X and Y matrices."
+        }
+      ],
+      "rationale": "The selected XY label checks spin-1 matrix action and register ordering."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/operators/test_spin_op.py::TestSpinOp::test_consistency_with_pauli_48_XYZ",
+      "label": "quantum_semantics/spin_pauli_equivalence",
+      "assertions": [
+        {
+          "line": 262,
+          "expected": "Spin-1/2 XYZ matrix equals the Pauli XYZ matrix scaled by 1/8."
+        }
+      ],
+      "rationale": "This selected three-site label checks the physical spin-to-Pauli normalization."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 51,
+          "expected": "FermionicOp multi-term construction exposes the original term list."
+        }
+      ],
+      "rationale": "The retained constructor case checks public representation."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "FermionicOp addition combines duplicate coefficients and preserves supplied labels."
+        }
+      ],
+      "rationale": "The selected addition test checks term aggregation, not fermionic multiplication."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 128,
+          "expected": "Fermionic multi-term product yields the expected signed ladder term."
+        }
+      ],
+      "rationale": "The matmul case depends on fermionic operator multiplication."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Fermionic powers produce expected coefficients and identity terms."
+        }
+      ],
+      "rationale": "Repeated multiplication invokes fermionic algebra."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 152,
+          "expected": "Fermionic adjoint reverses ladder order and conjugates coefficients."
+        }
+      ],
+      "rationale": "The selected adjoint test checks creation/annihilation duality."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 165,
+          "expected": "FermionicOp reduce aggregates repeated labels and coefficients."
+        }
+      ],
+      "rationale": "This retained reduce test performs only duplicate-term collection."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/88ad9f95907377296a0cd9f9d3da63379fa867f2/test/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/88ad9f95907377296a0cd9f9d3da63379fa867f2/test/operators/test_spin_op.py"
+  ],
+  "rationale": "Reviewed the selected X, XY and XYZ spin-label variants and each nearby FermionicOp operation; dense input equivalence, ladder algebra and matrix normalization have distinct primary labels."
+}

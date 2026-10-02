@@ -1,0 +1,8 @@
+--- a/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
++++ b/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
+@@ -64,4 +64,4 @@
+         kernel_matrix = quantum_kernel.evaluate(data)
+         svc = SVC(kernel="precomputed", **self._svc_kwargs)
+         svc.fit(kernel_matrix, labels)
+-        return 1.0 - svc.score(kernel_matrix, labels)
++        return np.sum(np.abs(svc.dual_coef_[0])) - 0.5 * (svc.dual_coef_[0] @ kernel_matrix[np.ix_(svc.support_, svc.support_)] @ svc.dual_coef_[0])

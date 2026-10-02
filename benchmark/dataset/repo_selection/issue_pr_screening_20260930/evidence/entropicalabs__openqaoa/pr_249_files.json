@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "8b2a53fe6a09b34173cd35a350617ffca50ca4ad",
+    "filename": "pytest.ini",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/aa70c725a35395d0d4023506a5dc442008fd606d/pytest.ini",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/aa70c725a35395d0d4023506a5dc442008fd606d/pytest.ini",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/pytest.ini?ref=aa70c725a35395d0d4023506a5dc442008fd606d",
+    "patch": "@@ -1,8 +1,8 @@\n [pytest]\n markers =\n     qpu: marks tests that require a QPU connection (deselect with '-m \"not qpu\"')\n-    api: marks tests that require a coonection to a QC cloud (deselect with '-m \"not api\"')\n-    qvm: marks tests that require an attive Rigetti QVM and QILC compiler (deselect with '-m \"not qvm\"')\n+    api: marks tests that require a connection to a QC cloud (deselect with '-m \"not api\"')\n+    qvm: marks tests that require an active Rigetti QVM and QILC compiler (deselect with '-m \"not qvm\"')\n     docker_aws: marks tests that require to build aws docker (deselect with '-m \"not docker_aws\"')\n     braket_api: marks tests that require valid AWS credentials (no QPU) (deselect with '-m \"not braket_api\"')\n     notebook: marks tests that run on jupyter noteboks (deselect with '-m \"not notebook\"')"
+  },
+  {
+    "sha": "c02ea01ec6ab97c980474dadc26d03f96efbfdc6",
+    "filename": "src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_workflow.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py?ref=aa70c725a35395d0d4023506a5dc442008fd606d",
+    "patch": "@@ -79,7 +79,7 @@ class QAOA(Workflow):\n \n     >>> q = QAOA()\n     >>> q.compile(QUBO)\n-    >>> q.optimise()\n+    >>> q.optimize()\n \n     Where `QUBO` is a an instance of `openqaoa.problems.problem.QUBO`\n "
+  },
+  {
+    "sha": "507e9ca7fb7f75cbb6a430317be96467444c1513",
+    "filename": "src/openqaoa-core/openqaoa/algorithms/rqaoa/rqaoa_workflow.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Frqaoa%2Frqaoa_workflow.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Frqaoa%2Frqaoa_workflow.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/src%2Fopenqaoa-core%2Fopenqaoa%2Falgorithms%2Frqaoa%2Frqaoa_workflow.py?ref=aa70c725a35395d0d4023506a5dc442008fd606d",
+    "patch": "@@ -74,7 +74,7 @@ class RQAOA(Workflow):\n \n     >>> r = RQAOA()\n     >>> r.compile(QUBO)\n-    >>> r.optimise()\n+    >>> r.optimize()\n \n     Where `QUBO` is a an instance of `openqaoa.problems.problem.QUBO`\n "
+  },
+  {
+    "sha": "b5b53d95b4e6c1c8e8f49ebfac00cd591f9c9d50",
+    "filename": "src/openqaoa-core/openqaoa/backends/basebackend.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 1,
+    "changes": 3,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Fbackends%2Fbasebackend.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/aa70c725a35395d0d4023506a5dc442008fd606d/src%2Fopenqaoa-core%2Fopenqaoa%2Fbackends%2Fbasebackend.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/src%2Fopenqaoa-core%2Fopenqaoa%2Fbackends%2Fbasebackend.py?ref=aa70c725a35395d0d4023506a5dc442008fd606d",
+    "patch": "@@ -560,7 +560,8 @@ class QAOABaseBackendCloud:\n \n     def __init__(self, device: DeviceBase):\n         self.device = device\n-        self.device.check_connection()\n+        if getattr(self.device, \"provider_connected\", None) is None and getattr(self.device, \"qpu_connected\", None) is None:\n+            self.device.check_connection()\n \n \n class QAOABaseBackendParametric:"
+  }
+]

@@ -1,0 +1,146 @@
+{
+  "instance": {
+    "id": 55,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_271_286",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/271",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/286",
+    "base_commit": "7a8b3923c5718cdda62b05f14ccd260b73564e76",
+    "patch": "df73128801f5653b2a76cd68eab9059649a2d1bb"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task changes parity-mapper two-qubit-reduction behavior for fermionic-to-qubit conversion edge cases."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/converters/second_quantization/qubit_converter.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "When a ParityMapper-backed QubitConverter is configured with two-qubit reduction, converting very small fermionic operators can produce a qubit operator with two or fewer qubits. The converter currently still attempts two-qubit reduction in that situation, which can surface an IndexError from the underlying tapering machinery instead of returning a valid qubit operator. The converter should avoid applying two-qubit reduction when the mapped operator is already too small for that reduction.",
+    "requirements": [
+      "QubitConverter must leave two-qubit-or-smaller mapped operators unchanged when two-qubit reduction is requested.",
+      "The converter must emit a warning when it skips a requested two-qubit reduction because the mapped operator contains two or fewer qubits.",
+      "Converting a two-or-fewer-qubit FermionicOp through a ParityMapper-backed QubitConverter with two_qubit_reduction enabled must return the expected unreduced PauliSumOp rather than raising IndexError.",
+      "Existing ParityMapper behavior, including its advertised support for two-qubit reduction and standard mapping output, must remain compatible.",
+      "Existing FermionicOp construction, arithmetic, scalar multiplication, and reduction behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QubitConverter",
+        "Path": "qiskit_nature/converters/second_quantization/qubit_converter.py",
+        "Input": "constructor: mapper, two_qubit_reduction=False, z2symmetry_reduction=None",
+        "Output": "",
+        "Description": "Converts second-quantized operators to qubit operators while honoring two-qubit reduction settings."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.convert",
+        "Path": "qiskit_nature/converters/second_quantization/qubit_converter.py",
+        "Input": "self, second_q_op, num_particles=None, sector_locator=None",
+        "Output": "PauliSumOp",
+        "Description": "Maps an operator and applies compatible reductions, skipping two-qubit reduction for operators with two or fewer qubits."
+      },
+      {
+        "Type": "Class",
+        "Name": "ParityMapper",
+        "Path": "qiskit_nature/mappers/second_quantization/parity_mapper.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Mapper used by QubitConverter that supports parity mapping and two-qubit reduction."
+      },
+      {
+        "Type": "Class",
+        "Name": "FermionicOp",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "constructor: data, display_format='sparse', register_length=None",
+        "Output": "",
+        "Description": "Second-quantized fermionic operator accepted by QubitConverter and used for small-operator conversion."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_271_286",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:d5a3eca5ac89dbd59ca6c21fd8ee43389bead82f6985ebf467703ad6caf1c1bc",
+      "image_size": "1080482194"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "pytest option: -p no:logging"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/converters/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 2.81s",
+        "duration_seconds": 4.36
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "result": "passed",
+        "summary": "7 passed in 1.84s",
+        "duration_seconds": 3.28
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/converters/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 2.56s; base does not emit the expected skip-warning stderr because it still attempts normal two-qubit reduction behavior",
+        "duration_seconds": 6.13
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "result": "passed",
+        "summary": "7 passed in 2.36s",
+        "duration_seconds": 6.29
+      }
+    }
+  }
+}

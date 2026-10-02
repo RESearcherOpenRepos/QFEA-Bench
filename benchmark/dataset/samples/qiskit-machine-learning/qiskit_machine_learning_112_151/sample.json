@@ -1,0 +1,219 @@
+{
+  "instance": {
+    "id": 22,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_112_151",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/112",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/151",
+    "base_commit": "dac42022fb6cd992dd2df58f7219f379c6d2af7a",
+    "patch": "2d0c8e3ba08a477f57a0b123e3ebfbc353dcebac"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds optimizer callback plumbing for quantum neural-network training rather than new quantum-learning semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+      "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+      "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+      "qiskit_machine_learning/algorithms/regressors/vqr.py",
+      "qiskit_machine_learning/algorithms/trainable_model.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Neural-network model training does not currently give users a supported way to observe intermediate optimization progress. Users need trainable neural-network classifier workflows to accept a callback during construction and invoke it while fitting so loss-related values and optimizer weights can be tracked during training.",
+    "requirements": [
+      "Neural-network classifiers must accept an optional callback when they are constructed.",
+      "When a callback is supplied, classifier fitting must invoke it during optimization with the current objective weights and computed objective value.",
+      "Callback objective values must be provided as floats.",
+      "Callback weight values must match the neural network's trainable weight dimension and be provided as numeric values.",
+      "Classifier training and scoring must continue to work for circuit-based and two-layer neural network classifiers across existing optimizer, loss, and simulator configurations.",
+      "Classifier behavior must remain unchanged when no callback is supplied."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss='squared_error', one_hot=False, optimizer=None, warm_start=False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Classifier constructor accepts an optional callback used to observe objective weights and objective values during training."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.fit",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "X, y",
+        "Output": "NeuralNetworkClassifier",
+        "Description": "Fits the classifier and invokes the configured callback during objective evaluation when a callback is present."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.score",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "X, y, sample_weight=None",
+        "Output": "float",
+        "Description": "Scores fitted classifier workflows after training with or without a callback."
+      },
+      {
+        "Type": "Class",
+        "Name": "TrainableModel",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "constructor: neural_network, loss='squared_error', optimizer=None, warm_start=False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Base trainable model stores the optional callback used by classifier training."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableModel._get_objective",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "function",
+        "Output": "callable",
+        "Description": "Returns an objective callable that evaluates the objective and invokes the configured callback with weights and value."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_machine_learning_112_151",
+      "build_success": true,
+      "image_id": "sha256:ebc85514d9e4a85ed44dc79f628fc0820ce9a094045c0df1676bbf37b3a4c203",
+      "image_size": "1447644677"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "scikit-learn<1.2",
+        "Cython<3",
+        "qiskit-terra==0.18.0",
+        "qiskit-aer==0.8.2",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_13___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_14___cobyla____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_15___cobyla____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_16___cobyla____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_18___bfgs____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_19___bfgs____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_20___bfgs____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_21__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_22__None___absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_23__None___squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_24__None___squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_13___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_14___cobyla____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_15___cobyla____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_16___cobyla____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_17___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_18___bfgs____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_19___bfgs____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_20___bfgs____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_21__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_22__None___absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_23__None___squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_24__None___squared_error____qasm___True_"
+        ],
+        "result": "passed",
+        "summary": "24 passed in 41.67s",
+        "duration_seconds": 45.84
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_1___cobyla____statevector__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_2___cobyla____qasm__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_3___bfgs____statevector__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_4___bfgs____qasm__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_6__None___qasm__",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_01___cobyla____statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_02___cobyla____qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_03___cobyla____statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_04___cobyla____qasm___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_05___bfgs____statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_06___bfgs____qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_07___bfgs____statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_08___bfgs____qasm___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_09__None___statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_10__None___qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_11__None___statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_12__None___qasm___False_"
+        ],
+        "result": "passed",
+        "summary": "17 passed in 26.62s",
+        "duration_seconds": 29.86
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_13___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_14___cobyla____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_15___cobyla____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_16___cobyla____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_18___bfgs____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_19___bfgs____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_20___bfgs____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_21__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_22__None___absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_23__None___squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_24__None___squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_13___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_14___cobyla____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_15___cobyla____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_16___cobyla____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_17___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_18___bfgs____absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_19___bfgs____squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_20___bfgs____squared_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_21__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_22__None___absolute_error____qasm___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_23__None___squared_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_24__None___squared_error____qasm___True_"
+        ],
+        "result": "failed",
+        "summary": "24 failed with TypeError: __init__() got an unexpected keyword argument 'callback' in 3.07s",
+        "duration_seconds": 9.79
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_1___cobyla____statevector__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_2___cobyla____qasm__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_3___bfgs____statevector__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_4___bfgs____qasm__",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_6__None___qasm__",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_01___cobyla____statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_02___cobyla____qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_03___cobyla____statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_04___cobyla____qasm___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_05___bfgs____statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_06___bfgs____qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_07___bfgs____statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_08___bfgs____qasm___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_09__None___statevector___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_10__None___qasm___True_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_11__None___statevector___False_",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_12__None___qasm___False_"
+        ],
+        "result": "passed",
+        "summary": "17 passed in 35.64s",
+        "duration_seconds": 41.61
+      }
+    }
+  }
+}

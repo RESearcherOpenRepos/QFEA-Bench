@@ -1,0 +1,169 @@
+{
+  "instance": {
+    "id": 80,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_847_1043",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/847",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1043",
+    "base_commit": "5d8b8877e14c7a282826d2ea28e4b5582960b461",
+    "patch": "3e11312a18f970ce1a1b170603fc0ef38ae224e5"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task applies active-space and freeze-core electronic-structure reductions directly to standalone Hamiltonians."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/problems/electronic_structure_problem.py",
+      "qiskit_nature/second_q/transformers/active_space_transformer.py",
+      "qiskit_nature/second_q/transformers/freeze_core_transformer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The active-space and freeze-core transformers can reduce full electronic-structure problems, but users cannot apply the same reductions directly to standalone electronic Hamiltonians outside a problem object. Users need a way to prepare the transformer with the total system information and then transform a Hamiltonian by itself.",
+    "requirements": [
+      "ActiveSpaceTransformer must support preparing active-space state from total electron and orbital counts before transforming a standalone electronic Hamiltonian.",
+      "FreezeCoreTransformer must support preparing active-space state from molecular system information and total orbital count before transforming a standalone electronic Hamiltonian.",
+      "Calling standalone Hamiltonian transformation before the transformer has been prepared must raise a QiskitNatureError.",
+      "After preparation, standalone Hamiltonian transformation must return the same reduced electronic-energy data and inactive-energy constants as the corresponding problem-level transformation."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "ActiveSpaceTransformer",
+        "Path": "qiskit_nature/second_q/transformers/active_space_transformer.py",
+        "Input": "constructor: num_electrons, num_spatial_orbitals, active_orbitals=None",
+        "Output": "",
+        "Description": "Transformer configured for an active-space reduction and able to retain prepared active-space state for standalone Hamiltonian transformation."
+      },
+      {
+        "Type": "Method",
+        "Name": "ActiveSpaceTransformer.prepare_active_space",
+        "Path": "qiskit_nature/second_q/transformers/active_space_transformer.py",
+        "Input": "self, total_num_electrons, total_num_spatial_orbitals, occupation_alpha=None, occupation_beta=None",
+        "Output": "",
+        "Description": "Prepares the active basis and density information needed before transforming an electronic Hamiltonian outside a problem instance."
+      },
+      {
+        "Type": "Method",
+        "Name": "ActiveSpaceTransformer.transform_hamiltonian",
+        "Path": "qiskit_nature/second_q/transformers/active_space_transformer.py",
+        "Input": "self, hamiltonian",
+        "Output": "Hamiltonian",
+        "Description": "Transforms a supported standalone electronic Hamiltonian after active-space preparation and raises QiskitNatureError if preparation is missing."
+      },
+      {
+        "Type": "Class",
+        "Name": "FreezeCoreTransformer",
+        "Path": "qiskit_nature/second_q/transformers/freeze_core_transformer.py",
+        "Input": "constructor: freeze_core=True, remove_orbitals=None",
+        "Output": "",
+        "Description": "Transformer configured for freeze-core reduction and able to retain prepared active-space state for standalone Hamiltonian transformation."
+      },
+      {
+        "Type": "Method",
+        "Name": "FreezeCoreTransformer.prepare_active_space",
+        "Path": "qiskit_nature/second_q/transformers/freeze_core_transformer.py",
+        "Input": "self, molecule, total_num_spatial_orbitals, occupation_alpha=None, occupation_beta=None",
+        "Output": "",
+        "Description": "Prepares the active basis and density information needed before freeze-core transforming an electronic Hamiltonian outside a problem instance."
+      },
+      {
+        "Type": "Method",
+        "Name": "FreezeCoreTransformer.transform_hamiltonian",
+        "Path": "qiskit_nature/second_q/transformers/freeze_core_transformer.py",
+        "Input": "self, hamiltonian",
+        "Output": "Hamiltonian",
+        "Description": "Transforms a supported standalone electronic Hamiltonian after freeze-core preparation and raises QiskitNatureError if preparation is missing."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_847_1043",
+      "image_id": "sha256:49fdd43026c937f214d932b7c18f4ffc82f7bc626288cf92ac509064abe1e45c",
+      "image_size": "1180479965"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.23.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "pyscf==2.2.1"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_standalone_usage",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_standalone_usage"
+        ],
+        "summary": "2 passed in 2.47s",
+        "duration_seconds": 6.51
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space_1",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_numpy_integer",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_tuple_num_electrons_with_manual_orbitals",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_no_freeze_core"
+        ],
+        "summary": "10 passed in 2.92s",
+        "duration_seconds": 6.86
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_standalone_usage",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_standalone_usage"
+        ],
+        "summary": "2 failed in 2.38s; NotImplementedError: standalone transform_hamiltonian is not supported before PR 1043",
+        "duration_seconds": 8.72
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space_1",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_numpy_integer",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_tuple_num_electrons_with_manual_orbitals",
+          "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+          "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_no_freeze_core"
+        ],
+        "summary": "10 passed in 3.64s",
+        "duration_seconds": 9.18
+      }
+    }
+  }
+}

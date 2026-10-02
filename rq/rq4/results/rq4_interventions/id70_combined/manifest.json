@@ -1,0 +1,23 @@
+{
+  "id": 70,
+  "sample_id": "qiskit_nature_582_1313",
+  "variant": "combined",
+  "changes": [
+    {
+      "before": "+                    leaves.append(\"\".join(child_paulis))",
+      "after": "+                    leaves.append(\"\".join(reversed(child_paulis)))"
+    },
+    {
+      "before": "+        majorana_paulis = self._majorana_pauli_table(2 * register_length, self.pauli_priority)",
+      "after": "+        majorana_paulis = self._majorana_pauli_table(register_length, self.pauli_priority)"
+    },
+    {
+      "before": "+        return [(majorana_paulis[2 * i], majorana_paulis[2 * i + 1]) for i in range(register_length)]",
+      "after": "+        return [(2 * SparsePauliOp(p), SparsePauliOp([\"\"])) for p in majorana_paulis]"
+    }
+  ],
+  "image": "benchmark-evaluation:qiskit_nature_582_1313",
+  "image_id": "sha256:582c9736770863f3d07fa83122a5606c8ee5a64bc335c51a5490c10d15859818",
+  "patch_sha256": "2d3d0566291245d0fb0ac8bacd3c8ac82acd5e0cfb5a802602a449f8ffc4814e",
+  "scope": "diagnostic replay; no changes to benchmark definition or official outcome"
+}

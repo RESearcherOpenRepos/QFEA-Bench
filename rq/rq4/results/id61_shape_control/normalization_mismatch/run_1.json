@@ -1,0 +1,733 @@
+{
+  "instance_id": "qiskit_nature_460_482",
+  "resolved": false,
+  "returncode": 1,
+  "patch_applied": true,
+  "eval_infra_failed": false,
+  "eval_infra_failure": null,
+  "agent": {},
+  "stdout": "Sample: qiskit_nature_460_482\nRepository: qiskit-community/qiskit-nature\nIssue: https://github.com/qiskit-community/qiskit-nature/issues/460\nPR: https://github.com/qiskit-community/qiskit-nature/pull/482\nTarget mode: base\nTarget commit: 5939cb03527eb16fab15a32126b1a70c7817ade1\nRepository URL: https://github.com/qiskit-community/qiskit-nature.git\nFail-pass test paths: test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6 test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\nPass-pass test paths: test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\nFail-pass extra files: \nTest suite: pass-pass\nPatch applied: true\nRunning fail-pass tests...\n.FFFFFF........                                                          [100%]\n=================================== FAILURES ===================================\n_______ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform _______\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform>\n\n    def test_diagonalizing_bogoliubov_transform(self):\n        \"\"\"Test diagonalizing Bogoliubov transform.\"\"\"\n        hermitian_part = np.array(\n            [[0.0, 1.0, 0.0], [1.0, 0.0, 1.0], [0.0, 1.0, 0.0]], dtype=complex\n        )\n        antisymmetric_part = np.array(\n            [[0.0, 1.0j, 0.0], [-1.0j, 0.0, 1.0j], [0.0, -1.0j, 0.0]], dtype=complex\n        )\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        # test that the transformation diagonalizes the Hamiltonian\n        left = transformation_matrix[:, :3]\n        right = transformation_matrix[:, 3:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(3, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((3, 3))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:105: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd23da5e0>, array([[ 2.46519033e-32+0.j, -2.54242911e-16+0.j, -6.4...\n       [-0., -0., -0.,  0.,  0.,  0.],\n       [-0., -2., -0.,  0.,  0.,  0.],\n       [-0., -0., -2.,  0.,  0.,  0.]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 4 / 36 (11.1%)\nE           Max absolute difference: 6.\nE           Max relative difference: 3.\nE            x: array([[ 2.465190e-32+0.j, -2.542429e-16+0.j, -6.405970e-16+0.j,\nE                    1.373965e-31+0.j,  5.750281e-16+0.j, -1.104536e-15+0.j],\nE                  [ 1.720642e-16+0.j,  2.205504e-32+0.j, -1.480830e-15+0.j,...\nE            y: array([[ 0.,  0.,  0.,  0.,  0.,  0.],\nE                  [ 0.,  0.,  0.,  0.,  2.,  0.],\nE                  [ 0.,  0.,  0.,  0.,  0.,  2.],...\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n_ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2 _\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2>\nn_orbitals = 2\n\n    @data(2, 3, 4, 5, 6)\n    def test_diagonalizing_bogoliubov_transform_non_particle_number_conserving(self, n_orbitals):\n        \"\"\"Test diagonalizing Bogoliubov transform, non-particle-number-conserving case.\"\"\"\n        hermitian_part = random_hermitian(n_orbitals).data\n        antisymmetric_part = _random_antisymmetric(n_orbitals)\n        constant = np.random.uniform(-10, 10)\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part, constant=constant)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        left = transformation_matrix[:, :n_orbitals]\n        right = transformation_matrix[:, n_orbitals:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(n_orbitals, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((n_orbitals, n_orbitals))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd23bc0d0>, array([[-7.18175519e-16+0.j,  1.33226763e-15+0.j,  8.9...   [-2.23426314, -0.        ,  0.        ,  0.        ],\n       [-0.        , -4.60915624,  0.        ,  0.        ]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 4 / 16 (25%)\nE           Max absolute difference: 13.82746872\nE           Max relative difference: 3.\nE            x: array([[-7.181755e-16+0.j,  1.332268e-15+0.j,  8.937053e+00+0.j,\nE                   -4.440892e-16+0.j],\nE                  [-8.812395e-16+0.j,  1.776357e-15+0.j, -4.440892e-15+0.j,...\nE            y: array([[ 0.      ,  0.      ,  2.234263,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  4.609156],\nE                  [-2.234263, -0.      ,  0.      ,  0.      ],\nE                  [-0.      , -4.609156,  0.      ,  0.      ]])\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n_ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3 _\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3>\nn_orbitals = 3\n\n    @data(2, 3, 4, 5, 6)\n    def test_diagonalizing_bogoliubov_transform_non_particle_number_conserving(self, n_orbitals):\n        \"\"\"Test diagonalizing Bogoliubov transform, non-particle-number-conserving case.\"\"\"\n        hermitian_part = random_hermitian(n_orbitals).data\n        antisymmetric_part = _random_antisymmetric(n_orbitals)\n        constant = np.random.uniform(-10, 10)\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part, constant=constant)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        left = transformation_matrix[:, :n_orbitals]\n        right = transformation_matrix[:, n_orbitals:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(n_orbitals, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((n_orbitals, n_orbitals))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd23bc5e0>, array([[ 4.16333634e-17+0.j, -2.72004641e-15+0.j,  5.5...\n         0.        ],\n       [-0.        , -0.        , -4.20206024,  0.        ,  0.        ,\n         0.        ]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 6 / 36 (16.7%)\nE           Max absolute difference: 12.60618072\nE           Max relative difference: 3.\nE            x: array([[ 4.163336e-17+0.j, -2.720046e-15+0.j,  5.551115e-16+0.j,\nE                    1.807620e+00+0.j,  1.103284e-15+0.j,  3.226586e-15+0.j],\nE                  [ 2.359224e-15+0.j,  9.992007e-16+0.j, -2.997602e-15+0.j,...\nE            y: array([[ 0.      ,  0.      ,  0.      ,  0.451905,  0.      ,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  0.      ,  2.959901,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  4.20206 ],...\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n_ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4 _\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4>\nn_orbitals = 4\n\n    @data(2, 3, 4, 5, 6)\n    def test_diagonalizing_bogoliubov_transform_non_particle_number_conserving(self, n_orbitals):\n        \"\"\"Test diagonalizing Bogoliubov transform, non-particle-number-conserving case.\"\"\"\n        hermitian_part = random_hermitian(n_orbitals).data\n        antisymmetric_part = _random_antisymmetric(n_orbitals)\n        constant = np.random.uniform(-10, 10)\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part, constant=constant)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        left = transformation_matrix[:, :n_orbitals]\n        right = transformation_matrix[:, n_orbitals:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(n_orbitals, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((n_orbitals, n_orbitals))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd23d1040>, array([[-2.22044605e-16+0.j, -8.25728375e-16+0.j, -2.2...    [-0.        , -0.        , -0.        , -4.67896207,  0.        ,\n         0.        ,  0.        ,  0.        ]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 8 / 64 (12.5%)\nE           Max absolute difference: 14.03688622\nE           Max relative difference: 3.\nE            x: array([[-2.220446e-16+0.j, -8.257284e-16+0.j, -2.275957e-15+0.j,\nE                   -1.471046e-15+0.j,  2.526512e+00+0.j,  1.096345e-15+0.j,\nE                    4.163336e-16+0.j,  8.881784e-16+0.j],...\nE            y: array([[ 0.      ,  0.      ,  0.      ,  0.      ,  0.631628,  0.      ,\nE                    0.      ,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  1.89758 ,...\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n_ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5 _\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5>\nn_orbitals = 5\n\n    @data(2, 3, 4, 5, 6)\n    def test_diagonalizing_bogoliubov_transform_non_particle_number_conserving(self, n_orbitals):\n        \"\"\"Test diagonalizing Bogoliubov transform, non-particle-number-conserving case.\"\"\"\n        hermitian_part = random_hermitian(n_orbitals).data\n        antisymmetric_part = _random_antisymmetric(n_orbitals)\n        constant = np.random.uniform(-10, 10)\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part, constant=constant)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        left = transformation_matrix[:, :n_orbitals]\n        right = transformation_matrix[:, n_orbitals:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(n_orbitals, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((n_orbitals, n_orbitals))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd23d15e0>, array([[ 1.88217497e-16+0.j,  3.78169718e-16+0.j, -3.9...   , -0.        , -0.        , -7.96728178,\n         0.        ,  0.        ,  0.        ,  0.        ,  0.        ]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 10 / 100 (10%)\nE           Max absolute difference: 23.90184533\nE           Max relative difference: 3.\nE            x: array([[ 1.882175e-16+0.j,  3.781697e-16+0.j, -3.972517e-16+0.j,\nE                    1.778092e-17+0.j, -1.285430e-15+0.j,  3.775188e-01+0.j,\nE                   -6.539908e-16+0.j,  8.604228e-16+0.j,  9.801188e-16+0.j,...\nE            y: array([[ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  0.09438 ,\nE                    0.      ,  0.      ,  0.      ,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  0.      ,...\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n_ TestQuadraticHamiltonian.test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6 _\n\nself = <test.operators.second_quantization.test_quadratic_hamiltonian.TestQuadraticHamiltonian testMethod=test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6>\nn_orbitals = 6\n\n    @data(2, 3, 4, 5, 6)\n    def test_diagonalizing_bogoliubov_transform_non_particle_number_conserving(self, n_orbitals):\n        \"\"\"Test diagonalizing Bogoliubov transform, non-particle-number-conserving case.\"\"\"\n        hermitian_part = random_hermitian(n_orbitals).data\n        antisymmetric_part = _random_antisymmetric(n_orbitals)\n        constant = np.random.uniform(-10, 10)\n        quad_ham = QuadraticHamiltonian(hermitian_part, antisymmetric_part, constant=constant)\n        (\n            transformation_matrix,\n            orbital_energies,\n            transformed_constant,\n        ) = quad_ham.diagonalizing_bogoliubov_transform()\n    \n        left = transformation_matrix[:, :n_orbitals]\n        right = transformation_matrix[:, n_orbitals:]\n        full_transformation_matrix = np.block([[left, right], [right.conj(), left.conj()]])\n        eye = np.eye(n_orbitals, dtype=complex)\n        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)\n        basis_change = majorana_basis @ full_transformation_matrix @ majorana_basis.T.conj()\n        majorana_matrix, majorana_constant = quad_ham.majorana_form()\n        canonical = basis_change @ majorana_matrix @ basis_change.T\n    \n        zero = np.zeros((n_orbitals, n_orbitals))\n        diagonal = np.diag(orbital_energies)\n        expected = np.block([[zero, diagonal], [-diagonal, zero]])\n    \n        np.testing.assert_allclose(orbital_energies, np.sort(orbital_energies))\n>       np.testing.assert_allclose(canonical, expected, atol=1e-7)\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffd2362160>, array([[-1.94289029e-16+0.j,  1.91513472e-15+0.j,  2.5...        ,\n        -8.99921853,  0.        ,  0.        ,  0.        ,  0.        ,\n         0.        ,  0.        ]]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=1e-07', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=1e-07\nE           \nE           Mismatched elements: 12 / 144 (8.33%)\nE           Max absolute difference: 26.99765559\nE           Max relative difference: 3.\nE            x: array([[-1.942890e-16+0.j,  1.915135e-15+0.j,  2.525757e-15+0.j,\nE                   -1.196959e-15+0.j, -6.106227e-16+0.j,  4.676814e-15+0.j,\nE                    2.246467e+00+0.j, -4.704570e-15+0.j, -1.582068e-15+0.j,...\nE            y: array([[ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  0.      ,\nE                    0.561617,  0.      ,  0.      ,  0.      ,  0.      ,  0.      ],\nE                  [ 0.      ,  0.      ,  0.      ,  0.      ,  0.      ,  0.      ,...\n\n/usr/local/lib/python3.9/contextlib.py:79: AssertionError\n=============================== warnings summary ===============================\n../../usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18\n  /usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18: DeprecationWarning: The retworkx package is deprecated and has been renamed to rustworkx. Rustworkx is a drop-in replacement and can be used by replacing `import retworkx` with import `rustworkx`. \n    import retworkx as rx\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\n  /workspace/repo/test/operators/second_quantization/test_quadratic_hamiltonian.py:145: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.\n    hermitian_part = random_hermitian(n_orbitals).data\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\n  /workspace/repo/test/operators/second_quantization/test_quadratic_hamiltonian.py:128: DeprecationWarning: `product` is deprecated as of NumPy 1.25.0, and will be removed in NumPy 2.0. Please use `prod` instead.\n    hermitian_part = random_hermitian(n_orbitals).data\n\ntest/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\n  /workspace/repo/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py:156: UserWarning: The default value for `display_format` will be changed from 'dense' to 'sparse' in version 0.3.0. Once that happens, you must specify display_format='dense' directly.\n    return FermionicOp(terms, register_length=self._num_modes)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\nFAILED test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\n6 failed, 9 passed, 13 warnings in 1.48s\n\n__QUANBENCH_CASE_REPORT_BEGIN__fail_pass\n{\"pytest_exit_code\":1,\"report\":{\"schema_version\":1,\"exitstatus\":1,\"collected\":[\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\",\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\"],\"collected_items\":[{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\"},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\",\"selector\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\"}],\"reports\":[{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false}],\"collection_errors\":[]}}\n__QUANBENCH_CASE_REPORT_END__fail_pass\nRunning pass-pass tests...\n......                                                                   [100%]\n=============================== warnings summary ===============================\n../../usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18\n  /usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18: DeprecationWarning: The retworkx package is deprecated and has been renamed to rustworkx. Rustworkx is a drop-in replacement and can be used by replacing `import retworkx` with import `rustworkx`. \n    import retworkx as rx\n\ntest/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\n  /workspace/repo/test/operators/second_quantization/test_fermionic_op.py:403: UserWarning: The default value for `display_format` will be changed from 'dense' to 'sparse' in version 0.3.0. Once that happens, you must specify display_format='dense' directly.\n    mat = FermionicOp(\"IN\").to_matrix(sparse=False)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n6 passed, 2 warnings in 1.83s\n\n__QUANBENCH_CASE_REPORT_BEGIN__pass_pass\n{\"pytest_exit_code\":0,\"report\":{\"schema_version\":1,\"exitstatus\":0,\"collected\":[\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\",\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\",\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\",\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\",\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\",\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\"],\"collected_items\":[{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\"},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\"},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\"},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\"},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\"},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\",\"selector\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\"}],\"reports\":[{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false}],\"collection_errors\":[]}}\n__QUANBENCH_CASE_REPORT_END__pass_pass\n",
+  "stderr": "Evaluator offline mode: skipping git fetch fetch --all --tags --prune\nWarning: you are leaving 27 commits behind, not connected to\nany of your branches:\n\n  97e43377 Merge branch 'main' into quad-ham\n  0568f0e1 Merge branch 'main' into quad-ham\n  d4c3473d fix and improve error messages\n  d316a0f7 fix doc and error message\n ... and 23 more.\n\nIf you want to keep them by creating a new branch, this may be a good time\nto do so with:\n\n git branch <new-branch-name> 97e43377\n\nHEAD is now at 5939cb03 Remove old gaussian location from manifest and gitignore (#630)\n",
+  "timed_out": false,
+  "run_index": 1,
+  "eval_attempt": 1,
+  "fail_pass": {
+    "passed": 9,
+    "total": 15,
+    "summary": "9/15",
+    "status": "failed",
+    "counts": {
+      "passed": 9,
+      "failed": 6,
+      "skipped": 0,
+      "not_run": 0,
+      "not_collected": 0
+    },
+    "pytest_exit_code": 1,
+    "collection_errors": [],
+    "unmatched_report_nodeids": []
+  },
+  "pass_pass": {
+    "passed": 6,
+    "total": 6,
+    "summary": "6/6",
+    "status": "passed",
+    "counts": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0,
+      "not_collected": 0
+    },
+    "pytest_exit_code": 0,
+    "collection_errors": [],
+    "unmatched_report_nodeids": []
+  },
+  "test_cases": {
+    "fail_pass": [
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init"
+        ]
+      }
+    ],
+    "pass_pass": [
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi"
+        ]
+      },
+      {
+        "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ]
+      }
+    ]
+  },
+  "pytest_case_reports": {
+    "fail_pass": {
+      "pytest_exit_code": 1,
+      "report": {
+        "schema_version": 1,
+        "exitstatus": 1,
+        "collected": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init"
+        ],
+        "collected_items": [
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+            "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init"
+          }
+        ],
+        "reports": [
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          }
+        ],
+        "collection_errors": []
+      }
+    },
+    "pass_pass": {
+      "pytest_exit_code": 0,
+      "report": {
+        "schema_version": 1,
+        "exitstatus": 0,
+        "collected": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ],
+        "collected_items": [
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi"
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+            "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+          }
+        ],
+        "reports": [
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          }
+        ],
+        "collection_errors": []
+      }
+    }
+  }
+}

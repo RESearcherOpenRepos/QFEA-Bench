@@ -1,0 +1,184 @@
+{
+  "id": 26,
+  "sample_id": "qiskit_machine_learning_320_412",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "41bcc3b2af9b14dde3553b8e7acd0c8bacb7c507",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "interface/class_label_roundtrip": 7,
+      "interface/input_validation": 1,
+      "interface/class_count_contract": 2,
+      "general_semantics/model_training_performance": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_1__True___absolute_error__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "Classifier trains to score above 0.5 on string-labeled data"
+        },
+        {
+          "line": 285,
+          "expected": "Prediction returns one of the original string labels"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_003___statevector___2___zz_feature_map____real_amplitudes____cobyla____no_one_hot__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 138,
+          "expected": "VQC trains to score above 0.5 on plain integer labels"
+        },
+        {
+          "line": 146,
+          "expected": "Predictions are decoded to the original class-label form"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_categorical",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 286,
+          "expected": "VQC trains to score above 0.5 on categorical labels"
+        },
+        {
+          "line": 289,
+          "expected": "Prediction returns an original string label"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_bad_one_hot_data",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 441,
+          "expected": "Malformed one-hot labels raise QiskitMachineLearningError"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_1_True",
+      "label": "interface/class_count_contract",
+      "assertions": [
+        {
+          "line": 379,
+          "expected": "One-hot training exposes two classes"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_num_classes_data_2_False",
+      "label": "interface/class_count_contract",
+      "assertions": [
+        {
+          "line": 379,
+          "expected": "Categorical training exposes two classes"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_non_parameterized",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 160,
+          "expected": "A nonparameterized VQC scores above 0.5 after fitting"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "The selected loss trains a string-label classifier above score threshold"
+        },
+        {
+          "line": 285,
+          "expected": "Its prediction returns an original category"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_3__True___cross_entropy__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "Cross-entropy training scores above threshold with string labels"
+        },
+        {
+          "line": 285,
+          "expected": "Prediction returns an original category"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_4__False___absolute_error__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "The non-one-hot classifier scores above threshold"
+        },
+        {
+          "line": 285,
+          "expected": "Prediction returns an original category"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_5__False___squared_error__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "The non-one-hot classifier scores above threshold for the selected loss"
+        },
+        {
+          "line": 285,
+          "expected": "Prediction returns an original category"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/41bcc3b2af9b14dde3553b8e7acd0c8bacb7c507/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/41bcc3b2af9b14dde3553b8e7acd0c8bacb7c507/test/algorithms/classifiers/test_vqc.py"
+  ],
+  "rationale": "Categorical and integer-label cases explicitly assert that predictions retain the supplied class-label representation. A malformed one-hot matrix and exposed class count are interface checks; the independent nonparameterized VQC case only checks generic predictive score."
+}

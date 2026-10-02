@@ -1,0 +1,15 @@
+prediction_model_name: gemini-3-flash-preview
+_model_source: openrouter
+model:
+  model_class: openrouter
+  model_name: google/gemini-3-flash-preview
+  model_kwargs:
+    temperature: 0.0
+    max_tokens: 16384
+    reasoning:
+      effort: minimal
+      exclude: true
+# Per-instance platform comes from the validated sample metadata.
+# The model client runs on the host; the repository container stays offline.
+environment:
+  run_args: ["--rm", "--network", "none", "--cap-add=NET_ADMIN"]

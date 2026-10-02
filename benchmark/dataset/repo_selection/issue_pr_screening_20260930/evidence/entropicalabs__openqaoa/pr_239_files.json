@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "d0f2d631cb31d93879995925aa83037253d091c5",
+    "filename": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "status": "modified",
+    "additions": 34,
+    "deletions": 1,
+    "changes": 35,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/3fb58b0ed714eacc420f04997ac42efb81e951aa/src%2Fopenqaoa-core%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/3fb58b0ed714eacc420f04997ac42efb81e951aa/src%2Fopenqaoa-core%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/src%2Fopenqaoa-core%2Falgorithms%2Fqaoa%2Fqaoa_workflow.py?ref=3fb58b0ed714eacc420f04997ac42efb81e951aa",
+    "patch": "@@ -17,7 +17,7 @@\n from ...qaoa_components.variational_parameters.variational_baseparams import (\n     QAOAVariationalBaseParams,\n )\n-from ...utilities import get_mixer_hamiltonian, generate_timestamp\n+from ...utilities import get_mixer_hamiltonian, generate_timestamp, ground_state_hamiltonian\n from ...optimizers.qaoa_optimizer import get_optimizer\n \n \n@@ -301,6 +301,38 @@ def compile(\n                 )\n \n         return None\n+    \n+    def solve_brute_force(self, bounded=True, verbose=False):\n+        \"\"\"\n+        A method to solve the QAOA problem using brute force i.e. by \n+        evaluating the cost function at all possible bitstrings\n+\n+        Parameters\n+        ----------\n+        bounded: `bool`, optional\n+            If set to True, the function will not perform computations for qubit\n+            numbers above 25. If False, the user can specify any number. Defaults\n+            to True.\n+        verbose: `bool`, optional\n+            If set to True, the function will print the results of the computation.\n+            Defaults to False.\n+        \"\"\"\n+\n+        if self.compiled is False:\n+            raise ValueError(\"Please compile the QAOA before running the brute force solver!\")\n+        \n+        # compute the exact ground state and ground state energy of the cost hamiltonian\n+        energy, configuration = ground_state_hamiltonian(self.cost_hamil, bounded=bounded)\n+\n+        if verbose:\n+            print(f\"Ground State energy: {energy}, Solution: {configuration}\")\n+\n+        self.brute_force_results = {\n+            \"energy\": energy,\n+            \"configuration\": configuration,\n+        }\n+\n+        return None\n \n     def optimize(self, verbose=False):\n         \"\"\"\n@@ -475,3 +507,4 @@ def _serializable_dict(\n             ][\"circuit_properties\"][\"q\"]\n \n         return serializable_dict\n+    \n\\ No newline at end of file"
+  }
+]

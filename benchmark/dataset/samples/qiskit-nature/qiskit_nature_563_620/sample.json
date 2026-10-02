@@ -1,0 +1,148 @@
+{
+  "instance": {
+    "id": 67,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_563_620",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/563",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/620",
+    "base_commit": "f29f54f3962d9a30345ffb8f98d87d4c985bc71c",
+    "patch": "e9fc62d3dc9f4aa05130dc910ee5764e85ca38a7"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task wraps lattice Hamiltonians in a problem/result workflow rather than defining new lattice-model physics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/problems/second_quantization/__init__.py",
+      "qiskit_nature/problems/second_quantization/base_problem.py",
+      "qiskit_nature/problems/second_quantization/lattice/__init__.py",
+      "qiskit_nature/problems/second_quantization/lattice/lattice_model_problem.py",
+      "qiskit_nature/problems/second_quantization/lattice/models/fermi_hubbard_model.py",
+      "qiskit_nature/results/__init__.py",
+      "qiskit_nature/results/lattice_model_result.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature has lattice model Hamiltonians, but they cannot be used through the same problem abstraction workflow as electronic and vibrational structure problems. Users need a lattice model problem abstraction that wraps a lattice model Hamiltonian, exposes its second-quantized operators to solvers, and interprets raw eigensolver outputs as lattice-model results.",
+    "requirements": [
+      "A lattice model problem must be constructible from a lattice model Hamiltonian.",
+      "The problem must expose the lattice model Hamiltonian through the standard second-quantized-operator entry point using the lattice energy as the main property.",
+      "The operator returned by the problem must match the operator produced by the wrapped lattice model.",
+      "Interpreting an EigenstateResult must preserve eigenenergies, eigenstates, and auxiliary-operator eigenvalues in a lattice model result.",
+      "Interpreting an EigensolverResult must convert eigenvalues, eigenstates, and auxiliary-operator eigenvalues into the corresponding lattice model result fields.",
+      "Interpreting a MinimumEigensolverResult must convert the scalar eigenvalue and eigenstate into one-element lattice-model result collections.",
+      "LatticeModelProblem must be importable from the second-quantization problems package.",
+      "LatticeModelResult must be importable from the results package.",
+      "Existing Fermi-Hubbard model construction and second-quantized operator behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "LatticeModelProblem",
+        "Path": "qiskit_nature/problems/second_quantization/lattice/lattice_model_problem.py",
+        "Input": "constructor: lattice_model",
+        "Output": "",
+        "Description": "Wraps a lattice model Hamiltonian as a second-quantization problem with main property name LatticeEnergy."
+      },
+      {
+        "Type": "Method",
+        "Name": "LatticeModelProblem.second_q_ops",
+        "Path": "qiskit_nature/problems/second_quantization/lattice/lattice_model_problem.py",
+        "Input": "",
+        "Output": "list or dict of SecondQuantizedOp",
+        "Description": "Returns the wrapped lattice model Hamiltonian operator under the problem's standard second-quantized-operator interface."
+      },
+      {
+        "Type": "Method",
+        "Name": "LatticeModelProblem.interpret",
+        "Path": "qiskit_nature/problems/second_quantization/lattice/lattice_model_problem.py",
+        "Input": "raw_result",
+        "Output": "LatticeModelResult",
+        "Description": "Converts EigenstateResult, EigensolverResult, or MinimumEigensolverResult data into a lattice model result."
+      },
+      {
+        "Type": "Class",
+        "Name": "LatticeModelResult",
+        "Path": "qiskit_nature/results/lattice_model_result.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Stores interpreted lattice-model eigenstate data and computed lattice energies."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_563_620",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:4e9bbe59141f43d867d11726c2a64ba02b9fc553ed8f132ebb02b1e822602ede",
+      "image_size": "1077298802"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "scikit-learn>=0.20.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_second_q_ops",
+          "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_interpret"
+        ],
+        "result": "passed",
+        "summary": "2 passed in 1.96s",
+        "duration_seconds": 4.85
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_uniform_parameters",
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_from_parameters"
+        ],
+        "result": "passed",
+        "summary": "3 passed in 2.31s",
+        "duration_seconds": 5.27
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_second_q_ops",
+          "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_interpret"
+        ],
+        "result": "failed",
+        "summary": "2 errors in 1.94s; ImportError: cannot import name 'LatticeModelProblem' from 'qiskit_nature.problems.second_quantization'",
+        "duration_seconds": 7.89
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_uniform_parameters",
+          "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_from_parameters"
+        ],
+        "result": "passed",
+        "summary": "3 passed in 1.91s",
+        "duration_seconds": 8.69
+      }
+    }
+  }
+}

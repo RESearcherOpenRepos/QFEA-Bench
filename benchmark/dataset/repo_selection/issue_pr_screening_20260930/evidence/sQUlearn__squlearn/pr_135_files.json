@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "730317366f7ca8c22919d579e8883e50d05f088a",
+    "filename": "docs/conf.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 6,
+    "changes": 16,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/78c38e49f5e6a871b876511d9fa1bf27dc5f455e/docs%2Fconf.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/78c38e49f5e6a871b876511d9fa1bf27dc5f455e/docs%2Fconf.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/docs%2Fconf.py?ref=78c38e49f5e6a871b876511d9fa1bf27dc5f455e",
+    "patch": "@@ -32,6 +32,7 @@\n extensions = [\n     \"sphinx.ext.autodoc\",\n     \"sphinx.ext.autosummary\",\n+    \"sphinx.ext.intersphinx\",\n     \"sphinx.ext.napoleon\",\n     \"sphinxcontrib.spelling\",\n     \"matplotlib.sphinxext.plot_directive\",\n@@ -45,21 +46,19 @@\n     \".md\": \"markdown\",\n }\n \n-autodoc_default_options = {\n-    \"members\": True,\n-    \"inherited-members\": True,\n-    \"member-order\": \"groupwise\",\n-}\n-autodoc_mock_imports = [\"sklearn\"]\n+autodoc_default_options = {\"members\": True, \"inherited-members\": True}\n+\n \n # Skip property members --> They should be defined in Attributes\n def skip_property_member(app, what, name, obj, skip, options):\n     if isinstance(obj, property):\n         return True\n \n+\n def setup(app):\n     app.connect(\"autodoc-skip-member\", skip_property_member)\n \n+\n # Add any paths that contain templates here, relative to this directory.\n templates_path = [\"_templates\"]\n \n@@ -92,3 +91,8 @@ def setup(app):\n \n # Allow numbering for figures\n numfig = True\n+\n+# intersphinx\n+intersphinx_mapping = {\n+    \"sklearn\": (\"http://scikit-learn.org/stable\", (None, \"./_intersphinx/sklearn-objects.inv\"))\n+}"
+  }
+]

@@ -1,0 +1,308 @@
+{
+  "id": 25,
+  "sample_id": "qiskit_machine_learning_227_244",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "93f8cbb3f4f92d40648d616312a4201dedf71113",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 22,
+    "subtype_test_counts": {
+      "general_semantics/model_training_performance": 3,
+      "interface/input_validation": 6,
+      "quantum_semantics/quantum_kernel_evaluation": 9,
+      "quantum_semantics/circuit_decomposition": 5
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 78,
+          "expected": "A classifier using the default trained quantum kernel scores at least 0.5"
+        },
+        {
+          "line": 86,
+          "expected": "Optimized kernel user parameters are fully bound"
+        },
+        {
+          "line": 92,
+          "expected": "A classifier using a custom-loss trained kernel scores at least 0.5"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_callable",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 71,
+          "expected": "A classifier using callable quantum kernel scoring reaches 0.5"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_precomputed",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "A classifier using precomputed quantum kernel scoring reaches 0.5"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_no_backend",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 280,
+          "expected": "Evaluating without a backend raises QiskitMachineLearningError"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_nopsd",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 236,
+          "expected": "The sampled qasm kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_psd",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 244,
+          "expected": "The PSD-projected sampled qasm kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_symmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 196,
+          "expected": "The symmetric qasm kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_unsymmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 204,
+          "expected": "The rectangular qasm kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_symmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 214,
+          "expected": "The symmetric statevector kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_unsymmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 224,
+          "expected": "The rectangular statevector kernel matches the reference overlap matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_more_dim",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 287,
+          "expected": "Input data with too many dimensions raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_one_dim",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 254,
+          "expected": "A singleton quantum kernel has the reference self-overlap value"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_xy_one_dim",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 274,
+          "expected": "A singleton cross-kernel has the reference overlap value"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_feature_dim",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 301,
+          "expected": "Mismatched Y feature dimension raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_more_dim",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 294,
+          "expected": "Y input with too many dimensions raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_one_dim",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 264,
+          "expected": "A one-column cross-kernel matches the reference overlap vector"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 321,
+          "expected": "Inner-product circuit decomposes into four operations"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct_nomeasurement",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 333,
+          "expected": "Unmeasured inner-product circuit decomposes into two operations"
+        }
+      ]
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerprodect_nomeasurement",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 339,
+          "expected": "Unmeasured self-inner-product circuit decomposes into two operations"
+        }
+      ]
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 327,
+          "expected": "Self-inner-product circuit decomposes into four operations"
+        }
+      ]
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 345,
+          "expected": "Statevector-mode circuit decomposes into one operation"
+        }
+      ]
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_xdim",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 351,
+          "expected": "Constructing a kernel circuit with incompatible X features raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_ydim",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 358,
+          "expected": "Constructing a kernel circuit with incompatible Y features raises ValueError"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/93f8cbb3f4f92d40648d616312a4201dedf71113/test/kernels/algorithms/test_qkernel_trainer.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/93f8cbb3f4f92d40648d616312a4201dedf71113/test/kernels/test_qkernel.py"
+  ],
+  "rationale": "Classifier scores directly assess predictive performance. Kernel matrices compare quantum feature-map overlaps; decomposed kernel circuits check circuit structure. Missing backend and input dimensions test API validation."
+}

@@ -1,0 +1,131 @@
+{
+  "id": 103,
+  "sample_id": "qiskit_optimization_80_122",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "cfe0b8230d62bf6e652f16cc7f91d769a5eedea9",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 7,
+    "subtype_test_counts": {
+      "interface/docplex_model_translation": 2,
+      "interface/default_model_state": 1,
+      "general_semantics/linear_constraint_representation": 1,
+      "general_semantics/objective_representation": 1,
+      "general_semantics/quadratic_constraint_representation": 1,
+      "interface/variable_management": 1,
+      "interface/lp_file_io": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to",
+      "label": "interface/docplex_model_translation",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Translator preserves objective, variable names and constraint coefficients round-trip."
+        }
+      ],
+      "rationale": "Translator preserves objective, variable names and constraint coefficients round-trip."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+      "label": "interface/default_model_state",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "QuadraticProgram constructor creates an empty zero-objective model."
+        }
+      ],
+      "rationale": "QuadraticProgram constructor creates an empty zero-objective model."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_docplex",
+      "label": "interface/docplex_model_translation",
+      "assertions": [
+        {
+          "line": 983,
+          "expected": "Existing model method preserves quadratic constraint coefficients round-trip."
+        }
+      ],
+      "rationale": "Existing model method preserves quadratic constraint coefficients round-trip."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+      "label": "general_semantics/linear_constraint_representation",
+      "assertions": [
+        {
+          "line": 511,
+          "expected": "Linear constraints keep their coefficients, senses and bounds."
+        }
+      ],
+      "rationale": "Linear constraints keep their coefficients, senses and bounds."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+      "label": "general_semantics/objective_representation",
+      "assertions": [
+        {
+          "line": 715,
+          "expected": "Objective matrix retains linear and quadratic terms."
+        }
+      ],
+      "rationale": "Objective matrix retains linear and quadratic terms."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+      "label": "general_semantics/quadratic_constraint_representation",
+      "assertions": [
+        {
+          "line": 640,
+          "expected": "Quadratic constraints retain matrix terms and sense."
+        }
+      ],
+      "rationale": "Quadratic constraints retain matrix terms and sense."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+      "label": "interface/variable_management",
+      "assertions": [
+        {
+          "line": 472,
+          "expected": "Variable names and bounds remain indexed consistently."
+        }
+      ],
+      "rationale": "Variable names and bounds remain indexed consistently."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_write_to_lp_file",
+      "label": "interface/lp_file_io",
+      "assertions": [
+        {
+          "line": 876,
+          "expected": "QuadraticProgram writes an LP file matching the expected contents."
+        }
+      ],
+      "rationale": "QuadraticProgram writes an LP file matching the expected contents."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/cfe0b8230d62bf6e652f16cc7f91d769a5eedea9/test/problems/test_quadratic_program.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/cfe0b8230d62bf6e652f16cc7f91d769a5eedea9/test/translators/test_docplex_mp.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

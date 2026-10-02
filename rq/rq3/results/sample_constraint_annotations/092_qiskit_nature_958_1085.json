@@ -1,0 +1,1623 @@
+{
+  "id": 92,
+  "sample_id": "qiskit_nature_958_1085",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "11fe4f6b59e8261c26100c225d76f39311bccab1",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 52,
+    "p2p_tests": 68,
+    "subtype_test_counts": {
+      "general_semantics/operator_addition": 3,
+      "quantum_semantics/bosonic_adjoint": 1,
+      "quantum_semantics/bosonic_commutation": 1,
+      "quantum_semantics/bosonic_operator_composition": 1,
+      "general_semantics/scalar_arithmetic": 9,
+      "general_semantics/numeric_tolerance_comparison": 3,
+      "quantum_semantics/operator_tensor_product": 6,
+      "quantum_semantics/polynomial_tensor_conversion": 2,
+      "quantum_semantics/operator_hermiticity": 2,
+      "quantum_semantics/bosonic_index_order": 1,
+      "general_semantics/operator_coefficient_norm": 3,
+      "interface/register_length_inference": 3,
+      "quantum_semantics/bosonic_normal_order": 1,
+      "interface/index_permutation_contract": 2,
+      "quantum_semantics/bosonic_operator_power": 1,
+      "quantum_semantics/bosonic_simplification": 1,
+      "general_semantics/operator_subtraction": 3,
+      "interface/structured_term_conversion": 3,
+      "interface/input_validation": 24,
+      "interface/unsupported_output_contract": 1,
+      "quantum_semantics/boson_qubit_mapping": 18,
+      "quantum_semantics/vibrational_adjoint": 1,
+      "quantum_semantics/vibrational_operator_composition": 1,
+      "quantum_semantics/vibrational_index_order": 1,
+      "quantum_semantics/vibrational_normal_order": 1,
+      "interface/unsupported_operation": 1,
+      "quantum_semantics/vibrational_operator_power": 1,
+      "quantum_semantics/vibrational_simplification": 1,
+      "quantum_semantics/fermionic_adjoint": 1,
+      "quantum_semantics/fermionic_operator_composition": 1,
+      "quantum_semantics/fermionic_index_order": 1,
+      "quantum_semantics/fermionic_normal_order": 1,
+      "quantum_semantics/fermionic_operator_power": 1,
+      "quantum_semantics/fermionic_simplification": 1,
+      "quantum_semantics/fermionic_matrix_representation": 1,
+      "quantum_semantics/spin_qubit_mapping": 12,
+      "interface/register_length_override": 3,
+      "quantum_semantics/vibrational_qubit_mapping": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_add",
+      "label": "general_semantics/operator_addition",
+      "assertions": [
+        {
+          "line": 92,
+          "expected": "Addition combines bosonic labels and symbolic coefficients."
+        }
+      ],
+      "rationale": "Addition combines bosonic labels and symbolic coefficients."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_adjoint",
+      "label": "quantum_semantics/bosonic_adjoint",
+      "assertions": [
+        {
+          "line": 381,
+          "expected": "Adjoint reverses ladder order and conjugates coefficients."
+        }
+      ],
+      "rationale": "Adjoint reverses ladder order and conjugates coefficients."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_commutator",
+      "label": "quantum_semantics/bosonic_commutation",
+      "assertions": [
+        {
+          "line": 252,
+          "expected": "Bosonic creation and annihilation obey their commutator."
+        }
+      ],
+      "rationale": "Bosonic creation and annihilation obey their commutator."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_compose",
+      "label": "quantum_semantics/bosonic_operator_composition",
+      "assertions": [
+        {
+          "line": 294,
+          "expected": "Composition of multi-term bosonic products yields the expected ladder algebra."
+        }
+      ],
+      "rationale": "Composition of multi-term bosonic products yields the expected ladder algebra."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_div",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 80,
+          "expected": "Division by a symbolic scalar scales the operator coefficient."
+        }
+      ],
+      "rationale": "Division by a symbolic scalar scales the operator coefficient."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 445,
+          "expected": "Equivalence changes with the configured numerical tolerance."
+        }
+      ],
+      "rationale": "Equivalence changes with the configured numerical tolerance."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_expand",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 331,
+          "expected": "Reversed bosonic tensor product shifts mode labels and multiplies coefficients."
+        }
+      ],
+      "rationale": "Reversed bosonic tensor product shifts mode labels and multiplies coefficients."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_from_polynomial_tensor",
+      "label": "quantum_semantics/polynomial_tensor_conversion",
+      "assertions": [
+        {
+          "line": 517,
+          "expected": "Dense polynomial tensor entries become the expected bosonic ladder terms."
+        }
+      ],
+      "rationale": "Dense polynomial tensor entries become the expected bosonic ladder terms."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 407,
+          "expected": "A sum of bosonic ladder products is recognized as Hermitian."
+        }
+      ],
+      "rationale": "A sum of bosonic ladder products is recognized as Hermitian."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_index_order",
+      "label": "quantum_semantics/bosonic_index_order",
+      "assertions": [
+        {
+          "line": 204,
+          "expected": "Index ordering combines equivalent bosonic terms without a fermionic sign."
+        }
+      ],
+      "rationale": "Index ordering combines equivalent bosonic terms without a fermionic sign."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_induced_norm",
+      "label": "general_semantics/operator_coefficient_norm",
+      "assertions": [
+        {
+          "line": 453,
+          "expected": "Induced two-norm of operator coefficients is five."
+        }
+      ],
+      "rationale": "Induced two-norm of operator coefficients is five."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_mul",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 68,
+          "expected": "Left complex multiplication scales every bosonic coefficient."
+        }
+      ],
+      "rationale": "Left complex multiplication scales every bosonic coefficient."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_neg",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Negation also negates a symbolic coefficient."
+        }
+      ],
+      "rationale": "Negation also negates a symbolic coefficient."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_no_num_modes",
+      "label": "interface/register_length_inference",
+      "assertions": [
+        {
+          "line": 581,
+          "expected": "Mode count is inferred from the highest label index."
+        }
+      ],
+      "rationale": "Mode count is inferred from the highest label index."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_normal_order",
+      "label": "quantum_semantics/bosonic_normal_order",
+      "assertions": [
+        {
+          "line": 130,
+          "expected": "Normal ordering an annihilation-creation pair adds the identity term."
+        }
+      ],
+      "rationale": "Normal ordering an annihilation-creation pair adds the identity term."
+    },
+    {
+      "test_number": 16,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_permute_indices",
+      "label": "interface/index_permutation_contract",
+      "assertions": [
+        {
+          "line": 630,
+          "expected": "A valid permutation remaps each mode index while retaining the mode count."
+        }
+      ],
+      "rationale": "A valid permutation remaps each mode index while retaining the mode count."
+    },
+    {
+      "test_number": 17,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_pow",
+      "label": "quantum_semantics/bosonic_operator_power",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "A nontrivial square yields the expected bosonic ladder products and coefficients."
+        }
+      ],
+      "rationale": "A nontrivial square yields the expected bosonic ladder products and coefficients."
+    },
+    {
+      "test_number": 18,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_simplify",
+      "label": "quantum_semantics/bosonic_simplification",
+      "assertions": [
+        {
+          "line": 242,
+          "expected": "Simplification with index ordering retains the bosonic positive coefficient."
+        }
+      ],
+      "rationale": "Simplification with index ordering retains the bosonic positive coefficient."
+    },
+    {
+      "test_number": 19,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_sub",
+      "label": "general_semantics/operator_subtraction",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Subtraction produces the expected symbolic coefficient."
+        }
+      ],
+      "rationale": "Subtraction produces the expected symbolic coefficient."
+    },
+    {
+      "test_number": 20,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_tensor",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 321,
+          "expected": "Bosonic tensoring offsets mode indices and multiplies a symbolic coefficient."
+        }
+      ],
+      "rationale": "Bosonic tensoring offsets mode indices and multiplies a symbolic coefficient."
+    },
+    {
+      "test_number": 21,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_terms",
+      "label": "interface/structured_term_conversion",
+      "assertions": [
+        {
+          "line": 611,
+          "expected": "Structured ladder terms round-trip to the bosonic operator."
+        }
+      ],
+      "rationale": "Structured ladder terms round-trip to the bosonic operator."
+    },
+    {
+      "test_number": 22,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_01______1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "An empty bosonic label is accepted as the identity term."
+        }
+      ],
+      "rationale": "An empty bosonic label is accepted as the identity term."
+    },
+    {
+      "test_number": 23,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_02_____0___1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "A single indexed creation label is accepted."
+        }
+      ],
+      "rationale": "A single indexed creation label is accepted."
+    },
+    {
+      "test_number": 24,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_03_____0___0___1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "A two-factor creation-annihilation label is accepted."
+        }
+      ],
+      "rationale": "A two-factor creation-annihilation label is accepted."
+    },
+    {
+      "test_number": 25,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_04_____10___11__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "A valid two-digit mode index is accepted with sufficient mode count."
+        }
+      ],
+      "rationale": "A valid two-digit mode index is accepted with sufficient mode count."
+    },
+    {
+      "test_number": 26,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_05______0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "A leading space in the sparse label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "A leading space in the sparse label raises QiskitNatureError."
+    },
+    {
+      "test_number": 27,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_06_____0____1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "A trailing space in the sparse label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "A trailing space in the sparse label raises QiskitNatureError."
+    },
+    {
+      "test_number": 28,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_07_____0____0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "Repeated separator spaces raise QiskitNatureError."
+        }
+      ],
+      "rationale": "Repeated separator spaces raise QiskitNatureError."
+    },
+    {
+      "test_number": 29,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_08_____0a___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "An alphabetic suffix in a mode index raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An alphabetic suffix in a mode index raises QiskitNatureError."
+    },
+    {
+      "test_number": 30,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_09_____a0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "An alphabetic prefix in a mode index raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An alphabetic prefix in a mode index raises QiskitNatureError."
+    },
+    {
+      "test_number": 31,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_10___0_____1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "A reversed token pattern raises QiskitNatureError."
+        }
+      ],
+      "rationale": "A reversed token pattern raises QiskitNatureError."
+    },
+    {
+      "test_number": 32,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_11___something___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "An arbitrary word as a label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An arbitrary word as a label raises QiskitNatureError."
+    },
+    {
+      "test_number": 33,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_validate_12_____1___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 475,
+          "expected": "A mode index beyond the declared mode count raises QiskitNatureError."
+        }
+      ],
+      "rationale": "A mode index beyond the declared mode count raises QiskitNatureError."
+    },
+    {
+      "test_number": 34,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_error_pauli_sum_op",
+      "label": "interface/unsupported_output_contract",
+      "assertions": [
+        {
+          "line": 185,
+          "expected": "The deprecated PauliSumOp output setting raises NotImplementedError."
+        }
+      ],
+      "rationale": "The deprecated PauliSumOp output setting raises NotImplementedError."
+    },
+    {
+      "test_number": 35,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_1",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps a mode-zero creation operator to its Pauli sum."
+        }
+      ],
+      "rationale": "Occupation one maps a mode-zero creation operator to its Pauli sum."
+    },
+    {
+      "test_number": 36,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_2",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps a mode-zero annihilation operator with conjugate phases."
+        }
+      ],
+      "rationale": "Occupation one maps a mode-zero annihilation operator with conjugate phases."
+    },
+    {
+      "test_number": 37,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_3",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one places creation on the second bosonic mode's qubits."
+        }
+      ],
+      "rationale": "Occupation one places creation on the second bosonic mode's qubits."
+    },
+    {
+      "test_number": 38,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_4",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one places annihilation on the second bosonic mode's qubits."
+        }
+      ],
+      "rationale": "Occupation one places annihilation on the second bosonic mode's qubits."
+    },
+    {
+      "test_number": 39,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_5",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps the number-like creation-annihilation product."
+        }
+      ],
+      "rationale": "Occupation one maps the number-like creation-annihilation product."
+    },
+    {
+      "test_number": 40,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_6",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps the reversed annihilation-creation product."
+        }
+      ],
+      "rationale": "Occupation one maps the reversed annihilation-creation product."
+    },
+    {
+      "test_number": 41,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_7",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps a cross-mode creation-annihilation product."
+        }
+      ],
+      "rationale": "Occupation one maps a cross-mode creation-annihilation product."
+    },
+    {
+      "test_number": 42,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_8",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one maps the reverse-order cross-mode product."
+        }
+      ],
+      "rationale": "Occupation one maps the reverse-order cross-mode product."
+    },
+    {
+      "test_number": 43,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_9",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Occupation one makes double creation vanish at the cutoff."
+        }
+      ],
+      "rationale": "Occupation one makes double creation vanish at the cutoff."
+    },
+    {
+      "test_number": 44,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_1",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps creation with square-root-two transition weights."
+        }
+      ],
+      "rationale": "Occupation two maps creation with square-root-two transition weights."
+    },
+    {
+      "test_number": 45,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_2",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps annihilation with conjugate transition phases."
+        }
+      ],
+      "rationale": "Occupation two maps annihilation with conjugate transition phases."
+    },
+    {
+      "test_number": 46,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_3",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two places creation on the second mode's three-qubit register."
+        }
+      ],
+      "rationale": "Occupation two places creation on the second mode's three-qubit register."
+    },
+    {
+      "test_number": 47,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_4",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two places annihilation on the second mode's three-qubit register."
+        }
+      ],
+      "rationale": "Occupation two places annihilation on the second mode's three-qubit register."
+    },
+    {
+      "test_number": 48,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_5",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps the number-like product to weighted Pauli Z terms."
+        }
+      ],
+      "rationale": "Occupation two maps the number-like product to weighted Pauli Z terms."
+    },
+    {
+      "test_number": 49,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_6",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps the reversed number-like product with distinct weights."
+        }
+      ],
+      "rationale": "Occupation two maps the reversed number-like product with distinct weights."
+    },
+    {
+      "test_number": 50,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_7",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps the cross-mode product and its occupation weights."
+        }
+      ],
+      "rationale": "Occupation two maps the cross-mode product and its occupation weights."
+    },
+    {
+      "test_number": 51,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_8",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two maps the reverse-order cross-mode product."
+        }
+      ],
+      "rationale": "Occupation two maps the reverse-order cross-mode product."
+    },
+    {
+      "test_number": 52,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_9",
+      "label": "quantum_semantics/boson_qubit_mapping",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Occupation two permits a nonzero double-creation transition."
+        }
+      ],
+      "rationale": "Occupation two permits a nonzero double-creation transition."
+    },
+    {
+      "test_number": 53,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+      "label": "general_semantics/operator_addition",
+      "assertions": [
+        {
+          "line": 87,
+          "expected": "Vibrational operator addition combines matching coefficients."
+        }
+      ],
+      "rationale": "Vibrational operator addition combines matching coefficients."
+    },
+    {
+      "test_number": 54,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_adjoint",
+      "label": "quantum_semantics/vibrational_adjoint",
+      "assertions": [
+        {
+          "line": 193,
+          "expected": "Vibrational adjoint reverses modal ladder factors and conjugates coefficients."
+        }
+      ],
+      "rationale": "Vibrational adjoint reverses modal ladder factors and conjugates coefficients."
+    },
+    {
+      "test_number": 55,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_automatic_num_modals",
+      "label": "interface/register_length_inference",
+      "assertions": [
+        {
+          "line": 45,
+          "expected": "Modal counts are inferred separately for each vibrational mode."
+        }
+      ],
+      "rationale": "Modal counts are inferred separately for each vibrational mode."
+    },
+    {
+      "test_number": 56,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_compose",
+      "label": "quantum_semantics/vibrational_operator_composition",
+      "assertions": [
+        {
+          "line": 135,
+          "expected": "Mixed vibrational creation-annihilation commutator gives the identity."
+        }
+      ],
+      "rationale": "Mixed vibrational creation-annihilation commutator gives the identity."
+    },
+    {
+      "test_number": 57,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_div",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Division scales the vibrational operator coefficient."
+        }
+      ],
+      "rationale": "Division scales the vibrational operator coefficient."
+    },
+    {
+      "test_number": 58,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 243,
+          "expected": "Vibrational equivalence responds to numerical tolerance."
+        }
+      ],
+      "rationale": "Vibrational equivalence responds to numerical tolerance."
+    },
+    {
+      "test_number": 59,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_expand",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 147,
+          "expected": "Reversed vibrational tensoring offsets modal labels correctly."
+        }
+      ],
+      "rationale": "Reversed vibrational tensoring offsets modal labels correctly."
+    },
+    {
+      "test_number": 60,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_index_order",
+      "label": "quantum_semantics/vibrational_index_order",
+      "assertions": [
+        {
+          "line": 374,
+          "expected": "Index ordering yields the expected vibrational modal term."
+        }
+      ],
+      "rationale": "Index ordering yields the expected vibrational modal term."
+    },
+    {
+      "test_number": 61,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_induced_norm",
+      "label": "general_semantics/operator_coefficient_norm",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Vibrational coefficient two-norm is five."
+        }
+      ],
+      "rationale": "Vibrational coefficient two-norm is five."
+    },
+    {
+      "test_number": 62,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Vibrational operator scalar multiplication scales coefficients."
+        }
+      ],
+      "rationale": "Vibrational operator scalar multiplication scales coefficients."
+    },
+    {
+      "test_number": 63,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_neg",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 55,
+          "expected": "Vibrational negation flips the coefficient."
+        }
+      ],
+      "rationale": "Vibrational negation flips the coefficient."
+    },
+    {
+      "test_number": 64,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_normal_order",
+      "label": "quantum_semantics/vibrational_normal_order",
+      "assertions": [
+        {
+          "line": 311,
+          "expected": "Normal ordering applies vibrational ladder commutation."
+        }
+      ],
+      "rationale": "Normal ordering applies vibrational ladder commutation."
+    },
+    {
+      "test_number": 65,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_permute_indices",
+      "label": "interface/unsupported_operation",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Vibrational index permutation is explicitly unsupported."
+        }
+      ],
+      "rationale": "Vibrational index permutation is explicitly unsupported."
+    },
+    {
+      "test_number": 66,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_pow",
+      "label": "quantum_semantics/vibrational_operator_power",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "Powers of vibrational operators yield the expected modal terms."
+        }
+      ],
+      "rationale": "Powers of vibrational operators yield the expected modal terms."
+    },
+    {
+      "test_number": 67,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify",
+      "label": "quantum_semantics/vibrational_simplification",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "Vibrational simplification with index ordering combines modal terms."
+        }
+      ],
+      "rationale": "Vibrational simplification with index ordering combines modal terms."
+    },
+    {
+      "test_number": 68,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_sub",
+      "label": "general_semantics/operator_subtraction",
+      "assertions": [
+        {
+          "line": 93,
+          "expected": "Vibrational subtraction cancels the matching coefficient."
+        }
+      ],
+      "rationale": "Vibrational subtraction cancels the matching coefficient."
+    },
+    {
+      "test_number": 69,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_tensor",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Vibrational tensor product shifts modal indices."
+        }
+      ],
+      "rationale": "Vibrational tensor product shifts modal indices."
+    },
+    {
+      "test_number": 70,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_terms",
+      "label": "interface/structured_term_conversion",
+      "assertions": [
+        {
+          "line": 390,
+          "expected": "The vibrational term iterator returns indexed factors and coefficients."
+        }
+      ],
+      "rationale": "The vibrational term iterator returns indexed factors and coefficients."
+    },
+    {
+      "test_number": 71,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/operator_addition",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Fermionic addition combines numeric and symbolic coefficients."
+        }
+      ],
+      "rationale": "Fermionic addition combines numeric and symbolic coefficients."
+    },
+    {
+      "test_number": 72,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+      "label": "quantum_semantics/fermionic_adjoint",
+      "assertions": [
+        {
+          "line": 210,
+          "expected": "Fermionic adjoint reverses ladder factors and conjugates coefficients."
+        }
+      ],
+      "rationale": "Fermionic adjoint reverses ladder factors and conjugates coefficients."
+    },
+    {
+      "test_number": 73,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+      "label": "quantum_semantics/fermionic_operator_composition",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "Multi-term fermionic composition yields the expected signs."
+        }
+      ],
+      "rationale": "Multi-term fermionic composition yields the expected signs."
+    },
+    {
+      "test_number": 74,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_div",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "Fermionic division supports symbolic denominators."
+        }
+      ],
+      "rationale": "Fermionic division supports symbolic denominators."
+    },
+    {
+      "test_number": 75,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 309,
+          "expected": "Fermionic equivalence responds to configured numerical tolerance."
+        }
+      ],
+      "rationale": "Fermionic equivalence responds to configured numerical tolerance."
+    },
+    {
+      "test_number": 76,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_expand",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 161,
+          "expected": "Reversed fermionic tensoring shifts orbital indices and coefficients."
+        }
+      ],
+      "rationale": "Reversed fermionic tensoring shifts orbital indices and coefficients."
+    },
+    {
+      "test_number": 77,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor",
+      "label": "quantum_semantics/polynomial_tensor_conversion",
+      "assertions": [
+        {
+          "line": 546,
+          "expected": "Dense polynomial tensor data become fermionic ladder terms."
+        }
+      ],
+      "rationale": "Dense polynomial tensor data become fermionic ladder terms."
+    },
+    {
+      "test_number": 78,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 286,
+          "expected": "Hermitian fermionic operator is recognized after adjoint and simplification."
+        }
+      ],
+      "rationale": "Hermitian fermionic operator is recognized after adjoint and simplification."
+    },
+    {
+      "test_number": 79,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_index_order",
+      "label": "quantum_semantics/fermionic_index_order",
+      "assertions": [
+        {
+          "line": 474,
+          "expected": "Index ordering applies the required fermionic exchange sign."
+        }
+      ],
+      "rationale": "Index ordering applies the required fermionic exchange sign."
+    },
+    {
+      "test_number": 80,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_induced_norm",
+      "label": "general_semantics/operator_coefficient_norm",
+      "assertions": [
+        {
+          "line": 482,
+          "expected": "Fermionic coefficient two-norm is five."
+        }
+      ],
+      "rationale": "Fermionic coefficient two-norm is five."
+    },
+    {
+      "test_number": 81,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 66,
+          "expected": "Left complex multiplication scales fermionic coefficients."
+        }
+      ],
+      "rationale": "Left complex multiplication scales fermionic coefficients."
+    },
+    {
+      "test_number": 82,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_neg",
+      "label": "general_semantics/scalar_arithmetic",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Fermionic negation flips a symbolic coefficient."
+        }
+      ],
+      "rationale": "Fermionic negation flips a symbolic coefficient."
+    },
+    {
+      "test_number": 83,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_no_num_spin_orbitals",
+      "label": "interface/register_length_inference",
+      "assertions": [
+        {
+          "line": 610,
+          "expected": "Spin-orbital count is inferred from the largest label index."
+        }
+      ],
+      "rationale": "Spin-orbital count is inferred from the largest label index."
+    },
+    {
+      "test_number": 84,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_normal_order",
+      "label": "quantum_semantics/fermionic_normal_order",
+      "assertions": [
+        {
+          "line": 404,
+          "expected": "Fermionic normal ordering applies anticommutation."
+        }
+      ],
+      "rationale": "Fermionic normal ordering applies anticommutation."
+    },
+    {
+      "test_number": 85,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_permute_indices",
+      "label": "interface/index_permutation_contract",
+      "assertions": [
+        {
+          "line": 671,
+          "expected": "A valid permutation remaps orbital labels while retaining register size."
+        }
+      ],
+      "rationale": "A valid permutation remaps orbital labels while retaining register size."
+    },
+    {
+      "test_number": 86,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+      "label": "quantum_semantics/fermionic_operator_power",
+      "assertions": [
+        {
+          "line": 186,
+          "expected": "Fermionic operator powers produce the expected ladder terms."
+        }
+      ],
+      "rationale": "Fermionic operator powers produce the expected ladder terms."
+    },
+    {
+      "test_number": 87,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+      "label": "quantum_semantics/fermionic_simplification",
+      "assertions": [
+        {
+          "line": 255,
+          "expected": "Simplification and index ordering preserve the fermionic sign."
+        }
+      ],
+      "rationale": "Simplification and index ordering preserve the fermionic sign."
+    },
+    {
+      "test_number": 88,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_sub",
+      "label": "general_semantics/operator_subtraction",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Fermionic subtraction yields the expected symbolic coefficient."
+        }
+      ],
+      "rationale": "Fermionic subtraction yields the expected symbolic coefficient."
+    },
+    {
+      "test_number": 89,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+      "label": "quantum_semantics/operator_tensor_product",
+      "assertions": [
+        {
+          "line": 151,
+          "expected": "Fermionic tensor product offsets orbital labels."
+        }
+      ],
+      "rationale": "Fermionic tensor product offsets orbital labels."
+    },
+    {
+      "test_number": 90,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_terms",
+      "label": "interface/structured_term_conversion",
+      "assertions": [
+        {
+          "line": 652,
+          "expected": "Structured fermionic terms round-trip to the sparse operator."
+        }
+      ],
+      "rationale": "Structured fermionic terms round-trip to the sparse operator."
+    },
+    {
+      "test_number": 91,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 371,
+          "expected": "Fermionic operator matrix gives the expected ground-state energy."
+        }
+      ],
+      "rationale": "Fermionic operator matrix gives the expected ground-state energy."
+    },
+    {
+      "test_number": 92,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_01______1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 502,
+          "expected": "An empty fermionic label is accepted."
+        }
+      ],
+      "rationale": "An empty fermionic label is accepted."
+    },
+    {
+      "test_number": 93,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_02_____0___1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 502,
+          "expected": "A single indexed fermionic creation label is accepted."
+        }
+      ],
+      "rationale": "A single indexed fermionic creation label is accepted."
+    },
+    {
+      "test_number": 94,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_03_____0___0___1__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 502,
+          "expected": "A two-factor fermionic label is accepted."
+        }
+      ],
+      "rationale": "A two-factor fermionic label is accepted."
+    },
+    {
+      "test_number": 95,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_04_____10___11__True_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 502,
+          "expected": "A two-digit orbital index is accepted with sufficient register size."
+        }
+      ],
+      "rationale": "A two-digit orbital index is accepted with sufficient register size."
+    },
+    {
+      "test_number": 96,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_05______0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "Leading whitespace in a fermionic label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "Leading whitespace in a fermionic label raises QiskitNatureError."
+    },
+    {
+      "test_number": 97,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_06_____0____1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "Trailing whitespace in a fermionic label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "Trailing whitespace in a fermionic label raises QiskitNatureError."
+    },
+    {
+      "test_number": 98,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_07_____0____0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "Repeated separator spaces in a fermionic label raise QiskitNatureError."
+        }
+      ],
+      "rationale": "Repeated separator spaces in a fermionic label raise QiskitNatureError."
+    },
+    {
+      "test_number": 99,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_08_____0a___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "An alphabetic orbital-index suffix raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An alphabetic orbital-index suffix raises QiskitNatureError."
+    },
+    {
+      "test_number": 100,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_09_____a0___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "An alphabetic orbital-index prefix raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An alphabetic orbital-index prefix raises QiskitNatureError."
+    },
+    {
+      "test_number": 101,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_10___0_____1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "Reversed fermionic token syntax raises QiskitNatureError."
+        }
+      ],
+      "rationale": "Reversed fermionic token syntax raises QiskitNatureError."
+    },
+    {
+      "test_number": 102,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_11___something___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "An arbitrary word as fermionic label raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An arbitrary word as fermionic label raises QiskitNatureError."
+    },
+    {
+      "test_number": 103,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_validate_12_____1___1__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 504,
+          "expected": "An orbital index beyond register size raises QiskitNatureError."
+        }
+      ],
+      "rationale": "An orbital index beyond register size raises QiskitNatureError."
+    },
+    {
+      "test_number": 104,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_1",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Linear mapping of squared Y spin term matches the Pauli reference."
+        }
+      ],
+      "rationale": "Linear mapping of squared Y spin term matches the Pauli reference."
+    },
+    {
+      "test_number": 105,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_2",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Linear mapping of mixed X and Z spin factors matches the Pauli reference."
+        }
+      ],
+      "rationale": "Linear mapping of mixed X and Z spin factors matches the Pauli reference."
+    },
+    {
+      "test_number": 106,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_3",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Linear mapping of a multi-site spin product matches the Pauli expansion."
+        }
+      ],
+      "rationale": "Linear mapping of a multi-site spin product matches the Pauli expansion."
+    },
+    {
+      "test_number": 107,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_4",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Linear mapping of spin-3/2 Z yields the expected weighted Pauli terms."
+        }
+      ],
+      "rationale": "Linear mapping of spin-3/2 Z yields the expected weighted Pauli terms."
+    },
+    {
+      "test_number": 108,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_5",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 91,
+          "expected": "Linear mapping retains a sparse X term plus identity across eight sites."
+        }
+      ],
+      "rationale": "Linear mapping retains a sparse X term plus identity across eight sites."
+    },
+    {
+      "test_number": 109,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_linear_mapper.py::TestLinearMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/register_length_override",
+      "assertions": [
+        {
+          "line": 100,
+          "expected": "An explicit larger register length matches mapping a pre-expanded spin operator."
+        }
+      ],
+      "rationale": "An explicit larger register length matches mapping a pre-expanded spin operator."
+    },
+    {
+      "test_number": 110,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping of one-site Y matches its Pauli reference."
+        }
+      ],
+      "rationale": "Logarithmic mapping of one-site Y matches its Pauli reference."
+    },
+    {
+      "test_number": 111,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping of mixed X and Z matches its Pauli reference."
+        }
+      ],
+      "rationale": "Logarithmic mapping of mixed X and Z matches its Pauli reference."
+    },
+    {
+      "test_number": 112,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping of a multi-site spin product matches its Pauli reference."
+        }
+      ],
+      "rationale": "Logarithmic mapping of a multi-site spin product matches its Pauli reference."
+    },
+    {
+      "test_number": 113,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping of spin-3/2 Z matches its Pauli reference."
+        }
+      ],
+      "rationale": "Logarithmic mapping of spin-3/2 Z matches its Pauli reference."
+    },
+    {
+      "test_number": 114,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping preserves an X term and identity across eight sites."
+        }
+      ],
+      "rationale": "Logarithmic mapping preserves an X term and identity across eight sites."
+    },
+    {
+      "test_number": 115,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping with padding embeds spin-one Z in the upper subspace."
+        }
+      ],
+      "rationale": "Logarithmic mapping with padding embeds spin-one Z in the upper subspace."
+    },
+    {
+      "test_number": 116,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Logarithmic mapping with lower embedding changes the reference Pauli terms."
+        }
+      ],
+      "rationale": "Logarithmic mapping with lower embedding changes the reference Pauli terms."
+    },
+    {
+      "test_number": 117,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/register_length_override",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "Explicit register length override matches a pre-expanded logarithmic spin mapping."
+        }
+      ],
+      "rationale": "Explicit register length override matches a pre-expanded logarithmic spin mapping."
+    },
+    {
+      "test_number": 118,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_direct_mapper.py::TestDirectMapper::test_larger_tutorial_qubit_op",
+      "label": "quantum_semantics/vibrational_qubit_mapping",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Direct mapping of the three-modal vibrational problem matches its Pauli reference."
+        }
+      ],
+      "rationale": "Direct mapping of the three-modal vibrational problem matches its Pauli reference."
+    },
+    {
+      "test_number": 119,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_direct_mapper.py::TestDirectMapper::test_mapping",
+      "label": "quantum_semantics/vibrational_qubit_mapping",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "Direct mapping of the two-modal vibrational problem matches its Pauli reference."
+        }
+      ],
+      "rationale": "Direct mapping of the two-modal vibrational problem matches its Pauli reference."
+    },
+    {
+      "test_number": 120,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_direct_mapper.py::TestDirectMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/register_length_override",
+      "assertions": [
+        {
+          "line": 95,
+          "expected": "Direct mapper register override matches mapping a pre-expanded vibrational operator."
+        }
+      ],
+      "rationale": "Direct mapper register override matches mapping a pre-expanded vibrational operator."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/mappers/test_bosonic_linear_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/mappers/test_direct_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/mappers/test_linear_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/mappers/test_logarithmic_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/operators/test_bosonic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/11fe4f6b59e8261c26100c225d76f39311bccab1/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Each of the 120 selectors was reviewed against its test body and parameter row; one decisive constraint is recorded per selector."
+}

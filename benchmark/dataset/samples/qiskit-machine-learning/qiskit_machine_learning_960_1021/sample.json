@@ -1,0 +1,159 @@
+{
+  "instance": {
+    "id": 45,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_960_1021",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/960",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/1021",
+    "base_commit": "46d9ba4b4c7e946f1ee14fd75455fd05909e4271",
+    "patch": "ef567f6e12906d7a4c7f3e6dbafb8ec546f98749"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines regression loss semantics for training parameterized quantum kernels and using optimized kernels in quantum regression workflows."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/utils/loss_functions/__init__.py",
+      "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository supports kernel-based training for classification through an SVC-oriented loss, but it does not provide corresponding regression-oriented kernel loss functions. As a result, the kernel trainer cannot be used naturally for regression workflows such as support-vector regression, even though the repository already has trainable kernel and trainer abstractions for this kind of workflow. The repository should support regression-focused kernel losses that integrate with the existing training flow.",
+    "requirements": [
+      "The new regression losses must follow the existing kernel-loss evaluation protocol so they can be used by the kernel trainer with trainable quantum kernels, training data, and regression labels.",
+      "They must support regression-oriented fitting based on support-vector-regression-style kernel training.",
+      "Training with any of the new regression losses must produce concrete bound training-parameter values on the resulting quantum kernel.",
+      "A quantum kernel trained with any of the new regression losses must be usable by the repository's quantum support-vector regressor for fitting and scoring regression data, producing finite scores."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SVRLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "constructor: **kwargs",
+        "Output": "",
+        "Description": "SVR-based regression kernel loss."
+      },
+      {
+        "Type": "Method",
+        "Name": "SVRLoss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "self, parameter_values, quantum_kernel, data, labels",
+        "Output": "float",
+        "Description": "Evaluates the SVR-based regression kernel loss."
+      },
+      {
+        "Type": "Class",
+        "Name": "MSRLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "constructor: **kwargs",
+        "Output": "",
+        "Description": "Mean squared regression kernel loss."
+      },
+      {
+        "Type": "Method",
+        "Name": "MSRLoss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "self, parameter_values, quantum_kernel, data, labels",
+        "Output": "float",
+        "Description": "Evaluates the mean squared regression kernel loss."
+      },
+      {
+        "Type": "Class",
+        "Name": "MARLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "constructor: **kwargs",
+        "Output": "",
+        "Description": "Mean absolute regression kernel loss."
+      },
+      {
+        "Type": "Method",
+        "Name": "MARLoss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "self, parameter_values, quantum_kernel, data, labels",
+        "Output": "float",
+        "Description": "Evaluates the mean absolute regression kernel loss."
+      },
+      {
+        "Type": "Class",
+        "Name": "HuberLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "constructor: delta: float = 1.0, **kwargs",
+        "Output": "",
+        "Description": "Huber regression kernel loss."
+      },
+      {
+        "Type": "Method",
+        "Name": "HuberLoss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "self, parameter_values, quantum_kernel, data, labels",
+        "Output": "float",
+        "Description": "Evaluates the Huber regression kernel loss."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_960_1021",
+      "image_id": "sha256:ce1644159d76afd8c6a328a8c22d5f5426ae6928448748e4d8b0f760295d8f73",
+      "image_size": "1262823424"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_1_SVRLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_2_MSRLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_3_MARLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_4_HuberLoss"
+        ],
+        "summary": "4 passed in 5.19s",
+        "duration_seconds": 9.97
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_1",
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_2"
+        ],
+        "summary": "2 passed in 2.51s",
+        "duration_seconds": 7.8
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_1_SVRLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_2_MSRLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_3_MARLoss",
+          "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_4_HuberLoss"
+        ],
+        "summary": "ImportError during collection: cannot import name 'SVRLoss' from qiskit_machine_learning.utils.loss_functions; 1 error in 3.01s",
+        "duration_seconds": 12.21
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_1",
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_2"
+        ],
+        "summary": "2 passed in 3.77s",
+        "duration_seconds": 13.47
+      }
+    }
+  }
+}

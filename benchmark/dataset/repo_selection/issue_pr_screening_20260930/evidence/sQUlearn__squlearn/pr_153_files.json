@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "27002c688a6d78210b285a567e7217e734b17446",
+    "filename": "src/squlearn/kernel/matrix/projected_quantum_kernel.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/71018873bed3e388a28f92b73f660fd818ae5c60/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/71018873bed3e388a28f92b73f660fd818ae5c60/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fprojected_quantum_kernel.py?ref=71018873bed3e388a28f92b73f660fd818ae5c60",
+    "patch": "@@ -611,6 +611,12 @@ def __call__(\n         # Evaluate QNN\n         param = parameters[: qnn.num_parameters]\n         param_op = parameters[qnn.num_parameters :]\n+\n+        if len(param.shape) == 1 and len(param) == 1:\n+            param = float(param)\n+        if len(param_op.shape) == 1 and len(param_op) == 1:\n+            param_op = float(param_op)\n+\n         x_result = qnn.evaluate_f(x, param, param_op)\n         if y is not None:\n             y_result = qnn.evaluate_f(y, param, param_op)"
+  }
+]

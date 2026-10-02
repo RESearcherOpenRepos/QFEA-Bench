@@ -1,0 +1,490 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422453",
+    "pull_request_review_id": 663450130,
+    "id": 635422453,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQyMjQ1Mw==",
+    "diff_hunk": "@@ -291,6 +313,12 @@ def _probability_gradients(\n         # initialize empty gradients\n         input_grad = None  # by default we don't have data gradients\n         if self._sparse:\n+            if not _HAS_SPARSE:\n+                raise MissingOptionalLibraryError(\n+                    libname=\"sparse\",\n+                    name=\"DOK\",\n+                    pip_install=\"pip install 'qiskit-machine-learning[sparse]'\",\n+                )",
+    "path": "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "adekusar-drl",
+      "id": 62334182,
+      "node_id": "MDQ6VXNlcjYyMzM0MTgy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62334182?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/adekusar-drl",
+      "html_url": "https://github.com/adekusar-drl",
+      "followers_url": "https://api.github.com/users/adekusar-drl/followers",
+      "following_url": "https://api.github.com/users/adekusar-drl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/adekusar-drl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/adekusar-drl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/adekusar-drl/subscriptions",
+      "organizations_url": "https://api.github.com/users/adekusar-drl/orgs",
+      "repos_url": "https://api.github.com/users/adekusar-drl/repos",
+      "events_url": "https://api.github.com/users/adekusar-drl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/adekusar-drl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Since there are two identical `if` statements in the script, might be better to have a utility method for this check? Or a global utility method for such checks.",
+    "created_at": "2021-05-19T16:54:16Z",
+    "updated_at": "2021-05-19T16:54:47Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635422453",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422453"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635422453"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422453/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 316,
+    "original_start_line": 316,
+    "start_side": "RIGHT",
+    "line": 321,
+    "original_line": 321,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 54,
+    "position": 54,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422668",
+    "pull_request_review_id": 663450130,
+    "id": 635422668,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQyMjY2OA==",
+    "diff_hunk": "@@ -16,7 +16,18 @@\n from typing import Tuple, Union, List, Optional\n \n import numpy as np\n-from sparse import SparseArray\n+\n+try:\n+    from sparse import SparseArray\n+except ImportError:\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass",
+    "path": "qiskit_machine_learning/neural_networks/sampling_neural_network.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "adekusar-drl",
+      "id": 62334182,
+      "node_id": "MDQ6VXNlcjYyMzM0MTgy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62334182?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/adekusar-drl",
+      "html_url": "https://github.com/adekusar-drl",
+      "followers_url": "https://api.github.com/users/adekusar-drl/followers",
+      "following_url": "https://api.github.com/users/adekusar-drl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/adekusar-drl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/adekusar-drl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/adekusar-drl/subscriptions",
+      "organizations_url": "https://api.github.com/users/adekusar-drl/orgs",
+      "repos_url": "https://api.github.com/users/adekusar-drl/repos",
+      "events_url": "https://api.github.com/users/adekusar-drl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/adekusar-drl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This code is present in a few scripts. Any chance we can re-use it somehow? Or keep just one fake definition of `SparseArray`?",
+    "created_at": "2021-05-19T16:54:34Z",
+    "updated_at": "2021-05-19T16:54:47Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635422668",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422668"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635422668"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635422668/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 19,
+    "original_start_line": 19,
+    "start_side": "RIGHT",
+    "line": 29,
+    "original_line": 29,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 15,
+    "position": 15,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635426591",
+    "pull_request_review_id": 663455583,
+    "id": 635426591,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQyNjU5MQ==",
+    "diff_hunk": "@@ -16,7 +16,18 @@\n from typing import Tuple, Union, List, Optional\n \n import numpy as np\n-from sparse import SparseArray\n+\n+try:\n+    from sparse import SparseArray\n+except ImportError:\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass",
+    "path": "qiskit_machine_learning/neural_networks/sampling_neural_network.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "manoelmarques",
+      "id": 16138150,
+      "node_id": "MDQ6VXNlcjE2MTM4MTUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16138150?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/manoelmarques",
+      "html_url": "https://github.com/manoelmarques",
+      "followers_url": "https://api.github.com/users/manoelmarques/followers",
+      "following_url": "https://api.github.com/users/manoelmarques/following{/other_user}",
+      "gists_url": "https://api.github.com/users/manoelmarques/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/manoelmarques/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/manoelmarques/subscriptions",
+      "organizations_url": "https://api.github.com/users/manoelmarques/orgs",
+      "repos_url": "https://api.github.com/users/manoelmarques/repos",
+      "events_url": "https://api.github.com/users/manoelmarques/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/manoelmarques/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The import and the \"fake\" SparseArray definitions need to be in the same file though. The \"fake\" SparseArray class is just because of the typehint definition not throwing errors if sparse is not installed and can only be declared if the real SparseArray is not present.",
+    "created_at": "2021-05-19T16:59:55Z",
+    "updated_at": "2021-05-19T16:59:55Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635426591",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635426591"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635426591"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635426591/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 19,
+    "original_start_line": 19,
+    "start_side": "RIGHT",
+    "line": 29,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 635422668,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 15,
+    "position": 15,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635432335",
+    "pull_request_review_id": 663463352,
+    "id": 635432335,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQzMjMzNQ==",
+    "diff_hunk": "@@ -291,6 +313,12 @@ def _probability_gradients(\n         # initialize empty gradients\n         input_grad = None  # by default we don't have data gradients\n         if self._sparse:\n+            if not _HAS_SPARSE:\n+                raise MissingOptionalLibraryError(\n+                    libname=\"sparse\",\n+                    name=\"DOK\",\n+                    pip_install=\"pip install 'qiskit-machine-learning[sparse]'\",\n+                )",
+    "path": "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "manoelmarques",
+      "id": 16138150,
+      "node_id": "MDQ6VXNlcjE2MTM4MTUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16138150?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/manoelmarques",
+      "html_url": "https://github.com/manoelmarques",
+      "followers_url": "https://api.github.com/users/manoelmarques/followers",
+      "following_url": "https://api.github.com/users/manoelmarques/following{/other_user}",
+      "gists_url": "https://api.github.com/users/manoelmarques/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/manoelmarques/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/manoelmarques/subscriptions",
+      "organizations_url": "https://api.github.com/users/manoelmarques/orgs",
+      "repos_url": "https://api.github.com/users/manoelmarques/repos",
+      "events_url": "https://api.github.com/users/manoelmarques/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/manoelmarques/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Since you need to import sparse at the file either at top level or at the moment it is used, I don't see you gaining much. You would have an import inside some utility to test sparse existence and throw the exception with a custom name, in this case 'DOK'. Then at that place in the code or at top level you still need to import SparseArray/DOK/COO and make sure to let the ImportError pass so that you can use it and then call the utility method. In the current case, you only have one top import with the _HAS_SPARSE and the tests raising the exception.",
+    "created_at": "2021-05-19T17:08:17Z",
+    "updated_at": "2021-05-19T17:10:07Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635432335",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635432335"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635432335"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635432335/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 316,
+    "original_start_line": 316,
+    "start_side": "RIGHT",
+    "line": 321,
+    "original_line": 321,
+    "side": "RIGHT",
+    "in_reply_to_id": 635422453,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 54,
+    "position": 54,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635437732",
+    "pull_request_review_id": 663470428,
+    "id": 635437732,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQzNzczMg==",
+    "diff_hunk": "@@ -16,7 +16,18 @@\n from typing import Tuple, Union, List, Optional\n \n import numpy as np\n-from sparse import SparseArray\n+\n+try:\n+    from sparse import SparseArray\n+except ImportError:\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass",
+    "path": "qiskit_machine_learning/neural_networks/sampling_neural_network.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "adekusar-drl",
+      "id": 62334182,
+      "node_id": "MDQ6VXNlcjYyMzM0MTgy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62334182?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/adekusar-drl",
+      "html_url": "https://github.com/adekusar-drl",
+      "followers_url": "https://api.github.com/users/adekusar-drl/followers",
+      "following_url": "https://api.github.com/users/adekusar-drl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/adekusar-drl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/adekusar-drl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/adekusar-drl/subscriptions",
+      "organizations_url": "https://api.github.com/users/adekusar-drl/orgs",
+      "repos_url": "https://api.github.com/users/adekusar-drl/repos",
+      "events_url": "https://api.github.com/users/adekusar-drl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/adekusar-drl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "What if \r\n```python\r\ntry:\r\n    from sparse import SparseArray\r\nexcept ImportError:\r\n    from .utils import SparseArray    # there's a fake definition somewhere in qml\r\n```\r\nOr this does not save much as well?",
+    "created_at": "2021-05-19T17:16:07Z",
+    "updated_at": "2021-05-19T17:16:08Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635437732",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635437732"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635437732"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635437732/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 19,
+    "original_start_line": 19,
+    "start_side": "RIGHT",
+    "line": 29,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 635422668,
+    "author_association": "COLLABORATOR",
+    "original_position": 15,
+    "position": 15,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635445920",
+    "pull_request_review_id": 663480826,
+    "id": 635445920,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQ0NTkyMA==",
+    "diff_hunk": "@@ -16,7 +16,18 @@\n from typing import Tuple, Union, List, Optional\n \n import numpy as np\n-from sparse import SparseArray\n+\n+try:\n+    from sparse import SparseArray\n+except ImportError:\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass",
+    "path": "qiskit_machine_learning/neural_networks/sampling_neural_network.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "manoelmarques",
+      "id": 16138150,
+      "node_id": "MDQ6VXNlcjE2MTM4MTUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16138150?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/manoelmarques",
+      "html_url": "https://github.com/manoelmarques",
+      "followers_url": "https://api.github.com/users/manoelmarques/followers",
+      "following_url": "https://api.github.com/users/manoelmarques/following{/other_user}",
+      "gists_url": "https://api.github.com/users/manoelmarques/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/manoelmarques/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/manoelmarques/subscriptions",
+      "organizations_url": "https://api.github.com/users/manoelmarques/orgs",
+      "repos_url": "https://api.github.com/users/manoelmarques/repos",
+      "events_url": "https://api.github.com/users/manoelmarques/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/manoelmarques/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "And then be careful that nobody ever imports utils by mistake if sparse exists. I believe it should not be called utils right ? As it might contain other things and if it contained the fake definition of SparseArray would prevent people from using it unless sparse is not installed. Maybe have a fake_sparse.py file with just this empty class definition and nothing else but then you just created an indirection and had to add a comment to explain what it meant for something that I could see immediately in the first case.",
+    "created_at": "2021-05-19T17:27:36Z",
+    "updated_at": "2021-05-19T17:27:36Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635445920",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635445920"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635445920"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635445920/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 19,
+    "original_start_line": 19,
+    "start_side": "RIGHT",
+    "line": 29,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 635422668,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 15,
+    "position": 15,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635453480",
+    "pull_request_review_id": 663490534,
+    "id": 635453480,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTQ1MzQ4MA==",
+    "diff_hunk": "@@ -16,7 +16,18 @@\n from typing import Tuple, Union, List, Optional\n \n import numpy as np\n-from sparse import SparseArray\n+\n+try:\n+    from sparse import SparseArray\n+except ImportError:\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass",
+    "path": "qiskit_machine_learning/neural_networks/sampling_neural_network.py",
+    "commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "original_commit_id": "df8b43884a9d17f5da9b310e06d96931cc50065c",
+    "user": {
+      "login": "adekusar-drl",
+      "id": 62334182,
+      "node_id": "MDQ6VXNlcjYyMzM0MTgy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62334182?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/adekusar-drl",
+      "html_url": "https://github.com/adekusar-drl",
+      "followers_url": "https://api.github.com/users/adekusar-drl/followers",
+      "following_url": "https://api.github.com/users/adekusar-drl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/adekusar-drl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/adekusar-drl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/adekusar-drl/subscriptions",
+      "organizations_url": "https://api.github.com/users/adekusar-drl/orgs",
+      "repos_url": "https://api.github.com/users/adekusar-drl/repos",
+      "events_url": "https://api.github.com/users/adekusar-drl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/adekusar-drl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Importing by a mistake is not great at all.",
+    "created_at": "2021-05-19T17:38:32Z",
+    "updated_at": "2021-05-19T17:38:32Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635453480",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635453480"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/103#discussion_r635453480"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/103"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/635453480/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 19,
+    "original_start_line": 19,
+    "start_side": "RIGHT",
+    "line": 29,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 635422668,
+    "author_association": "COLLABORATOR",
+    "original_position": 15,
+    "position": 15,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,145 @@
+{
+  "id": 47,
+  "sample_id": "qiskit_nature_129_161",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "6847323f65a785bc9b0e8a767c91ca6a5d0cdfdf",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/fermionic_hermiticity": 1,
+      "quantum_semantics/spin_operator_hermiticity": 1,
+      "quantum_semantics/vibrational_operator_hermiticity": 1,
+      "quantum_semantics/fermionic_operator_algebra": 1,
+      "general_semantics/symbolic_operator_arithmetic": 2,
+      "quantum_semantics/spin_operator_algebra": 2,
+      "interface/operator_label_parsing": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/fermionic_hermiticity",
+      "assertions": [
+        {
+          "line": 274,
+          "expected": "Fermionic expressions with paired adjoints are Hermitian and unpaired ones are not."
+        }
+      ],
+      "rationale": "The test includes duplicate/reduced ladder terms; its truth values depend on fermionic adjoints."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_hermiticity",
+      "label": "quantum_semantics/spin_operator_hermiticity",
+      "assertions": [
+        {
+          "line": 348,
+          "expected": "Spin expressions have the expected Hermiticity truth values."
+        }
+      ],
+      "rationale": "The spin operator adjoint relation determines the selected predicate."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_hermiticity",
+      "label": "quantum_semantics/vibrational_operator_hermiticity",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Vibrational ladder expressions with balanced conjugates are Hermitian."
+        }
+      ],
+      "rationale": "The test deliberately includes duplicate ladder terms, so reduction and adjoint semantics matter."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 254,
+          "expected": "Fermionic reduction combines duplicate ladder terms to the expected operator."
+        }
+      ],
+      "rationale": "The retained reduction test checks operator simplification."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 151,
+          "expected": "Adding two operator term containers gives the expected coefficients."
+        }
+      ],
+      "rationale": "The selected addition test does not exercise anticommuting product or adjoint rules."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_reduce",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [
+        {
+          "line": 303,
+          "expected": "SpinOp reduction expands a spin ladder term into X, Y and Z-square terms."
+        }
+      ],
+      "rationale": "Although simpler subcases aggregate coefficients, the ladder-operator expansion makes the spin algebra primary."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_spin_op.py::TestSpinOp::test_flatten_ladder_ops",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [
+        {
+          "line": 337,
+          "expected": "Spin ladder +- expands to the expected XX, XY, YX and YY terms."
+        }
+      ],
+      "rationale": "The complex coefficients encode the spin ladder convention."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_init_pm_label",
+      "label": "interface/operator_label_parsing",
+      "assertions": [
+        {
+          "line": 53,
+          "expected": "Vibrational plus/minus label input produces the expected exposed term list."
+        }
+      ],
+      "rationale": "The selected constructor/parsing test checks public label representation."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_vibrational_op.py::TestVibrationalOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 95,
+          "expected": "Adding a vibrational operator to itself doubles its coefficients."
+        }
+      ],
+      "rationale": "The selected addition check is coefficient aggregation without a ladder-product identity."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/6847323f65a785bc9b0e8a767c91ca6a5d0cdfdf/test/operators/second_quantization/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/6847323f65a785bc9b0e8a767c91ca6a5d0cdfdf/test/operators/second_quantization/test_spin_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/6847323f65a785bc9b0e8a767c91ca6a5d0cdfdf/test/operators/second_quantization/test_vibrational_op.py"
+  ],
+  "rationale": "Reviewed all three Hermiticity cases and six retained operator tests; the spin reduction case includes an explicit ladder expansion that decides its quantum label."
+}

@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=benchmark-base:openfermion_752_753
+FROM ${BASE_IMAGE}
+
+ENV SAMPLE_ID=openfermion_752_753
+ENV REPOSITORY=quantumlib/OpenFermion
+ENV REPOSITORY_URL=https://github.com/quantumlib/OpenFermion.git
+ENV ISSUE_URL=https://github.com/quantumlib/OpenFermion/issues/752
+ENV PR_URL=https://github.com/quantumlib/OpenFermion/pull/753
+ENV BASE_COMMIT=d3734cf27d518708d445788bd05b85349b1957cd
+ENV PATCHED_COMMIT=6ee2c96e0054d1af75a24515c1f65270229ad605
+ENV PR_HEAD_COMMIT=6ee2c96e0054d1af75a24515c1f65270229ad605
+ENV FAIL_PASS_TEST_PATHS="src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_n_qubits_too_small src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_case_one_body_op_success src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_coulomb_and_exchange_ops_success src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_number_excitation_op_success src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_double_excitation_op_success src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevInterOpTest::test_consistency_for_complex_numbers"
+ENV PASS_PASS_TEST_PATHS="src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_identity src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operators src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_number_operator_scaled src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_hopping_operator src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_majoranas src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_jw_integration_original src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bk_bad_type src/openfermion/transforms/opconversions/bravyi_kitaev_test.py::test_bravyi_kitaev_majorana_op_consistent"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "11fc9044be5a66c65f52dfc2f07ed3cb25fe17a3",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 2,
+    "changes": 8,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/82fbb7d502883bbbd0f4c54078cec399d542a3f7/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/82fbb7d502883bbbd0f4c54078cec399d542a3f7/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=82fbb7d502883bbbd0f4c54078cec399d542a3f7",
+    "patch": "@@ -75,6 +75,7 @@ def solve_fermion(\n     *,\n     open_shell: bool = False,\n     spin_sq: float | None = None,\n+    shift: float = 0.1,\n     **kwargs,\n ) -> tuple[float, SCIState, tuple[np.ndarray, np.ndarray], float]:\n     \"\"\"Approximate the ground state given molecular integrals and a set of electronic configurations.\n@@ -98,8 +99,9 @@ def solve_fermion(\n             halves of the bitstrings should be kept separate. If ``False``, CI strings\n             from the left and right halves of the bitstrings are combined into a single\n             set of unique configurations and used for both the alpha and beta subspaces.\n-        spin_sq: Target value for the total spin squared for the ground state.\n+        spin_sq: Target value for the total spin squared for the ground state, :math:`S^2 = s(s + 1)`.\n             If ``None``, no spin will be imposed.\n+        shift: Level shift for states which have different spin. :math:`(H + shift * S^2)|ψ> = E|ψ>`\n         **kwargs: Keyword arguments to pass to `pyscf.fci.selected_ci.kernel_fixed_space <https://pyscf.org/pyscf_api_docs/pyscf.fci.html#pyscf.fci.selected_ci.kernel_fixed_space>`_\n \n     Returns:\n@@ -109,12 +111,14 @@ def solve_fermion(\n         - Expectation value of spin-squared\n \n     \"\"\"\n+    # Format inputs\n     if isinstance(bitstring_matrix, tuple):\n         ci_strs = bitstring_matrix\n     else:\n         ci_strs = bitstring_matrix_to_ci_strs(bitstring_matrix, open_shell=open_shell)\n     ci_strs = _check_ci_strs(ci_strs)\n \n+    # Get hamming weights of each half of the first CI str. All CI strs should share the same hamming weight\n     num_up = format(ci_strs[0][0], \"b\").count(\"1\")\n     num_dn = format(ci_strs[1][0], \"b\").count(\"1\")\n \n@@ -123,7 +127,7 @@ def solve_fermion(\n     # Call the projection + eigenstate finder\n     myci = fci.selected_ci.SelectedCI()\n     if spin_sq is not None:\n-        myci = fci.addons.fix_spin_(myci, ss=spin_sq)\n+        myci = fci.addons.fix_spin_(myci, ss=spin_sq, shift=shift)\n     # The energy returned from this function is not guaranteed to be\n     # the energy of the returned wavefunction when the spin^2 deviates\n     # from the value requested. We will calculate the energy from the"
+  },
+  {
+    "sha": "e725422578c3d900fe263d6e12ed4cec1de4f19d",
+    "filename": "releasenotes/notes/shift-572e8754fee745f9.yaml",
+    "status": "added",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/82fbb7d502883bbbd0f4c54078cec399d542a3f7/releasenotes%2Fnotes%2Fshift-572e8754fee745f9.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/82fbb7d502883bbbd0f4c54078cec399d542a3f7/releasenotes%2Fnotes%2Fshift-572e8754fee745f9.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fshift-572e8754fee745f9.yaml?ref=82fbb7d502883bbbd0f4c54078cec399d542a3f7",
+    "patch": "@@ -0,0 +1,4 @@\n+---\n+features:\n+  - |\n+    :func:`qiskit_addon_sqd.fermion.solve_fermion` now accepts a ``shift`` argument used to shift states which have the wrong spin, :math:`(H + shift * S^2)|ψ> = E|ψ>`."
+  }
+]

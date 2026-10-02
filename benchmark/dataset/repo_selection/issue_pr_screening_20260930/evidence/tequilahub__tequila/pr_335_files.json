@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "984819725361d3817f61ab012799db305d58a970",
+    "filename": ".github/workflows/ci_chemistry_psi4.yml",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/11de5aec98bec8f161d3aa796a502f9af50330b7/.github%2Fworkflows%2Fci_chemistry_psi4.yml",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/11de5aec98bec8f161d3aa796a502f9af50330b7/.github%2Fworkflows%2Fci_chemistry_psi4.yml",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/.github%2Fworkflows%2Fci_chemistry_psi4.yml?ref=11de5aec98bec8f161d3aa796a502f9af50330b7",
+    "patch": "@@ -16,7 +16,7 @@ jobs:\n     runs-on: ubuntu-latest\n     strategy:\n       matrix:\n-        python-version: [3.8]\n+        python-version: [3.9]\n \n     steps:\n     - uses: actions/checkout@v2\n@@ -50,7 +50,7 @@ jobs:\n         source $HOME/.bashrc\n         source $CONDABASE/bin/activate\n         conda activate test_psi4\n-        conda install psi4 python=3.8 -c psi4 \n+        conda install psi4 python=3.9 -c conda-forge\n         python -m pip install --upgrade pip\n         python -m pip install -r requirements.txt\n         python -m pip install -e ."
+  },
+  {
+    "sha": "b415c3f37c7d627c9b3390a49bdeda222c0ee33b",
+    "filename": "README.md",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/11de5aec98bec8f161d3aa796a502f9af50330b7/README.md",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/11de5aec98bec8f161d3aa796a502f9af50330b7/README.md",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/README.md?ref=11de5aec98bec8f161d3aa796a502f9af50330b7",
+    "patch": "@@ -14,7 +14,7 @@ Tequila can execute the underlying quantum expectation values on state of the ar\n - [talks and slides](https://kottmanj.github.io/talks_and_material/)  \n \n # Installation\n-Recommended Python version is 3.8-3.9.   \n+Recommended Python version is 3.9 - 3.10.   \n Tequila supports linux, osx and windows. However, not all optional dependencies are supported on windows.  \n \n ## Install from PyPi\n@@ -267,7 +267,7 @@ Currently supported\n ### [Psi4](https://github.com/psi4/psi4).\n In a conda environment this can be installed with\n ```bash\n-conda install psi4 -c psi4\n+conda install psi4 -c conda-forge\n ```\n Here is a small [tutorial](https://nbviewer.org/github/tequilahub/tequila-tutorials/blob/main/chemistry/ChemistryModule.ipynb) that illustrates the usage.\n "
+  },
+  {
+    "sha": "16a35b57b27f63af7f9915b1f0c2454841971918",
+    "filename": "src/tequila/circuit/qasm.py",
+    "status": "modified",
+    "additions": 24,
+    "deletions": 10,
+    "changes": 34,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/11de5aec98bec8f161d3aa796a502f9af50330b7/src%2Ftequila%2Fcircuit%2Fqasm.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/11de5aec98bec8f161d3aa796a502f9af50330b7/src%2Ftequila%2Fcircuit%2Fqasm.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fcircuit%2Fqasm.py?ref=11de5aec98bec8f161d3aa796a502f9af50330b7",
+    "patch": "@@ -313,19 +313,33 @@ def parse_command(command: str, custom_gates_map: Dict[str, QCircuit], qregister\n         return apply_custom_gate(custom_circuit=custom_circuit, qregisters_values=qregisters_values)\n \n     if name in (\"x\", \"y\", \"z\", \"h\", \"cx\", \"cy\", \"cz\", \"ch\"):\n-        return QCircuit.wrap_gate(gates.impl.QGateImpl(name=(name[1] if name[0] == 'c' else name).upper(),\n-                                            control=get_qregister(args[0], qregisters) if name[0] == 'c' else None,\n-                                            target=get_qregister(args[1 if name[0] == 'c' else 0], qregisters)))\n+        target = get_qregister(args[0], qregisters)\n+        control = None\n+        if name[0].lower() == 'c':\n+            control = get_qregister(args[0], qregisters)\n+            target = get_qregister(args[1], qregisters)\n+            name = name[1]\n+        G = getattr(gates, name.upper())\n+        return G(control=control, target=target)\n+\n     if name in (\"ccx\", \"ccy\", \"ccz\"):\n-        return QCircuit.wrap_gate(gates.impl.QGateImpl(name=name.upper()[2],\n-                                            control=[get_qregister(args[0], qregisters), get_qregister(args[1], qregisters)],\n-                                            target=get_qregister(args[2], qregisters)))\n+        G = getattr(gates, name[2].upper())\n+        control = [get_qregister(args[0], qregisters), get_qregister(args[1], qregisters)]\n+        target = get_qregister(args[2], qregisters)\n+        return G(control=control, target=target)\n+\n     if name.startswith(\"rx(\") or name.startswith(\"ry(\") or name.startswith(\"rz(\") or \\\n         name.startswith(\"crx(\") or name.startswith(\"cry(\") or name.startswith(\"crz(\"):\n-        return QCircuit.wrap_gate(gates.impl.RotationGateImpl(axis=name[2 if name[0] == 'c' else 1],\n-                                                   angle=get_angle(name)[0],\n-                                                   control=get_qregister(args[0], qregisters) if name[0] == 'c' else None,\n-                                                   target=get_qregister(args[1 if name[0] == 'c' else 0], qregisters)))\n+        angle = get_angle(name)[0]\n+        i = name.find('(')\n+        name = name[0:i]\n+        name = name.upper()\n+        name = [x for x in name]\n+        name[-1] = name[-1].lower()\n+        name = \"\".join(name)\n+        G = getattr(gates, name)\n+        return G(angle=angle,control=get_qregister(args[0], qregisters) if name[0] == 'C' else None,target=get_qregister(args[1 if name[0] == 'C' else 0], qregisters))\n+            \n     if name.startswith(\"U(\"):\n         angles = get_angle(name)\n         return gates.U(theta=angles[0], phi=angles[1], lambd=angles[2],"
+  }
+]

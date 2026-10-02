@@ -1,0 +1,139 @@
+{
+  "instance": {
+    "id": 36,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_505_569",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/505",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/569",
+    "base_commit": "3a1f680b5ba9c916e4efaa01968c174779618894",
+    "patch": "12830368e6ad721f12b7b51bf0eca2938533fd43"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a QNN circuit wrapper for feature-map and ansatz composition, with validation centered on circuit composition and parameter grouping."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/circuit/library/__init__.py",
+      "qiskit_machine_learning/circuit/library/qnn_circuit.py",
+      "qiskit_machine_learning/utils/adjust_num_qubits.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Building quantum neural networks often requires composing a feature map circuit with an ansatz circuit and then passing both the composed circuit and the two parameter groups to the neural network. Users currently need to assemble this wrapper manually each time. The library should provide a reusable blueprint circuit that encapsulates this composition and exposes the input and weight parameters separately.",
+    "requirements": [
+      "Provide a QNNCircuit blueprint circuit that composes a feature map followed by an ansatz.",
+      "QNNCircuit must be constructible from a number of qubits, a feature map, an ansatz, or a compatible combination of these inputs.",
+      "When no feature map is supplied, QNNCircuit must create a default feature map for the resolved number of qubits, using a single-qubit feature map when appropriate.",
+      "When no ansatz is supplied, QNNCircuit must create a default ansatz for the resolved number of qubits.",
+      "If an explicit number of qubits is supplied together with circuits of different sizes, QNNCircuit must reconcile the feature map and ansatz to the explicit number of qubits when possible.",
+      "Updating the number of qubits, feature map, or ansatz after construction must invalidate and reconfigure the blueprint circuit so that the stored circuits remain consistent.",
+      "QNNCircuit must expose the feature-map parameters as input parameters and the ansatz parameters as weight parameters.",
+      "QNNCircuit must be importable from the circuit library package."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QNNCircuit",
+        "Path": "qiskit_machine_learning/circuit/library/qnn_circuit.py",
+        "Input": "constructor: num_qubits: int | None = None, feature_map: QuantumCircuit | None = None, ansatz: QuantumCircuit | None = None",
+        "Output": "",
+        "Description": "Blueprint circuit that wraps a feature map and ansatz into one composed circuit, exposes num_qubits, feature_map, ansatz, input_parameters, and weight_parameters, updates component circuit sizes through setters, raises QiskitMachineLearningError for invalid construction, and preserves these properties under copy."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNCircuit._build",
+        "Path": "qiskit_machine_learning/circuit/library/qnn_circuit.py",
+        "Input": "self",
+        "Output": "",
+        "Description": "Builds the blueprint circuit by composing the resolved feature map followed by the resolved ansatz."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_505_569",
+      "image_id": "sha256:3804d4ad74b0c44a474badd11639c14beafed76040d40685b0bb4ed2e2f6e261",
+      "image_size": "1501294432"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_ansatz_setter",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_before_build",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_fails",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_for_input_missmatch",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_copy",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_construction",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_setter",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_construction",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_setter"
+        ],
+        "summary": "9 passed in 1.85s.",
+        "duration_seconds": 7.09
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_bind_after_composition",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_construction",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_copy",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_fully_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_partially_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_usage_in_vqc"
+        ],
+        "summary": "6 passed in 2.98s.",
+        "duration_seconds": 8.01
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_ansatz_setter",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_before_build",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_fails",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_for_input_missmatch",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_copy",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_construction",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_setter",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_construction",
+          "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_setter"
+        ],
+        "summary": "Collection failed because the base circuit library cannot import QNNCircuit.",
+        "duration_seconds": 8.88
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_bind_after_composition",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_construction",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_copy",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_fully_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_partially_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_usage_in_vqc"
+        ],
+        "summary": "6 passed in 3.19s.",
+        "duration_seconds": 10.88
+      }
+    }
+  }
+}

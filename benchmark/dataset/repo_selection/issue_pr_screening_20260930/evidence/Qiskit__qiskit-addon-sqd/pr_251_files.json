@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "b19993956151ca124e52d1865ab033c1fc000543",
+    "filename": "qiskit_addon_sqd/configuration_recovery.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 14,
+    "changes": 15,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/607d12c3805a58e09ad20942dc6b87db76dc6b59/qiskit_addon_sqd%2Fconfiguration_recovery.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/607d12c3805a58e09ad20942dc6b87db76dc6b59/qiskit_addon_sqd%2Fconfiguration_recovery.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Fconfiguration_recovery.py?ref=607d12c3805a58e09ad20942dc6b87db76dc6b59",
+    "patch": "@@ -175,20 +175,7 @@ def _p_flip_1_to_0(ratio_exp: float, occ: float, eps: float = 0.01) -> float:  #\n         The probability with which to flip the bit\n \n     \"\"\"\n-    # Occupancy is < naive expectation.\n-    # The probability weight to flip the bit decreases linearly from ``1.0`` to\n-    # ``eps`` as the occupation increases towards the expected ratio\n-    if occ < ratio_exp:\n-        slope = -(1.0 - eps) / ratio_exp\n-        return 1.0 + occ * slope\n-\n-    # Occupancy is >= naive expectation.\n-    # Flip 1s to 0 with small (<eps) probability in this case\n-    if ratio_exp == 0.0:\n-        return 1 - eps\n-    slope = -eps / (1 - ratio_exp)\n-    intercept = eps / (1 - ratio_exp)\n-    return occ * slope + intercept\n+    return _p_flip_0_to_1(1 - ratio_exp, 1 - occ, eps)\n \n \n def _bipartite_bitstring_correcting("
+  }
+]

@@ -1,0 +1,62 @@
+"""Preserve 57 valid Mini/OH workflows and prepare 9 authorized retries + 12 first attempts."""
+import hashlib,json,shutil,sys
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2];sys.path.insert(0,str(ROOT))
+from benchmark.evaluation.common.run_io import write_batch_prediction_files
+approval=json.loads((B/'retry_approval_pending.json').read_text());assert approval['status']=='approved_by_user'
+assert not (B/'approved_jobs.json').exists(),'Already prepared'
+state=json.loads((B/'comparison_blocked.json').read_text());lookup={(r['agent'],r['model']):r for r in state['cohorts']};jobs=[]
+for j in json.loads((B/'jobs.json').read_text()):
+ p=ROOT/j['out'];g=p/'generation';first=p/'first_attempt_generation';s=lookup[(j['agent'],j['model'])]
+ arc=p/'approved_recovery_archive';arc.mkdir();preds={}
+ for directory in [g,first]:
+  f=directory/'preds.json'
+  if not f.exists():continue
+  data=json.loads(f.read_text())['predictions'];shutil.copy2(f,arc/(directory.name+'.preds.json'))
+  for sid,row in data.items():
+   if sid in preds:assert preds[sid]==row
+   preds[sid]=row
+   traj=directory/sid/(sid+'.traj.json')
+   if traj.exists():
+    t=traj.read_text().lower();assert 'input/output error' not in t and 'read-only file system' not in t,(j['id'],sid)
+   if directory!=g and not (g/sid).exists() and (directory/sid).exists():shutil.copytree(directory/sid,g/sid)
+ ids=json.loads((p/'sample_ids.json').read_text());todo=s['pending_paid_retries']+s['not_started']
+ assert len(preds)==s['completed_workflows'] and set(preds).isdisjoint(todo) and set(preds)|set(todo)==set(ids)
+ write_batch_prediction_files(g,list(preds.values()))
+ if j['agent']=='openhands':
+  for name in ['output.jsonl','output.critic_attempt_1.jsonl']:
+   rows={}
+   for directory in [g,first]:
+    f=directory/name
+    if not f.exists():continue
+    shutil.copy2(f,arc/(directory.name+'.'+name))
+    for line in f.read_text().splitlines():
+     if not line.strip():continue
+     row=json.loads(line);sid=row['instance_id']
+     if sid not in preds:continue
+     if sid in rows:assert rows[sid]==row
+     rows[sid]=row
+   assert set(rows)==set(preds)
+   (g/name).write_text(''.join(json.dumps(r)+'\n' for r in rows.values()))
+ cached=json.loads(Path(s['source']).read_text())
+ good=[r for r in cached['results'] if not r.get('eval_infra_failed') and not r.get('timed_out')]
+ assert len(good)==s['valid_result_count'] and all(r['instance_id'] in preds for r in good)
+ # The evaluator rebuilds summary counts when resuming; only completed rows are cached.
+ cache=p/'results_additions.json.partial'
+ if cache.exists():shutil.copy2(cache,arc/cache.name)
+ assert not (p/'results_additions.json').exists()
+ cache.write_text(json.dumps({'results':good},indent=2)+'\n')
+ source=[json.loads(l) for l in (p/'instances.secure.jsonl').read_text().splitlines() if l.strip()]
+ key=(lambda r:r['problem_statement']['id']) if j['agent']=='minisweagent' else (lambda r:r['instance_id'])
+ selected=[r for r in source if key(r) in todo];assert len(selected)==len(todo)
+ f=p/'approved_instances.jsonl';f.write_text(''.join(json.dumps(r)+'\n' for r in selected))
+ cmd=j['command'].copy();cmd[cmd.index('--output-dir')+1]=str((p/'approved_generation').relative_to(ROOT))
+ if j['agent']=='minisweagent':cmd[cmd.index('--instances')+1]=str(f.relative_to(ROOT))
+ else:
+  stage=Path('/private/tmp')/('qfea-approved-'+j['id']+'.jsonl');shutil.copy2(f,stage);cmd[cmd.index('--dataset')+1]=str(stage)
+ audit={'authorization':approval['authorization'],'retained_prediction_hashes':{sid:hashlib.sha256(json.dumps(r,sort_keys=True).encode()).hexdigest() for sid,r in preds.items()},'approved_paid_retries':s['pending_paid_retries'],'first_attempts':s['not_started'],'cached_valid_result_ids':[r['instance_id'] for r in good],'invalidated_validation_ids':s.get('invalid_validation_ids',[])}
+ (p/'approved_recovery_audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n')
+ jobs.append(dict(j,approved_command=cmd,approved_ids=todo,paid_retry_ids=s['pending_paid_retries']))
+ print(j['id'],'retain',len(preds),'retry',len(s['pending_paid_retries']),'first',len(s['not_started']),'cached',len(good))
+(B/'approved_jobs.json').write_text(json.dumps(jobs,indent=2)+'\n')
+assert sum(len(j['approved_ids']) for j in jobs)==21 and sum(len(j['paid_retry_ids']) for j in jobs)==9

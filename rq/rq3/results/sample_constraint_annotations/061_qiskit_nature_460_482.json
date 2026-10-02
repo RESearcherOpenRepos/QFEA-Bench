@@ -1,0 +1,302 @@
+{
+  "id": 61,
+  "sample_id": "qiskit_nature_460_482",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "97e43377553ddcc21beec48b49bf374a285bdaa5",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 15,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/particle_number_conservation": 1,
+      "quantum_semantics/bogoliubov_diagonalization": 12,
+      "quantum_semantics/fermionic_operator_conversion": 1,
+      "interface/constructor_defaults": 1,
+      "interface/operator_term_representation": 2,
+      "interface/register_length_contract": 1,
+      "general_semantics/symbolic_operator_arithmetic": 1,
+      "quantum_semantics/fermionic_operator_algebra": 1,
+      "quantum_semantics/fermionic_matrix_representation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+      "label": "quantum_semantics/particle_number_conservation",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Zero pairing block conserves particle number; nonzero pairing block does not."
+        }
+      ],
+      "rationale": "The predicate follows the physical pairing criterion."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 105,
+          "expected": "Complex three-orbital Bogoliubov transform produces canonical diagonal Majorana blocks."
+        }
+      ],
+      "rationale": "The test checks the transformed Hamiltonian and its spectrum, not just output shape."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Two-orbital nonconserving Hamiltonian transforms to canonical diagonal blocks."
+        }
+      ],
+      "rationale": "The n=2 pairing case checks the physical Bogoliubov transformation."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Three-orbital nonconserving Hamiltonian transforms to canonical diagonal blocks."
+        }
+      ],
+      "rationale": "The n=3 pairing case checks the physical Bogoliubov transformation."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Four-orbital nonconserving Hamiltonian transforms to canonical diagonal blocks."
+        }
+      ],
+      "rationale": "The n=4 pairing case checks the physical Bogoliubov transformation."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Five-orbital nonconserving Hamiltonian transforms to canonical diagonal blocks."
+        }
+      ],
+      "rationale": "The n=5 pairing case checks the physical Bogoliubov transformation."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Six-orbital nonconserving Hamiltonian transforms to canonical diagonal blocks."
+        }
+      ],
+      "rationale": "The n=6 pairing case checks the physical Bogoliubov transformation."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "One-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=1 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Two-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=2 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Three-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=3 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Four-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=4 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Five-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=5 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+      "label": "quantum_semantics/bogoliubov_diagonalization",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Six-orbital number-conserving transform diagonalizes the Hermitian block and retains the constant."
+        }
+      ],
+      "rationale": "The n=6 case checks orbital-energy diagonalization."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+      "label": "quantum_semantics/fermionic_operator_conversion",
+      "assertions": [
+        {
+          "line": 193,
+          "expected": "Converted FermionicOp matrix matches explicit one-body, pairing, and constant terms."
+        }
+      ],
+      "rationale": "The comparison tests physical equivalence of the quadratic and fermionic forms."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 49,
+          "expected": "Constructor exposes supplied blocks and zero-fills omitted blocks, infers modes, and rejects unspecified size."
+        }
+      ],
+      "rationale": "The assertions concern constructor input and public stored properties."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "Dense and sparse FermionicOp inputs return the expected public term list."
+        }
+      ],
+      "rationale": "The selected test checks the exposed to_list representation."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "Term iteration exposes the expected indexed operators and coefficients."
+        }
+      ],
+      "rationale": "The exact tuple output of terms() is an interface representation contract."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 162,
+          "expected": "Register length is inferred as two from the highest occupied mode index."
+        }
+      ],
+      "rationale": "The assertion checks an exposed metadata property."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "Addition combines the prescribed labeled terms and coefficients."
+        }
+      ],
+      "rationale": "This is generic symbolic term aggregation without a fermionic sign rule."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 257,
+          "expected": "Fermionic products produce the expected sign and multi-term ladder expansions."
+        }
+      ],
+      "rationale": "The expected minus sign and reordered terms depend on fermion algebra."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 415,
+          "expected": "Fermionic identity, number, vacancy, ladder, and H2 operators have the expected matrix action and spectrum."
+        }
+      ],
+      "rationale": "The selected test includes fermionic sign matrices and a two-particle ground state."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/97e43377553ddcc21beec48b49bf374a285bdaa5/test/operators/second_quantization/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/97e43377553ddcc21beec48b49bf374a285bdaa5/test/operators/second_quantization/test_quadratic_hamiltonian.py"
+  ],
+  "rationale": "Read all 21 selected test cases at the exact patch. Bogoliubov variants are separate cases by orbital count; constructor and representation checks are interface contracts, while fermionic signs and matrices are quantum contracts."
+}

@@ -1,0 +1,204 @@
+{
+  "instance": {
+    "id": 23,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_113_115",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/113",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/115",
+    "base_commit": "ec800bc8a58b32f3052ff399d54f19a74417fc7d",
+    "patch": "ccb0e5a69b3e4709f1d005e8e042a2e6f2f1cf7e"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds optimizer initial-point plumbing for trainable quantum neural-network models rather than changing quantum model semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+      "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+      "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+      "qiskit_machine_learning/algorithms/regressors/vqr.py",
+      "qiskit_machine_learning/algorithms/trainable_model.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Neural-network classifiers and regressors should let users provide an initial point for model training. Today the only way to control the starting weights is to rely on warm-start behavior and private fit state, which is awkward for users who want a clean public way to start optimization from known weights.",
+    "requirements": [
+      "Trainable neural-network models accept an optional initial point for optimizer weights.",
+      "The initial point is exposed as a readable and writable model property.",
+      "When an initial point is provided, training passes it to the optimizer instead of choosing a random starting point.",
+      "If warm start is enabled and the model already has a previous fit result, the previous fitted weights take precedence as the next initial point.",
+      "When neither warm-start weights nor a user-provided initial point is available, training still chooses a random point with the correct number of neural-network weights.",
+      "The initial-point option is available through the neural-network classifier and regressor APIs, including VQC and VQR wrappers."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TrainableModel",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "constructor: neural_network, loss, optimizer, warm_start, initial_point",
+        "Output": "TrainableModel instance",
+        "Description": "Base trainable model that stores an optional optimizer initial point."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableModel.initial_point",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "",
+        "Output": "numpy.ndarray",
+        "Description": "Property exposing the current optimizer initial point and allowing it to be reassigned."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableModel._choose_initial_point",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "",
+        "Output": "numpy.ndarray",
+        "Description": "Chooses optimizer starting weights from warm-start fit results, the stored initial point, or a random vector."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss, one_hot, optimizer, warm_start, initial_point",
+        "Output": "NeuralNetworkClassifier instance",
+        "Description": "Classifier wrapper that accepts and uses an optimizer initial point during fit."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+        "Input": "constructor: num_qubits, feature_map, ansatz, loss, optimizer, warm_start, quantum_instance, initial_point",
+        "Output": "VQC instance",
+        "Description": "Variational quantum classifier wrapper that forwards the initial point to its trainable classifier base."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkRegressor",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "constructor: neural_network, loss, optimizer, warm_start, initial_point",
+        "Output": "NeuralNetworkRegressor instance",
+        "Description": "Regressor wrapper that accepts and uses an optimizer initial point during fit."
+      },
+      {
+        "Type": "Class",
+        "Name": "VQR",
+        "Path": "qiskit_machine_learning/algorithms/regressors/vqr.py",
+        "Input": "constructor: num_qubits, feature_map, ansatz, loss, optimizer, warm_start, quantum_instance, initial_point",
+        "Output": "VQR instance",
+        "Description": "Variational quantum regressor wrapper that forwards the initial point to its trainable regressor base."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "image": "benchmark-evaluation:qiskit_machine_learning_113_115",
+      "image_id": "sha256:37e28e196dabe9cb7585bf52683b525a80314db045016128a5c9da98db456585",
+      "image_size": "1438300977",
+      "platform": "linux/amd64"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "scikit-learn<1.2",
+        "qiskit-terra==0.17.4",
+        "qiskit-aer==0.8.2",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "summary": "5 passed in 15.41s",
+        "duration_seconds": 21.24,
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_1___cobyla____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_2___cobyla____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_3___bfgs____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_4___bfgs____qasm__",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_usage_in_vqc"
+        ]
+      },
+      "pass_pass": {
+        "result": "passed",
+        "summary": "20 passed in 52.07s",
+        "duration_seconds": 56.51,
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_2___cobyla____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_4___cobyla____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_5___bfgs____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_6___bfgs____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_7___bfgs____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_8___bfgs____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_2___cobyla____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_4___cobyla____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_5___bfgs____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_6___bfgs____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_7___bfgs____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_8___bfgs____l2____qasm__",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_construction",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_fully_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_partially_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_bind_after_composition"
+        ]
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "summary": "TypeError: __init__() got an unexpected keyword argument 'initial_point'; 5 failed in 2.89s",
+        "duration_seconds": 10.2,
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_1___cobyla____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_2___cobyla____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_3___bfgs____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_and_cross_entropy_4___bfgs____qasm__",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_usage_in_vqc"
+        ]
+      },
+      "pass_pass": {
+        "result": "passed",
+        "summary": "20 passed in 41.59s",
+        "duration_seconds": 49.01,
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_2___cobyla____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_4___cobyla____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_5___bfgs____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_6___bfgs____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_7___bfgs____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_8___bfgs____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_2___cobyla____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_4___cobyla____l2____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_5___bfgs____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_6___bfgs____l1____qasm__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_7___bfgs____l2____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_8___bfgs____l2____qasm__",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_construction",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_fully_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_partially_bound",
+          "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_bind_after_composition"
+        ]
+      }
+    }
+  },
+  "notes": "Fail-pass uses five PR-modified use-case-level selectors covering NeuralNetworkClassifier cross-entropy training with a fixed initial_point across COBYLA/L_BFGS_B and statevector/qasm, plus VQC usage with RawFeatureVector. Pass-pass uses 20 adjacent pre-existing classifier and RawFeatureVector selectors. Environment pins old Qiskit-era dependencies after installing the repository requirements: pip<24.1, setuptools<70, numpy<2, scipy<1.11, scikit-learn<1.2, qiskit-terra==0.17.4, qiskit-aer==0.8.2, pytest<8. Selected use-case-level selectors passed stability: patched fail-pass 3/3, patched pass-pass 3/3, base fail-pass failed 3/3 for missing initial_point support, base pass-pass passed 3/3. All formal validation commands stayed below the 120 second threshold."
+}

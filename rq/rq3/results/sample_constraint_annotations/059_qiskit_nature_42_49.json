@@ -1,0 +1,129 @@
+{
+  "id": 59,
+  "sample_id": "qiskit_nature_42_49",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "c71dff0e47b09005c21dc2690833e61e42686997",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/electronic_hamiltonian_construction": 1,
+      "quantum_semantics/active_space_projection": 4,
+      "interface/return_representation": 1,
+      "general_semantics/symbolic_operator_arithmetic": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_without_transformers",
+      "label": "quantum_semantics/electronic_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "MolecularProblem without transformers emits expected electronic fermionic Hamiltonian terms."
+        }
+      ],
+      "rationale": "The test also checks list length/type, but the term-by-term H2 comparison is primary."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_with_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 74,
+          "expected": "MolecularProblem with ActiveSpaceTransformer emits expected reduced Hamiltonian terms."
+        }
+      ],
+      "rationale": "The reference coefficients and orbital reduction are explicitly checked."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Minimal active space retains the expected one- and two-electron MO integrals."
+        }
+      ],
+      "rationale": "The reduced chemistry tensors and shift are compared to references."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Selected noncontiguous active orbitals produce expected reduced MO integrals."
+        }
+      ],
+      "rationale": "This test exercises an explicit orbital-index choice."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "Full active space preserves the original one- and two-electron integrals."
+        }
+      ],
+      "rationale": "The v2 QMolecule path is checked with a zero inactive-space shift."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 51,
+          "expected": "Multi-term FermionicOp constructor exposes the supplied labels."
+        }
+      ],
+      "rationale": "The retained constructor test checks to_list."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "FermionicOp addition combines coefficients on matching labels."
+        }
+      ],
+      "rationale": "The retained add case has no operator product."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 165,
+          "expected": "FermionicOp reduce sums duplicate-label coefficients."
+        }
+      ],
+      "rationale": "The retained reduce case is generic term aggregation."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/c71dff0e47b09005c21dc2690833e61e42686997/test/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c71dff0e47b09005c21dc2690833e61e42686997/test/problems/second_quantization/molecular/test_molecular_problem.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c71dff0e47b09005c21dc2690833e61e42686997/test/transformers/test_active_space_transformer.py"
+  ],
+  "rationale": "Reviewed both MolecularProblem outputs, three active-space transformer variants and three nearby FermionicOp regression cases."
+}

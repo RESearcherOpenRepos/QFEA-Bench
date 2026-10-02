@@ -1,0 +1,74 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  1b0adcd Remove need for `num_features` before fitting  (#301)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 1b0adcd
+
+HEAD is now at e3866c7 fix pennylane executor (#343)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ TestQKRR.test_predict_without_num_features[qkrr_fidelity_without_num_features] _
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe1cc3d60>
+qkrr = 'qkrr_fidelity_without_num_features'
+request = <FixtureRequest for <Function test_predict_without_num_features[qkrr_fidelity_without_num_features]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize(
+        "qkrr", ["qkrr_fidelity_without_num_features", "qkrr_pqk_without_num_features"]
+    )
+    def test_predict_without_num_features(self, qkrr, request, data):
+        """Tests concerning the predict function of the QKRR.
+    
+        Tests include
+            - whether the output is of the same shape as the reference
+            - whether the type of the output is np.ndarray
+        """
+>       qkrr_instance = request.getfixturevalue(qkrr)
+
+tests/kernel/ml/test_qkrr.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/usr/local/lib/python3.10/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+/usr/local/lib/python3.10/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+/usr/local/lib/python3.10/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7ffffe284a90>
+
+    @pytest.fixture(scope="module")
+    def qkrr_fidelity_without_num_features(self) -> QKRR:
+        """QKRR module with FidelityKernel."""
+        np.random.seed(42)
+        executor = Executor()
+>       encoding_circuit = HubregtsenEncodingCircuit(num_qubits=3, num_layers=2)
+E       TypeError: HubregtsenEncodingCircuit.__init__() missing 1 required positional argument: 'num_features'
+
+tests/kernel/ml/test_qkrr.py:58: TypeError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2128 Set shots to None
+INFO     executor:executor.py:779 Executor initialized with pennylane
+INFO     executor:executor.py:795 Executor intial shots: None
+=========================== short test summary info ============================
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict_without_num_features[qkrr_fidelity_without_num_features]
+1 failed, 2 warnings in 4.23s

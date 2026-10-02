@@ -1,0 +1,140 @@
+{
+  "instance": {
+    "id": 31,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_385_404",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/385",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/404",
+    "base_commit": "e9978f56cf978c5d4a19b1941e584f91586f804a",
+    "patch": "3bf98b67618885bd09f4abbff7e381537a646fac"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task exposes fitted weights and optimizer results for trainable quantum models, with correctness centered on public accessor behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/trainable_model.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Trainable quantum machine-learning models can already be fit and then used for prediction, but users who want to inspect the learned parameters must read private fit state directly. This breaks the public model contract and makes trained model introspection depend on implementation details. Fitted trainable models should expose their trained weights and optimization result through public model APIs.",
+    "requirements": [
+      "A fitted trainable model must provide public access to the trained weights.",
+      "A fitted trainable model must provide public access to the optimizer result produced during fitting.",
+      "The public trained-weight value must be a NumPy array matching the optimizer result's parameter vector.",
+      "The public trained-weight length must match the number of trainable parameters in the underlying neural network.",
+      "Classifiers and regressors derived from the trainable-model base must expose the same trained-weight and optimizer-result access after fitting.",
+      "Accessing the trained weights or optimizer result before the model has been fitted must raise the library's machine-learning error."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TrainableModel",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "constructor: neural_network, loss='squared_error', optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Base trainable model whose fitted instances expose public fit_result and weights accessors matching the optimizer result, and whose unfitted instances raise QiskitMachineLearningError for those accessors."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableModel.fit",
+        "Path": "qiskit_machine_learning/algorithms/trainable_model.py",
+        "Input": "self, X, y",
+        "Output": "self",
+        "Description": "Fits the trainable model and populates the optimizer result used by fit_result and weights."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss='squared_error', one_hot: bool = False, optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Trainable classifier that inherits public fit_result and weights access behavior after fitting."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkRegressor",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "constructor: neural_network, loss='squared_error', optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Trainable regressor that inherits public fit_result and weights access behavior after fitting."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_385_404",
+      "image_id": "sha256:018ac85c0156e83ef8e7ca4f3df067b0652c7082a6e0b9a71226f3ae244dfe1c",
+      "image_size": "1412149723"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_17__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_5__None___statevector___False_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained"
+        ],
+        "summary": "5 passed, 4 warnings in 9.13s.",
+        "duration_seconds": 13.92
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_05___statevector___2___zz_feature_map____real_amplitudes___None___binary__",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_09__None___statevector___True_"
+        ],
+        "summary": "4 passed, 2 warnings in 6.50s.",
+        "duration_seconds": 11.2
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_17__None___absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_5__None___statevector___False_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained"
+        ],
+        "summary": "5 failed, 4 warnings in 8.15s. Base failures directly correspond to missing public fit_result and weights accessors on classifier and regressor models.",
+        "duration_seconds": 15.81
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr",
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_05___statevector___2___zz_feature_map____real_amplitudes___None___binary__",
+          "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_09__None___statevector___True_"
+        ],
+        "summary": "4 passed, 2 warnings in 6.71s.",
+        "duration_seconds": 14.69
+      }
+    }
+  }
+}

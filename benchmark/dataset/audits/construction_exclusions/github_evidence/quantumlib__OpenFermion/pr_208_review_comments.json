@@ -1,0 +1,1049 @@
+[
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168404193",
+    "pull_request_review_id": 96763291,
+    "id": 168404193,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQwNDE5Mw==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is this helper function used in more than one place? If not, I don't think it should be its own function - wouldn't it make sense just to put this code in the \"extractor\" function? Again, I am very weary of these private functions.",
+    "created_at": "2018-02-15T08:24:07Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168404193",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168404193"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168404193"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168404193/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 24,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168452560",
+    "pull_request_review_id": 96763291,
+    "id": 168452560,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ1MjU2MA==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Why \"W\" where does this convention come from exactly? I am concerned that this design is rather opaque.",
+    "created_at": "2018-02-15T11:49:44Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168452560",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168452560"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168452560"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168452560/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168469514",
+    "pull_request_review_id": 96839449,
+    "id": 168469514,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ2OTUxNA==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "msteudtner",
+      "id": 35808920,
+      "node_id": "MDQ6VXNlcjM1ODA4OTIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35808920?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/msteudtner",
+      "html_url": "https://github.com/msteudtner",
+      "followers_url": "https://api.github.com/users/msteudtner/followers",
+      "following_url": "https://api.github.com/users/msteudtner/following{/other_user}",
+      "gists_url": "https://api.github.com/users/msteudtner/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/msteudtner/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/msteudtner/subscriptions",
+      "organizations_url": "https://api.github.com/users/msteudtner/orgs",
+      "repos_url": "https://api.github.com/users/msteudtner/repos",
+      "events_url": "https://api.github.com/users/msteudtner/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/msteudtner/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm not sure that is a very satisfying answer for you, but 'w' is just labeling the binary variables. It stems from the SymbolicBinary class.  At some point writing the paper I had to decide for symbols for the binary vectors of the Fermion modes and qubit configuration. I just called them \\nu and \\omega. We don't need  \\nu here, but \\omega  survived as 'w'. ",
+    "created_at": "2018-02-15T13:08:08Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168469514",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168469514"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168469514"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168469514/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "NONE",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168478715",
+    "pull_request_review_id": 96850704,
+    "id": 168478715,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ3ODcxNQ==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "So I am starting to question whether the data structure for SymbolicBinary is implemented in a reasonable fashion. What other value can the action take? Just '1'?. In this case, it seems to me that the whole data structure is overcomplicated. Instead of storing  (1, 'W'), (2, 'W') shouldn't you just store (1,2)? To represent constants you can use \"none\", or something like that.",
+    "created_at": "2018-02-15T13:46:19Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168478715",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168478715"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168478715"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168478715/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490657",
+    "pull_request_review_id": 96865126,
+    "id": 168490657,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ5MDY1Nw==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I actually experimented with different ways of defining the SymbolicBinary class - even tried the (1,2,..) version which would indeed simplify things a lot for the operations - couple of problems I had with that was the constant definition and user input. \r\nfor constant indeed a string is a good idea, did not think of that. As for user definitions would we not allow for str inputs? would we stick to 'W' in str inputs - if not what if the user gives 1+q1+w2+z3 is that ok? or do we assume that anyone thats using the symbolicBinary class knows what they are doing? ",
+    "created_at": "2018-02-15T14:29:00Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168490657",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490657"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168490657"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490657/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490905",
+    "pull_request_review_id": 96865411,
+    "id": 168490905,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ5MDkwNQ==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "msteudtner",
+      "id": 35808920,
+      "node_id": "MDQ6VXNlcjM1ODA4OTIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35808920?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/msteudtner",
+      "html_url": "https://github.com/msteudtner",
+      "followers_url": "https://api.github.com/users/msteudtner/followers",
+      "following_url": "https://api.github.com/users/msteudtner/following{/other_user}",
+      "gists_url": "https://api.github.com/users/msteudtner/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/msteudtner/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/msteudtner/subscriptions",
+      "organizations_url": "https://api.github.com/users/msteudtner/orgs",
+      "repos_url": "https://api.github.com/users/msteudtner/repos",
+      "events_url": "https://api.github.com/users/msteudtner/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/msteudtner/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It's definitely more streamlined this way, you are right. We basically made it like it is now just because appears not to be that different from the data structures of FermionOperator and QubitOperator. But it's your call:  would you like us to change (1, 'W'), (2, 'W') into (1,2) and so on? ",
+    "created_at": "2018-02-15T14:29:52Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168490905",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490905"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168490905"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168490905/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "NONE",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168491462",
+    "pull_request_review_id": 96866095,
+    "id": 168491462,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODQ5MTQ2Mg==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess also when i started writing this I was wondering if it could adopt from SymbolicOperator class as well. ",
+    "created_at": "2018-02-15T14:31:51Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168491462",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168491462"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168491462"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168491462/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168574806",
+    "pull_request_review_id": 96966200,
+    "id": 168574806,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODU3NDgwNg==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes, I think this is a good change to make. I would actually suggest \"None\", for a constant, but you could put a string. It's very easy to write \"if action is None:\" and it is probably less arbitrary than any string you could choose. I can tell you were thinking of inheriting from SybolicOperator, but since you didn't, I think the change makes sense.\r\n\r\nRegarding string initialization, I think that is still fine. You can probably allow them to use any char in fact. So if they wrote \"a1 a2 + a3 a4\" or \"W1 W3 + W3 W4\" it would do the same thing. Another option is to represent the term a1 a2 with (1 2) in the string input also. So you could write (1 2) + (3 4). I personally find the second option cleaner but that is up to you.\r\n\r\nAnother thing to think about is whether you want to enforce numerical order. For instance, if you want to disallow people from having a term (3,1) as opposed to (1,3). If you do this, you can certainly perform certain numerical operations faster since you know the list is sorted. But unless numerical performance is a bottleneck it is not necessary to specialize the magic methods for this now (but it might still he a good idea to put systems in place that prevent having both (1 3) and (3 1).\r\n\r\nSorry I did not catch this before!",
+    "created_at": "2018-02-15T18:59:46Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168574806",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168574806"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168574806"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168574806/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578243",
+    "pull_request_review_id": 96970335,
+    "id": 168578243,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODU3ODI0Mw==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "msteudtner",
+      "id": 35808920,
+      "node_id": "MDQ6VXNlcjM1ODA4OTIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35808920?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/msteudtner",
+      "html_url": "https://github.com/msteudtner",
+      "followers_url": "https://api.github.com/users/msteudtner/followers",
+      "following_url": "https://api.github.com/users/msteudtner/following{/other_user}",
+      "gists_url": "https://api.github.com/users/msteudtner/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/msteudtner/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/msteudtner/subscriptions",
+      "organizations_url": "https://api.github.com/users/msteudtner/orgs",
+      "repos_url": "https://api.github.com/users/msteudtner/repos",
+      "events_url": "https://api.github.com/users/msteudtner/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/msteudtner/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok, we'll make the change. We already take care of several mishaps during the input, like a messed up order or additions with constants other than one, and so on.",
+    "created_at": "2018-02-15T19:12:10Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168578243",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578243"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168578243"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578243/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "NONE",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578603",
+    "pull_request_review_id": 96970751,
+    "id": 168578603,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODU3ODYwMw==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Awesome, thanks!",
+    "created_at": "2018-02-15T19:13:31Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168578603",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578603"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168578603"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168578603/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168581624",
+    "pull_request_review_id": 96974333,
+    "id": 168581624,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODU4MTYyNA==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm ok with it all but None. its a dangerous name to use for a variable. certain data structures are built to ignore None's by default - and defining 1 as None is confusing to me. ",
+    "created_at": "2018-02-15T19:24:33Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168581624",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168581624"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168581624"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168581624/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168582259",
+    "pull_request_review_id": 96975090,
+    "id": 168582259,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2ODU4MjI1OQ==",
+    "diff_hunk": "@@ -0,0 +1,187 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def _extract(term):\n+    \"\"\"Extractor superoperator helper function.\n+\n+    Args:\n+        term (tuple): a single summand from a binary expression\n+\n+    Returns (QubitOperator or int): the qubit operator that corresponds\n+        to the binary expression or -1\n+    \"\"\"\n+    if len(term) == 1:\n+        term = term[0]\n+        if term[1] == 'W':\n+            return QubitOperator('Z' + str(term[0]))\n+        elif term[1] == '1':\n+            return -1\n+    if len(term) > 1:\n+        return dissolve(term)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        return_fn *= _extract(term)\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "6de657529a2d6934a4b2a7607e995ec8f8fad057",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "That's fine. If you feel a string would be better that seems reasonable.",
+    "created_at": "2018-02-15T19:26:41Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168582259",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168582259"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r168582259"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/168582259/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 168452560,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201284",
+    "pull_request_review_id": 97689254,
+    "id": 169201284,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2OTIwMTI4NA==",
+    "diff_hunk": "@@ -0,0 +1,178 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        multiplier = 1\n+        if len(term) == 1:\n+            term = term[0]\n+            if isinstance(term, (numpy.int32, numpy.int64, int)):\n+                multiplier = QubitOperator('Z' + str(term))\n+            else:\n+                multiplier = -1\n+        elif len(term) > 1:\n+            multiplier = dissolve(term)\n+\n+        return_fn *= multiplier\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the _action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "7af673be9e0954589498c9a7d51b0fbc195ad0fe",
+    "user": {
+      "login": "babbush",
+      "id": 14242687,
+      "node_id": "MDQ6VXNlcjE0MjQyNjg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14242687?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/babbush",
+      "html_url": "https://github.com/babbush",
+      "followers_url": "https://api.github.com/users/babbush/followers",
+      "following_url": "https://api.github.com/users/babbush/following{/other_user}",
+      "gists_url": "https://api.github.com/users/babbush/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/babbush/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/babbush/subscriptions",
+      "organizations_url": "https://api.github.com/users/babbush/orgs",
+      "repos_url": "https://api.github.com/users/babbush/repos",
+      "events_url": "https://api.github.com/users/babbush/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/babbush/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I update docs. I think this was left over from prior implementation.",
+    "created_at": "2018-02-20T01:41:13Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169201284",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201284"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169201284"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201284/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 61,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 61,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201960",
+    "pull_request_review_id": 97690061,
+    "id": 169201960,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2OTIwMTk2MA==",
+    "diff_hunk": "@@ -0,0 +1,178 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        multiplier = 1\n+        if len(term) == 1:\n+            term = term[0]\n+            if isinstance(term, (numpy.int32, numpy.int64, int)):\n+                multiplier = QubitOperator('Z' + str(term))\n+            else:\n+                multiplier = -1\n+        elif len(term) > 1:\n+            multiplier = dissolve(term)\n+\n+        return_fn *= multiplier\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the _action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "7af673be9e0954589498c9a7d51b0fbc195ad0fe",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "hmm I remember fixing that - meaning I may have messed something up with my merging. I should check to see whats happening before you approve.",
+    "created_at": "2018-02-20T01:49:15Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169201960",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201960"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169201960"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169201960/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 61,
+    "side": "RIGHT",
+    "in_reply_to_id": 169201284,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 61,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169202175",
+    "pull_request_review_id": 97690332,
+    "id": 169202175,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE2OTIwMjE3NQ==",
+    "diff_hunk": "@@ -0,0 +1,178 @@\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+\"\"\" The transform function that does Fermion-qubit mappings\n+    based on a BinaryCode (arXiv:1712.07067) \"\"\"\n+\n+import numpy\n+\n+from openfermion.ops import (BinaryCode,\n+                             FermionOperator,\n+                             QubitOperator,\n+                             SymbolicBinary)\n+\n+\n+def extractor(binary_op):\n+    \"\"\" Applies the extraction superoperator to a binary expression\n+     to obtain the corresponding qubit operators.\n+\n+    Args:\n+        binary_op (SymbolicBinary): the binary term\n+\n+    Returns (QubitOperator): the qubit operator corresponding to the\n+        binary terms\n+    \"\"\"\n+    return_fn = 1\n+    for term in binary_op.terms:\n+        multiplier = 1\n+        if len(term) == 1:\n+            term = term[0]\n+            if isinstance(term, (numpy.int32, numpy.int64, int)):\n+                multiplier = QubitOperator('Z' + str(term))\n+            else:\n+                multiplier = -1\n+        elif len(term) > 1:\n+            multiplier = dissolve(term)\n+\n+        return_fn *= multiplier\n+    return return_fn\n+\n+\n+def dissolve(term):\n+    \"\"\"Decomposition helper. Takes a product of binary variables\n+    and outputs the Pauli-string sum that corresponds to the\n+    decomposed multi-qubit operator.\n+\n+    Args:\n+        term (tuple): product of binary variables, i.e.: 'w0 w2 w3'\n+\n+    Returns (QubitOperator): superposition of Pauli-strings\n+\n+    Raises:\n+        ValueError: if the _action is not 'W'",
+    "path": "src/openfermion/transforms/_binary_code_transform.py",
+    "commit_id": "ae6e3dee0e59ef54af170785dcb1876ef2e4095b",
+    "original_commit_id": "7af673be9e0954589498c9a7d51b0fbc195ad0fe",
+    "user": {
+      "login": "conta877",
+      "id": 23045820,
+      "node_id": "MDQ6VXNlcjIzMDQ1ODIw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23045820?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/conta877",
+      "html_url": "https://github.com/conta877",
+      "followers_url": "https://api.github.com/users/conta877/followers",
+      "following_url": "https://api.github.com/users/conta877/following{/other_user}",
+      "gists_url": "https://api.github.com/users/conta877/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/conta877/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/conta877/subscriptions",
+      "organizations_url": "https://api.github.com/users/conta877/orgs",
+      "repos_url": "https://api.github.com/users/conta877/repos",
+      "events_url": "https://api.github.com/users/conta877/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/conta877/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "oh nvm - I totally missed that one and fixed the same error within the raise. ",
+    "created_at": "2018-02-20T01:52:02Z",
+    "updated_at": "2018-02-20T02:34:57Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169202175",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169202175"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/208#discussion_r169202175"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/208"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/169202175/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 61,
+    "side": "RIGHT",
+    "in_reply_to_id": 169201284,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 61,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,182 @@
+{
+  "id": 60,
+  "sample_id": "qiskit_nature_45_50",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "5355cdfa825d696404902c81e965b021667b70bc",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/active_space_projection": 5,
+      "quantum_semantics/hartree_fock_energy": 1,
+      "interface/driver_data_contract": 1,
+      "quantum_semantics/electronic_integral_values": 1,
+      "interface/serialization_roundtrip": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 39,
+          "expected": "Full active space retains original one- and two-electron MO integrals with zero shift."
+        }
+      ],
+      "rationale": "The full-space case checks physical integral preservation."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Minimal active space yields expected reduced MO integrals and zero shift."
+        }
+      ],
+      "rationale": "The reduced tensor entries are compared with references."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Unpaired-electron active space yields expected integrals and -14.2538029231 energy shift."
+        }
+      ],
+      "rationale": "The nonzero inactive-space correction makes this physical projection case distinct."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Explicit active-orbital selection yields expected reduced MO integrals."
+        }
+      ],
+      "rationale": "The chosen noncontiguous orbitals determine the reference tensors."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "Alternative QMolecule input preserves full-space integrals and zero shift."
+        }
+      ],
+      "rationale": "This variant checks behavior when occupation information is provided differently."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_hf_energy",
+      "label": "quantum_semantics/hartree_fock_energy",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "HDF5 driver loads H2 Hartree-Fock energy near -1.117."
+        }
+      ],
+      "rationale": "The inherited base test checks a physical energy value on the directly loaded QMolecule.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_hf_energy"
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_num_orbitals",
+      "label": "interface/driver_data_contract",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "HDF5 driver reports two molecular orbitals."
+        }
+      ],
+      "rationale": "The inherited test checks a public loaded-data property.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_num_orbitals"
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5.py::TestDriverHDF5::test_driver_mo_onee_ints",
+      "label": "quantum_semantics/electronic_integral_values",
+      "assertions": [
+        {
+          "line": 116,
+          "expected": "HDF5 driver loads reference one-electron MO integral matrix."
+        }
+      ],
+      "rationale": "The inherited test compares physical integral coefficients, beyond its shape check.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_mo_onee_ints"
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_hf_energy",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "QMolecule saved and reloaded through HDF5 retains its Hartree-Fock energy."
+        }
+      ],
+      "rationale": "TestDriverHDF5Save creates a new HDF5 file in setUp; inherited assertion verifies the reloaded value.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_hf_energy"
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_onee_ints",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 116,
+          "expected": "HDF5 save/reload retains reference one-electron MO integrals."
+        }
+      ],
+      "rationale": "The selected save-class case validates persistence of the integral matrix.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_mo_onee_ints"
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/drivers/hdf5d/test_driver_hdf5_save.py::TestDriverHDF5Save::test_driver_mo_eri_ints",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "HDF5 save/reload retains reference two-electron MO integral tensor."
+        }
+      ],
+      "rationale": "The selected save-class case validates persistence of four-index integral values.",
+      "source_file": "test/drivers/test_driver.py",
+      "source_selector": "test/drivers/test_driver.py::TestDriver::test_driver_mo_eri_ints"
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/5355cdfa825d696404902c81e965b021667b70bc/test/drivers/hdf5d/test_driver_hdf5.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5355cdfa825d696404902c81e965b021667b70bc/test/drivers/hdf5d/test_driver_hdf5_save.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5355cdfa825d696404902c81e965b021667b70bc/test/drivers/test_driver.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5355cdfa825d696404902c81e965b021667b70bc/test/transformers/test_active_space_transformer.py"
+  ],
+  "rationale": "Reviewed all five active-space assertions and resolved each of six HDF5 selectors to its inherited TestDriver method. The save-class cases explicitly test persistence through a new HDF5 file."
+}

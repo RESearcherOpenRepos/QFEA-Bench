@@ -1,0 +1,644 @@
+{
+  "id": 84,
+  "sample_id": "qiskit_nature_866_870",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 41,
+    "subtype_test_counts": {
+      "interface/sparse_storage_contract": 2,
+      "general_semantics/tensor_arithmetic": 18,
+      "quantum_semantics/fermionic_tensor_mapping": 2,
+      "quantum_semantics/electronic_integral_index_order": 12,
+      "general_semantics/complex_conjugation": 2,
+      "interface/mapping_access": 4,
+      "interface/input_validation": 1,
+      "interface/spin_sector_access": 3,
+      "quantum_semantics/fermionic_basis_rotation": 1,
+      "quantum_semantics/electronic_integral_values": 1,
+      "quantum_semantics/electronic_integral_spin_trace": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_issparse",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "issparse distinguishes sparse, scalar-plus-sparse, dense, and mixed tensors."
+        }
+      ],
+      "rationale": "The public storage-mode predicate is the focus."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_todense",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 252,
+          "expected": "todense returns dense arrays with the same stored coefficients."
+        }
+      ],
+      "rationale": "The public representation conversion is the focus."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 641,
+          "expected": "Dense, sparse, and mixed einsum contractions agree with NumPy references."
+        }
+      ],
+      "rationale": "The test checks generic tensor contraction arithmetic."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_second_q_coeffs",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 477,
+          "expected": "Alpha, beta, and beta-alpha integrals form the expected second-q coefficient tensor."
+        }
+      ],
+      "rationale": "The spin-sector placement and factors follow electronic-integral semantics."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 80,
+          "expected": "Sparse chemist-order two-body integrals convert to physicist index order."
+        }
+      ],
+      "rationale": "The index permutation is a quantum-chemistry convention."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 414,
+          "expected": "Sparse polynomial coefficients become the expected fermionic ladder terms."
+        }
+      ],
+      "rationale": "The tensor indices specify creation and annihilation modes."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 337,
+          "expected": "Dense and sparse PolynomialTensor addition preserves coefficient sums and storage type."
+        }
+      ],
+      "rationale": "The main check is generic tensor addition."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 415,
+          "expected": "PolynomialTensor composition contracts dense and sparse coefficient arrays correctly."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor composition."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 368,
+          "expected": "Dense and sparse tensor conjugation changes complex coefficient signs."
+        }
+      ],
+      "rationale": "The selected control checks numeric conjugation."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 557,
+          "expected": "Tensor expansion yields expected dense and sparse coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor product."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 216,
+          "expected": "PolynomialTensor key lookup returns its stored coefficient array."
+        }
+      ],
+      "rationale": "The selected control checks mapping access."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 148,
+          "expected": "PolynomialTensor construction rejects rank and dimension mismatches."
+        }
+      ],
+      "rationale": "The selected control checks constructor validation."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 238,
+          "expected": "PolynomialTensor iteration yields its coefficient keys."
+        }
+      ],
+      "rationale": "The selected control checks mapping iteration."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "PolynomialTensor length equals four stored keys."
+        }
+      ],
+      "rationale": "The selected control checks mapping length."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "Zero multiplication scales dense and sparse tensors to zero."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "Multiplication by 0.75 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "Multiplication by 1.5 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "Multiplication by 2.25 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "Multiplication by 3 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 534,
+          "expected": "Tensor product yields expected dense and sparse coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor product."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 394,
+          "expected": "Transpose reorders dense and sparse coefficient-array axes."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor transpose."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 229,
+          "expected": "Adding ElectronicIntegrals combines stored spin-sector coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks componentwise tensor addition."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+      "label": "interface/spin_sector_access",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "ElectronicIntegrals exposes alpha, beta, beta-alpha, and derived alpha-beta tensors."
+        }
+      ],
+      "rationale": "The selected control checks named public accessors."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 244,
+          "expected": "ElectronicIntegrals conjugates its coefficient tensors."
+        }
+      ],
+      "rationale": "The selected control checks generic complex arithmetic."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_einsum",
+      "label": "quantum_semantics/fermionic_basis_rotation",
+      "assertions": [
+        {
+          "line": 353,
+          "expected": "ElectronicIntegrals einsum contracts alpha, beta, and mixed-spin integral tensors."
+        }
+      ],
+      "rationale": "Spin-sector tensor placement is physically meaningful."
+    },
+    {
+      "test_number": 26,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_from_raw_integrals",
+      "label": "quantum_semantics/electronic_integral_values",
+      "assertions": [
+        {
+          "line": 435,
+          "expected": "Raw one- and two-electron alpha, beta, and mixed-spin tensors appear in correct sectors."
+        }
+      ],
+      "rationale": "The selected control checks electronic-integral data mapping."
+    },
+    {
+      "test_number": 27,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 174,
+          "expected": "ElectronicIntegrals iteration lists alpha, beta, beta_alpha."
+        }
+      ],
+      "rationale": "The selected control checks public mapping keys."
+    },
+    {
+      "test_number": 28,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_1_0_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multiplication by zero scales every spin-sector tensor."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 29,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_2_0_75",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multiplication by 0.75 scales every spin-sector tensor."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 30,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_3_1_5",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multiplication by 1.5 scales every spin-sector tensor."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 31,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_4_2_25",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multiplication by 2.25 scales every spin-sector tensor."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 32,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_5_3_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multiplication by 3 scales every spin-sector tensor."
+        }
+      ],
+      "rationale": "This variant checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 33,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+      "label": "interface/spin_sector_access",
+      "assertions": [
+        {
+          "line": 159,
+          "expected": "one_body accessor returns the stored one-electron spin sectors."
+        }
+      ],
+      "rationale": "The selected control checks a named public accessor."
+    },
+    {
+      "test_number": 34,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_trace_spin",
+      "label": "quantum_semantics/electronic_integral_spin_trace",
+      "assertions": [
+        {
+          "line": 536,
+          "expected": "Tracing spin yields the prescribed sums and permutation of alpha, beta, and beta-alpha integrals."
+        }
+      ],
+      "rationale": "The physical spin-sector reduction determines expected coefficients."
+    },
+    {
+      "test_number": 35,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 254,
+          "expected": "ElectronicIntegrals transpose reorders stored arrays."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor transpose."
+    },
+    {
+      "test_number": 36,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+      "label": "interface/spin_sector_access",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "two_body accessor returns the stored two-electron spin sectors."
+        }
+      ],
+      "rationale": "The selected control checks a named public accessor."
+    },
+    {
+      "test_number": 37,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 125,
+          "expected": "Physicist-order integral tensor is identified as physicist order."
+        }
+      ],
+      "rationale": "This variant checks an electronic-integral convention."
+    },
+    {
+      "test_number": 38,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 125,
+          "expected": "Chemist-order integral tensor is identified as chemist order."
+        }
+      ],
+      "rationale": "This variant checks an electronic-integral convention."
+    },
+    {
+      "test_number": 39,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 125,
+          "expected": "Intermediate-order integral tensor is identified as intermediate order."
+        }
+      ],
+      "rationale": "This variant checks an electronic-integral convention."
+    },
+    {
+      "test_number": 40,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 125,
+          "expected": "Unrecognized tensor is identified as unknown order."
+        }
+      ],
+      "rationale": "This variant checks whether it satisfies known integral symmetries."
+    },
+    {
+      "test_number": 41,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Sparse physicist-order tensor converts to chemist order."
+        }
+      ],
+      "rationale": "The index permutation is a quantum-chemistry convention."
+    },
+    {
+      "test_number": 42,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Sparse chemist-order tensor remains in chemist order."
+        }
+      ],
+      "rationale": "The identity case still checks recognition of the integral convention."
+    },
+    {
+      "test_number": 43,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Sparse intermediate-order tensor converts to chemist order."
+        }
+      ],
+      "rationale": "The index permutation is a quantum-chemistry convention."
+    },
+    {
+      "test_number": 44,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 80,
+          "expected": "Sparse physicist-order tensor remains in physicist order."
+        }
+      ],
+      "rationale": "The identity case checks integral convention recognition."
+    },
+    {
+      "test_number": 45,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 80,
+          "expected": "Sparse intermediate-order tensor converts to physicist order."
+        }
+      ],
+      "rationale": "The index permutation is a quantum-chemistry convention."
+    },
+    {
+      "test_number": 46,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "Unknown integral symmetry is rejected for chemist-order conversion."
+        }
+      ],
+      "rationale": "The invalid physical index pattern is the focus."
+    },
+    {
+      "test_number": 47,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering",
+      "label": "quantum_semantics/electronic_integral_index_order",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "Unknown integral symmetry is rejected for physicist-order conversion."
+        }
+      ],
+      "rationale": "The invalid physical index pattern is the focus."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54/test/second_q/operators/test_electronic_integrals.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54/test/second_q/operators/test_polynomial_tensor.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54/test/second_q/operators/test_tensor_ordering.py"
+  ],
+  "rationale": "Read all 47 selected cases, including sparse and dense subcases and each chemist/physicist ordering variant. Generic tensor arithmetic, storage interface, and electronic-integral conventions are separated by assertion."
+}

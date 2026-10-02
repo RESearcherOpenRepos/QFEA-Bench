@@ -1,0 +1,96 @@
+{
+  "id": 2,
+  "sample_id": "openfermion_207_212",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "d7f462aeae97413b1b7a9ceb0eeddd07f6eec6ce",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/active_space_projection": 1,
+      "interface/return_representation": 1,
+      "quantum_semantics/operator_normal_ordering": 3,
+      "quantum_semantics/molecular_term_classification": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_nonvanishing",
+      "assertions": [
+        {
+          "line": 160,
+          "expected": "Freezing occupied orbital 1 removes its ladder pair, maps surviving orbital 2 to 1, and gives the surviving term coefficient -1"
+        }
+      ],
+      "label": "quantum_semantics/active_space_projection"
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_vanishing",
+      "assertions": [
+        {
+          "line": 165,
+          "expected": "Freezing orbital 2 as unoccupied eliminates the incompatible term and leaves an empty terms mapping"
+        }
+      ],
+      "label": "interface/return_representation"
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_number_reversed",
+      "assertions": [
+        {
+          "line": 92,
+          "expected": "Normal ordering a_2 a_2† yields the identity minus the orbital-2 number operator"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_offsite_reversed",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Normal ordering operators on different orbitals swaps them and flips the coefficient sign"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_multi",
+      "assertions": [
+        {
+          "line": 117,
+          "expected": "Normal ordering the three-ladder term produces both the reordered term with a negative coefficient and a negative contraction term"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_molecular_term_out_of_order",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "A four-ladder term that conserves particle number and spin qualifies as a molecular term despite its operator order"
+        }
+      ],
+      "label": "quantum_semantics/molecular_term_classification"
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/d7f462aeae97413b1b7a9ceb0eeddd07f6eec6ce/src/openfermion/ops/_fermion_operator_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/d7f462aeae97413b1b7a9ceb0eeddd07f6eec6ce/src/openfermion/ops/_fermion_operator.py"
+  ],
+  "rationale": "Assign one primary label per test. The nonvanishing freeze test is active-space projection; its expected coefficient and orbital indices remain in the evidence. The vanishing test directly asserts that the returned terms mapping is empty, so its primary label is interface/return_representation. Normal-ordering tests retain their anticommutation details in the expected results without extra labels."
+}

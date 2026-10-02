@@ -1,0 +1,193 @@
+{
+  "id": 100,
+  "sample_id": "qiskit_optimization_433_467",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "e360343dbbd25790a294d6bee980244d7238f903",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 8,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/ising_operator_conversion": 8,
+      "interface/input_validation": 2,
+      "general_semantics/empty_problem_conversion": 2,
+      "interface/deprecation_warning": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_from_ising2_2_False",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "SparsePauliOp reconstructs the expected quadratic objective terms."
+        }
+      ],
+      "rationale": "SparsePauliOp reconstructs the expected quadratic objective terms."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_2_False",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "SparsePauliOp reconstructs linear and quadratic model terms."
+        }
+      ],
+      "rationale": "SparsePauliOp reconstructs linear and quadratic model terms."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_pauli_with_invalid_paulis_2_False",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 151,
+          "expected": "Unsupported X or Y Pauli terms raise QiskitOptimizationError."
+        }
+      ],
+      "rationale": "Unsupported X or Y Pauli terms raise QiskitOptimizationError."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_pauli_I_Z_2_False",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Identity and Z operators round-trip through the expected matrices."
+        }
+      ],
+      "rationale": "Identity and Z operators round-trip through the expected matrices."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_to_ising2_2_False",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "SparsePauliOp from maximization matches the reference Ising matrix."
+        }
+      ],
+      "rationale": "SparsePauliOp from maximization matches the reference Ising matrix."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_2_False",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 54,
+          "expected": "SparsePauliOp from minimization matches the reference Ising matrix and offset."
+        }
+      ],
+      "rationale": "SparsePauliOp from minimization matches the reference Ising matrix and offset."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_wo_variable_2_False",
+      "label": "general_semantics/empty_problem_conversion",
+      "assertions": [
+        {
+          "line": 351,
+          "expected": "Constant-only objective yields a zero operator with correct offset."
+        }
+      ],
+      "rationale": "Constant-only objective yields a zero operator with correct offset."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/translators/test_ising.py::TestIsingTranslator::test_warning",
+      "label": "interface/deprecation_warning",
+      "assertions": [
+        {
+          "line": 360,
+          "expected": "Legacy opflow mode emits its migration warning."
+        }
+      ],
+      "rationale": "Legacy opflow mode emits its migration warning."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_empty_problem",
+      "label": "general_semantics/empty_problem_conversion",
+      "assertions": [
+        {
+          "line": 66,
+          "expected": "Empty problem conversion retains zero offset."
+        }
+      ],
+      "rationale": "Empty problem conversion retains zero offset."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_valid_variable_type",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "Invalid optimization variable type raises QiskitOptimizationError."
+        }
+      ],
+      "rationale": "Invalid optimization variable type raises QiskitOptimizationError."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 401,
+          "expected": "Legacy optimization-to-Ising output matches the reference Pauli operator."
+        }
+      ],
+      "rationale": "Legacy optimization-to-Ising output matches the reference Pauli operator."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_linear",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 436,
+          "expected": "Linear Ising terms reconstruct the expected quadratic program."
+        }
+      ],
+      "rationale": "Linear Ising terms reconstruct the expected quadratic program."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_quadratic",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 467,
+          "expected": "Quadratic Ising terms reconstruct the expected quadratic program."
+        }
+      ],
+      "rationale": "Quadratic Ising terms reconstruct the expected quadratic program."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/e360343dbbd25790a294d6bee980244d7238f903/test/converters/test_converters.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/e360343dbbd25790a294d6bee980244d7238f903/test/translators/test_ising.py"
+  ],
+  "rationale": "Every selected test was inspected individually against its task and assertion."
+}

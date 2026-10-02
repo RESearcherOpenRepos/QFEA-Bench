@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.447346043999914,
+  "items": [
+    "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.009568625000156317,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.2517764580002222,
+      "wasxfail": null,
+      "longrepr": "self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19d9360>\nrequest = <FixtureRequest for <Function test_serialization[qulacs]>>\ndata = (array([[0.87909297, 0.34157351],\n       [0.1       , 0.78589188],\n       [0.16013294, 0.76436588],\n       [0.9       ...7408025, 0.24706199],\n       [0.83617927, 0.1770553 ],\n       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))\nframework = 'qulacs'\n\n    @pytest.mark.parametrize(\"framework\", [\"qiskit\", \"pennylane\", \"qulacs\"])\n    def test_serialization(self, request, data, framework):\n        \"\"\"Tests concerning the serialization of the QNNClassifier.\"\"\"\n        X, y = data\n        qnn_classifier = self.get_qnn_classifier(framework)\n        qnn_classifier.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       qnn_classifier.dump(buffer)\nE       AttributeError: 'QNNClassifier' object has no attribute 'dump'\n\ntests/qnn/test_qnnc.py:226: AttributeError"
+    },
+    {
+      "nodeid": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0004021669997200661,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

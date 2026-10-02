@@ -1,0 +1,125 @@
+{
+  "instance": {
+    "id": 4,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_258_262",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/258",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/262",
+    "base_commit": "46ce88bac2dee2cb4b5abca17e9202975f0c8b3e",
+    "patch": "98134afd34f2591aaac851005ae057cdff8457d2"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task changes the Majorana operator convention and preserves consistency with quadratic-Hamiltonian Majorana form."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/utils/_special_operators.py",
+      "src/openfermion/transforms/_verstraete_cirac.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion should support the conventional unnormalized Majorana operator convention and a more convenient way to construct those operators, so users can work with c_p and d_p style Majorana terms directly while keeping downstream quadratic-Hamiltonian and auxiliary-stabilizer workflows consistent with the updated definition.",
+    "requirements": [
+      "Allow majorana_operator to construct Type 0 and Type 1 Majorana operators using the unnormalized convention a_p^ + a_p and i(a_p^ - a_p).",
+      "Allow majorana_operator to accept string shorthands such as c2 and d3 for Majorana operators on a given mode.",
+      "Allow majorana_operator() with no term to return the zero FermionOperator.",
+      "Reject nonscalar coefficients and invalid Majorana operator type specifications with ValueError.",
+      "Keep QuadraticHamiltonian.majorana_form output compatible with reconstruction using the updated majorana_operator convention.",
+      "Keep existing spin-operator helpers and Verstraete-Cirac locality behavior unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "majorana_operator",
+        "Path": "src/openfermion/utils/_special_operators.py",
+        "Input": "term=None, coefficient=1.0",
+        "Output": "FermionOperator",
+        "Description": "Constructs a single Majorana operator term from tuple or string Majorana notation."
+      },
+      {
+        "Type": "Method",
+        "Name": "majorana_form",
+        "Path": "src/openfermion/ops/_quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "majorana_matrix, majorana_constant",
+        "Description": "Returns the Majorana-form matrix and constant in a convention compatible with the library's Majorana operator helper."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_258_262",
+      "image_id": "sha256:09d1bf416d4331602bd3f5896a7e792198804e93cfdc8b84d8da6da4f6f6bf82",
+      "image_size": "463192488"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_special_operators_test.py::MajoranaOperatorTest::test_init",
+          "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_majorana_form"
+        ],
+        "summary": "2 passed, 47 warnings in 1.41s",
+        "duration_seconds": 4.73
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_sz_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_plus_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_minus_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_squared_operator",
+          "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_ground_energy",
+          "src/openfermion/transforms/_verstraete_cirac_test.py::VerstraeteCirac2dSquareOperatorLocalityTest::test_operator_locality_no_aux"
+        ],
+        "summary": "6 passed, 47 warnings in 2.48s",
+        "duration_seconds": 5.83
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/utils/_special_operators_test.py::MajoranaOperatorTest::test_init",
+          "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_majorana_form"
+        ],
+        "summary": "2 failed, 47 warnings in 1.38s",
+        "duration_seconds": 4.77
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_sz_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_plus_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_minus_operator",
+          "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_squared_operator",
+          "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_ground_energy",
+          "src/openfermion/transforms/_verstraete_cirac_test.py::VerstraeteCirac2dSquareOperatorLocalityTest::test_operator_locality_no_aux"
+        ],
+        "summary": "6 passed, 47 warnings in 2.41s",
+        "duration_seconds": 5.85
+      }
+    }
+  }
+}

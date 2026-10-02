@@ -1,0 +1,23 @@
+{
+  "oracle_files": [
+    "qiskit_addon_sqd/fermion.py"
+  ],
+  "task": {
+    "problem_statement": "The fermionic sample-based diagonalization interface requires Qiskit BitArray samples. Users with samples already stored in NumPy boolean arrays need to pass them directly into the same quantum-chemistry workflow.",
+    "requirements": [
+      "Accept a two-dimensional NumPy boolean array of sampled bitstrings as the solver input.",
+      "Interpret those samples consistently with the existing bitstring convention and recover the molecular ground-state energy.",
+      "Preserve existing BitArray input, determinant conversion, and subspace-size controls."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "diagonalize_fermionic_hamiltonian",
+        "Path": "qiskit_addon_sqd/fermion.py",
+        "Input": "one_body_tensor, two_body_tensor, bit_array, samples_per_batch, norb, nelec, *, max_iterations=100, seed=None, ...",
+        "Output": "SCIResult",
+        "Description": "Accepts BitArray or a NumPy boolean sample array; result.energy is the electronic energy before adding nuclear repulsion."
+      }
+    ]
+  }
+}

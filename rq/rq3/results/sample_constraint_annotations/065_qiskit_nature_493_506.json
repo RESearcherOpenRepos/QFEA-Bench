@@ -1,0 +1,88 @@
+{
+  "id": 65,
+  "sample_id": "qiskit_nature_493_506",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "18bcd28a17cb4765a48cfd6af2926f62c8c7cc18",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "interface/input_format_equivalence": 1,
+      "interface/operator_term_representation": 2,
+      "interface/register_length_contract": 1,
+      "general_semantics/symbolic_operator_arithmetic": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "Tuple action/index labels produce the same dense term list as string labels."
+        }
+      ],
+      "rationale": "The distinctive contract is acceptance of structured public input."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "Dense and sparse string inputs expose the expected multi-term list."
+        }
+      ],
+      "rationale": "The selected control checks public to_list output."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+      "label": "interface/operator_term_representation",
+      "assertions": [
+        {
+          "line": 122,
+          "expected": "Multi-digit mode indices map to the expected dense labels."
+        }
+      ],
+      "rationale": "The result is a specified public string encoding."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 147,
+          "expected": "Register length is inferred as two from mode index one."
+        }
+      ],
+      "rationale": "The test checks exposed register metadata."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 179,
+          "expected": "Addition aggregates labeled fermionic terms and coefficients."
+        }
+      ],
+      "rationale": "No fermionic sign identity is invoked by these additions."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/18bcd28a17cb4765a48cfd6af2926f62c8c7cc18/test/operators/second_quantization/test_fermionic_op.py"
+  ],
+  "rationale": "Read the task and each of the 5 selected test cases at the exact patch; each record has one primary constraint."
+}

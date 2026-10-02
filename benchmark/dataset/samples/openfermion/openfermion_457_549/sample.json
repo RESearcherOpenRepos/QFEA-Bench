@@ -1,0 +1,166 @@
+{
+  "instance": {
+    "id": 7,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_457_549",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/457",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/549",
+    "base_commit": "427e5c53b1008e3aee16ecc277bb8094169a3310",
+    "patch": "302449a45ef0106a1ac210174ddefc2b7ffb71a6"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task keeps symbolic coefficients compatible with existing fermionic operators and transforms rather than changing transform semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/_symbolic_operator.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion operators need to support symbolic amplitudes so users can represent FermionOperator and related symbolic operators with unknown coefficients and still apply the standard fermion-to-qubit transforms. The implementation should allow sympy expressions to participate in the core symbolic-operator arithmetic used by FermionOperator construction and scalar multiplication, while preserving the expected Jordan-Wigner and Bravyi-Kitaev transformed coefficients.",
+    "requirements": [
+      "Allow SymbolicOperator-derived operators to be constructed with sympy.Expr coefficients.",
+      "Allow SymbolicOperator scalar multiplication and in-place addition logic to work correctly when coefficients are sympy.Expr values, including cancellation of exact symbolic opposites.",
+      "Allow Jordan-Wigner transforms of FermionOperator inputs with symbolic coefficients to produce QubitOperator terms with the corresponding symbolic coefficients.",
+      "Allow Bravyi-Kitaev transforms of FermionOperator inputs with symbolic coefficients to produce the same transformed term structure and symbolic coefficients as the numeric case."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SymbolicOperator",
+        "Path": "src/openfermion/ops/_symbolic_operator.py",
+        "Input": "constructor: term=None, coefficient=1.",
+        "Output": "",
+        "Description": "Base class for symbolic quantum operators whose coefficients must now accept both numeric scalars and sympy expressions."
+      },
+      {
+        "Type": "Method",
+        "Name": "__mul__",
+        "Path": "src/openfermion/ops/_symbolic_operator.py",
+        "Input": "self, multiplier",
+        "Output": "SymbolicOperator",
+        "Description": "Returns a new symbolic operator when multiplied by a supported scalar coefficient or another operator of the same type."
+      },
+      {
+        "Type": "Method",
+        "Name": "__rmul__",
+        "Path": "src/openfermion/ops/_symbolic_operator.py",
+        "Input": "self, multiplier",
+        "Output": "SymbolicOperator",
+        "Description": "Supports left scalar multiplication of symbolic operators by supported scalar coefficient types."
+      },
+      {
+        "Type": "Method",
+        "Name": "__imul__",
+        "Path": "src/openfermion/ops/_symbolic_operator.py",
+        "Input": "self, multiplier",
+        "Output": "SymbolicOperator",
+        "Description": "Performs in-place scalar or same-type operator multiplication while preserving symbolic coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "__iadd__",
+        "Path": "src/openfermion/ops/_symbolic_operator.py",
+        "Input": "self, addend",
+        "Output": "SymbolicOperator",
+        "Description": "Performs in-place addition and removes terms whose resulting symbolic coefficient simplifies to zero."
+      },
+      {
+        "Type": "Function",
+        "Name": "jordan_wigner",
+        "Path": "src/openfermion/transforms/_jordan_wigner.py",
+        "Input": "operator",
+        "Output": "QubitOperator",
+        "Description": "Maps FermionOperator inputs into the Jordan-Wigner qubit representation while preserving supported symbolic coefficients."
+      },
+      {
+        "Type": "Function",
+        "Name": "bravyi_kitaev",
+        "Path": "src/openfermion/transforms/_bravyi_kitaev.py",
+        "Input": "operator, n_qubits=None",
+        "Output": "QubitOperator",
+        "Description": "Maps FermionOperator inputs into the Bravyi-Kitaev qubit representation while preserving supported symbolic coefficients."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_457_549",
+      "image_id": "sha256:e393ef741c6cca9f9ff5fa8101420c124f84f7570acdd18134e69eb3838a4aa2",
+      "image_size": "529096242"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "sympy"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_with_sympy",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_sympy",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_sympy_term_removal",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3_sympy",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy"
+        ],
+        "summary": "5 passed in 9.35s",
+        "duration_seconds": 12.59
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_scalar_complex",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform"
+        ],
+        "summary": "5 passed in 8.74s",
+        "duration_seconds": 12.14
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_with_sympy",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_sympy",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_sympy_term_removal",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3_sympy",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy"
+        ],
+        "summary": "5 failed in 8.94s",
+        "duration_seconds": 12.32
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_scalar_complex",
+          "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3",
+          "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform"
+        ],
+        "summary": "5 passed in 7.86s",
+        "duration_seconds": 11.59
+      }
+    }
+  }
+}

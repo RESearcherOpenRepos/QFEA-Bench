@@ -1,0 +1,163 @@
+{
+  "id": 96,
+  "sample_id": "qiskit_optimization_13_163",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "072b29f8d76081d524dc3f70f741efb0481d199c",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 9,
+    "subtype_test_counts": {
+      "general_semantics/indicator_constraint_translation": 1,
+      "interface/model_roundtrip": 1,
+      "interface/default_model_state": 1,
+      "interface/variable_management": 1,
+      "general_semantics/objective_representation": 1,
+      "general_semantics/linear_constraint_representation": 1,
+      "general_semantics/quadratic_constraint_representation": 1,
+      "interface/constraint_construction": 1,
+      "general_semantics/linear_expression_evaluation": 1,
+      "interface/variable_construction": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_indicator_constraints",
+      "label": "general_semantics/indicator_constraint_translation",
+      "assertions": [
+        {
+          "line": 218,
+          "expected": "Indicator equality becomes paired big-M linear constraints with expected coefficients."
+        }
+      ],
+      "rationale": "Indicator equality becomes paired big-M linear constraints with expected coefficients."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to",
+      "label": "interface/model_roundtrip",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "DOcplex translation back to a model preserves the LP representation."
+        }
+      ],
+      "rationale": "DOcplex translation back to a model preserves the LP representation."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+      "label": "interface/default_model_state",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "New QuadraticProgram has empty variables, constraints and zero objective."
+        }
+      ],
+      "rationale": "New QuadraticProgram has empty variables, constraints and zero objective."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+      "label": "interface/variable_management",
+      "assertions": [
+        {
+          "line": 472,
+          "expected": "Variable types, bounds and name-to-index mapping remain consistent."
+        }
+      ],
+      "rationale": "Variable types, bounds and name-to-index mapping remain consistent."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+      "label": "general_semantics/objective_representation",
+      "assertions": [
+        {
+          "line": 715,
+          "expected": "Linear and quadratic objective terms retain expected matrix values."
+        }
+      ],
+      "rationale": "Linear and quadratic objective terms retain expected matrix values."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+      "label": "general_semantics/linear_constraint_representation",
+      "assertions": [
+        {
+          "line": 511,
+          "expected": "Linear constraint sense, bounds and coefficients remain correct."
+        }
+      ],
+      "rationale": "Linear constraint sense, bounds and coefficients remain correct."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+      "label": "general_semantics/quadratic_constraint_representation",
+      "assertions": [
+        {
+          "line": 640,
+          "expected": "Quadratic constraint coefficients and sense remain correct."
+        }
+      ],
+      "rationale": "Quadratic constraint coefficients and sense remain correct."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/problems/test_linear_constraint.py::TestLinearConstraint::test_init",
+      "label": "interface/constraint_construction",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Linear constraint construction accepts valid senses and coefficients."
+        }
+      ],
+      "rationale": "Linear constraint construction accepts valid senses and coefficients."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/problems/test_linear_expression.py::TestLinearExpression::test_evaluate",
+      "label": "general_semantics/linear_expression_evaluation",
+      "assertions": [
+        {
+          "line": 110,
+          "expected": "Linear expression evaluates to thirty."
+        }
+      ],
+      "rationale": "Linear expression evaluates to thirty."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/problems/test_variable.py::TestVariable::test_init",
+      "label": "interface/variable_construction",
+      "assertions": [
+        {
+          "line": 39,
+          "expected": "Variable constructor retains its name, bounds and integer type."
+        }
+      ],
+      "rationale": "Variable constructor retains its name, bounds and integer type."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/072b29f8d76081d524dc3f70f741efb0481d199c/test/problems/test_linear_constraint.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/072b29f8d76081d524dc3f70f741efb0481d199c/test/problems/test_linear_expression.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/072b29f8d76081d524dc3f70f741efb0481d199c/test/problems/test_quadratic_program.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/072b29f8d76081d524dc3f70f741efb0481d199c/test/problems/test_variable.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/072b29f8d76081d524dc3f70f741efb0481d199c/test/translators/test_docplex_mp.py"
+  ],
+  "rationale": "Every selected test was inspected individually against the task and test assertion."
+}

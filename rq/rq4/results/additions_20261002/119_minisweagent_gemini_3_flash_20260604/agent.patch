@@ -1,0 +1,332 @@
+diff --git a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py
+index be377d7..8b0c82e 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py
++++ b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py
+@@ -7,6 +7,7 @@ from qiskit.quantum_info import SparsePauliOp
+ from squlearn.observables import CustomObservable
+ 
+ from .kernel_matrix_base import KernelMatrixBase
++from ...util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ from ...encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ...util.executor import Executor
+@@ -15,7 +16,7 @@ from ...util.data_preprocessing import to_tuple
+ from ...qnn.lowlevel_qnn import LowLevelQNN
+ 
+ 
+-class FidelityKernelExpectationValue(KernelMatrixBase):
++class FidelityKernelExpectationValue(KernelMatrixBase, SerializableModelMixin):
+     r"""
+     Fidelity Quantum Kernel evaluation based on quantum circuit and expectation values.
+ 
+diff --git a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
+index b1caa4a..d90e95e 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
++++ b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
+@@ -8,6 +8,7 @@ from qiskit.circuit import ParameterVector
+ from qiskit.compiler import transpile
+ from qiskit_algorithms.utils import algorithm_globals
+ 
++from ...util.serialization.serializable_model_mixin import SerializableModelMixin
+ from ...encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ...util.executor import Executor
+ 
+@@ -20,7 +21,7 @@ from ...util.qulacs.qulacs_execution import qulacs_evaluate_statevector
+ from ...util.data_preprocessing import to_tuple, adjust_features
+ 
+ 
+-class FidelityKernelStatevector:
++class FidelityKernelStatevector(SerializableModelMixin):
+     """
+     Fidelity Quantum Kernel implementation based on PennyLane.
+ 
+diff --git a/src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py b/src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py
+index cabfb90..9f39a19 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py
++++ b/src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py
+@@ -5,9 +5,10 @@ from abc import ABC, abstractmethod
+ from .regularization import thresholding_regularization, tikhonov_regularization
+ from ...encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ...util.executor import Executor
++from ...util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ 
+-class KernelMatrixBase(ABC):
++class KernelMatrixBase(ABC, SerializableModelMixin):
+     """
+     Base class for defining quantum kernels.
+ 
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..a883148 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -3,12 +3,13 @@
+ from sklearn.gaussian_process import GaussianProcessClassifier
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(GaussianProcessClassifier, SerializableModelMixin):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..470fdcb 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -9,6 +9,7 @@ from scipy.linalg import lu_factor, lu_solve
+ from sklearn.base import BaseEstimator, RegressorMixin
+ from sklearn.preprocessing._data import _handle_zeros_in_scale
+ 
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ from sklearn import __version__
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
+@@ -25,7 +26,7 @@ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.regularization import regularize_full_kernel
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(BaseEstimator, RegressorMixin, SerializableModelMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..be4c4a2 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -9,6 +9,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
+ from sklearn import __version__
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ if version.parse(__version__) >= version.parse("1.6"):
+     from sklearn.utils.validation import validate_data
+@@ -21,7 +22,7 @@ else:
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(BaseEstimator, RegressorMixin, SerializableModelMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..b7d49fa 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -3,12 +3,13 @@
+ from sklearn.svm import SVC
+ from typing import Union, Optional
+ 
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SVC, SerializableModelMixin):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..30e91a0 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -3,13 +3,14 @@
+ import numpy as np
+ from sklearn.svm import SVR
+ from typing import Union, Optional
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SVR, SerializableModelMixin):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index a57b369..9456ac2 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -21,6 +21,7 @@ else:
+     def validate_data(self, *args, **kwargs):
+         return self._validate_data(*args, **kwargs)
+ 
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ 
+ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+@@ -33,7 +34,7 @@ from .lowlevel_qnn import LowLevelQNN
+ from .util.training import ShotControlBase
+ 
+ 
+-class BaseQNN(BaseEstimator, ABC):
++class BaseQNN(BaseEstimator, ABC, SerializableModelMixin):
+     """Base Class for Quantum Neural Networks.
+ 
+     Args:
+diff --git a/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py b/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py
+index 576fd83..a2aaf94 100644
+--- a/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py
++++ b/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py
+@@ -8,11 +8,12 @@ from qiskit.circuit import ParameterVector
+ from qiskit.circuit.parametervector import ParameterVectorElement
+ 
+ from ...observables.observable_base import ObservableBase
++from ...util.serialization.serializable_model_mixin import SerializableModelMixin
+ from ...encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ...util import Executor
+ 
+ 
+-class LowLevelQNNBase(abc.ABC):
++class LowLevelQNNBase(abc.ABC, SerializableModelMixin):
+     """Base class for low-level QNNs.
+ 
+     Args:
+diff --git a/src/squlearn/qnn/util/training.py b/src/squlearn/qnn/util/training.py
+index e6f4c48..72a7507 100644
+--- a/src/squlearn/qnn/util/training.py
++++ b/src/squlearn/qnn/util/training.py
+@@ -8,6 +8,7 @@ from sklearn.utils import gen_batches
+ from ..loss.qnn_loss_base import QNNLossBase
+ from ..lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ...optimizers.optimizer_base import OptimizerBase, SGDMixin, IterativeMixin
++from ...util.serialization.serializable_model_mixin import SerializableModelMixin
+ from ...util import Executor
+ 
+ 
+@@ -69,7 +70,7 @@ def get_lr_decay(lr_start: float, lr_end: float, iter_decay: float, iter_plateau
+     return lr_decay
+ 
+ 
+-class ShotControlBase:
++class ShotControlBase(SerializableModelMixin):
+     """Base Class for shot control"""
+ 
+     def __init__(self) -> None:
+diff --git a/src/squlearn/qrc/base_qrc.py b/src/squlearn/qrc/base_qrc.py
+index 62312ed..ba11287 100644
+--- a/src/squlearn/qrc/base_qrc.py
++++ b/src/squlearn/qrc/base_qrc.py
+@@ -21,13 +21,14 @@ from qiskit.quantum_info.random import random_pauli_list
+ 
+ from ..observables.observable_base import ObservableBase
+ from ..observables import CustomObservable, SinglePauli
++from ..util.serialization.serializable_model_mixin import SerializableModelMixin
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..util import Executor
+ from ..qnn.lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ..qnn.lowlevel_qnn import LowLevelQNN
+ 
+ 
+-class BaseQRC(BaseEstimator, ABC):
++class BaseQRC(BaseEstimator, ABC, SerializableModelMixin):
+     """Base class for Quantum Reservoir Computing (QRC) models.
+ 
+     Args:
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..d355ace
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,85 @@
++import dill as pickle
++import io
++from typing import Union
++from pathlib import Path
++from ..executor import Executor
++
++class SerializableModelMixin:
++    """Mixin class for serialization of models."""
++
++    def dump(self, target: Union[str, Path, io.IOBase]):
++        """
++        Serializes the model and saves it to a file or a binary stream.
++
++        Args:
++            target (Union[str, Path, io.IOBase]): The file path or binary stream to save the model to.
++        """
++        # Custom Pickler to skip Executor instances
++        class ExecutorExcludingPickler(pickle.Pickler):
++            def save(self, obj):
++                if isinstance(obj, Executor):
++                    # Replace Executor with None during serialization
++                    return super().save(None)
++                return super().save(obj)
++
++        if isinstance(target, (str, Path)):
++            with open(target, "wb") as f:
++                ExecutorExcludingPickler(f).dump(self)
++        elif isinstance(target, io.IOBase):
++            ExecutorExcludingPickler(target).dump(self)
++        else:
++            raise TypeError("target must be a file path or a binary stream")
++
++    @classmethod
++    def load(cls, source: Union[str, Path, io.IOBase], executor: Executor):
++        """
++        Loads a model from a file or a binary stream and reinserts the executor.
++
++        Args:
++            source (Union[str, Path, io.IOBase]): The file path or binary stream to load the model from.
++            executor (Executor): The executor to reinsert into the model.
++
++        Returns:
++            The loaded model instance.
++        """
++        if not isinstance(executor, Executor):
++            raise TypeError("executor must be an instance of Executor")
++
++        if isinstance(source, (str, Path)):
++            with open(source, "rb") as f:
++                model = pickle.load(f)
++        elif isinstance(source, io.IOBase):
++            model = pickle.load(source)
++        else:
++            raise TypeError("source must be a file path or a binary stream")
++
++        if not isinstance(model, cls):
++            raise TypeError(f"Loaded object is not an instance of {cls.__name__}")
++
++        # Helper function to recursively reinsert Executor instances
++        # We use a set to keep track of visited objects to avoid infinite recursion
++        visited = set()
++
++        def reinsert_executor(obj):
++            if id(obj) in visited:
++                return
++            visited.add(id(obj))
++
++            if isinstance(obj, dict):
++                for k, v in obj.items():
++                    if v is None and k in ["executor", "_executor"]:
++                        obj[k] = executor
++                    else:
++                        reinsert_executor(v)
++            elif isinstance(obj, list):
++                for i in obj:
++                    reinsert_executor(i)
++            elif hasattr(obj, "__dict__"):
++                for k, v in obj.__dict__.items():
++                    if v is None and k in ["executor", "_executor"]:
++                        setattr(obj, k, executor)
++                    else:
++                        reinsert_executor(v)
++
++        reinsert_executor(model)
++        return model

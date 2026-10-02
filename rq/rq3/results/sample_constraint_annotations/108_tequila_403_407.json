@@ -1,0 +1,167 @@
+{
+  "id": 108,
+  "sample_id": "tequila_403_407",
+  "repo": "tequilahub/tequila",
+  "patch_commit": "1406d26db32f7f5f0152adc246f6ded1ec3fb077",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/circuit_translation_equivalence": 2,
+      "interface/wire_mapping_contract": 1,
+      "interface/input_format_equivalence": 1,
+      "quantum_semantics/state_preparation_correctness": 1,
+      "interface/return_representation": 1,
+      "interface/user_parameter_binding": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+      "label": "quantum_semantics/circuit_translation_equivalence",
+      "assertions": [
+        {
+          "line": 77,
+          "expected": "The GHZ preparation circuit has the explicitly specified 8x8 unitary, including amplitudes and signs."
+        }
+      ],
+      "rationale": "The GHZ preparation circuit has the explicitly specified 8x8 unitary, including amplitudes and signs."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params",
+      "label": "quantum_semantics/circuit_translation_equivalence",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "ExpPauli matrix equals cos(-a/2) I + i sin(-a/2) (Y tensor X), checking angle, phase and tensor ordering."
+        }
+      ],
+      "rationale": "ExpPauli matrix equals cos(-a/2) I + i sin(-a/2) (Y tensor X), checking angle, phase and tensor ordering."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tests/test_circuits.py::test_qubit_map",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 24,
+          "expected": "Remapping wires returns gates with the requested control and target indices; no simulated state or unitary is compared."
+        },
+        {
+          "line": 33,
+          "expected": "Remapping wires returns gates with the requested control and target indices; no simulated state or unitary is compared."
+        },
+        {
+          "line": 42,
+          "expected": "Remapping wires returns gates with the requested control and target indices; no simulated state or unitary is compared."
+        },
+        {
+          "line": 53,
+          "expected": "Remapping wires returns gates with the requested control and target indices; no simulated state or unitary is compared."
+        }
+      ],
+      "rationale": "Remapping wires returns gates with the requested control and target indices; no simulated state or unitary is compared."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tests/test_circuits.py::test_conventions",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 71,
+          "expected": "String, uppercase and integer axis arguments construct equal gate objects."
+        },
+        {
+          "line": 80,
+          "expected": "String, uppercase and integer axis arguments construct equal gate objects."
+        },
+        {
+          "line": 82,
+          "expected": "String, uppercase and integer axis arguments construct equal gate objects."
+        }
+      ],
+      "rationale": "String, uppercase and integer axis arguments construct equal gate objects."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/test_circuits.py::test_basic_gates",
+      "label": "quantum_semantics/state_preparation_correctness",
+      "assertions": [
+        {
+          "line": 148,
+          "expected": "Elementary gate action agrees with symbolic reference quantum wavefunctions."
+        }
+      ],
+      "rationale": "Elementary gate action agrees with symbolic reference quantum wavefunctions."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/test_circuits.py::test_canonical_moments",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 192,
+          "expected": "Canonical moments expose the expected count, gates, targets and parameter values."
+        },
+        {
+          "line": 193,
+          "expected": "Canonical moments expose the expected count, gates, targets and parameter values."
+        },
+        {
+          "line": 194,
+          "expected": "Canonical moments expose the expected count, gates, targets and parameter values."
+        },
+        {
+          "line": 195,
+          "expected": "Canonical moments expose the expected count, gates, targets and parameter values."
+        },
+        {
+          "line": 196,
+          "expected": "Canonical moments expose the expected count, gates, targets and parameter values."
+        }
+      ],
+      "rationale": "Canonical moments expose the expected count, gates, targets and parameter values."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "tests/test_circuits.py::test_variable_map",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 374,
+          "expected": "Variable renaming preserves the expected old and new public variable lists."
+        },
+        {
+          "line": 375,
+          "expected": "Variable renaming preserves the expected old and new public variable lists."
+        },
+        {
+          "line": 376,
+          "expected": "Variable renaming preserves the expected old and new public variable lists."
+        }
+      ],
+      "rationale": "Variable renaming preserves the expected old and new public variable lists."
+    }
+  ],
+  "source_files": [
+    "https://github.com/tequilahub/tequila/blob/1406d26db32f7f5f0152adc246f6ded1ec3fb077/tests/test_circuit_unitary.py",
+    "https://github.com/tequilahub/tequila/blob/1406d26db32f7f5f0152adc246f6ded1ec3fb077/tests/test_circuits.py"
+  ],
+  "rationale": "Test bodies and referenced helpers at the exact patched commit were reviewed individually against the existing primary-assertion protocol. Setup and quantum repository membership do not determine the label. Parametrized cases retain distinct selectors.",
+  "review_provenance": {
+    "reviewer": "Codex",
+    "method": "Individual source-assertion review under existing protocol; explicit saved decisions, not automatic keyword classification.",
+    "date": "2026-10-02",
+    "human_agreement": "Author confirmation is recorded separately; these evidence records do not simulate three independent human votes."
+  }
+}

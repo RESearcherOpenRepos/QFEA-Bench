@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "8c2f106df1a335f40bff3065239fb12159f66a3c",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 12,
+    "deletions": 3,
+    "changes": 15,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/104ee82681c702e5c8fc60497ec96fe85dadc21c/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/104ee82681c702e5c8fc60497ec96fe85dadc21c/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=104ee82681c702e5c8fc60497ec96fe85dadc21c",
+    "patch": "@@ -132,7 +132,11 @@ def solve_fermion(\n     myci = fci.selected_ci.SelectedCI()\n     if spin_sq is not None:\n         myci = fci.addons.fix_spin_(myci, ss=spin_sq)\n-    e_sci, sci_vec = fci.selected_ci.kernel_fixed_space(\n+    # The energy returned from this function is not guaranteed to be\n+    # the energy of the returned wavefunction when the spin^2 deviates\n+    # from the value requested. We will calculate the energy from the\n+    # RDMs below and ignore this value to be safe.\n+    _, sci_vec = fci.selected_ci.kernel_fixed_space(\n         myci,\n         hcore,\n         eri,\n@@ -144,8 +148,13 @@ def solve_fermion(\n     )\n \n     # Calculate the avg occupancy of each orbital\n-    dm1 = myci.make_rdm1s(sci_vec, norb, (num_up, num_dn))\n-    avg_occupancy = (np.diagonal(dm1[0]), np.diagonal(dm1[1]))\n+    dm1s = myci.make_rdm1s(sci_vec, norb, (num_up, num_dn))\n+    avg_occupancy = (np.diagonal(dm1s[0]), np.diagonal(dm1s[1]))\n+\n+    # Calculate energy from RDMs\n+    dm1 = myci.make_rdm1(sci_vec, norb, (num_up, num_dn))\n+    dm2 = myci.make_rdm2(sci_vec, norb, (num_up, num_dn))\n+    e_sci = np.einsum(\"pr,pr->\", dm1, hcore) + 0.5 * np.einsum(\"prqs,prqs->\", dm2, eri)\n \n     # Compute total spin\n     spin_squared = myci.spin_square(sci_vec, norb, (num_up, num_dn))[0]"
+  },
+  {
+    "sha": "23120798b57b91f4839eb7463fa9aa19c4c43d0b",
+    "filename": "releasenotes/notes/pyscf-e-de401c79d4469c81.yaml",
+    "status": "added",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/104ee82681c702e5c8fc60497ec96fe85dadc21c/releasenotes%2Fnotes%2Fpyscf-e-de401c79d4469c81.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/104ee82681c702e5c8fc60497ec96fe85dadc21c/releasenotes%2Fnotes%2Fpyscf-e-de401c79d4469c81.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fpyscf-e-de401c79d4469c81.yaml?ref=104ee82681c702e5c8fc60497ec96fe85dadc21c",
+    "patch": "@@ -0,0 +1,4 @@\n+---\n+fixes:\n+  - |\n+    Fixed a bug which would cause the energy output from :func:`qiskit_addon_sqd.fermion.solve_fermion` to be incorrect when the input ``spin_sq`` deviates from the spin^2 of the output wavefunction."
+  }
+]

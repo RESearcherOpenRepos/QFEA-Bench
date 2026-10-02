@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "total": 1,
+    "success": 1,
+    "submitted": 1,
+    "step_exhausted": 0,
+    "timed_out": 0,
+    "repeated_command_loop": 0,
+    "steps": 65,
+    "total_cost": 0.718112,
+    "input_tokens": 2079849,
+    "cached_input_tokens": 2023552,
+    "cache_creation_input_tokens": 0,
+    "output_tokens": 14058
+  },
+  "predictions": {
+    "tequila_403_407": {
+      "model_name_or_path": "glm-5.2",
+      "instance_id": "tequila_403_407",
+      "model_patch": "diff --git a/src/tequila/circuit/circuit.py b/src/tequila/circuit/circuit.py\nindex 57bd3d9..d4ac1f2 100644\n--- a/src/tequila/circuit/circuit.py\n+++ b/src/tequila/circuit/circuit.py\n@@ -6,6 +6,9 @@ import typing\n import copy\n from collections import defaultdict\n import warnings\n+import numpy as np\n+from functools import reduce\n+from scipy.linalg import expm\n \n from .qpic import export_to\n \n@@ -339,6 +342,50 @@ class QCircuit():\n             qmax = max(qmax, g.max_qubit)\n         return qmax\n \n+    def to_matrix(self, variables=None) -> np.ndarray:\n+        \"\"\"\n+        Returns the dense unitary matrix represented by this circuit.\n+\n+        The matrix is constructed in the tequila qubit-order convention where\n+        qubit 0 is the most significant bit (i.e. the left-most factor in the\n+        Kronecker product). Gates are multiplied in the order in which they\n+        appear in the circuit (the first gate is applied first, i.e. it is the\n+        right-most factor in the matrix product).\n+\n+        Parameters\n+        ----------\n+        variables: optional\n+            A mapping from symbolic circuit variables to numerical values.\n+            Required when the circuit contains unresolved symbolic parameters.\n+            Accepts the same formats as :func:`tequila.simulate` (e.g. a dict).\n+\n+        Returns\n+        -------\n+        numpy.ndarray:\n+            A dense ``(2**n_qubits, 2**n_qubits)`` complex unitary matrix.\n+\n+        Raises\n+        ------\n+        TequilaException\n+            If the circuit contains symbolic parameters that are not resolved\n+            by ``variables``.\n+        \"\"\"\n+        from tequila.objective.objective import Variables\n+\n+        n_qubits = self.n_qubits\n+        dim = 2 ** n_qubits\n+        unitary = np.eye(dim, dtype=complex)\n+\n+        if variables is None:\n+            variables = {}\n+        variables = Variables(variables)\n+\n+        for gate in self.gates:\n+            gate_u = _gate_to_matrix(gate, n_qubits=n_qubits, variables=variables)\n+            unitary = gate_u @ unitary\n+\n+        return unitary\n+\n     def is_fully_parametrized(self):\n         \"\"\"\n         Returns\n@@ -973,6 +1020,74 @@ class Moment(QCircuit):\n \n \n \n+_PAULI_MATRICES = {\n+    \"I\": np.array([[1, 0], [0, 1]], dtype=complex),\n+    \"X\": np.array([[0, 1], [1, 0]], dtype=complex),\n+    \"Y\": np.array([[0, -1j], [1j, 0]], dtype=complex),\n+    \"Z\": np.array([[1, 0], [0, -1]], dtype=complex),\n+}\n+\n+\n+def _hamiltonian_to_matrix(hamiltonian, n_qubits: int) -> np.ndarray:\n+    \"\"\"\n+    Dense matrix representation of a QubitHamiltonian acting on ``n_qubits``.\n+\n+    Qubits are placed on their actual indices with qubit 0 being the most\n+    significant bit (left-most Kronecker factor), matching the tequila\n+    circuit qubit-order convention.\n+    \"\"\"\n+    dim = 2 ** n_qubits\n+    matrix = np.zeros((dim, dim), dtype=complex)\n+    identity = _PAULI_MATRICES[\"I\"]\n+\n+    for key, value in hamiltonian.items():\n+        term = [identity] * n_qubits\n+        for qubit, op in key:\n+            term[qubit] = _PAULI_MATRICES[op]\n+        matrix += complex(value) * reduce(np.kron, term)\n+\n+    return matrix\n+\n+\n+def _gate_to_matrix(gate, n_qubits: int, variables=None) -> np.ndarray:\n+    \"\"\"\n+    Dense unitary matrix of a single gate acting on ``n_qubits``.\n+\n+    The gate unitary follows the tequila convention\n+    ``U = exp(-1j * parameter/2 * generator)`` where the generator includes\n+    the control qubits (via the ``|1...1><1...1|`` projector) for controlled\n+    gates. Unparametrized power gates (e.g. plain ``X``, ``H``) correspond to\n+    a power of 1, i.e. ``parameter = pi``.\n+    \"\"\"\n+    if variables is None:\n+        variables = {}\n+\n+    generator = gate.make_generator(include_controls=True)\n+\n+    if gate.is_parametrized():\n+        try:\n+            parameter = gate.parameter(variables)\n+        except KeyError as exc:\n+            raise TequilaException(\n+                \"to_matrix: gate {} has unresolved symbolic parameter {}; \"\n+                \"please provide values via the 'variables' argument.\".format(\n+                    gate, exc))\n+    else:\n+        # unparametrized power gate with implicit power of 1\n+        parameter = np.pi\n+\n+    try:\n+        parameter = float(parameter)\n+    except TypeError:\n+        raise TequilaException(\n+            \"to_matrix: gate {} has unresolved symbolic parameter {}; \"\n+            \"please provide values via the 'variables' argument.\".format(\n+                gate, parameter))\n+\n+    generator_matrix = _hamiltonian_to_matrix(generator, n_qubits=n_qubits)\n+    return expm(-1j * parameter / 2.0 * generator_matrix)\n+\n+\n def find_unused_qubit(U0: QCircuit = None, U1: QCircuit = None)->int:\n     '''\n     Function that checks which are the active qubits of two circuits and \n",
+      "step_exhausted": false,
+      "timed_out": false,
+      "repeated_command_loop": false,
+      "repeated_command": null,
+      "consecutive_count": null,
+      "consecutive_command_limit": null,
+      "patch_candidate_submitted": false,
+      "patch_extraction_status": null
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "instance": {
+    "id": 94,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_9_232",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/9",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/232",
+    "base_commit": "1af22ae8675e591b84038cc1fa88db62ea8acb23",
+    "patch": "28728860f9d6154a55bcda6a31936f7f26a25b33"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements Bravyi-Kitaev Super Fast fermion-to-qubit mapping with edge-operator semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/mappers/second_quantization/__init__.py",
+      "qiskit_nature/mappers/second_quantization/bksf.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature already supports several fermion-to-qubit mappings, but it still lacks Bravyi-Kitaev super-fast mapping for FermionicOp inputs. Users need a public BravyiKitaevSuperFastMapper that can map fermionic terms through the BKSF construction, expose the expected edge-operator behavior internally, and produce the correct qubit operator for representative molecular Hamiltonians such as H2.",
+    "requirements": [
+      "Provide a public BravyiKitaevSuperFastMapper in the second-quantization mapper package.",
+      "BravyiKitaevSuperFastMapper must accept FermionicOp input and return the corresponding qubit operator in the BKSF encoding.",
+      "The BKSF implementation must produce the expected edge operators for the internal a_ij and b_i constructions on representative interaction graphs.",
+      "BKSF mapping from FermionicOp must correctly identify fermionic interaction edges needed by excitation terms.",
+      "Mapping a representative H2 FermionicOp Hamiltonian through BravyiKitaevSuperFastMapper must produce the expected qubit operator after simplification.",
+      "Existing BravyiKitaevMapper, JordanWignerMapper, and ParityMapper behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "BravyiKitaevSuperFastMapper",
+        "Path": "qiskit_nature/mappers/second_quantization/bksf.py",
+        "Input": "constructor: no required arguments",
+        "Output": "",
+        "Description": "Maps FermionicOp instances to qubit operators using the Bravyi-Kitaev super-fast mapping."
+      },
+      {
+        "Type": "Method",
+        "Name": "BravyiKitaevSuperFastMapper.map",
+        "Path": "qiskit_nature/mappers/second_quantization/bksf.py",
+        "Input": "self, second_q_op",
+        "Output": "PauliSumOp",
+        "Description": "Returns the qubit-operator image of a FermionicOp under the BKSF mapping."
+      },
+      {
+        "Type": "Function",
+        "Name": "_edge_operator_bi",
+        "Path": "qiskit_nature/mappers/second_quantization/bksf.py",
+        "Input": "edge_list, i",
+        "Output": "SparsePauliOp",
+        "Description": "Builds the BKSF b_i edge operator for a mode index on the interaction graph."
+      },
+      {
+        "Type": "Function",
+        "Name": "_edge_operator_aij",
+        "Path": "qiskit_nature/mappers/second_quantization/bksf.py",
+        "Input": "edge_list, i, j",
+        "Output": "SparsePauliOp",
+        "Description": "Builds the BKSF a_ij edge operator for a pair of interacting modes."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_9_232",
+      "image_id": "sha256:0bed49bbc2cabb0e269f10e94d9adeac0d686e301d96b0624bf59c8eba396cc6",
+      "image_size": "1104788542"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_bi",
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_aij",
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2"
+        ],
+        "summary": "3 selected selectors passed.",
+        "duration_seconds": 10.06
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+          "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 19.75
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_bi",
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_bksf_edge_op_aij",
+          "test/mappers/second_quantization/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2"
+        ],
+        "summary": "3 selected selectors failed because BravyiKitaevSuperFastMapper is missing from qiskit_nature.mappers.second_quantization on base.",
+        "duration_seconds": 11.98
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+          "test/mappers/second_quantization/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+          "test/mappers/second_quantization/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+          "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 21.41
+      }
+    }
+  }
+}

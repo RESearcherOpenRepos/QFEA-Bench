@@ -1,0 +1,159 @@
+{
+  "instance": {
+    "id": 21,
+    "repo": "qiskit-community/qiskit-finance",
+    "instance_id": "qiskit_finance_72_112",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-finance/issues/72",
+    "pr_url": "https://github.com/qiskit-community/qiskit-finance/pull/112",
+    "base_commit": "c2bad1650f31486dad76e16a2393958afb7e3b2c",
+    "patch": "34cc9db2d716de32ba99e13be9435088cdb62f77"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task wraps quantum probability-distribution circuits while preserving decomposed state-preparation behavior, so correctness is mainly circuit API structure."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_finance/circuit/library/probability_distributions/uniform.py",
+      "qiskit_finance/circuit/library/probability_distributions/normal.py",
+      "qiskit_finance/circuit/library/probability_distributions/lognormal.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The probability distribution circuits in qiskit-finance currently expose their implementation gates directly at the top level. This makes the library circuits draw as decomposed gate sequences instead of compact named blocks, which is inconsistent with the wrapped circuit-library behavior used elsewhere in Qiskit. The probability distribution circuits should be wrapped so they remain compact at the outer level while preserving the same decomposed behavior and validation semantics they already provide.",
+    "requirements": [
+      "UniformDistribution must construct a wrapped top-level circuit instead of exposing the raw Hadamard layer at the outermost level.",
+      "NormalDistribution and LogNormalDistribution must preserve their existing decomposed state-preparation behavior after being wrapped.",
+      "Calling decompose() on the wrapped probability distribution circuits must recover the same underlying circuit semantics as before the wrapping change.",
+      "NormalDistribution must continue to reject invalid bounds and mismatching dimension shapes with the same error behavior as before.",
+      "LogNormalDistribution must continue to preserve the existing discretized probability-distribution behavior for the covered univariate and multivariate configurations."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "UniformDistribution",
+        "Path": "qiskit_finance/circuit/library/probability_distributions/uniform.py",
+        "Input": "constructor: num_qubits, name=\"P(X)\"",
+        "Output": "",
+        "Description": "Constructs a wrapped uniform probability distribution circuit whose decomposed form is the expected Hadamard layer."
+      },
+      {
+        "Type": "Class",
+        "Name": "NormalDistribution",
+        "Path": "qiskit_finance/circuit/library/probability_distributions/normal.py",
+        "Input": "constructor: num_qubits, mu=None, sigma=None, bounds=None, upto_diag=False, name=\"P(X)\"",
+        "Output": "",
+        "Description": "Constructs a wrapped normal probability distribution circuit without changing the decomposed distribution semantics or validation behavior."
+      },
+      {
+        "Type": "Class",
+        "Name": "LogNormalDistribution",
+        "Path": "qiskit_finance/circuit/library/probability_distributions/lognormal.py",
+        "Input": "constructor: num_qubits, mu=None, sigma=None, bounds=None, upto_diag=False, name=\"P(X)\"",
+        "Output": "",
+        "Description": "Constructs a wrapped log-normal probability distribution circuit while preserving the decomposed distribution semantics covered by the tests."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_finance_72_112",
+      "image_id": "sha256:4577210be79d71d0e1de7001123cd546b8fc400a0177b1899409fb3f42c33f7b",
+      "image_size": "1468867887"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "qiskit-terra==0.18.3",
+        "qiskit-aer==0.8.2",
+        "qiskit-optimization==0.2.1",
+        "docplex==2.21.207",
+        "networkx<2.6",
+        "ddt",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/test_probability_distributions.py::TestUniformDistribution::test_uniform"
+        ],
+        "summary": "1 passed in 3.53s",
+        "duration_seconds": 7.72
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_1___0__0____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_2____2___1____1__0__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_1__2___1__1___2___0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_2__2__1_2____1__0____0__1_____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_3__2__1_2__1____0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_4___1__2___1____1__0____0__1______0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_5___1__2____0__0_____2______0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_6___1__2____0__0_____1__0____0__1_____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_1__2__None__None__None__False_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_2__3__1_75__2_5__None__True_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_3__2__1_75__2_5___0__3___False_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_4___1__2__2___None__None__None__True_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_1__2__None__None__None__False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_2__3__1_75__2_5__None__True_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_3__2__1_75__2_5___0__3___False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_4___1__2__2___None__None__None__True_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_"
+        ],
+        "summary": "18 passed in 3.84s",
+        "duration_seconds": 7.88
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/circuit/test_probability_distributions.py::TestUniformDistribution::test_uniform"
+        ],
+        "summary": "1 failed in 3.32s",
+        "duration_seconds": 9.76
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_1___0__0____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_2____2___1____1__0__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_1__2___1__1___2___0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_2__2__1_2____1__0____0__1_____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_3__2__1_2__1____0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_4___1__2___1____1__0____0__1______0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_5___1__2____0__0_____2______0__1____0__1___",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_6___1__2____0__0_____1__0____0__1_____0__1__",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_1__2__None__None__None__False_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_2__3__1_75__2_5__None__True_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_3__2__1_75__2_5___0__3___False_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_4___1__2__2___None__None__None__True_",
+          "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_1__2__None__None__None__False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_2__3__1_75__2_5__None__True_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_3__2__1_75__2_5___0__3___False_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_4___1__2__2___None__None__None__True_",
+          "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_"
+        ],
+        "summary": "18 passed in 3.66s",
+        "duration_seconds": 9.46
+      }
+    }
+  }
+}

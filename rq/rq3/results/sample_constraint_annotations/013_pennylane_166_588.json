@@ -1,0 +1,66 @@
+{
+  "id": 13,
+  "sample_id": "pennylane_166_588",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "d5986483da271a6de0a319c1b4e17c2f73d11402",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 0,
+    "subtype_test_counts": {
+      "interface/output_shape": 1,
+      "quantum_semantics/qnode_gradient_consistency": 1,
+      "interface/hybrid_module_training_contract": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[n_qubits0-output_dim0-torch]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 303,
+          "expected": "A batched TorchLayer forward call returns a PyTorch tensor with the expected batch and output dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_gradients[n_qubits0-output_dim0-torch]",
+      "label": "quantum_semantics/qnode_gradient_consistency",
+      "assertions": [
+        {
+          "line": 335,
+          "expected": "Trainable TorchLayer weight gradients numerically match gradients of the wrapped QNode"
+        },
+        {
+          "line": 336,
+          "expected": "The layer exposes all QNode weights as PyTorch parameters"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayerIntegration::test_module_gradients[n_qubits0-output_dim0-torch]",
+      "label": "interface/hybrid_module_training_contract",
+      "assertions": [
+        {
+          "line": 399,
+          "expected": "All hybrid-module parameters receive floating-point gradients after backward"
+        },
+        {
+          "line": 400,
+          "expected": "The module exposes the expected quantum and classical parameters"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/d5986483da271a6de0a319c1b4e17c2f73d11402/tests/qnn/test_qnn_torch.py"
+  ],
+  "rationale": "The forward and hybrid-module tests inspect PyTorch-visible shapes and parameter registration. The layer-gradient test compares numerical gradients with the underlying QNode and therefore checks quantum differentiation through the wrapper."
+}

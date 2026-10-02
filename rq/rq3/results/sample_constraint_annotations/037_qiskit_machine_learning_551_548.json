@@ -1,0 +1,499 @@
+{
+  "id": 37,
+  "sample_id": "qiskit_machine_learning_551_548",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "10f162b018cb1cd05a9d9a5132ef33fe37c6b00c",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 9,
+    "p2p_tests": 27,
+    "subtype_test_counts": {
+      "general_semantics/model_training_performance": 3,
+      "interface/input_validation": 3,
+      "quantum_semantics/quantum_kernel_evaluation": 5,
+      "general_semantics/statevector_cache_behavior": 1,
+      "general_semantics/duplicate_computation_avoidance": 20,
+      "interface/property_mutability": 1,
+      "general_semantics/psd_matrix_projection": 1,
+      "quantum_semantics/circuit_construction": 1,
+      "general_semantics/batch_execution_limit": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_defaults",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 102,
+          "expected": "Default statevector-kernel classifier reaches score at least 0.5."
+        }
+      ],
+      "rationale": "The assertion is predictive score; default quantum kernel is setup."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_validate_input",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 271,
+          "expected": "Wrong input rank and feature counts raise ValueError."
+        }
+      ],
+      "rationale": "This specific test covers public evaluate argument validation, with one feature-map resizing assertion."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_evaluate_symmetric_4___samples_4____z_fm__",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Symmetric four-sample Z-feature-map fidelity matrix matches reference."
+        }
+      ],
+      "rationale": "Exact overlap values for the selected Z feature map are asserted."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_evaluate_asymmetric_12___samples_4____samples_test____z_fm__",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "Four-by-test-sample asymmetric Z-feature-map fidelity matrix matches reference."
+        }
+      ],
+      "rationale": "The asymmetric quantum overlap entries, not just dimensions, are asserted."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_statevector_cache",
+      "label": "general_semantics/statevector_cache_behavior",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "Cache size matches unique samples and explicit clearing works."
+        }
+      ],
+      "rationale": "Cache metadata is ordinary computational behavior independent of fidelity meaning."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernel::test_aer_statevector",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 117,
+          "expected": "Aer-backed classifier score reaches at least 0.5."
+        }
+      ],
+      "rationale": "The selected backend variant checks predictive score."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernelDuplicates::test_with_duplicates_2___dups___4_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 368,
+          "expected": "Four computations suffice for duplicate symmetric samples."
+        }
+      ],
+      "rationale": "The assertion counts statevector computations for the dups/4 configuration."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/kernels/test_fidelity_statevector_kernel.py::TestStatevectorKernelDuplicates::test_with_duplicates_asymmetric_1___no_dups___5_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 385,
+          "expected": "Five computations occur for asymmetric samples without duplicates."
+        }
+      ],
+      "rationale": "The no_dups/5 configuration explicitly counts evaluations."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/kernels/test_new_vs_old_kernel_sv.py::TestNewVsOldFidelityStatevectorKernel::test_new_vs_old_09___zz2____all__",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "New ZZFeatureMap kernel equals the previous statevector kernel matrix."
+        }
+      ],
+      "rationale": "The zz2/all configuration compares two quantum-kernel implementations numerically."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_defaults",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 106,
+          "expected": "Existing FidelityQuantumKernel classifier reaches score at least 0.5."
+        }
+      ],
+      "rationale": "This retained P2P test checks classifier quality."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_properties",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 341,
+          "expected": "FidelityQuantumKernel exposes its assigned feature map and fidelity primitive."
+        }
+      ],
+      "rationale": "The property test directly inspects public configuration values."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_validate_input",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 295,
+          "expected": "Existing fidelity kernel rejects malformed input dimensions."
+        }
+      ],
+      "rationale": "The selected validation test asserts ValueError for public evaluate inputs."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_exceptions",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 110,
+          "expected": "Unsupported duplicate-policy value raises ValueError."
+        }
+      ],
+      "rationale": "The selected exception case checks a constructor option."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_enforce_psd",
+      "label": "general_semantics/psd_matrix_projection",
+      "assertions": [
+        {
+          "line": 287,
+          "expected": "PSD enforcement removes negative eigenvalues from the matrix."
+        }
+      ],
+      "rationale": "The assertion is a generic spectral property of a numeric matrix."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_1___no_dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "No-duplicate all policy executes six fidelity circuits."
+        }
+      ],
+      "rationale": "The no_dups/all/6 case counts circuits."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_2___no_dups____off_diagonal___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "No-duplicate off-diagonal policy executes three circuits."
+        }
+      ],
+      "rationale": "The no_dups/off_diagonal/3 case counts circuits."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_3___no_dups____none___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "No-duplicate none policy executes three circuits."
+        }
+      ],
+      "rationale": "The no_dups/none/3 case checks skipped symmetric duplicates."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_4___dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "Duplicate all policy executes six circuits."
+        }
+      ],
+      "rationale": "The dups/all/6 variant checks the no-skipping policy."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_5___dups____off_diagonal___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "Duplicate off-diagonal policy executes three circuits."
+        }
+      ],
+      "rationale": "The dups/off_diagonal/3 variant checks partial skipping."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_6___dups____none___2_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "Duplicate none policy executes two circuits."
+        }
+      ],
+      "rationale": "The dups/none/2 variant checks maximal skipping."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_asymmetric_1___no_dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 427,
+          "expected": "Asymmetric no-duplicate all policy executes six circuits."
+        }
+      ],
+      "rationale": "The asymmetric no_dups/all/6 case counts executions."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_asymmetric_2___no_dups____off_diagonal___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 427,
+          "expected": "Asymmetric no-duplicate off-diagonal policy executes six circuits."
+        }
+      ],
+      "rationale": "The asymmetric no_dups/off_diagonal/6 case has no symmetric diagonal to skip."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestDuplicates::test_evaluate_duplicates_asymmetric_3___no_dups____none___5_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 427,
+          "expected": "Asymmetric no-duplicate none policy executes five circuits."
+        }
+      ],
+      "rationale": "The asymmetric no_dups/none/5 case checks deduplicated execution."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_symmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 260,
+          "expected": "Legacy symmetric statevector kernel equals its fidelity reference."
+        }
+      ],
+      "rationale": "The assertion checks quantum overlap values."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_unsymmetric",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 270,
+          "expected": "Legacy asymmetric statevector kernel equals its fidelity reference."
+        }
+      ],
+      "rationale": "The separate asymmetric case checks quantum overlap values."
+    },
+    {
+      "test_number": 26,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector",
+      "label": "quantum_semantics/circuit_construction",
+      "assertions": [
+        {
+          "line": 428,
+          "expected": "Constructed kernel circuit uses the feature-map qubits and operations."
+        }
+      ],
+      "rationale": "The selected statevector circuit case checks quantum gate construction."
+    },
+    {
+      "test_number": 27,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelBatching::test_statevector_batching",
+      "label": "general_semantics/batch_execution_limit",
+      "assertions": [
+        {
+          "line": 759,
+          "expected": "Each statevector batch respects batch_size and all samples are covered."
+        }
+      ],
+      "rationale": "The assertions count batches and executions, an ordinary scheduling property."
+    },
+    {
+      "test_number": 28,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_1___no_dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy no-duplicate all policy executes six circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel no_dups/all/6 case."
+    },
+    {
+      "test_number": 29,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_2___no_dups____off_diagonal___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy no-duplicate off-diagonal policy executes three circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel no_dups/off_diagonal/3 case."
+    },
+    {
+      "test_number": 30,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_3___no_dups____none___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy no-duplicate none policy executes three circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel no_dups/none/3 case."
+    },
+    {
+      "test_number": 31,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_4___dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy duplicate all policy executes six circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel dups/all/6 case."
+    },
+    {
+      "test_number": 32,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_5___dups____off_diagonal___3_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy duplicate off-diagonal policy executes three circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel dups/off_diagonal/3 case."
+    },
+    {
+      "test_number": 33,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_6___dups____none___2_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 854,
+          "expected": "Legacy duplicate none policy executes two circuits."
+        }
+      ],
+      "rationale": "This is the old QuantumKernel dups/none/2 case."
+    },
+    {
+      "test_number": 34,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_not_symmetric_1___no_dups____all___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 875,
+          "expected": "Legacy asymmetric all policy executes six circuits."
+        }
+      ],
+      "rationale": "The asymmetric old-kernel no_dups/all/6 case checks circuit count."
+    },
+    {
+      "test_number": 35,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_not_symmetric_2___no_dups____off_diagonal___6_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 875,
+          "expected": "Legacy asymmetric off-diagonal policy executes six circuits."
+        }
+      ],
+      "rationale": "The asymmetric old-kernel no_dups/off_diagonal/6 case checks count."
+    },
+    {
+      "test_number": 36,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelEvaluateDuplicates::test_evaluate_duplicates_not_symmetric_3___no_dups____none___5_",
+      "label": "general_semantics/duplicate_computation_avoidance",
+      "assertions": [
+        {
+          "line": 875,
+          "expected": "Legacy asymmetric none policy executes five circuits."
+        }
+      ],
+      "rationale": "The asymmetric old-kernel no_dups/none/5 case checks count."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10f162b018cb1cd05a9d9a5132ef33fe37c6b00c/test/kernels/test_fidelity_qkernel.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10f162b018cb1cd05a9d9a5132ef33fe37c6b00c/test/kernels/test_fidelity_statevector_kernel.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10f162b018cb1cd05a9d9a5132ef33fe37c6b00c/test/kernels/test_new_vs_old_kernel_sv.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10f162b018cb1cd05a9d9a5132ef33fe37c6b00c/test/kernels/test_qkernel.py"
+  ],
+  "rationale": "Reviewed all nine F2P and 27 P2P selectors, including the distinct duplicate-policy parameters and expected execution counts."
+}

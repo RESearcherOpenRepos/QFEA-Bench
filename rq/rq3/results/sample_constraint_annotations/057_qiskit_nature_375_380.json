@@ -1,0 +1,88 @@
+{
+  "id": 57,
+  "sample_id": "qiskit_nature_375_380",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "2590ee8f015a842649036cfa6cf6c76b863c8dc0",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/callback_invocation": 2,
+      "quantum_semantics/ground_state_energy": 2,
+      "quantum_semantics/vibrational_excitation_energy": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+      "label": "interface/callback_invocation",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "VQEUCCFactory passes callback into VQE and emits ordered iteration-energy lines."
+        }
+      ],
+      "rationale": "The test also checks ground-state energy, but the added and distinctive assertion verifies callback delivery."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_with_callback",
+      "label": "interface/callback_invocation",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "VQEUVCCFactory passes callback into VQE and emits ordered iteration-energy lines."
+        }
+      ],
+      "rationale": "The excited-state factory case separately checks callback delivery, alongside vibrational energies."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 93,
+          "expected": "Existing UCCSD VQE total energy matches the reference."
+        }
+      ],
+      "rationale": "No callback assertion appears in this retained ground-state case."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Custom UCC VQE total energy matches the reference."
+        }
+      ],
+      "rationale": "This retained custom-ansatz case checks physical energy."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py::TestBosonicESCCalculation::test_vqe_uvccsd_factory",
+      "label": "quantum_semantics/vibrational_excitation_energy",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "Vibrational excited energies match each reference value."
+        }
+      ],
+      "rationale": "The retained UVCCSD factory case checks vibrational spectrum values."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/2590ee8f015a842649036cfa6cf6c76b863c8dc0/test/algorithms/excited_state_solvers/test_bosonic_esc_calculation.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/2590ee8f015a842649036cfa6cf6c76b863c8dc0/test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py"
+  ],
+  "rationale": "Reviewed both callback-enabled factory cases and three retained energy cases; callback delivery is primary only where its output is explicitly asserted."
+}

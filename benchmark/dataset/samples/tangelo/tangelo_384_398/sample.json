@@ -1,0 +1,124 @@
+{
+  "instance": {
+    "id": 105,
+    "repo": "sandbox-quantum/Tangelo",
+    "instance_id": "tangelo_384_398",
+    "status": "completed",
+    "issue_url": "https://github.com/sandbox-quantum/Tangelo/issues/384",
+    "pr_url": "https://github.com/sandbox-quantum/Tangelo/pull/398",
+    "base_commit": "c8c9ac1d562b1ae352236a1994803e7ee16ce57f",
+    "patch": "9e286675b2d2d33d0cf0da0ee7cf910a41143eb8"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task lets HEA use a prepared circuit as a reference state while freezing its variational parameters."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "tangelo/linq/circuit.py",
+      "tangelo/toolboxes/ansatz_generator/hea.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Tangelo ansatz generators currently expect string-based reference states such as Hartree-Fock or zero state, which makes it awkward to use custom prepared reference circuits for nonstandard mappings or handcrafted initial states. The ansatz workflow needs to accept a Tangelo Circuit object as the reference state for HEA construction, preserve its gates as the initialization prefix, and avoid treating variational parameters from the supplied reference circuit as ansatz optimization variables.",
+    "requirements": [
+      "HEA must accept a Tangelo Circuit object as its reference_state input.",
+      "When a Circuit reference state is provided, HEA must prepend an equivalent copy of that circuit to the constructed ansatz circuit.",
+      "Variational gates coming from the supplied reference circuit must be frozen so they do not remain variational ansatz parameters after the reference circuit is incorporated.",
+      "HEA must continue to support existing non-reference-circuit behavior for standard variational parameter handling and default Hartree-Fock based circuit construction."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HEA",
+        "Path": "tangelo/toolboxes/ansatz_generator/hea.py",
+        "Input": "constructor: molecule=None, mapping='jw', up_then_down=False, n_layers=2, rot_type='euler', n_qubits=None, n_electrons=None, spin=None, reference_state='HF'",
+        "Output": "",
+        "Description": "Hardware-efficient ansatz generator supports either standard string reference states or a Tangelo Circuit object as the initialization circuit."
+      },
+      {
+        "Type": "Method",
+        "Name": "HEA.prepare_reference_state",
+        "Path": "tangelo/toolboxes/ansatz_generator/hea.py",
+        "Input": "self",
+        "Output": "Circuit",
+        "Description": "Builds the reference state circuit for HEA and returns a fixed-parameter copy when the reference state is already provided as a Circuit."
+      },
+      {
+        "Type": "Method",
+        "Name": "Circuit.fix_variational_parameters",
+        "Path": "tangelo/linq/circuit.py",
+        "Input": "self",
+        "Output": "",
+        "Description": "Converts all variational gates in the circuit into fixed gates so a reference circuit can be reused as a non-variational initialization state."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:tangelo_384_398",
+      "image_id": "sha256:1be2ed81ab8636f777ea14c5189b7f2d64e252806c0bd3cc08695a176f934df4",
+      "image_size": "1224305757"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "wheel",
+        "pytest<8",
+        "numpy<2",
+        "pyscf==2.7.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_variational_reference_state",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_reference_state_H2"
+        ],
+        "summary": "2 passed in 5.00s",
+        "duration_seconds": 8.73
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_set_var_params",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_incorrect_number_var_params",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_H2"
+        ],
+        "summary": "3 passed in 5.81s",
+        "duration_seconds": 9.9
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_variational_reference_state",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_reference_state_H2"
+        ],
+        "summary": "2 failed in 5.92s",
+        "duration_seconds": 11.83
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_set_var_params",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_incorrect_number_var_params",
+          "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_H2"
+        ],
+        "summary": "3 passed in 4.93s",
+        "duration_seconds": 11.5
+      }
+    }
+  }
+}

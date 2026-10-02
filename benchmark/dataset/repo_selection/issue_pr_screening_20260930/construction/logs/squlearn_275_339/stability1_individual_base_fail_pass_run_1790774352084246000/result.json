@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.345586586000081,
+  "items": [
+    "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.007528207999939696,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.21711454199999025,
+      "wasxfail": null,
+      "longrepr": "self = <tests.kernel.ml.test_qgpr.TestQGPR object at 0x7fffe1eea740>\nqgpr = 'qgpr_pqk'\nrequest = <FixtureRequest for <Function test_serialization[qgpr_pqk]>>\ndata = (array([[0.9       , 0.53624539],\n       [0.1       , 0.1023651 ],\n       [0.1931607 , 0.19189144],\n       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,\n         7.85663467,  88.31795591]))\n\n    @pytest.mark.parametrize(\"qgpr\", [\"qgpr_fidelity\", \"qgpr_pqk\"])\n    def test_serialization(self, qgpr, request, data):\n        \"\"\"Tests serialization of QGPR.\"\"\"\n        instance = request.getfixturevalue(qgpr)\n        X, y = data\n        instance.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       instance.dump(buffer)\nE       AttributeError: 'QGPR' object has no attribute 'dump'\n\ntests/kernel/ml/test_qgpr.py:268: AttributeError"
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0005042500001763983,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

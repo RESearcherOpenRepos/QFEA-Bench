@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 3.5808397519999744,
+  "items": [
+    "tests/test_recompilation_routines.py::test_compile_qubit_excitations"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/test_recompilation_routines.py::test_compile_qubit_excitations",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00035158399998636014,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_recompilation_routines.py::test_compile_qubit_excitations",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.22885829199992713,
+      "wasxfail": null,
+      "longrepr": "def test_compile_qubit_excitations():\n    \n        # Test 3-qubit excitation\n    \n        q = [5, 3, 7, 8, 2, 9, 2, 4]\n    \n        state_circ = gates.X([q[0], q[1], q[2]])\n    \n        # optimized decomposition\n        circuit = state_circ + gates.QubitExcitation(\n            angle=numpy.pi / 2, target=[q[0], q[3], q[1], q[4], q[2], q[5]]\n        )\n        U1 = compile_circuit(circuit)\n    \n        # non-optimized decomposition\n        circuit = state_circ + gates.QubitExcitation(\n            angle=numpy.pi / 2,\n            target=[q[0], q[3], q[1], q[4], q[2], q[5]],\n            compile_options=\"pauli\",\n        )\n        U2 = compile_circuit(circuit)\n        wfn1 = simulate(U1)\n        wfn2 = simulate(U2)\n    \n>       assert U1.depth < U2.depth\nE       assert 417 < 417\nE        +  where 417 = circuit: \\nX(target=(5,))\\nX(target=(3,))\\nX(target=(7,))\\nRy(target=(2,), parameter=-1.5707963267948966)\\nRy(target=(3,), ...eter=-1.5707963267948966)\\nRx(target=(8,), parameter=-1.5707963267948966)\\nRy(target=(9,), parameter=1.5707963267948966)\\n.depth\nE        +  and   417 = circuit: \\nX(target=(5,))\\nX(target=(3,))\\nX(target=(7,))\\nRy(target=(2,), parameter=-1.5707963267948966)\\nRy(target=(3,), ...eter=-1.5707963267948966)\\nRx(target=(8,), parameter=-1.5707963267948966)\\nRy(target=(9,), parameter=1.5707963267948966)\\n.depth\n\ntests/test_recompilation_routines.py:186: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_recompilation_routines.py::test_compile_qubit_excitations",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.000267624999992222,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

@@ -1,0 +1,909 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887713077",
+    "pull_request_review_id": 993204659,
+    "id": 887713077,
+    "node_id": "PRRC_kwDOHMYLyM406W01",
+    "diff_hunk": "@@ -65,7 +67,7 @@ def __init__(self, update_method: UpdateMethod):\n         \n         self._update_method = update_method\n     \n-    def update(self, logger_variable: LoggerVariable, attribute_name: str, new_value: Union[list, int, float, str]) -> None:\n+    def update(self, logger_variable: LoggerVariable, attribute_name: str, new_value: Union[int, float]) -> None:",
+    "path": "openqaoa/optimizers/logger_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "On lines 74 and 90 you deal with the `>` and `<` cases. What happens in the (rare?) case when the condition checks `==` ?",
+    "created_at": "2022-06-02T08:38:30Z",
+    "updated_at": "2022-06-02T08:38:30Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887713077",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887713077"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887713077"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887713077/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 70,
+    "original_line": 70,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 14,
+    "position": 14,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887719105",
+    "pull_request_review_id": 993212981,
+    "id": 887719105,
+    "node_id": "PRRC_kwDOHMYLyM406YTB",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Do we still need the if/else logic switching between different backends to collect the solution? Isn't this now already present in the logger in a unified way for all backends? ",
+    "created_at": "2022-06-02T08:45:25Z",
+    "updated_at": "2022-06-02T08:45:26Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887719105",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887719105"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887719105"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887719105/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887787866",
+    "pull_request_review_id": 993308240,
+    "id": 887787866,
+    "node_id": "PRRC_kwDOHMYLyM406pFa",
+    "diff_hunk": "@@ -65,7 +67,7 @@ def __init__(self, update_method: UpdateMethod):\n         \n         self._update_method = update_method\n     \n-    def update(self, logger_variable: LoggerVariable, attribute_name: str, new_value: Union[list, int, float, str]) -> None:\n+    def update(self, logger_variable: LoggerVariable, attribute_name: str, new_value: Union[int, float]) -> None:",
+    "path": "openqaoa/optimizers/logger_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Nothing happens to the attribute if the condition is `==`, I think this makes the most sense since the method name is called `IfHigherDo` or `IfLowerDo`, so nothing happens if it isnt higher or lower.",
+    "created_at": "2022-06-02T10:05:22Z",
+    "updated_at": "2022-06-02T10:05:22Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887787866",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887787866"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887787866"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887787866/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 70,
+    "original_line": 70,
+    "side": "RIGHT",
+    "in_reply_to_id": 887713077,
+    "author_association": "COLLABORATOR",
+    "original_position": 14,
+    "position": 14,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887790756",
+    "pull_request_review_id": 993312272,
+    "id": 887790756,
+    "node_id": "PRRC_kwDOHMYLyM406pyk",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I believe there still needs to be a check if the key itself is empty here. The only change here is due to the change in types of the `best_x` values.\r\nWhile it is true that the logger handles all the result recording, the logger still differentiates between `counts` and `probability`",
+    "created_at": "2022-06-02T10:09:01Z",
+    "updated_at": "2022-06-02T10:09:01Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887790756",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887790756"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887790756"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887790756/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "in_reply_to_id": 887719105,
+    "author_association": "COLLABORATOR",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887793295",
+    "pull_request_review_id": 993315691,
+    "id": 887793295,
+    "node_id": "PRRC_kwDOHMYLyM406qaP",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok! So you confirm that the logic in the workflow is currently correct? Or should we make it a bit prettier?\r\n\r\nthese if statements depending on hard-coded device_names will surely eventually break",
+    "created_at": "2022-06-02T10:12:14Z",
+    "updated_at": "2022-06-02T10:12:14Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887793295",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887793295"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r887793295"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/887793295/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "in_reply_to_id": 887719105,
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888680894",
+    "pull_request_review_id": 994538879,
+    "id": 888680894,
+    "node_id": "PRRC_kwDOHMYLyM40-DG-",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "So far this branch passes the tests and some of the tests access either counts or probability as checks for where exactly the data should be recorded based on the backend selected. So we should be good here. \r\n\r\nMaybe we can raise an issue as a feature request to see if its possible to come up with a cleaner way to process the results. (Though I believe we will fix most of this with the Result Object.)",
+    "created_at": "2022-06-03T07:18:29Z",
+    "updated_at": "2022-06-03T07:18:29Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r888680894",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888680894"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r888680894"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888680894/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "in_reply_to_id": 887719105,
+    "author_association": "COLLABORATOR",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888702774",
+    "pull_request_review_id": 994572994,
+    "id": 888702774,
+    "node_id": "PRRC_kwDOHMYLyM40-Ic2",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "That sounds like a good idea: go ahead and raise the issue!",
+    "created_at": "2022-06-03T07:47:53Z",
+    "updated_at": "2022-06-03T07:47:54Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r888702774",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888702774"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r888702774"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/888702774/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "in_reply_to_id": 887719105,
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/889756301",
+    "pull_request_review_id": 996058266,
+    "id": 889756301,
+    "node_id": "PRRC_kwDOHMYLyM41CJqN",
+    "diff_hunk": "@@ -327,8 +327,8 @@ def optimize(self):\n         self.results_information = self.optimizer.results_information()\n \n         if self.device.device_name == 'vectorized':\n-            self.solution = list(self.results_information['best probability'][0].keys())[\n-                np.argmax(list((self.results_information['best probability'][0].values())))]\n+            self.solution = list(self.results_information['best probability'].keys())[",
+    "path": "openqaoa/workflows/optimizer.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Issue raised #27 . ",
+    "created_at": "2022-06-06T00:17:15Z",
+    "updated_at": "2022-06-06T00:17:16Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r889756301",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/889756301"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r889756301"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/889756301/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 330,
+    "original_line": 330,
+    "side": "RIGHT",
+    "in_reply_to_id": 887719105,
+    "author_association": "COLLABORATOR",
+    "original_position": 6,
+    "position": 6,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/890819221",
+    "pull_request_review_id": 997575493,
+    "id": 890819221,
+    "node_id": "PRRC_kwDOHMYLyM41GNKV",
+    "diff_hunk": "@@ -228,14 +238,15 @@ def results_dictionary(self,\n         \n         result_dict = {\n             'number of evals': self.log.func_evals.best[0],\n+            'jac evals': self.log.jac_func_evals.best[0],\n             'parameter log': np.array(self.log.param_log.history).tolist(),\n-            'best param': np.array(self.log.param_log.best).tolist(),\n+            'best param': np.array(self.log.param_log.best[0]).tolist(),\n             'cost progress list': np.array(self.log.cost.history).tolist(), \n-            'best cost': np.array(self.log.cost.best).tolist(), \n+            'best cost': np.array(self.log.cost.best[0]).tolist(), \n             'count progress list': np.array(self.log.counts.history).tolist(),\n-            'best count': np.array(self.log.counts.best).tolist(), \n+            'best count': np.array(self.log.counts.best[0] if self.log.counts.best != [] else {}).tolist(), ",
+    "path": "openqaoa/optimizers/training_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "One thing I don't like is that lines 247 and 249 are perfectly correlated, but from this part of the code they look like they are not. We can only have either best count or best probability, right?\r\n\r\nIn general, I am wondering if we should have this difference between count and probability at the level of the logger / vqa_object ... or if it maybe would be easier to use the same generic name internally, and change it then only at the end when the results are given back to the user. \r\n\r\nThe advantage is that we would be removing all if/else statements throughout the code and pushing all of them into only a place. \r\n\r\nDo we feel this could help with clarity? ",
+    "created_at": "2022-06-07T06:39:33Z",
+    "updated_at": "2022-06-07T06:39:33Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r890819221",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/890819221"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r890819221"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/890819221/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 247,
+    "original_line": 247,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 81,
+    "position": 81,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891492514",
+    "pull_request_review_id": 998529679,
+    "id": 891492514,
+    "node_id": "PRRC_kwDOHMYLyM41Ixii",
+    "diff_hunk": "@@ -228,14 +238,15 @@ def results_dictionary(self,\n         \n         result_dict = {\n             'number of evals': self.log.func_evals.best[0],\n+            'jac evals': self.log.jac_func_evals.best[0],\n             'parameter log': np.array(self.log.param_log.history).tolist(),\n-            'best param': np.array(self.log.param_log.best).tolist(),\n+            'best param': np.array(self.log.param_log.best[0]).tolist(),\n             'cost progress list': np.array(self.log.cost.history).tolist(), \n-            'best cost': np.array(self.log.cost.best).tolist(), \n+            'best cost': np.array(self.log.cost.best[0]).tolist(), \n             'count progress list': np.array(self.log.counts.history).tolist(),\n-            'best count': np.array(self.log.counts.best).tolist(), \n+            'best count': np.array(self.log.counts.best[0] if self.log.counts.best != [] else {}).tolist(), ",
+    "path": "openqaoa/optimizers/training_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "@shahidee44, let me know once you have addressed this comment. We can merge the request then",
+    "created_at": "2022-06-07T16:58:41Z",
+    "updated_at": "2022-06-07T16:58:41Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891492514",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891492514"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891492514"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891492514/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 247,
+    "original_line": 247,
+    "side": "RIGHT",
+    "in_reply_to_id": 890819221,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 81,
+    "position": 81,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891493471",
+    "pull_request_review_id": 998531011,
+    "id": 891493471,
+    "node_id": "PRRC_kwDOHMYLyM41Ixxf",
+    "diff_hunk": "@@ -228,14 +238,15 @@ def results_dictionary(self,\n         \n         result_dict = {\n             'number of evals': self.log.func_evals.best[0],\n+            'jac evals': self.log.jac_func_evals.best[0],\n             'parameter log': np.array(self.log.param_log.history).tolist(),\n-            'best param': np.array(self.log.param_log.best).tolist(),\n+            'best param': np.array(self.log.param_log.best[0]).tolist(),\n             'cost progress list': np.array(self.log.cost.history).tolist(), \n-            'best cost': np.array(self.log.cost.best).tolist(), \n+            'best cost': np.array(self.log.cost.best[0]).tolist(), \n             'count progress list': np.array(self.log.counts.history).tolist(),\n-            'best count': np.array(self.log.counts.best).tolist(), \n+            'best count': np.array(self.log.counts.best[0] if self.log.counts.best != [] else {}).tolist(), ",
+    "path": "openqaoa/optimizers/training_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The main reason for differentiating between counts and probability is that the backends could only produce one result or the other. It was done so to avoid confusion on the types of results different backends could return. (Since the returned type in both scenarios are dictionaries.)\r\n\r\nIf we are looking for a better way to have the results be returned from the backend, and not have the separation at the Logger Level. An alternative that would result in a much cleaner solution would be to create output classes. Instead of returning a dictionary, we return an object of type `Counts` or `Probability` from the backend. These objects can then be recorded under some common attribute named `result` of the Logger Class. I believe this should help remove the if/else statements mentioned for the most part.",
+    "created_at": "2022-06-07T16:59:44Z",
+    "updated_at": "2022-06-07T16:59:44Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891493471",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891493471"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891493471"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891493471/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 247,
+    "original_line": 247,
+    "side": "RIGHT",
+    "in_reply_to_id": 890819221,
+    "author_association": "COLLABORATOR",
+    "original_position": 81,
+    "position": 81,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891914536",
+    "pull_request_review_id": 999109542,
+    "id": 891914536,
+    "node_id": "PRRC_kwDOHMYLyM41KYko",
+    "diff_hunk": "@@ -228,14 +238,15 @@ def results_dictionary(self,\n         \n         result_dict = {\n             'number of evals': self.log.func_evals.best[0],\n+            'jac evals': self.log.jac_func_evals.best[0],\n             'parameter log': np.array(self.log.param_log.history).tolist(),\n-            'best param': np.array(self.log.param_log.best).tolist(),\n+            'best param': np.array(self.log.param_log.best[0]).tolist(),\n             'cost progress list': np.array(self.log.cost.history).tolist(), \n-            'best cost': np.array(self.log.cost.best).tolist(), \n+            'best cost': np.array(self.log.cost.best[0]).tolist(), \n             'count progress list': np.array(self.log.counts.history).tolist(),\n-            'best count': np.array(self.log.counts.best).tolist(), \n+            'best count': np.array(self.log.counts.best[0] if self.log.counts.best != [] else {}).tolist(), ",
+    "path": "openqaoa/optimizers/training_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yeah, I think it would be cleaner, however, I feel its a big undertaking to remove one if/else statement! I think we can keep the structure as it is for now. Let me know if this sounds okay to you\r\n",
+    "created_at": "2022-06-08T04:47:36Z",
+    "updated_at": "2022-06-08T04:47:36Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891914536",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891914536"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891914536"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891914536/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 247,
+    "original_line": 247,
+    "side": "RIGHT",
+    "in_reply_to_id": 890819221,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 81,
+    "position": 81,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891931089",
+    "pull_request_review_id": 999131608,
+    "id": 891931089,
+    "node_id": "PRRC_kwDOHMYLyM41KcnR",
+    "diff_hunk": "@@ -228,14 +238,15 @@ def results_dictionary(self,\n         \n         result_dict = {\n             'number of evals': self.log.func_evals.best[0],\n+            'jac evals': self.log.jac_func_evals.best[0],\n             'parameter log': np.array(self.log.param_log.history).tolist(),\n-            'best param': np.array(self.log.param_log.best).tolist(),\n+            'best param': np.array(self.log.param_log.best[0]).tolist(),\n             'cost progress list': np.array(self.log.cost.history).tolist(), \n-            'best cost': np.array(self.log.cost.best).tolist(), \n+            'best cost': np.array(self.log.cost.best[0]).tolist(), \n             'count progress list': np.array(self.log.counts.history).tolist(),\n-            'best count': np.array(self.log.counts.best).tolist(), \n+            'best count': np.array(self.log.counts.best[0] if self.log.counts.best != [] else {}).tolist(), ",
+    "path": "openqaoa/optimizers/training_vqa.py",
+    "commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "original_commit_id": "fa7c3699fedf806e398110d199fa889e21584aba",
+    "user": {
+      "login": "shahidee44",
+      "id": 36878360,
+      "node_id": "MDQ6VXNlcjM2ODc4MzYw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36878360?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/shahidee44",
+      "html_url": "https://github.com/shahidee44",
+      "followers_url": "https://api.github.com/users/shahidee44/followers",
+      "following_url": "https://api.github.com/users/shahidee44/following{/other_user}",
+      "gists_url": "https://api.github.com/users/shahidee44/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/shahidee44/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/shahidee44/subscriptions",
+      "organizations_url": "https://api.github.com/users/shahidee44/orgs",
+      "repos_url": "https://api.github.com/users/shahidee44/repos",
+      "events_url": "https://api.github.com/users/shahidee44/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/shahidee44/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm okay with leaving it as it is. I think the Results Object we are planning can help with cleaning this up for the users. Lets put this on the list of Features we might want to work on. I think objectizing more of the components in OpenQAOA will definitely help us in the long term.",
+    "created_at": "2022-06-08T05:23:58Z",
+    "updated_at": "2022-06-08T05:23:58Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891931089",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891931089"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/25#discussion_r891931089"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/25"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/891931089/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 247,
+    "original_line": 247,
+    "side": "RIGHT",
+    "in_reply_to_id": 890819221,
+    "author_association": "COLLABORATOR",
+    "original_position": 81,
+    "position": 81,
+    "subject_type": "line"
+  }
+]

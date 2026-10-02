@@ -1,0 +1,111 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  1b0adcd Remove need for `num_features` before fitting  (#301)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 1b0adcd
+
+HEAD is now at e3866c7 fix pennylane executor (#343)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________ TestRandomLayeredEncodingCircuit.test_feature_consistency ___________
+
+self = <tests.encoding_circuit.circuit_library.test_random_layered_encoding_circuit.TestRandomLayeredEncodingCircuit object at 0x7fffe263af50>
+
+    def test_feature_consistency(self):
+        circuit = RandomLayeredEncodingCircuit(num_qubits=4, num_features=3)
+        features = np.array([0.5, -0.5])
+        params = np.random.uniform(-np.pi, np.pi, circuit.num_parameters)
+    
+        with pytest.raises(ValueError):
+>           circuit.get_circuit(features, params)
+
+tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py:157: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py:162: in get_circuit
+    return self._layered_encoding_circuit.get_circuit(features, parameter)
+src/squlearn/encoding_circuit/layered_encoding_circuit.py:2223: in get_circuit
+    return self._layered_pqc.get_circuit(features, parameters)
+src/squlearn/encoding_circuit/layered_encoding_circuit.py:979: in get_circuit
+    QC = QC.compose(operation.get_circuit(var_param_assignment))
+src/squlearn/encoding_circuit/layered_encoding_circuit.py:303: in get_circuit
+    QC = self.apply_param_vectors(QC, RZGate, var_param_assignment)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.encoding_circuit.layered_encoding_circuit._Rz_operation object at 0x7ffff2f25ff0>
+QC = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fffe1ec46a0>
+r_star = <class 'qiskit.circuit.library.standard_gates.rz.RZGate'>
+var_param_assignment = {-2767916818164746533: array([ 0.5, -0.5]), 1159793198141788182: array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0.])}
+
+    def apply_param_vectors(self, QC, r_star, var_param_assignment):
+        """
+        Applies the param vectors creating a quantum circuit with the given gate.
+        Contains an algorithm for Rx, Ry and Rz gates, which distinguish between the following cases:
+        First: The user sets no map so a default map is given and the number of variable groups used exceeds 2, than raise an error because the default map needs exactly two arguments.
+        Second: The user sets no map so a default map is given and the number of variable groups used is 1, than apply the r* (stands for rx, ry or rz) gate with the given variable but without the map.
+        Third: The user sets a map with some variable groups or there are exactly 2 variable groups given.
+        Args:
+            QC: the quantum circuit by qiskit
+            r_star: Stands for r* (rx, ry or rz); a RXGate, RYGate or RZGate (also PhaseGate)
+            var_param_assignment: a dictionary, that assigns hash values of variable groups with their parameter vectors (by qiskit)
+        Returns:
+            QuantumCircuit
+        Raises:
+            ValueError, if the first case occurs.
+    
+        """
+        if self.default_map and (len(self.variablegroup_tuple) > 2):
+            raise ValueError(
+                "There are too many variable groups given without a map. There can only be one or two parameters without any given map."
+            )
+        elif self.default_map and (len(self.variablegroup_tuple) == 1):
+            if self.variablegroup_tuple[0].size == None:
+                for qubit in range(self.num_qubits):
+                    QC.append(
+                        r_star(
+                            var_param_assignment[hash(self.variablegroup_tuple[0])][
+                                self.variablegroup_tuple[0].index
+                            ]
+                        ),
+                        [qubit],
+                        [],
+                    )
+                    self.variablegroup_tuple[0].increase_index(1)
+            else:
+                for qubit in range(self.num_qubits):
+                    QC.append(
+                        r_star(
+                            var_param_assignment[hash(self.variablegroup_tuple[0])][
+                                (self.variablegroup_tuple[0].index)
+                                % self.variablegroup_tuple[0].size
+                            ]
+                        ),
+                        [qubit],
+                        [],
+                    )
+                    self.variablegroup_tuple[0].increase_index(1)
+        else:
+            # So there is either two variable groups given or a given map. In the first case without given map it multiplies the variables together (using of the default map)
+            for qubit in range(self.num_qubits):
+                buffer_param_vectors_list = []
+                for variablegroup in self.variablegroup_tuple:
+                    if variablegroup.size == None:
+                        buffer_param_vectors_list.append(
+                            var_param_assignment[hash(variablegroup)][variablegroup.index]
+                        )
+                    else:
+                        buffer_param_vectors_list.append(
+>                           var_param_assignment[hash(variablegroup)][
+                                variablegroup.index % variablegroup.size
+                            ]
+                        )
+E                       IndexError: index 2 is out of bounds for axis 0 with size 2
+
+src/squlearn/encoding_circuit/layered_encoding_circuit.py:253: IndexError
+=========================== short test summary info ============================
+FAILED tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_feature_consistency
+1 failed, 2 warnings in 6.28s

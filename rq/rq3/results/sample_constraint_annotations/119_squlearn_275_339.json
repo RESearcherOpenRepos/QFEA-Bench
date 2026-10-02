@@ -1,0 +1,566 @@
+{
+  "id": 119,
+  "sample_id": "squlearn_275_339",
+  "repo": "sQUlearn/squlearn",
+  "patch_commit": "e52584adc105f8fa211a135cd8343218f7ea4377",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 26,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "general_semantics/model_serialization_preservation": 22,
+      "interface/serialization_contract": 3,
+      "interface/input_validation": 1,
+      "general_semantics/model_training_state": 1,
+      "general_semantics/warm_start_optimization_state": 1,
+      "interface/output_shape": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qiskit]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 236,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 243,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[pennylane]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 236,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 243,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 236,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 243,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qiskit]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 235,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 241,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[pennylane]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 235,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 241,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 235,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 241,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 242,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_fidelity]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 240,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 244,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_pqk]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 240,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 244,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[linear]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[mlp]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[kernel]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[linear]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[kernel]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_fidelity]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 264,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 268,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 16,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_pqk]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 264,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 268,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 17,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_fidelity]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 277,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 281,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 18,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 277,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 281,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 19,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 267,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 271,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 20,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_pqk]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 267,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 271,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 21,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_fidelity]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 265,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 269,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 22,
+      "split": "F2P",
+      "selector": "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+      "label": "general_semantics/model_serialization_preservation",
+      "assertions": [
+        {
+          "line": 265,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        },
+        {
+          "line": 269,
+          "expected": "Dump/load preserves learned model predictions (and, where asserted, learned parameters and refitting behavior)."
+        }
+      ],
+      "rationale": "Primary requirement is model persistence: comparisons are before/after serialization, without an independently specified physical invariant or quantum reference result. Backend fixtures do not by themselves make persistence quantum-specific."
+    },
+    {
+      "test_number": 23,
+      "split": "F2P",
+      "selector": "tests/util/serialization/test_model_pickler.py::test_executor_removed_by_pickler",
+      "label": "interface/serialization_contract",
+      "assertions": [
+        {
+          "line": 35,
+          "expected": "The serialized holder retains an executor attribute but strips its live executor value."
+        },
+        {
+          "line": 36,
+          "expected": "The serialized holder retains an executor attribute but strips its live executor value."
+        }
+      ],
+      "rationale": "The serialized holder retains an executor attribute but strips its live executor value."
+    },
+    {
+      "test_number": 24,
+      "split": "F2P",
+      "selector": "tests/util/serialization/test_model_pickler.py::test_executor_reinjected_by_unpickler",
+      "label": "interface/serialization_contract",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Loading injects the exact supplied executor object."
+        },
+        {
+          "line": 51,
+          "expected": "Loading injects the exact supplied executor object."
+        }
+      ],
+      "rationale": "Loading injects the exact supplied executor object."
+    },
+    {
+      "test_number": 25,
+      "split": "F2P",
+      "selector": "tests/util/serialization/test_model_pickler.py::test_multiple_executor_references",
+      "label": "interface/serialization_contract",
+      "assertions": [
+        {
+          "line": 69,
+          "expected": "All nested executor references are removed on dump and replaced by the same supplied executor on load."
+        },
+        {
+          "line": 70,
+          "expected": "All nested executor references are removed on dump and replaced by the same supplied executor on load."
+        },
+        {
+          "line": 76,
+          "expected": "All nested executor references are removed on dump and replaced by the same supplied executor on load."
+        },
+        {
+          "line": 77,
+          "expected": "All nested executor references are removed on dump and replaced by the same supplied executor on load."
+        }
+      ],
+      "rationale": "All nested executor references are removed on dump and replaced by the same supplied executor on load."
+    },
+    {
+      "test_number": 26,
+      "split": "F2P",
+      "selector": "tests/util/serialization/test_model_pickler.py::test_invalid_path_or_buf",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 81,
+          "expected": "Invalid load/dump source or target arguments raise TypeError."
+        },
+        {
+          "line": 83,
+          "expected": "Invalid load/dump source or target arguments raise TypeError."
+        },
+        {
+          "line": 85,
+          "expected": "Invalid load/dump source or target arguments raise TypeError."
+        }
+      ],
+      "rationale": "Invalid load/dump source or target arguments raise TypeError."
+    },
+    {
+      "test_number": 27,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit_2out",
+      "label": "general_semantics/model_training_state",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "Two-output fitting sets fitted state and updates both learned arrays."
+        },
+        {
+          "line": 113,
+          "expected": "Two-output fitting sets fitted state and updates both learned arrays."
+        },
+        {
+          "line": 114,
+          "expected": "Two-output fitting sets fitted state and updates both learned arrays."
+        }
+      ],
+      "rationale": "Two-output fitting sets fitted state and updates both learned arrays."
+    },
+    {
+      "test_number": 28,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_partial_fit",
+      "label": "general_semantics/warm_start_optimization_state",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Full fitting is reproducible from initialization while partial_fit continues learned parameters."
+        },
+        {
+          "line": 133,
+          "expected": "Full fitting is reproducible from initialization while partial_fit continues learned parameters."
+        }
+      ],
+      "rationale": "Full fitting is reproducible from initialization while partial_fit continues learned parameters."
+    },
+    {
+      "test_number": 29,
+      "split": "P2P",
+      "selector": "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "QKRR prediction array type and shape remain compatible."
+        },
+        {
+          "line": 99,
+          "expected": "QKRR prediction array type and shape remain compatible."
+        }
+      ],
+      "rationale": "QKRR prediction array type and shape remain compatible."
+    },
+    {
+      "test_number": 30,
+      "split": "P2P",
+      "selector": "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "QKRR prediction array type and shape remain compatible."
+        },
+        {
+          "line": 99,
+          "expected": "QKRR prediction array type and shape remain compatible."
+        }
+      ],
+      "rationale": "QKRR prediction array type and shape remain compatible."
+    }
+  ],
+  "source_files": [
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/kernel/ml/test_qgpc.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/kernel/ml/test_qgpr.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/kernel/ml/test_qkrr.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/kernel/ml/test_qsvc.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/kernel/ml/test_qsvr.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/qnn/test_qnnc.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/qnn/test_qnnr.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/qrc/test_qrc_classifier.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/qrc/test_qrc_regressor.py",
+    "https://github.com/sQUlearn/squlearn/blob/e52584adc105f8fa211a135cd8343218f7ea4377/tests/util/serialization/test_model_pickler.py"
+  ],
+  "rationale": "Test bodies and referenced helpers at the exact patched commit were reviewed individually against the existing primary-assertion protocol. Setup and quantum repository membership do not determine the label. Parametrized cases retain distinct selectors.",
+  "review_provenance": {
+    "reviewer": "Codex",
+    "method": "Individual source-assertion review under existing protocol; explicit saved decisions, not automatic keyword classification.",
+    "date": "2026-10-02",
+    "human_agreement": "Author confirmation is recorded separately; these evidence records do not simulate three independent human votes."
+  }
+}

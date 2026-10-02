@@ -1,0 +1,140 @@
+diff --git a/src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py b/src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py
+index 113efb0..0887151 100644
+--- a/src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py
++++ b/src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py
+@@ -5,6 +5,9 @@ from collections import Counter
+ from typing import List, Union, Tuple
+ from sympy import Symbol
+ import numpy as np
++from scipy.sparse import kron as sparse_kron
++from functools import reduce
++from scipy.sparse import csr_matrix
+ 
+ Identity = np.array(([1, 0], [0, 1]), dtype=complex)
+ PauliX = np.array(([0, 1], [1, 0]), dtype=complex)
+@@ -686,3 +689,45 @@ class Hamiltonian:
+                 raise ValueError("Hamiltonian only supports Linear and Quadratic terms")
+ 
+         return cls(pauli_ops, pauli_coeffs, constant)
++
++    @property
++    def as_matrix(self):
++        """
++        Build sparse matrix of Hamiltonian. Note this includes self.constant value.
++
++        Returns
++        -------
++        H_mat:
++            sparse matrix of Hamiltonian.
++        """
++
++        if self.n_qubits>20:
++            raise ValueError('number of qubits exceeds maximum of 20')
++
++        p_mat_dict = {'X': csr_matrix([[0, 1],
++                                       [1, 0]]),
++                      'Y': csr_matrix([[0., -1j],
++                                       [1j, 0.]]),
++                      'Z': csr_matrix([[1, 0],
++                                       [0, -1]]),
++                      'I': csr_matrix([[1, 0], [0, 1]])}
++
++        converter = lambda s: p_mat_dict[s]
++
++        # vectorized function to map single qubit pauli strings to sparse matrix
++        vfunc = np.vectorize(converter)
++
++        base = np.array(['I' for _ in range(self.n_qubits)])
++
++        H_mat = reduce(sparse_kron, vfunc(base)) * self.constant
++        for P, coeff in zip(self.terms, self.coeffs):
++            temp = base.copy()
++
++            # replace single qubit pauli I in base term
++            # with single qubit pauli operators according to qubit_indices and pauli_strs in P
++            temp[np.array(P.qubit_indices)] = np.array(list(P.pauli_str))
++
++            # take kronecker product of sparse list of matrices
++            H_mat += reduce(sparse_kron, vfunc(temp)) * coeff
++
++        return H_mat
+\ No newline at end of file
+diff --git a/tests/test_operators.py b/tests/test_operators.py
+index a3d9501..28f37cc 100644
+--- a/tests/test_operators.py
++++ b/tests/test_operators.py
+@@ -1314,6 +1314,74 @@ class TestingOperators(unittest.TestCase):
+             hamiltonian_dict_pauliop == correct_dict_pauliop
+         ), "Hamiltonian dictionary did not yield correct dictionary"
+ 
++    def test_hamiltonian_as_matrix(self):
++        """Test if the method produces
++        the correct matrix corresponding to given Hamiltonian.
++
++        """
++        P_list = ['XIIZ', 'YIII', 'IZXI', 'IXIY', 'IIIZ', 'IIXI', 'ZZII']
++        coeff_list = list(range(1, 8))
++
++        Pauli_list = []
++        for P in P_list:
++            P = np.array(list(P))
++            non_I = np.where(P != 'I')[0]
++            Pauli_list.append(PauliOp(P[non_I], tuple(non_I)))
++
++        H = Hamiltonian(Pauli_list, coeff_list, 0)
++
++        solution = np.array([[12. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j,
++                              0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 2. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 4.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [9. + 0.j, 0. + 0.j, 12. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 9. + 0.j, 0. + 0.j, 2. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j,
++                              3. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              1. - 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -12. + 0.j,
++                              0. + 0.j, 3. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, -1. - 2.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j, 3. + 0.j, 0. + 0.j,
++                              -2. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j, 0. + 0.j, 3. + 0.j,
++                              0. + 0.j, -12. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j],
++                             [1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, -12. + 0.j, 0. + 0.j, 9. + 0.j,
++                              0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, -12. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 1. + 2.j, 0. + 0.j,
++                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j,
++                              12. + 0.j, 0. + 0.j, 3. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -1. + 2.j,
++                              0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, 2. + 0.j, 0. + 0.j, 3. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j,
++                              3. + 0.j, 0. + 0.j, 12. + 0.j, 0. + 0.j],
++                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,
++                              0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j,
++                              0. + 0.j, 3. + 0.j, 0. + 0.j, 2. + 0.j]])
++
++        assert np.allclose(solution,
++                    H.as_matrix.toarray()), 'as_matrix method not correct'
++
+ 
+ if __name__ == "__main__":
+     unittest.main()

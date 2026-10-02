@@ -1,0 +1,210 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023422650",
+    "pull_request_review_id": 1181772332,
+    "id": 1023422650,
+    "node_id": "PRRC_kwDOHMYLyM49ADC6",
+    "diff_hunk": "@@ -92,7 +92,10 @@ def __init__(self,\n         else:\n             raise Exception('Error connecting to AWS.')\n             \n-        self.parametric_circuit = self.parametric_qaoa_circuit()\n+        if self.device.n_qubits < self.n_qubits:\n+            raise Exception('There are lesser qubits on the device than the number of qubits required for the circuit.')\n+            \n+        self.parametric_circuit = self.parametric_qaoa_circuit",
+    "path": "openqaoa/backends/qpus/qaoa_braket_qpu.py",
+    "commit_id": "03681c2b166329e0701e92a5fedfea6846cfdeb7",
+    "original_commit_id": "5111d9a9a86b819854d3f0a3c70c6145ab4a53ba",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "self.parametric_qaoa_circuit with parentheses or not?",
+    "created_at": "2022-11-16T01:49:30Z",
+    "updated_at": "2022-11-16T01:49:54Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023422650",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023422650"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023422650"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023422650/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 98,
+    "original_line": 98,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 8,
+    "position": 8,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023468128",
+    "pull_request_review_id": 1181832511,
+    "id": 1023468128,
+    "node_id": "PRRC_kwDOHMYLyM49AOJg",
+    "diff_hunk": "@@ -360,37 +362,56 @@ def test_exceptions_in_init(self):\n         aws_device = DeviceAWS('arn:aws:braket:::device/quantum-simulator/amazon/sv1')\n         \n         QAOAAWSQPUBackend(circuit_params, aws_device, shots, None, None, True, 1.)\n-     \n+    \n+    @pytest.mark.qpu            \n+    def test_remote_qubit_overflow(self):",
+    "path": "tests/test_qpu_braket.py",
+    "commit_id": "03681c2b166329e0701e92a5fedfea6846cfdeb7",
+    "original_commit_id": "5111d9a9a86b819854d3f0a3c70c6145ab4a53ba",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I dont fully understand this test? How would it overflow, SV1 should be able to run 10 qubits, no?",
+    "created_at": "2022-11-16T03:26:52Z",
+    "updated_at": "2022-11-16T03:27:10Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023468128",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023468128"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023468128"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023468128/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 367,
+    "original_line": 367,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 31,
+    "position": 31,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023470709",
+    "pull_request_review_id": 1181835847,
+    "id": 1023470709,
+    "node_id": "PRRC_kwDOHMYLyM49AOx1",
+    "diff_hunk": "@@ -360,37 +362,56 @@ def test_exceptions_in_init(self):\n         aws_device = DeviceAWS('arn:aws:braket:::device/quantum-simulator/amazon/sv1')\n         \n         QAOAAWSQPUBackend(circuit_params, aws_device, shots, None, None, True, 1.)\n-     \n+    \n+    @pytest.mark.qpu            \n+    def test_remote_qubit_overflow(self):",
+    "path": "tests/test_qpu_braket.py",
+    "commit_id": "03681c2b166329e0701e92a5fedfea6846cfdeb7",
+    "original_commit_id": "5111d9a9a86b819854d3f0a3c70c6145ab4a53ba",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Oh I see, you are basically creating a 100 qubit cost Hamiltonian, and expecting that for SV1, AWS will output an overflow error? Did I understand it correctly?",
+    "created_at": "2022-11-16T03:32:51Z",
+    "updated_at": "2022-11-16T03:32:51Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023470709",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023470709"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/108#discussion_r1023470709"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/108"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1023470709/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 367,
+    "original_line": 367,
+    "side": "RIGHT",
+    "in_reply_to_id": 1023468128,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 31,
+    "position": 31,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "sha": "a9a33d32c6f5bdaedd3ea9d78109690f82d6f147",
+    "filename": "docs/apidocs/qiskit_addon_sqd.subsampling.rst",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/734085a5c4826d0530d5ee6613c6e484f370e99c/docs%2Fapidocs%2Fqiskit_addon_sqd.subsampling.rst",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/734085a5c4826d0530d5ee6613c6e484f370e99c/docs%2Fapidocs%2Fqiskit_addon_sqd.subsampling.rst",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/docs%2Fapidocs%2Fqiskit_addon_sqd.subsampling.rst?ref=734085a5c4826d0530d5ee6613c6e484f370e99c",
+    "patch": "@@ -11,3 +11,4 @@ Subsampling (:mod:`qiskit_addon_sqd.subsampling`)\n \n .. autofunction:: subsample\n .. autofunction:: postselect_and_subsample\n+.. autofunction:: postselect_by_hamming_right_and_left"
+  },
+  {
+    "sha": "0ad8a6d2de1510abcdf1a35ed7db8caf5ada2f90",
+    "filename": "qiskit_addon_sqd/configuration_recovery.py",
+    "status": "modified",
+    "additions": 7,
+    "deletions": 0,
+    "changes": 7,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Fconfiguration_recovery.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Fconfiguration_recovery.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Fconfiguration_recovery.py?ref=734085a5c4826d0530d5ee6613c6e484f370e99c",
+    "patch": "@@ -20,8 +20,15 @@\n from collections.abc import Sequence\n \n import numpy as np\n+from qiskit.utils.deprecation import deprecate_func\n \n \n+@deprecate_func(\n+    since=\"0.12.0\",\n+    package_name=\"qiskit-addon-sqd\",\n+    removal_timeline=\"no earlier than v0.13.0\",\n+    additional_msg=(\"Instead, use the ``postselect_by_hamming_right_and_left`` function.\"),\n+)\n def post_select_by_hamming_weight(\n     bitstring_matrix: np.ndarray, *, hamming_right: int, hamming_left: int\n ) -> np.ndarray:"
+  },
+  {
+    "sha": "63c024b802f1a109a18f17fc6204d5352fa71c90",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 12,
+    "deletions": 9,
+    "changes": 21,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=734085a5c4826d0530d5ee6613c6e484f370e99c",
+    "patch": "@@ -36,7 +36,7 @@\n \n from qiskit_addon_sqd.configuration_recovery import recover_configurations\n from qiskit_addon_sqd.counts import bit_array_to_arrays\n-from qiskit_addon_sqd.subsampling import postselect_and_subsample\n+from qiskit_addon_sqd.subsampling import postselect_by_hamming_right_and_left, subsample\n \n config.update(\"jax_enable_x64\", True)  # To deal with large integers\n \n@@ -259,31 +259,34 @@ def diagonalize_fermionic_hamiltonian(\n     # Convert BitArray into bitstring and probability arrays\n     raw_bitstrings, raw_probs = bit_array_to_arrays(bit_array)\n \n+    # Run configuration recovery loop\n     for _ in range(max_iterations):\n         if current_occupancies is None:\n-            bitstrings, probs = raw_bitstrings, raw_probs\n+            # If we don't have average orbital occupancy information, simply postselect\n+            # bitstrings with the correct numbers of spin-up and spin-down electrons\n+            bitstrings, probs = postselect_by_hamming_right_and_left(\n+                raw_bitstrings, raw_probs, hamming_right=n_alpha, hamming_left=n_beta\n+            )\n         else:\n-            # If we have average orbital occupancy information, we use it to refine the\n+            # If we do have average orbital occupancy information, use it to refine the\n             # full set of noisy configurations\n             bitstrings, probs = recover_configurations(\n                 raw_bitstrings, raw_probs, current_occupancies, n_alpha, n_beta, rand_seed=rng\n             )\n \n-        # Postselect and subsample batches of bitstrings\n-        subsamples = postselect_and_subsample(\n+        # Subsample batches of bitstrings\n+        subsamples = subsample(\n             bitstrings,\n             probs,\n-            hamming_right=n_alpha,\n-            hamming_left=n_beta,\n             samples_per_batch=samples_per_batch,\n             num_batches=num_batches,\n             rand_seed=rng,\n         )\n \n         # Convert bitstrings to CI strings and include requested and carryover strings\n         ci_strings = []\n-        for subsample in subsamples:\n-            strs_a, strs_b = bitstring_matrix_to_ci_strs(subsample, open_shell=not symmetrize_spin)\n+        for samples in subsamples:\n+            strs_a, strs_b = bitstring_matrix_to_ci_strs(samples, open_shell=not symmetrize_spin)\n             strs_a = np.union1d(strs_a, np.union1d(include_a, carryover_strings_a))\n             strs_b = np.union1d(strs_b, np.union1d(include_b, carryover_strings_b))\n             ci_strings.append((strs_a, strs_b))"
+  },
+  {
+    "sha": "7179edfc9228221623d2462d85f2af83c97c674a",
+    "filename": "qiskit_addon_sqd/subsampling.py",
+    "status": "modified",
+    "additions": 60,
+    "deletions": 0,
+    "changes": 60,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Fsubsampling.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/734085a5c4826d0530d5ee6613c6e484f370e99c/qiskit_addon_sqd%2Fsubsampling.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Fsubsampling.py?ref=734085a5c4826d0530d5ee6613c6e484f370e99c",
+    "patch": "@@ -16,10 +16,19 @@\n from __future__ import annotations\n \n import numpy as np\n+from qiskit.utils.deprecation import deprecate_func\n \n from .configuration_recovery import post_select_by_hamming_weight\n \n \n+@deprecate_func(\n+    since=\"0.12.0\",\n+    package_name=\"qiskit-addon-sqd\",\n+    removal_timeline=\"no earlier than v0.13.0\",\n+    additional_msg=(\n+        \"Instead, use the ``postselect_by_hamming_right_and_left`` and ``subsample`` functions.\"\n+    ),\n+)\n def postselect_and_subsample(\n     bitstring_matrix: np.ndarray,\n     probabilities: np.ndarray,\n@@ -84,6 +93,57 @@ def postselect_and_subsample(\n     return subsample(bs_mat_postsel, probs_postsel, samples_per_batch, num_batches, rand_seed=rng)\n \n \n+def postselect_by_hamming_right_and_left(\n+    bitstring_matrix: np.ndarray,\n+    probabilities: np.ndarray,\n+    *,\n+    hamming_right: int,\n+    hamming_left: int,\n+) -> tuple[np.ndarray, np.ndarray]:\n+    \"\"\"Postselect bitstrings based on desired Hamming weight on right and left halves.\n+\n+    Args:\n+        bitstring_matrix: A 2D array of ``bool`` representations of bit\n+            values such that each row represents a single bitstring.\n+        probabilities: A 1D array specifying a probability distribution over the bitstrings\n+        hamming_right: The target hamming weight for the right half of sampled bitstrings\n+        hamming_left: The target hamming weight for the left half of sampled bitstrings\n+\n+    Returns:\n+        Postselected bitstring matrix and probabilities. The new bitstring matrix contains\n+        only those bitstrings from the original matrix that have the desired Hamming weight\n+        on the right and left halves, and the new probabilities are constructed by taking\n+        the original probabilities corresponding to the postselected bitstrings and rescaling\n+        them to sum to one.\n+\n+    Raises:\n+        ValueError: Hamming weights must be non-negative integers.\n+        ValueError: The number of columns in ``bitstring_matrix`` must be even.\n+        ValueError: The number of elements in ``probabilities`` must equal the number of rows in ``bitstring_matrix``.\n+    \"\"\"\n+    if hamming_left < 0 or hamming_right < 0:\n+        raise ValueError(\"Hamming weight must be specified with a non-negative integer.\")\n+\n+    n_bitstrings, n_bits = bitstring_matrix.shape\n+    if n_bits % 2:\n+        raise ValueError(f\"The length of the bitstrings must be even. Instead, got {n_bits}.\")\n+    if len(probabilities) != n_bitstrings:\n+        raise ValueError(\n+            \"The number of elements in the probabilities array must match the number of rows in the bitstring matrix.\"\n+        )\n+\n+    norb = n_bits // 2\n+    valid_right = np.sum(bitstring_matrix[:, norb:], axis=1) == hamming_right\n+    valid_left = np.sum(bitstring_matrix[:, :norb], axis=1) == hamming_left\n+    valid_indices = np.logical_and(valid_right, valid_left)\n+\n+    bitstrings_post = bitstring_matrix[valid_indices]\n+    probs_post = probabilities[valid_indices]\n+    probs_post /= np.sum(probs_post)\n+\n+    return bitstrings_post, probs_post\n+\n+\n def subsample(\n     bitstring_matrix: np.ndarray,\n     probabilities: np.ndarray,"
+  },
+  {
+    "sha": "d66e918e33b316ec215def0def88590649cc843e",
+    "filename": "releasenotes/notes/postselect-a548bb0413bb37da.yaml",
+    "status": "added",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/734085a5c4826d0530d5ee6613c6e484f370e99c/releasenotes%2Fnotes%2Fpostselect-a548bb0413bb37da.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/734085a5c4826d0530d5ee6613c6e484f370e99c/releasenotes%2Fnotes%2Fpostselect-a548bb0413bb37da.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fpostselect-a548bb0413bb37da.yaml?ref=734085a5c4826d0530d5ee6613c6e484f370e99c",
+    "patch": "@@ -0,0 +1,6 @@\n+---\n+features:\n+  - Introduced the :func:`qiskit_addon_sqd.subsampling.postselect_by_hamming_right_and_left` function.\n+deprecations:\n+  - :func:`qiskit_addon_sqd.configuration_recovery.post_select_by_hamming_weight` is now deprecated. Instead, use :func:`qiskit_addon_sqd.subsampling.postselect_by_hamming_right_and_left`.\n+  - :func:`qiskit_addon_sqd.subsampling.postselect_and_subsample` is now deprecated. Instead, use :func:`qiskit_addon_sqd.subsampling.postselect_by_hamming_right_and_left` and :func:`qiskit_addon_sqd.subsampling.subsample`."
+  }
+]

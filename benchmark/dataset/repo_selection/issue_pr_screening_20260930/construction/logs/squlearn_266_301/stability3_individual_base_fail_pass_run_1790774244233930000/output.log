@@ -1,0 +1,75 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  1b0adcd Remove need for `num_features` before fitting  (#301)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 1b0adcd
+
+HEAD is now at e3866c7 fix pennylane executor (#343)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ TestRandomEncodingCircuit.test_feature_consistency ______________
+
+self = <tests.encoding_circuit.circuit_library.test_random_encoding_circuit.TestRandomEncodingCircuit object at 0x7fffe263f910>
+
+    def test_feature_consistency(self):
+        circuit = RandomEncodingCircuit(num_qubits=4, num_features=3)
+        features = np.array([0.5, -0.5])
+    
+        with pytest.raises(ValueError):
+>           circuit.get_circuit(features, [])
+
+tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.encoding_circuit.circuit_library.random_encoding_circuit.RandomEncodingCircuit object at 0x7ffffe285de0>
+features = array([ 0.5, -0.5]), parameters = []
+
+    def get_circuit(
+        self,
+        features: Union[ParameterVector, np.ndarray],
+        parameters: Union[ParameterVector, np.ndarray],
+    ) -> QuantumCircuit:
+        r"""
+        Returns the random encoding circuit.
+    
+        Args:
+            features (Union[ParameterVector,np.ndarray]): Input vector of the features
+            parameters (Union[ParameterVector,np.ndarray]): Input vector of the parameters
+    
+        Return:
+            Returns the random encoding circuit in qiskit QuantumCircuit format
+        """
+    
+        # _gen_random_config has to be called before get_circuit
+    
+        qc = QuantumCircuit(self.num_qubits)
+        feature_counter = 0
+        parameter_counter = 0
+        parameterized_gate_counter = 0
+        for igate, gate in enumerate(self._picked_gates):
+            is_parameterized = available_gates[gate][2]
+            qubits_arg = self._picked_qubits[igate]
+            # switch between parameterized and non-parameterized gates
+            if is_parameterized:
+                encoding = available_encodings[self._picked_encodings[parameterized_gate_counter]][
+                    0
+                ]
+                qc.append(
+                    available_gates[gate][0](
+                        encoding(
+>                           features[self._feature_indices[feature_counter]],
+                            parameters[parameter_counter % self.num_parameters],
+                        ),
+                    ),
+                    list(qubits_arg),
+                )
+E               IndexError: index 2 is out of bounds for axis 0 with size 2
+
+src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py:208: IndexError
+=========================== short test summary info ============================
+FAILED tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py::TestRandomEncodingCircuit::test_feature_consistency
+1 failed, 2 warnings in 3.34s

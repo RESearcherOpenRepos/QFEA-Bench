@@ -1,0 +1,302 @@
+{
+  "instance": {
+    "id": 84,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_866_870",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/866",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/870",
+    "base_commit": "4c636c430045ead852d83de63d52180ea67d31a1",
+    "patch": "b059ed4dd8e8c0266e4dbc59e78cceb9de80ec54"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task makes sparse tensor storage compatible with PolynomialTensor, ElectronicIntegrals, and ordering utilities."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/optionals.py",
+      "qiskit_nature/second_q/operators/electronic_integrals.py",
+      "qiskit_nature/second_q/operators/fermionic_op.py",
+      "qiskit_nature/second_q/operators/polynomial_tensor.py",
+      "qiskit_nature/second_q/operators/tensor_ordering.py",
+      "setup.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PolynomialTensor and the operator utilities built on top of it currently assume dense NumPy arrays. Users need these tensor containers and conversions to work with sparse-array inputs so large mostly-empty tensor data can be represented, transformed, ordered, and converted without first densifying it.",
+    "requirements": [
+      "PolynomialTensor must accept sparse array values alongside scalar constants and dense arrays while preserving existing dense behavior.",
+      "PolynomialTensor must report whether its stored tensor values are sparse, dense, mixed, or empty, and it must support conversion between sparse and dense storage.",
+      "PolynomialTensor arithmetic, conjugation, transpose, composition, tensor expansion, and einsum operations must preserve correct results for sparse tensor values.",
+      "FermionicOp construction from a PolynomialTensor must work for both dense and sparse tensor values.",
+      "ElectronicIntegrals must preserve sparse PolynomialTensor values in its spin-sector accessors and einsum workflows, including alpha/beta ordering transformations.",
+      "Tensor-ordering utilities must support sparse two-body tensors and return results equivalent to the dense tensor-ordering behavior.",
+      "The sparse optional dependency must be detected through qiskit_nature.optionals and exposed as a public qiskit_nature.optionals.HAS_SPARSE module attribute, so test and library code can import/access that exact attribute without AttributeError and use it to guard sparse-specific behavior when the sparse package is installed.",
+      "Existing dense operator behavior must remain compatible for PolynomialTensor, ElectronicIntegrals, FermionicOp, SpinOp, and related operator tests."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "PolynomialTensor",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "constructor: data, validate=True",
+        "Output": "",
+        "Description": "Tensor container accepting scalars, dense arrays, and sparse arrays; supports item access, iteration, equality/equiv, arithmetic, compose/tensor/expand, conjugate, and transpose for compatible tensor values."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.issparse",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether all non-scalar tensor values are sparse arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.isdense",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether all non-scalar tensor values are dense arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.todense",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "self",
+        "Output": "PolynomialTensor",
+        "Description": "Returns an equivalent PolynomialTensor whose sparse tensor values have been converted to dense arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.tosparse",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "self",
+        "Output": "PolynomialTensor",
+        "Description": "Returns an equivalent PolynomialTensor whose dense tensor values have been converted to sparse arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.einsum",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "einsum_map, *operands, validate=True",
+        "Output": "PolynomialTensor",
+        "Description": "Builds a PolynomialTensor from configured einsum expressions while supporting sparse and dense operands."
+      },
+      {
+        "Type": "Class",
+        "Name": "ElectronicIntegrals",
+        "Path": "qiskit_nature/second_q/operators/electronic_integrals.py",
+        "Input": "constructor: alpha=None, beta=None, beta_alpha=None, validate=True",
+        "Output": "",
+        "Description": "Spin-sector electronic-integral container whose PolynomialTensor sectors can hold sparse tensor values and expose alpha, beta, beta_alpha, alpha_beta, one_body, and two_body views."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicIntegrals.einsum",
+        "Path": "qiskit_nature/second_q/operators/electronic_integrals.py",
+        "Input": "einsum_map, *operands, validate=True",
+        "Output": "ElectronicIntegrals",
+        "Description": "Applies configured einsum expressions across electronic-integral operands while preserving correct sparse or dense tensor semantics."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicIntegrals.from_raw_integrals",
+        "Path": "qiskit_nature/second_q/operators/electronic_integrals.py",
+        "Input": "h1_a, h2_aa=None, h1_b=None, h2_bb=None, h2_ba=None, validate=True, auto_index_order=True",
+        "Output": "ElectronicIntegrals",
+        "Description": "Constructs ElectronicIntegrals from raw one- and two-body arrays, including sparse-compatible tensor ordering behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.from_polynomial_tensor",
+        "Path": "qiskit_nature/second_q/operators/fermionic_op.py",
+        "Input": "polynomial_tensor",
+        "Output": "FermionicOp",
+        "Description": "Constructs a FermionicOp from nonzero dense or sparse PolynomialTensor entries."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_physicist_ordering",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "array-like tensor",
+        "Description": "Converts two-body tensor data to physicist ordering for dense and sparse inputs."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_chemist_ordering",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "array-like tensor",
+        "Description": "Converts two-body tensor data to chemist ordering for dense and sparse inputs."
+      },
+      {
+        "Type": "Function",
+        "Name": "find_index_order",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "IndexType",
+        "Description": "Detects the index ordering of dense or sparse two-body tensor data."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_866_870",
+      "image_id": "sha256:a0d3908fb161a65e055a7f4fd5b5c802340497f61104977ebabbf5d03bb7d4be",
+      "image_size": "1217578132"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_issparse",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_todense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_second_q_coeffs",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor"
+        ],
+        "summary": "6 passed in 5.26s",
+        "duration_seconds": 14.56
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_einsum",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_from_raw_integrals",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_1_0_0",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_2_0_75",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_3_1_5",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_4_2_25",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_5_3_0",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_trace_spin",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering"
+        ],
+        "summary": "41 passed in 3.40s",
+        "duration_seconds": 8.56
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_issparse",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_todense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_second_q_coeffs",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor"
+        ],
+        "summary": "Collection failed because the base optionals module has no HAS_SPARSE marker; 6 errors in 7.96s",
+        "duration_seconds": 21.86
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_einsum",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_from_raw_integrals",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_1_0_0",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_2_0_75",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_3_1_5",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_4_2_25",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_mul_5_3_0",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_trace_spin",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering"
+        ],
+        "summary": "41 passed in 1.10s",
+        "duration_seconds": 8.15
+      }
+    }
+  }
+}

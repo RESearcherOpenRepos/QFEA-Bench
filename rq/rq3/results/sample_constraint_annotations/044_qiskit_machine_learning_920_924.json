@@ -1,0 +1,85 @@
+{
+  "id": 44,
+  "sample_id": "qiskit_machine_learning_920_924",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "9725adebbffc9dfe96825038b6f894478da3d1da",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "general_semantics/optimizer_convergence": 5
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_7",
+      "label": "general_semantics/optimizer_convergence",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "SBPLX minimizes Rosenbrock near [1,1,1,1,1] within 50,000 evaluations."
+        }
+      ],
+      "rationale": "The SBPLX/bounded case delegates to run_optimizer, which checks a nonquantum numeric objective and call limit."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_2",
+      "label": "general_semantics/optimizer_convergence",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "DIRECT_L bounded run converges near Rosenbrock optimum."
+        }
+      ],
+      "rationale": "The selected DIRECT_L/True P2P case checks the same numeric objective."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_3",
+      "label": "general_semantics/optimizer_convergence",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "DIRECT_L_RAND bounded run converges near Rosenbrock optimum."
+        }
+      ],
+      "rationale": "The selected randomized DIRECT/True variant is a separate optimizer case."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_5",
+      "label": "general_semantics/optimizer_convergence",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "DIRECT_L unbounded run converges near Rosenbrock optimum."
+        }
+      ],
+      "rationale": "This selected DIRECT_L/False case differs by bounds."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_6",
+      "label": "general_semantics/optimizer_convergence",
+      "assertions": [
+        {
+          "line": 233,
+          "expected": "DIRECT_L_RAND unbounded run converges near Rosenbrock optimum."
+        }
+      ],
+      "rationale": "This selected randomized DIRECT/False case differs by bounds."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/9725adebbffc9dfe96825038b6f894478da3d1da/test/optimizers/test_optimizers.py"
+  ],
+  "rationale": "Checked all five NLopt selector variants and the delegated Rosenbrock optimum and evaluation-count assertions."
+}

@@ -1,0 +1,151 @@
+{
+  "id": 11,
+  "sample_id": "openfermion_542_589",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "45d25cdd373d50f82dab9a9a7d6accdb0eecffb1",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/input_validation": 2,
+      "quantum_semantics/majorana_fermion_mapping": 2,
+      "quantum_semantics/hamiltonian_representation_equivalence": 3,
+      "quantum_semantics/diagonal_coulomb_projection": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_raises",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 515,
+          "expected": "The public Majorana converter rejects a scalar with TypeError"
+        },
+        {
+          "line": 517,
+          "expected": "The Fermion-to-Majorana helper rejects a list with TypeError"
+        },
+        {
+          "line": 519,
+          "expected": "The term helper rejects a scalar with TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_fermion_operator",
+      "label": "quantum_semantics/majorana_fermion_mapping",
+      "assertions": [
+        {
+          "line": 536,
+          "expected": "The FermionOperator maps to the explicitly constructed MajoranaOperator with matching signs and coefficients"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_diagonalcoulomb",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [
+        {
+          "line": 545,
+          "expected": "Equivalent diagonal-Coulomb and FermionOperator Hamiltonians yield the same MajoranaOperator"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "A Hubbard Hamiltonian survives diagonal-Coulomb conversion and conversion back to a normal-ordered FermionOperator"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [
+        {
+          "line": 203,
+          "expected": "A random quadratic Hamiltonian preserves its normal-ordered fermionic operator under diagonal-Coulomb round trip"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_ignore_incompatible_terms",
+      "label": "quantum_semantics/diagonal_coulomb_projection",
+      "assertions": [
+        {
+          "line": 215,
+          "expected": "Ignoring incompatible terms retains the expected one-body coefficient matrix"
+        },
+        {
+          "line": 218,
+          "expected": "Ignoring incompatible terms retains the expected two-body coefficient matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 230,
+          "expected": "A QubitOperator input raises TypeError"
+        },
+        {
+          "line": 232,
+          "expected": "An undersized qubit count raises ValueError"
+        },
+        {
+          "line": 234,
+          "expected": "Unsupported fermionic term patterns raise ValueError"
+        },
+        {
+          "line": 236,
+          "expected": "Unsupported higher-body term patterns raise ValueError"
+        },
+        {
+          "line": 238,
+          "expected": "Unsupported non-Hermitian term patterns raise ValueError"
+        },
+        {
+          "line": 240,
+          "expected": "Invalid imaginary interaction coefficients raise ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::test_get_fermion_operator_majorana_operator",
+      "label": "quantum_semantics/majorana_fermion_mapping",
+      "assertions": [
+        {
+          "line": 502,
+          "expected": "Majorana-to-Fermion conversion matches the explicit fermionic expansion after normal ordering"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/45d25cdd373d50f82dab9a9a7d6accdb0eecffb1/src/openfermion/transforms/_conversion_test.py"
+  ],
+  "rationale": "Type rejection checks the conversion API's accepted inputs. Explicit Majorana/Fermion and diagonal-Coulomb equivalences check quantum operator mappings; incompatible-term projection checks preserved Hamiltonian coefficients."
+}

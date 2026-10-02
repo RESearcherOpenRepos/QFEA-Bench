@@ -1,0 +1,134 @@
+{
+  "id": 50,
+  "sample_id": "qiskit_nature_167_220",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "b4a46bf49408153603c3d24bfccc15ceb94aac82",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/particle_number_operator": 1,
+      "quantum_semantics/magnetization_operator": 1,
+      "quantum_semantics/angular_momentum_operator": 1,
+      "quantum_semantics/electronic_hamiltonian_construction": 1,
+      "quantum_semantics/active_space_projection": 1,
+      "quantum_semantics/ground_state_energy": 1,
+      "quantum_semantics/observable_expectation_value": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+      "label": "quantum_semantics/particle_number_operator",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "ParticleNumber emits the expected spin-orbital number terms."
+        }
+      ],
+      "rationale": "The selected F2P assertion checks operator labels, beyond the one-element list length."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/test_magnetization.py::TestMagnetization::test_second_q_ops",
+      "label": "quantum_semantics/magnetization_operator",
+      "assertions": [
+        {
+          "line": 45,
+          "expected": "Magnetization emits the expected signed spin-resolved ladder terms."
+        }
+      ],
+      "rationale": "The expected list includes spin-dependent coefficients."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/properties/second_quantization/electronic/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops",
+      "label": "quantum_semantics/angular_momentum_operator",
+      "assertions": [
+        {
+          "line": 46,
+          "expected": "AngularMomentum emits the expected terms and coefficients."
+        }
+      ],
+      "rationale": "The test compares each second-quantized angular-momentum component."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_without_transformers",
+      "label": "quantum_semantics/electronic_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 52,
+          "expected": "ElectronicStructureProblem emits the expected fermionic Hamiltonian terms."
+        }
+      ],
+      "rationale": "Although count and type are also checked, the expected H2 operator coefficients are compared."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_with_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 81,
+          "expected": "Active-space transformed H2 problem emits the expected reduced fermionic Hamiltonian."
+        }
+      ],
+      "rationale": "The expected post-transform operator is compared term by term."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_npme",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 74,
+          "expected": "Ground-state total energy matches the reference to six places."
+        }
+      ],
+      "rationale": "The assertion is a physical eigenvalue reference."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single",
+      "label": "quantum_semantics/observable_expectation_value",
+      "assertions": [
+        {
+          "line": 145,
+          "expected": "Single auxiliary operator evaluates to real value 2."
+        }
+      ],
+      "rationale": "The numeric observable expectation is primary; complex return type is also checked."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_list",
+      "label": "quantum_semantics/observable_expectation_value",
+      "assertions": [
+        {
+          "line": 169,
+          "expected": "Each auxiliary operator in a list has its expected real value."
+        }
+      ],
+      "rationale": "The selected list case compares separate quantum observable expectations."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/b4a46bf49408153603c3d24bfccc15ceb94aac82/test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b4a46bf49408153603c3d24bfccc15ceb94aac82/test/problems/second_quantization/electronic/test_electronic_structure_problem.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b4a46bf49408153603c3d24bfccc15ceb94aac82/test/properties/second_quantization/electronic/test_angular_momentum.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b4a46bf49408153603c3d24bfccc15ceb94aac82/test/properties/second_quantization/electronic/test_magnetization.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/b4a46bf49408153603c3d24bfccc15ceb94aac82/test/properties/second_quantization/electronic/test_particle_number.py"
+  ],
+  "rationale": "Reviewed three new electronic-property operators and five retained Hamiltonian, energy and observable evaluations; mixed count/type checks are secondary to explicit quantum term or value comparisons."
+}

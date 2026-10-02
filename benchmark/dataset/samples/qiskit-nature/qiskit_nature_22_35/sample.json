@@ -1,0 +1,139 @@
+{
+  "instance": {
+    "id": 52,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_22_35",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/22",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/35",
+    "base_commit": "c6f14c92a6fc289957ba7dc42ced8feef89413f7",
+    "patch": "88ad9f95907377296a0cd9f9d3da63379fa867f2"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines spin-operator algebra and matrix semantics, including raising and lowering label conventions."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/__init__.py",
+      "qiskit_nature/operators/second_quantization/spin_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature already provides fermionic second-quantized operators, but spin-model workflows still lack a modern spin operator abstraction that users can build from intuitive labels and convert into matrix form for downstream quantum simulations and mappings. Users should be able to construct spin operators from dense and sparse spin labels, use raising and lowering labels naturally, and obtain matrices that match the expected spin algebra.",
+    "requirements": [
+      "The repository must expose a SpinOp operator from qiskit_nature.operators for spin-model workflows.",
+      "SpinOp must accept dense and sparse spin labels built from I, X, Y, Z, +, and - symbols.",
+      "SpinOp must support multi-register labels and preserve the expected register ordering when constructed from dense or sparse labels.",
+      "SpinOp must interpret + and - labels as the corresponding raising and lowering combinations of X and Y operators.",
+      "SpinOp.to_matrix must return the correct matrix representation for supported single-spin and multi-spin label constructions.",
+      "SpinOp matrix behavior for qubit-spin labels must stay consistent with the corresponding Pauli matrices.",
+      "Existing nearby FermionicOp algebra behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SpinOp",
+        "Path": "qiskit_nature/operators/second_quantization/spin_op.py",
+        "Input": "constructor: data, spin=Fraction(1, 2)",
+        "Output": "",
+        "Description": "Represents a spin operator built from dense labels, sparse labels, or internal spin-array data."
+      },
+      {
+        "Type": "Method",
+        "Name": "SpinOp.to_matrix",
+        "Path": "qiskit_nature/operators/second_quantization/spin_op.py",
+        "Input": "self",
+        "Output": "np.ndarray",
+        "Description": "Returns the dense matrix representation of the constructed spin operator."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_22_35",
+      "image_id": "sha256:f6819cda1b26ac091845f41a6076384e0a0cd485dc9e0e28b6fb884a75698b48",
+      "image_size": "1210570143"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "qiskit-aqua==0.9.5",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_label_2_X",
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_dense_label_11_XY",
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_pm_label",
+          "test/operators/test_spin_op.py::TestSpinOp::test_to_matrix_two_qutrit_07_XY",
+          "test/operators/test_spin_op.py::TestSpinOp::test_consistency_with_pauli_48_XYZ"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 61
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 64
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_label_2_X",
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_dense_label_11_XY",
+          "test/operators/test_spin_op.py::TestSpinOp::test_init_pm_label",
+          "test/operators/test_spin_op.py::TestSpinOp::test_to_matrix_two_qutrit_07_XY",
+          "test/operators/test_spin_op.py::TestSpinOp::test_consistency_with_pauli_48_XYZ"
+        ],
+        "summary": "5 selected selectors failed with ImportError because SpinOp is absent from qiskit_nature.operators on base.",
+        "duration_seconds": 58
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_pow",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 49
+      }
+    }
+  }
+}

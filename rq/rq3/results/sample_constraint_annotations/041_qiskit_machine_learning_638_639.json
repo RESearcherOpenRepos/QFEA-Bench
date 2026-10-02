@@ -1,0 +1,261 @@
+{
+  "id": 41,
+  "sample_id": "qiskit_machine_learning_638_639",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "24717922ed34f89c062882c15cb9457c61101ab9",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 10,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "interface/user_parameter_binding": 3,
+      "interface/input_validation": 4,
+      "quantum_semantics/quantum_kernel_evaluation": 6,
+      "general_semantics/model_training_performance": 4,
+      "interface/property_mutability": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_training_parameters_2_TrainableFidelityStatevectorKernel",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Statevector kernel accepts mapping/list/array training values and exposes bound parameter_values."
+        }
+      ],
+      "rationale": "The statevector variant of the parameter test focuses on the public assignment contract."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_properties_2_TrainableFidelityStatevectorKernel",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "Statevector kernel exposes the correct training-parameter and feature counts."
+        }
+      ],
+      "rationale": "The properties case directly reads two public counts."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_incomplete_binding_2_TrainableFidelityStatevectorKernel",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 171,
+          "expected": "Evaluating with unbound training parameters raises QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "The selected incomplete-binding statevector case checks a public precondition."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_2",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "First selected symmetric trainable statevector kernel equals the reference fidelity matrix."
+        }
+      ],
+      "rationale": "The `_2` parameter case asserts numerical quantum overlaps."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_4",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Second selected symmetric trainable statevector kernel equals its reference matrix."
+        }
+      ],
+      "rationale": "The `_4` parameter case uses a different binding/reference and is checked independently."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_2",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 155,
+          "expected": "First selected asymmetric trainable statevector kernel equals its reference overlaps."
+        }
+      ],
+      "rationale": "The `_2` asymmetric case asserts cross-sample quantum fidelities."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_4",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 155,
+          "expected": "Second selected asymmetric trainable statevector kernel equals its reference overlaps."
+        }
+      ],
+      "rationale": "The `_4` asymmetric case uses a different trained-parameter configuration."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_default_fit_2_TrainableFidelityStatevectorKernel",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 81,
+          "expected": "Default-trained kernel supports QSVC score at least 0.5."
+        }
+      ],
+      "rationale": "The statevector-kernel trainer delegates to a helper asserting classifier score."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params_2_TrainableFidelityStatevectorKernel",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Custom-loss/optimizer trained kernel binds values and supports classifier score."
+        }
+      ],
+      "rationale": "This statevector variant checks finite bound values and helper score; training performance is primary."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_asymmetric_trainable_parameters_2_TrainableFidelityStatevectorKernel",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 124,
+          "expected": "Asymmetric trainable-parameter kernel supports classifier score."
+        }
+      ],
+      "rationale": "The distinct one-training-parameter/two-feature case delegates to the score helper."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_defaults",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 106,
+          "expected": "Existing fidelity kernel supports score at least 0.5."
+        }
+      ],
+      "rationale": "Retained P2P default kernel test asserts score."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_properties",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 341,
+          "expected": "Existing fidelity kernel exposes configured feature map and fidelity primitive."
+        }
+      ],
+      "rationale": "This P2P case checks public properties and options."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_validate_input",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 295,
+          "expected": "Existing kernel rejects malformed feature inputs."
+        }
+      ],
+      "rationale": "The selected validation case asserts ValueError."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_exceptions",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 110,
+          "expected": "Unsupported evaluate_duplicates value raises ValueError."
+        }
+      ],
+      "rationale": "The exception case checks a public constructor option."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_symmetric_01___samples_1____default_fidelity____no_fm___True___none__",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 134,
+          "expected": "Existing symmetric fidelity kernel equals the reference matrix."
+        }
+      ],
+      "rationale": "The selected single-sample default configuration asserts quantum overlaps."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_asymmetric_001___samples_1____samples_1____default_fidelity____no_fm___True___none__",
+      "label": "quantum_semantics/quantum_kernel_evaluation",
+      "assertions": [
+        {
+          "line": 163,
+          "expected": "Existing asymmetric fidelity kernel equals the reference matrix."
+        }
+      ],
+      "rationale": "The selected default configuration asserts cross-sample quantum overlaps."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_training_parameters",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 490,
+          "expected": "Legacy trainable quantum kernel exposes assignment, bound and unbound parameter state."
+        }
+      ],
+      "rationale": "The long P2P test explicitly checks public training-parameter operations."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_unbound_parameters",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 659,
+          "expected": "Using an unbound trainable kernel in QSVC fit raises ValueError."
+        }
+      ],
+      "rationale": "The test checks a public invalid-state exception."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/24717922ed34f89c062882c15cb9457c61101ab9/test/kernels/algorithms/test_fidelity_qkernel_trainer.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/24717922ed34f89c062882c15cb9457c61101ab9/test/kernels/test_fidelity_qkernel.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/24717922ed34f89c062882c15cb9457c61101ab9/test/kernels/test_qkernel.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/24717922ed34f89c062882c15cb9457c61101ab9/test/kernels/test_trainable_fidelity_qkernel.py"
+  ],
+  "rationale": "Reviewed each of the ten new statevector-kernel selectors and eight retained selectors, including distinct symmetric/asymmetric binding cases and their assertions."
+}

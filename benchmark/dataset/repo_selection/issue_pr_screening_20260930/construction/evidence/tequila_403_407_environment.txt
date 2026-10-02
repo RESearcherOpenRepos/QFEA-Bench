@@ -1,0 +1,659 @@
+FILE setup.py
+from setuptools import setup, find_packages
+import os
+import sys
+
+# on Windows: remove jax and jaxlib from requirements.txt and add autgrad
+
+def read_requirements(fname):
+    with open('requirements.txt') as file:
+        lines=file.readlines()
+        requirements = [line.strip() for line in lines]
+    return requirements
+
+# get author and version information
+VERSIONFILE="src/tequila/version.py"
+info = {"__version__":None, "__author__":None}
+with open(VERSIONFILE, "r") as f:
+    for l in f.readlines():
+        tmp = l.split("=")
+        if tmp[0].strip().lower() in info:
+            info[tmp[0].strip().lower()] = tmp[1].strip().strip("\"").strip("\'")
+
+for k,v in info.items():
+    if v is None:
+        raise Exception("could not find {} string in {}".format(k,VERSIONFILE))
+
+extras_3_6 = ['dataclasses']
+extras_3_7 = []
+additional = []
+
+requirements = read_requirements('requirements.txt')
+
+try:
+    with open("README.md", "r") as f:
+        long_description=f.read()
+except:
+    long_description=""
+
+setup(
+    name='tequila-basic',
+    version=info["__version__"],
+    author=info["__author__"],
+    url="https://github.com/tequilahub/tequila",
+    description="A High-Level Abstraction Framework for Quantum Algorithms",
+    author_email='jakob.kottmann@gmail.com',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    install_requires=requirements + additional,
+    extras_require={
+        ':python_version < "3.7"': extras_3_6,
+        ':python_version == "3.7"': extras_3_7
+    },
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
+    include_package_data=True,
+    package_data={
+        '': [os.path.join('src')]
+    }
+)
+
+FILE requirements.txt
+# necessary
+numpy
+scipy
+sympy
+#jax
+#jaxlib
+autograd # autograd works better on OSX-ARM64 (M1 and M2) and Windows, feel free to try jax however (no big differences)
+setuptools
+pytest
+openfermion ~= 1.0 # can not be smaller than 1.0 
+#cmake # needed by qulacs, can be removed otherwise, now in qulacs requirements
+qulacs # default simulator (best integration), remove if the installation gives you trouble and just install one of the other supported backend. Version restriction only for noise models, otherwise the new version is fine
+
+#optional quantum backends
+#cirq >= 0.9.2 #
+#cirq_google
+#qiskit>=0.30
+#pyquil<3.0 # you also need to install the forest-sdk
+#qulacs-gpu # you can't have qulacs and qulacs-gpu at the same time
+#qibo <= 0.1.1 # can not be installed in the same environment as gpyopt
+#quimb
+
+#optional optimizers
+#gpyopt # not in combination with qibo as quantum backend
+
+#optional third party libraries
+#pyzx
+#pyscf # if used also restrict h5py version untill the issue is fixed upstream in pyscf
+#h5py <= 3.1 # version 3.3.0 leads to crashes when pyscf is imported
+
+FILE .github/workflows/pypi_manual.yml
+# thanks Justin Connor :-)
+# see here for source: https://justinoconnor.codes/2021/05/02/automated-pypi-package-release-versioning-with-github/
+name: Upload Python Package
+
+on: workflow_dispatch
+
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        # remove qulacs from dependencies (issues with windows and mac)
+        # users need to install themselves if they want it
+       
+        cat requirements.txt | sed "s|qulacs|#qulacs|g" > tmp.txt
+        rm requirements.txt
+        mv tmp.txt requirements.txt
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+
+FILE .github/workflows/ci_chemistry_psi4.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test-Psi4
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: 'latest'
+          auto-activate-base: false
+          python-version: '3.10' 
+          
+      - name: Initialize Conda for the shell
+        run: |
+          which conda
+          # Initialize Conda
+          conda init bash
+          # Restart the shell to apply changes
+          bash 
+          
+      - name: Create Conda environment and install Psi4
+        run: |
+          # Create Conda environment with Python 3.10
+          conda create --name psi4_env python=3.10 -y
+          # Install Psi4 via Conda
+          # some issue with qcelemental where imports fail for pydantic>2
+          conda install -n psi4_env -c conda-forge pydantic=1.*
+          conda install -n psi4_env -c psi4 psi4 -y
+
+      - name: Verify Python version with conda run
+        run: |
+          # Verify Python version inside the environment
+          conda run -n psi4_env python --version
+          echo "import psi4" > asd.py
+          echo "print(psi4.__version__)" >> asd.py
+          conda run -n psi4_env python asd.py
+
+      - name: Set up virtual environment and run tests
+        run: |
+
+          conda run -n psi4_env pip install -e .
+          conda run -n psi4_env pip install pyscf pytest
+          cp -r tests/data data
+          conda run -n psi4_env pytest tests/test_chemistry.py
+          conda run -n psi4_env pytest tests/test_adapt.py
+
+FILE .github/workflows/pypi.yml
+# thanks Justin Connor :-)
+# see here for source: https://justinoconnor.codes/2021/05/02/automated-pypi-package-release-versioning-with-github/
+name: Upload Python Package
+
+on:
+  release:
+    types: [released]
+
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        # remove qulacs from dependencies (issues with windows and mac)
+        # users need to install themselves if they want it
+       
+        cat requirements.txt | sed "s|qulacs|#qulacs|g" > tmp.txt
+        rm requirements.txt
+        mv tmp.txt requirements.txt
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+
+FILE .github/workflows/ci_chemistry_pyscf.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test-pyscf
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: madness basics
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -e .
+        cd tests
+        ls
+        pytest test_chemistry_madness.py
+        cd ../
+    - name: Install and test pyscf interface
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -e .
+        python -m pip install pyscf
+        python -m pip install 'h5py <= 3.1'
+        cd tests
+        ls
+        pytest test_chemistry.py test_TrotErr.py  -m "not dependencies"
+        pytest test_adapt.py  -m "not dependencies"
+        cd ../
+
+FILE .github/workflows/ci_chemistry_madness.yml
+# # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+# # put to sleep, need to update docker container
+
+name: Test-Madness
+
+on:
+  push:
+    branches: [master]
+
+# jobs:
+
+#   build:
+
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         python-version: ['3.10']
+
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v1
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#     - name: madness basics
+#       run: |
+#         python -m pip install --upgrade pip
+#         python -m pip install -r requirements.txt
+#         python -m pip install -e .
+#         cd tests
+#         ls
+#         pytest test_chemistry_madness.py
+#         cd ../
+#     - name: Install and test madness interface
+#       run: |
+#         echo "done"
+        
+#         sudo echo "#!/bin/bash" > pno_integrals
+#         sudo echo "name=\$(docker run -t -d kottmanj/mra-pno)" >> pno_integrals
+#         sudo echo "sudo docker cp input \$name:/" >> pno_integrals
+#         sudo echo "sudo docker exec \$name pno_integrals > pno.out" >> pno_integrals
+#         sudo echo "sudo docker cp \$name:molecule_htensor.bin ." >> pno_integrals 
+#         sudo echo "sudo docker cp \$name:molecule_gtensor.bin ." >> pno_integrals
+#         sudo echo "sudo docker cp \$name:pnoinfo.txt ." >> pno_integrals
+#         sudo echo "sudo docker stop \$name" >> pno_integrals
+#         sudo echo "sudo docker rm \$name" >> pno_integrals
+#         echo "asd"
+        
+#         cat pno_integrals
+
+#         chmod +X pno_integrals
+#         #sudo ln -s pno_integrals /usr/sbin/pno_integrals
+#         #echo $PATH
+#         sudo mkdir /madroot
+#         sudo mkdir /madroot/src
+#         sudo mkdir /madroot/src/apps/
+#         sudo mkdir /madroot/src/apps/pno/
+#         sudo mv pno_integrals /madroot/src/apps/pno/
+#         export MAD_ROOT_DIR=/madroot/
+#         echo $MAD_ROOT_DIR
+#         chmod +x ${MAD_ROOT_DIR}/src/apps/pno/pno_integrals
+#         ls -l ${MAD_ROOT_DIR}/src/apps/pno/
+
+#         echo "get docker image"
+#         sudo docker pull kottmanj/mra-pno
+#         sudo docker images
+
+
+#         python -m pip install --upgrade pip
+#         python -m pip install -r requirements.txt
+#         python -m pip install -e .
+#         python -m pip install pytest
+#         cd tests
+#         python test_chemistry_madness.py
+#         pytest test_chemistry_madness.py
+#         cd ../
+
+
+FILE .github/workflows/ci_basic_autograd.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tequila-Test-Basic-JAX
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install basic dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip uninstall autograd -y
+        pip install jax jaxlib
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test basic installation
+      run: |
+              pip install -e .
+              pip install pytest
+              cd tests 
+              pytest -m "not dependencies"
+
+
+FILE .github/workflows/ci_pyquil.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tequila-Test-Pyquil
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: []
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install and run
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade pytest
+        pip install -r requirements.txt
+        pip install "pyquil<3.0" # needs updates
+        pip install -e .
+        pip install --upgrade pip 'urllib3<2' # issues with old pyquil version otherwise
+        docker pull rigetti/qvm:edge
+        docker pull rigetti/quilc
+        docker run --rm -itd -p 5555:5555 rigetti/quilc -R
+        docker run --rm -itd -p 5000:5000 rigetti/qvm -S
+        pytest -m "not dependencies" tests/test_simulator_backends.py --slow
+        pytest tests/test_recompilation_routines.py --slow
+        pytest -m "not dependencies" tests/test_noise.py --slow
+        pytest tests/test_gradient.py --slow
+        pytest tests/test_scipy.py --slow
+        pytest tests/test_mappings.py --slow
+
+
+FILE .github/workflows/ci_backends.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tequila-Test-Backends
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10']
+        include:
+          - os: ubuntu-latest
+            cxx: /usr/bin/g++-14
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install spex
+      run: |
+        python -m pip install --upgrade pip
+        pip install git+https://github.com/Mikel-Ma/spex@devel
+    - name: Install basic dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # TODO: Update to Qiskit 2.0
+        pip install "qulacs" "qiskit==1.*" "qiskit-aer"
+        # pip install cirq # installs too much stuff currently
+        pip install -e . 
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test quantum backends
+      run: | 
+        pytest -m "not dependencies" tests/test_simulator_backends.py --slow
+        pytest -m "not dependencies" tests/test_recompilation_routines.py --slow
+        pytest -m "not dependencies" tests/test_noise.py --slow
+        pytest -m "not dependencies" tests/test_noise_opt.py --slow
+        pytest -m "not dependencies" tests/test_gradient.py --slow
+        pytest -m "not dependencies" tests/test_objectives.py --slow
+        pytest -m "not dependencies" tests/test_scipy.py --slow
+        pytest -m "not dependencies" tests/test_gd_optimizer.py --slow
+        pytest -m "not dependencies" tests/test_mappings.py --slow
+        pip install "quimb"
+        pytest -m "not dependencies" tests/test_circuit_unitary.py --slow
+
+FILE .github/workflows/ci_conda_madness.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test-Madness with special conda installer
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install and test madness interface with conda
+      run: |
+        ver=$(python -c"import sys; print(sys.version_info.minor)")
+        fullver=$(echo "3.$ver")
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+        export CONDABASE=$HOME/miniconda
+        bash miniconda.sh -b -p $CONDABASE
+        export PATH=$CONDABASE:$PATH
+        export PATH="$CONDABASE/bin:$PATH"
+        conda update -q conda
+        conda create -n madtest python=$fullver
+        conda init bash
+        bash
+        source $HOME/.bashrc
+        source $CONDABASE/bin/activate
+        conda activate madtest
+        conda install madtequila -c kottmann
+
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -e .
+        python -m pip install pytest
+        cd tests
+        python test_chemistry_madness.py
+        pytest test_chemistry_madness.py
+        cd ../
+
+
+FILE .github/workflows/ci_ml.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tequila-Test-ML-Interfaces
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install quantum backends
+      run: |
+              pip install "qulacs"
+            
+    - name: Install and test torch interface
+      run: |
+              pip install --upgrade -r requirements.txt
+              pip install -e .
+              pip install --upgrade torch
+
+              pytest tests/test_torch_interface.py
+
+
+FILE .github/workflows/ci_basic.yml
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tequila-Test-Basic
+
+on:
+  push:
+    branches: [ master, devel ]
+  pull_request:
+    branches: [ master, devel ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install basic dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # test default simulator against in-house simulator
+        pip install git+https://github.com/Mikel-Ma/spex@devel
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test basic installation
+      run: |
+              pip install -e .
+              pip install pytest
+              cd tests 
+              pytest -m "not dependencies"
+

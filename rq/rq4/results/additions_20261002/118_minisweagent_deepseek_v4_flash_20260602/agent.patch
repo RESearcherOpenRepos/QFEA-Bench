@@ -1,0 +1,115 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..eb87926 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,110 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Get parameters for this estimator.
++
++        Returns the parameters of the QNN as well as the hyper-parameters of the
++        encoding circuit and observables.
++
++        Args:
++            deep (bool): If True, will return the parameters for this estimator and
++                         contained subobjects that are estimators (default=True).
++
++        Returns:
++            dict: Parameter names mapped to their values.
++        """
++        params = super().get_params(deep=deep)
++        # Add num_qubits as a direct parameter derived from the PQC
++        params["num_qubits"] = self.pqc.num_qubits
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set the parameters of this estimator.
++
++        Updates nested quantum-model hyper-parameters and reinitializes the
++        parameter arrays accordingly. Supports direct parameters such as
++        ``num_qubits`` which are propagated to the encoding circuit and
++        observables.
++
++        Args:
++            **params: Estimator parameters.
++
++        Returns:
++            self: Estimator instance.
++        """
++        if not params:
++            return self
++
++        # Separate direct params from nested params
++        direct_params = {}
++        nested_params = {}
++        for key, value in params.items():
++            if "__" in key:
++                prefix, sub_key = key.split("__", 1)
++                nested_params.setdefault(prefix, {})[sub_key] = value
++            else:
++                direct_params[key] = value
++
++        # Handle num_qubits specially: propagate to pqc and operator
++        if "num_qubits" in direct_params:
++            nq = direct_params.pop("num_qubits")
++            # Propagate to pqc
++            if "pqc" not in nested_params:
++                nested_params["pqc"] = {}
++            nested_params["pqc"]["num_qubits"] = nq
++            # Propagate to operator(s)
++            if isinstance(self.operator, list):
++                for i in range(len(self.operator)):
++                    op_key = f"op{i}"
++                    if op_key not in nested_params:
++                        nested_params[op_key] = {}
++                    nested_params[op_key]["num_qubits"] = nq
++            else:
++                if "operator" not in nested_params:
++                    nested_params["operator"] = {}
++                nested_params["operator"]["num_qubits"] = nq
++
++        # Apply remaining direct params via sklearn's set_params
++        if direct_params:
++            super().set_params(**direct_params)
++
++        # Apply nested params to the corresponding sub-objects
++        for prefix, sub_params in nested_params.items():
++            if prefix == "pqc":
++                self.pqc.set_params(**sub_params)
++            elif prefix == "operator":
++                self.operator.set_params(**sub_params)
++            elif prefix.startswith("op") and isinstance(self.operator, list):
++                idx = int(prefix[2:])
++                self.operator[idx].set_params(**sub_params)
++            else:
++                # Try to find the attribute and call set_params on it
++                obj = getattr(self, prefix, None)
++                if obj is not None and hasattr(obj, "set_params"):
++                    obj.set_params(**sub_params)
++
++        # Reinitialize parameter arrays to match the updated circuit/operator
++        self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            self.param_op_ini = np.concatenate(
++                [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++            )
++        else:
++            self.param_op_ini = self.operator.generate_initial_parameters(
++                seed=self.parameter_seed
++            )
++        self.param_op = self.param_op_ini.copy()
++
++        # Rebuild the internal QNN with the updated circuit and operator
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
++
++        self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

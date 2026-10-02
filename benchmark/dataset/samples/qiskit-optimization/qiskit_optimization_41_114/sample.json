@@ -1,0 +1,197 @@
+{
+  "instance": {
+    "id": 98,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_41_114",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/41",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/114",
+    "base_commit": "a30112512ab6a5c20f09745267587148fceaae2f",
+    "patch": "969ec9293eee3abdf4ef85be9c91bee939c5212e"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds objective-sense conversion and result interpretation for optimization problems."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/admm_optimizer.py",
+      "qiskit_optimization/algorithms/cobyla_optimizer.py",
+      "qiskit_optimization/algorithms/grover_optimizer.py",
+      "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+      "qiskit_optimization/algorithms/multistart_optimizer.py",
+      "qiskit_optimization/algorithms/optimization_algorithm.py",
+      "qiskit_optimization/algorithms/slsqp_optimizer.py",
+      "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+      "qiskit_optimization/converters/__init__.py",
+      "qiskit_optimization/converters/maximize_to_minimize.py",
+      "qiskit_optimization/converters/quadratic_program_to_qubo.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Optimization algorithms and QUBO conversion handled maximization problems by scattered local sign-flipping logic. Users need a reusable converter that turns maximization QuadraticProgram instances into minimization form, plugs into the default QUBO conversion flow, and lets algorithms consistently interpret solutions back in the original objective sense.",
+    "requirements": [
+      "Add a MaximizeToMinimize converter that is importable from qiskit_optimization.converters.",
+      "When converting a maximization QuadraticProgram, return a minimization problem with objective constant, linear coefficients, and quadratic coefficients sign-flipped.",
+      "When converting an already-minimizing QuadraticProgram, preserve its objective sense and objective values.",
+      "QuadraticProgramToQubo must include maximization-to-minimization conversion in its default conversion pipeline and preserve interpretation back to original variables.",
+      "MinimumEigenOptimizer must accept the maximization-to-minimization converter in its converter pipeline and report interpreted samples, raw samples, objective values, and statuses consistently with the original problem sense.",
+      "GroverOptimizer must work with maximization problems through the converter pipeline while reporting final objective values in the original problem sense.",
+      "Existing optimization algorithms in the same directory must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MaximizeToMinimize",
+        "Path": "qiskit_optimization/converters/maximize_to_minimize.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "QuadraticProgramConverter that converts maximization problems into minimization problems and leaves minimization problems unchanged."
+      },
+      {
+        "Type": "Method",
+        "Name": "MaximizeToMinimize.convert",
+        "Path": "qiskit_optimization/converters/maximize_to_minimize.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "QuadraticProgram",
+        "Description": "Returns a minimization-form QuadraticProgram, sign-flipping the objective only when the source problem is maximization."
+      },
+      {
+        "Type": "Method",
+        "Name": "MaximizeToMinimize.interpret",
+        "Path": "qiskit_optimization/converters/maximize_to_minimize.py",
+        "Input": "self, x",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the solution vector for the original problem after conversion."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuadraticProgramToQubo",
+        "Path": "qiskit_optimization/converters/quadratic_program_to_qubo.py",
+        "Input": "constructor: penalty: float | None = None",
+        "Output": "",
+        "Description": "Default QUBO converter whose conversion pipeline includes MaximizeToMinimize and whose interpret method composes the converter interpretations."
+      },
+      {
+        "Type": "Class",
+        "Name": "MinimumEigenOptimizer",
+        "Path": "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+        "Input": "constructor: min_eigen_solver, penalty: float | None = None, converters=None",
+        "Output": "",
+        "Description": "Optimizer that solves converted QUBO problems with a minimum eigensolver and interprets samples and objective values back to the original problem."
+      },
+      {
+        "Type": "Method",
+        "Name": "MinimumEigenOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "MinimumEigenOptimizationResult",
+        "Description": "Solves a QuadraticProgram through the converter pipeline and exposes interpreted solution samples together with raw converted-problem samples."
+      },
+      {
+        "Type": "Class",
+        "Name": "GroverOptimizer",
+        "Path": "qiskit_optimization/algorithms/grover_optimizer.py",
+        "Input": "constructor: num_value_qubits, num_iterations=3, converters=None, penalty=None, quantum_instance=None",
+        "Output": "",
+        "Description": "Optimizer that solves converted minimization QUBO problems and interprets results back to the original problem sense."
+      },
+      {
+        "Type": "Method",
+        "Name": "GroverOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/grover_optimizer.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "GroverOptimizationResult",
+        "Description": "Solves a QuadraticProgram through the converter pipeline and reports samples and objective values consistently with the original problem."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_41_114",
+      "image_id": "sha256:afc17798b948a41f9bb86c6b523806e9747b9160b4f4e4e4ae1c4285d26fc3a5",
+      "image_size": "1038434228"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "qiskit-terra @ git+https://github.com/Qiskit/qiskit-terra.git@ceb5f4c7cb29ee4572468b40c8731b13e4ef71f7",
+        "qiskit-aer==0.8.2",
+        "docplex==2.21.207",
+        "networkx<3",
+        "pytest<8",
+        "ddt",
+        "Cython<3"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_maximize_to_minimize",
+          "test/converters/test_converters.py::TestConverters::test_empty_problem",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver"
+        ],
+        "summary": "5 passed in 3.62s",
+        "duration_seconds": 10.49
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_integer_to_binary",
+          "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple_maximize",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver",
+          "test/algorithms/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo"
+        ],
+        "summary": "9 passed in 2.89s",
+        "duration_seconds": 8.85
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_maximize_to_minimize",
+          "test/converters/test_converters.py::TestConverters::test_empty_problem",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver"
+        ],
+        "summary": "5 collection errors: cannot import MaximizeToMinimize from qiskit_optimization.converters in 2.30s",
+        "duration_seconds": 11.28
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_integer_to_binary",
+          "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple",
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple_maximize",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver",
+          "test/algorithms/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo"
+        ],
+        "summary": "9 passed in 3.69s",
+        "duration_seconds": 11.79
+      }
+    }
+  }
+}

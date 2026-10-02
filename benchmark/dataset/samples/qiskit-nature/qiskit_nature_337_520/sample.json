@@ -1,0 +1,182 @@
+{
+  "instance": {
+    "id": 56,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_337_520",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/337",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/520",
+    "base_commit": "aaa41f7d94c6aaed3c22a4c3709a1e361289ddd9",
+    "patch": "373fe1d040ee9a00aa1ecb94d487009f7827c0fc"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task detects and converts chemists' and physicists' two-body electronic-integral tensor ordering conventions."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/tensor_ordering.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Two-body electronic integral tensors are expected in chemists' notation in the second-quantized operator stack, but users and upstream chemistry tooling may also produce the same tensor data in physicists' notation or another equivalent intermediate ordering. Users need reliable utilities to identify the ordering of a four-dimensional two-body integral tensor and convert it into chemists' or physicists' ordering without manually transposing axes.",
+    "requirements": [
+      "The second-quantized operators package must provide utilities for detecting the index ordering of rank-four two-body electronic integral tensors.",
+      "The ordering detector must distinguish chemists' ordering, physicists' ordering, a supported intermediate ordering, and unknown ordering.",
+      "A tensor already in the requested target ordering must be returned with equivalent values.",
+      "A tensor in chemists' ordering or the supported intermediate ordering must be convertible to physicists' ordering.",
+      "A tensor in physicists' ordering or the supported intermediate ordering must be convertible to chemists' ordering.",
+      "Conversion functions must raise a QiskitNatureError when the input ordering cannot be identified as one of the supported two-body integral orderings.",
+      "Existing PolynomialTensor initialization, lookup, iteration, scalar multiplication, addition, conjugation, and transposition behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "IndexType",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Enum describing supported two-body tensor index orderings, including chemists', physicists', intermediate, and unknown ordering."
+      },
+      {
+        "Type": "Function",
+        "Name": "find_index_order",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "IndexType",
+        "Description": "Identifies the index ordering of a rank-four two-body electronic integral tensor."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_chemist_ordering",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "numpy.ndarray",
+        "Description": "Returns a two-body electronic integral tensor in chemists' ordering or raises QiskitNatureError when the input ordering is unsupported."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_physicist_ordering",
+        "Path": "qiskit_nature/second_q/operators/tensor_ordering.py",
+        "Input": "two_body_tensor",
+        "Output": "numpy.ndarray",
+        "Description": "Returns a two-body electronic integral tensor in physicists' ordering or raises QiskitNatureError when the input ordering is unsupported."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_337_520",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:e428d18914aeda5373a3a98f1d540f52d04197a33eda357aee8a3b95fe705043",
+      "image_size": "1218606699"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24",
+        "setuptools<66",
+        "wheel<0.38",
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering"
+        ],
+        "result": "passed",
+        "summary": "12 passed, 1 warning in 1.26s",
+        "duration_seconds": 4.53
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose"
+        ],
+        "result": "passed",
+        "summary": "12 passed, 1 warning in 1.14s",
+        "duration_seconds": 4.23
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+          "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering"
+        ],
+        "result": "failed",
+        "summary": "12 collection errors: ModuleNotFoundError: No module named 'qiskit_nature.second_q.operators.tensor_ordering'; 1 warning in 1.38s",
+        "duration_seconds": 6.2
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose"
+        ],
+        "result": "passed",
+        "summary": "12 passed, 1 warning in 1.24s",
+        "duration_seconds": 6.29
+      }
+    }
+  }
+}

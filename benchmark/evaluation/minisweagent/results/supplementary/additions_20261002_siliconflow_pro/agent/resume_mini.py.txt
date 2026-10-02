@@ -1,0 +1,52 @@
+"""Resume the existing 74-step Mini workflow in its preserved container."""
+import copy,json,os,sys
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2];sys.path.insert(0,str(ROOT))
+from benchmark.evaluation.minisweagent.scripts import run_minisweagent as runner
+from minisweagent.environments.docker import DockerEnvironment, DockerEnvironmentConfig
+from minisweagent.models import get_model
+from minisweagent.exceptions import InterruptAgentFlow
+from benchmark.evaluation.common.redaction import redact_sensitive_values
+SID='tequila_406_409'
+j=json.loads((B/'jobs.json').read_text())[0];OUT=Path(j['out']);ATTEMPT=OUT/'attempts'/SID;TRAJ=ATTEMPT/SID/(SID+'.traj.json')
+SOURCE=OUT/'quota_interrupted_20261002'/SID/SID/(SID+'.traj.json')
+class RetainedEnvironment(DockerEnvironment):
+ def _start_container(self):self.container_id='81c6cc90d859'
+class ResumedAgent(runner.ProgressAgent):
+ def serialize(self,*extras):return redact_sensitive_values(super().serialize(*extras))
+ def save(self,path,*extras):
+  result=super().save(path,*extras)
+  if path:runner.redact_json_file(Path(path))
+  return result
+
+def main():
+ os.chdir(ROOT);d=json.loads(SOURCE.read_text());cfg=copy.deepcopy(d['info']['config']);assert d['messages'][-1]['role']=='tool'
+ assert d['info']['model_stats']['api_calls']==74 and cfg['agent']['step_limit']==100
+ cfg['model']['model_class']='litellm';cfg['model']['model_kwargs']['api_key']=os.environ['SILICONFLOW_API_KEY']
+ model=get_model(config=cfg['model']);runner.configure_model_abort_exceptions(model)
+ env=RetainedEnvironment(**cfg['environment']);check=env.execute({'command':'true'});assert check['returncode']==0
+ cfg['agent']['output_path']=TRAJ
+ agent=ResumedAgent(model,env,instance_id=SID,consecutive_command_limit=6,**cfg['agent'])
+ agent.messages=copy.deepcopy(d['messages']);agent.n_calls=d['info']['model_stats']['api_calls'];agent.cost=d['info']['model_stats']['instance_cost']
+ inst=runner.normalize_instance(json.loads(Path(j['stages'][SID]).read_text()));fields=runner.load_task_fields(runner.DEFAULT_SAMPLES_DIR,SID,inst['problem_statement']);agent.extra_template_vars={'task':inst['problem_statement'],**fields}
+ # Retain repetition detection state from the completed actions.
+ for message in agent.messages:
+  if message.get('role')=='assistant':
+   for action in message.get('extra',{}).get('actions',[]):agent._check_repeated_action(action)
+ info={}
+ try:
+  print('Resuming retained container and exact message history: completed calls 74, total limit 100.',flush=True)
+  while True:
+   try:agent.step()
+   except InterruptAgentFlow as exc:agent.add_messages(*exc.messages)
+   except Exception as exc:agent.handle_uncaught_exception(exc);raise
+   finally:agent.save(TRAJ,{'instance_id':SID})
+   if agent.messages[-1].get('role')=='exit':break
+  info=agent.messages[-1].get('extra',{})
+ finally:
+  agent.save(TRAJ,{'instance_id':SID,'credential_recovery':{'resumed_from_api_calls':74,'total_step_limit':100,'same_container':True,'preserved_history':True}})
+  runner.annotate_summary(ATTEMPT/SID,framework='minisweagent',instance_id=SID,agent=runner.extract_trajectory_metrics(TRAJ))
+  runner.write_prediction(ATTEMPT,SID,'deepseek-v4-pro',info.get('submission',''),TRAJ)
+  env.cleanup()
+ print('finished:',info.get('exit_status'),flush=True)
+if __name__=='__main__':main()

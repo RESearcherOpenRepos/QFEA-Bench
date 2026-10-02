@@ -1,0 +1,74 @@
+{
+  "oracle_files": [
+    "src/squlearn/qnn/__init__.py",
+    "src/squlearn/qnn/base_qnn.py",
+    "src/squlearn/qnn/loss/__init__.py",
+    "src/squlearn/qnn/loss/cross_entropy_loss.py",
+    "src/squlearn/qnn/loss/squared_loss.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_pennylane.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_qiskit.py",
+    "src/squlearn/qnn/qnnc.py",
+    "src/squlearn/qnn/qnnr.py"
+  ],
+  "task": {
+    "problem_statement": "Quantum neural-network classifiers need cross-entropy training with probability-valued outputs. The loss and its gradients must support binary and multiple-output classification and integrate with the existing quantum model fitting workflow.",
+    "requirements": [
+      "Provide binary and multiple-output cross-entropy values with numerical clipping.",
+      "Compute parameter gradients from the supplied model-output derivatives.",
+      "Support training and prediction of quantum neural-network classifiers with cross-entropy loss for both single and multiple observables.",
+      "Preserve the neighboring quantum neural-network regression workflow."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "CrossEntropyLoss",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "constructor: eps=1e-8",
+        "Output": "",
+        "Description": "Cross-entropy loss exposed through squlearn.qnn."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.value",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "self, value_dict, **kwargs",
+        "Output": "float",
+        "Description": "Computes loss from value_dict[\"f\"] and ground_truth."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.gradient",
+        "Path": "src/squlearn/qnn/loss/cross_entropy_loss.py",
+        "Input": "self, value_dict, **kwargs",
+        "Output": "numpy.ndarray",
+        "Description": "Computes parameter gradients; accepts ground_truth and multiple_output."
+      },
+      {
+        "Type": "Method",
+        "Name": "CrossEntropyLoss.set_opt_param_op",
+        "Path": "src/squlearn/qnn/loss/qnn_loss_base.py",
+        "Input": "self, opt_param_op=True",
+        "Output": "None",
+        "Description": "Selects whether observable parameters are optimized."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.fit",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X, y",
+        "Output": "QNNClassifier",
+        "Description": "Fits a cross-entropy classifier and updates circuit and observable parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.predict",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Returns class predictions with the same target shape."
+      }
+    ]
+  }
+}

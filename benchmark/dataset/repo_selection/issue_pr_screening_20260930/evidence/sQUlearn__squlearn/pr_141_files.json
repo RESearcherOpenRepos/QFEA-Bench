@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "8cd549f0f78ac3c3391e64f0ba4dc5d1c899f353",
+    "filename": "src/squlearn/kernel/ml/qkrr.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 1,
+    "changes": 11,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/6c38b5830223b9e40329fa9c0d42afff7b009970/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/6c38b5830223b9e40329fa9c0d42afff7b009970/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py?ref=6c38b5830223b9e40329fa9c0d42afff7b009970",
+    "patch": "@@ -27,11 +27,20 @@ class QKRR(BaseEstimator, RegressorMixin):\n             regularization improves the conditioning of the problem and assure the solvability\n             of the resulting linear system. Larger values specify stronger regularization, cf.,\n             e.g., Ref. [2]\n-        kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be obtained\n+        **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be obtained\n             by calling ``get_params()``. Can be used to set for example the number of qubits\n             (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)\n             of the underlying feature map.\n \n+    Attributes:\n+    -----------\n+        dual_coeff\\_ : (np.ndarray) :\n+            Array containing the weight vector in kernel space\n+        k_train (np.ndarray) :\n+            Training kernel matrix of shape (n_train, n_train) which is available after calling the fit procedure\n+        k_testtrain (np.ndarray) :\n+            Kernel matrix of shape (n_test, n_train) which is evaluated at the predict step\n+\n     See Also\n     --------\n         squlearn.kernel.ml.QGPR : Quantum Gaussian Process regression."
+  }
+]

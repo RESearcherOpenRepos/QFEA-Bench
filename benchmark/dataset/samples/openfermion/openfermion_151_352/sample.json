@@ -1,0 +1,143 @@
+{
+  "instance": {
+    "id": 1,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_151_352",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/151",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/352",
+    "base_commit": "961f6482cec94430bb2a8c863cdb42e85425cd7d",
+    "patch": "9dc86d3ca034dac3b0a6e02b67f87038fb962ed0"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a bosonic operator API and structural predicates, but correctness is mostly local symbolic-operator behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/_boson_operator.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion needs a bosonic symbolic operator type so users can represent bosonic ladder-operator expressions directly and ask basic structural questions about whether those expressions are already in bosonic normal order or preserve boson number.",
+    "requirements": [
+      "Provide a BosonOperator symbolic operator type for bosonic ladder-operator terms.",
+      "Allow BosonOperator instances to recognize bosonic normal ordering, including empty operators, number operators, and reversed creation-annihilation orderings.",
+      "Allow BosonOperator instances to report whether every term preserves boson number, independent of the term ordering within each bosonic ladder sequence.",
+      "Keep the existing FermionOperator normal-ordering behavior unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "BosonOperator",
+        "Path": "src/openfermion/ops/_boson_operator.py",
+        "Input": "constructor: term=None, coefficient=1.0",
+        "Output": "",
+        "Description": "Represents bosonic ladder-operator expressions as a SymbolicOperator subclass."
+      },
+      {
+        "Type": "Class",
+        "Name": "BosonOperatorError",
+        "Path": "src/openfermion/ops/_boson_operator.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Exception type exposed by the BosonOperator module for bosonic-operator validation and parsing failures."
+      },
+      {
+        "Type": "Method",
+        "Name": "is_normal_ordered",
+        "Path": "src/openfermion/ops/_boson_operator.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether every term is in bosonic normal order."
+      },
+      {
+        "Type": "Method",
+        "Name": "is_boson_preserving",
+        "Path": "src/openfermion/ops/_boson_operator.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Returns whether every term preserves the total boson number."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_151_352",
+      "image_id": "sha256:9cea4a51e027f67a53961eb2f1c2a31f48e1bbad4d14b234e23f4a3d36c0fe8e",
+      "image_size": "464735223"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six",
+        "pubchempy"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_empty",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_number",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_reversed",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_BosonOperator",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_out_of_order"
+        ],
+        "summary": "5 passed, 34 warnings in 0.95s",
+        "duration_seconds": 4.2
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_empty",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_number",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multi",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multiorder"
+        ],
+        "summary": "5 passed, 34 warnings in 0.81s",
+        "duration_seconds": 3.71
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_empty",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_number",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_reversed",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_BosonOperator",
+          "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_out_of_order"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_out_of_order",
+        "duration_seconds": 3.9
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_empty",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_number",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multi",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multiorder"
+        ],
+        "summary": "5 passed, 40 warnings in 0.82s",
+        "duration_seconds": 3.77
+      }
+    }
+  }
+}

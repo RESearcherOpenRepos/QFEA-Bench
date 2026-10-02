@@ -1,0 +1,30 @@
+diff --git a/benchmarks/utils/Dockerfile.agent-layer b/benchmarks/utils/Dockerfile.agent-layer
+index 7a01019..fa09009 100644
+--- a/benchmarks/utils/Dockerfile.agent-layer
++++ b/benchmarks/utils/Dockerfile.agent-layer
+@@ -21,6 +21,10 @@ ARG USERNAME=openhands
+ ARG OPENHANDS_BUILD_GIT_SHA=unknown
+ ENV OPENHANDS_BUILD_GIT_SHA=${OPENHANDS_BUILD_GIT_SHA}
+ 
++RUN apt-get update \
++    && apt-get install -y --no-install-recommends iptables \
++    && rm -rf /var/lib/apt/lists/*
++
+ # /agent-server is self-contained: the SDK builder installs uv-managed Python
+ # into /agent-server/uv-managed-python and the venv symlinks into it. No
+ # downstream Python-runtime COPY is needed.
+diff --git a/benchmarks/utils/failure_classifier.py b/benchmarks/utils/failure_classifier.py
+index 135d474..8da636f 100644
+--- a/benchmarks/utils/failure_classifier.py
++++ b/benchmarks/utils/failure_classifier.py
+@@ -75,6 +75,10 @@ _PATTERNS: list[tuple[re.Pattern[str], FailureCategory]] = [
+         re.compile(r"Remote conversation ended with error", re.IGNORECASE),
+         FailureCategory.NON_RESOURCE,
+     ),
++    (
++        re.compile(r"OpenHands finished without finish tool", re.IGNORECASE),
++        FailureCategory.NON_RESOURCE,
++    ),
+     # ── Non-resource: malformed model output ───────────────────────────
+     (
+         re.compile(r"malformed function call", re.IGNORECASE),

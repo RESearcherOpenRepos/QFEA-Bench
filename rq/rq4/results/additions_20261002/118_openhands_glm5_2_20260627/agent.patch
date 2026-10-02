@@ -1,0 +1,115 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..f8eccbc 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,110 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Returns hyper-parameters and their values of the QNN model.
++
++        The nested encoding circuit (``pqc``) and observable(s) (``operator``) are exposed as
++        objects, so that their own hyper-parameters can be inspected and adjusted through
++        :meth:`set_params`.
++
++        Args:
++            deep (bool): If True, also the parameters for contained objects are returned
++                (default=True).
++
++        Return:
++            Dictionary with hyper-parameters and values.
++        """
++        params = {
++            "batch_size": self.batch_size,
++            "epochs": self.epochs,
++            "executor": self.executor,
++            "loss": self.loss,
++            "operator": self.operator,
++            "opt_param_op": self.opt_param_op,
++            "optimizer": self.optimizer,
++            "param_ini": self.param_ini,
++            "param_op_ini": self.param_op_ini,
++            "pqc": self.pqc,
++            "shuffle": self.shuffle,
++            "variance": self.variance,
++        }
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Sets the value of the QNN model hyper-parameters.
++
++        Besides the model level hyper-parameters (such as ``optimizer`` or ``batch_size``),
++        nested hyper-parameters of the encoding circuit (``pqc``) and the observable(s)
++        (``operator``) can be adjusted directly, e.g. ``num_qubits=2`` or ``num_layers=3``.
++        Qubit-count changes are propagated to both the encoding circuit and the observable(s).
++        Whenever the encoding circuit or the observable(s) are replaced or their number of
++        trainable parameters changes, the associated parameter arrays are reinitialized
++        consistently.
++
++        Args:
++            params: Hyper-parameters and their values, e.g. ``num_qubits=2``.
++        """
++        valid_params = self.get_params(deep=False)
++        nested_valid_params = self._qnn.get_params()
++
++        nested_params = {}
++        structure_changed = False
++        for key, value in params.items():
++            if key in valid_params:
++                setattr(self, key, value)
++                if key in ("pqc", "operator"):
++                    structure_changed = True
++            elif key in nested_valid_params:
++                nested_params[key] = value
++                structure_changed = True
++            else:
++                raise ValueError(
++                    f"Invalid parameter {key!r}. "
++                    f"Valid parameters are {sorted(set(valid_params) | set(nested_valid_params))!r}."
++                )
++
++        if "pqc" in params or "operator" in params:
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++        elif len(nested_params) > 0:
++            self._qnn.set_params(**nested_params)
++
++        if structure_changed:
++            self._reinitialize_parameters()
++
++        return self
++
++    def _reinitialize_parameters(self) -> None:
++        """Reinitializes the parameter arrays after the circuit or observable changed.
++
++        The initial parameter arrays are regenerated whenever their length no longer matches
++        the number of trainable parameters of the (possibly changed) encoding circuit or
++        observable(s). The fitted state is reset in that case.
++        """
++        if len(self.param_ini) != self.pqc.num_parameters:
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            num_op_parameters = sum(op.num_parameters for op in self.operator)
++        else:
++            num_op_parameters = self.operator.num_parameters
++        if len(self.param_op_ini) != num_op_parameters:
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [
++                        op.generate_initial_parameters(seed=self.parameter_seed)
++                        for op in self.operator
++                    ]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++        self.param_op = self.param_op_ini.copy()
++
++        self._is_fitted = False
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

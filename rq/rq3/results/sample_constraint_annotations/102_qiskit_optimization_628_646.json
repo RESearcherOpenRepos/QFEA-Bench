@@ -1,0 +1,174 @@
+{
+  "id": 102,
+  "sample_id": "qiskit_optimization_628_646",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "53184abdc05965e12a5de9e2d1e3ecc1ce64fedf",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 10,
+    "subtype_test_counts": {
+      "general_semantics/tsp_sparse_graph_formulation": 1,
+      "general_semantics/tsp_graph_weight": 1,
+      "general_semantics/tsp_route_interpretation": 2,
+      "interface/tsplib_parsing": 1,
+      "general_semantics/tsp_complete_graph_formulation": 1,
+      "general_semantics/vehicle_route_interpretation": 2,
+      "general_semantics/vehicle_routing_formulation": 1,
+      "general_semantics/maxcut_model_formulation": 1,
+      "general_semantics/knapsack_model_formulation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/applications/test_tsp.py::TestTspCustomGraph::test_to_quadratic_program",
+      "label": "general_semantics/tsp_sparse_graph_formulation",
+      "assertions": [
+        {
+          "line": 224,
+          "expected": "Missing graph edges produce both directional exclusion constraints."
+        }
+      ],
+      "rationale": "Missing graph edges produce both directional exclusion constraints."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/applications/test_tsp.py::TestTsp::test_create_random_instance",
+      "label": "general_semantics/tsp_graph_weight",
+      "assertions": [
+        {
+          "line": 102,
+          "expected": "Random TSP instance has the expected edge weight."
+        }
+      ],
+      "rationale": "Random TSP instance has the expected edge weight."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/applications/test_tsp.py::TestTsp::test_edgelist",
+      "label": "general_semantics/tsp_route_interpretation",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "TSP edge-list helper returns route edges in cyclic order."
+        }
+      ],
+      "rationale": "TSP edge-list helper returns route edges in cyclic order."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/applications/test_tsp.py::TestTsp::test_interpret",
+      "label": "general_semantics/tsp_route_interpretation",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "TSP interpretation returns the ordered node route."
+        }
+      ],
+      "rationale": "TSP interpretation returns the ordered node route."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/applications/test_tsp.py::TestTsp::test_parse_tsplib_format",
+      "label": "interface/tsplib_parsing",
+      "assertions": [
+        {
+          "line": 111,
+          "expected": "TSPLIB parser creates the expected complete graph edges."
+        }
+      ],
+      "rationale": "TSPLIB parser creates the expected complete graph edges."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/applications/test_tsp.py::TestTsp::test_to_quadratic_program",
+      "label": "general_semantics/tsp_complete_graph_formulation",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "Complete graph TSP retains visit and position constraints."
+        }
+      ],
+      "rationale": "Complete graph TSP retains visit and position constraints."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_edgelist",
+      "label": "general_semantics/vehicle_route_interpretation",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "Vehicle-routing edge-list follows the expected routes."
+        }
+      ],
+      "rationale": "Vehicle-routing edge-list follows the expected routes."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_interpret",
+      "label": "general_semantics/vehicle_route_interpretation",
+      "assertions": [
+        {
+          "line": 136,
+          "expected": "Vehicle-routing result decodes to expected routes."
+        }
+      ],
+      "rationale": "Vehicle-routing result decodes to expected routes."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_to_quadratic_program",
+      "label": "general_semantics/vehicle_routing_formulation",
+      "assertions": [
+        {
+          "line": 131,
+          "expected": "Vehicle-routing program has expected objective and capacity constraints."
+        }
+      ],
+      "rationale": "Vehicle-routing program has expected objective and capacity constraints."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+      "label": "general_semantics/maxcut_model_formulation",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Max-cut graph weights become the expected quadratic objective."
+        }
+      ],
+      "rationale": "Max-cut graph weights become the expected quadratic objective."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+      "label": "general_semantics/knapsack_model_formulation",
+      "assertions": [
+        {
+          "line": 62,
+          "expected": "Knapsack weights and capacity become the expected objective and constraint."
+        }
+      ],
+      "rationale": "Knapsack weights and capacity become the expected objective and constraint."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/53184abdc05965e12a5de9e2d1e3ecc1ce64fedf/test/applications/test_knapsack.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/53184abdc05965e12a5de9e2d1e3ecc1ce64fedf/test/applications/test_max_cut.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/53184abdc05965e12a5de9e2d1e3ecc1ce64fedf/test/applications/test_tsp.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/53184abdc05965e12a5de9e2d1e3ecc1ce64fedf/test/applications/test_vehicle_routing.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

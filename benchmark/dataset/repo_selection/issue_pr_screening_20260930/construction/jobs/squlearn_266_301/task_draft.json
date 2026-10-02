@@ -1,0 +1,338 @@
+{
+  "oracle_files": [
+    "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+    "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+    "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+    "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+    "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/encoding_circuit_base.py",
+    "src/squlearn/encoding_circuit/encoding_circuit_derivatives.py",
+    "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+    "src/squlearn/encoding_circuit/transpiled_encoding_circuit.py",
+    "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py",
+    "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py",
+    "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_pennylane.py",
+    "src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py",
+    "src/squlearn/kernel/lowlevel_kernel/kernel_optimizer.py",
+    "src/squlearn/kernel/lowlevel_kernel/projected_quantum_kernel.py",
+    "src/squlearn/kernel/qgpc.py",
+    "src/squlearn/kernel/qgpr.py",
+    "src/squlearn/kernel/qkrr.py",
+    "src/squlearn/kernel/qsvc.py",
+    "src/squlearn/kernel/qsvr.py",
+    "src/squlearn/qnn/base_qnn.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_pennylane.py",
+    "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_qiskit.py",
+    "src/squlearn/qnn/qnnc.py",
+    "src/squlearn/qnn/qnnr.py",
+    "src/squlearn/util/data_preprocessing.py",
+    "src/squlearn/util/executor.py"
+  ],
+  "task": {
+    "problem_statement": "Users currently have to specify the number of input features when constructing quantum encoding circuits. Models should infer that dimension from their data while maintaining consistent encoding behavior and detecting explicit feature-count mismatches.",
+    "requirements": [
+      "Allow supported encoding circuits to be constructed without num_features and infer it when quantum-kernel models receive data.",
+      "Support fitting and prediction through the supported circuit families and quantum-kernel regression and classification models.",
+      "Retain explicit num_features behavior and reject inconsistent feature vectors.",
+      "Preserve nearby quantum-kernel prediction and quantum-neural-network behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "LayeredEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, feature_str: str='x', parameter_str: str='p', **kwargs",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "LayeredEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "Layer",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "constructor: encoding_circuit: LayeredEncodingCircuit",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "Layer.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevRx",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=False, alpha: float=4.0, nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevRx.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "RandomLayeredEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, seed: int=0, min_num_layers: int=2, max_num_layers: int=10, feature_probability=0.3",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "RandomLayeredEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "YZ_CX_EncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, c: float=1.0",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "YZ_CX_EncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "KyriienkoEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, encoding_style: str='chebyshev_tower', variational_arrangement: str='HEA', num_encoding_layers: int=1, num_variational_layers: int=1, rotation_gate: str='ry', block_width: int=2, block_depth: int=1",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "KyriienkoEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevTower",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+        "Input": "constructor: num_qubits: int, num_chebyshev: int, num_features: int=None, alpha: float=1.0, num_layers: int=1, rotation_gate: str='ry', hadamard_start: bool=True, arrangement: str='block', nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevTower.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ParamZFeatureMap",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=2, num_features: int=None, entangling: bool=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParamZFeatureMap.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "RandomEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, seed: int=0, min_gates: int=10, max_gates: int=50, gate_weights: dict=default_gate_weights, encoding_weights: dict=default_encoding_weights",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "RandomEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "MultiControlEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, final_encoding=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "MultiControlEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevPQC",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, entangling_gate: str='crz', alpha: float=4.0, nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevPQC.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "HubregtsenEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, final_encoding=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "HubregtsenEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "HighDimEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, cycling: bool=True, cycling_type: str='saw', num_layers: Union[None, int]=None, layer_type: str='rows', entangling_gate: str='iswap'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "HighDimEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPR.fit",
+        "Path": "src/squlearn/kernel/qgpr.py",
+        "Input": "self, X, y",
+        "Output": "QGPR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPR.predict",
+        "Path": "src/squlearn/kernel/qgpr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPC.fit",
+        "Path": "src/squlearn/kernel/qgpc.py",
+        "Input": "self, X, y",
+        "Output": "QGPC",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPC.predict",
+        "Path": "src/squlearn/kernel/qgpc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QKRR.fit",
+        "Path": "src/squlearn/kernel/qkrr.py",
+        "Input": "self, X, y",
+        "Output": "QKRR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QKRR.predict",
+        "Path": "src/squlearn/kernel/qkrr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVC.fit",
+        "Path": "src/squlearn/kernel/qsvc.py",
+        "Input": "self, X, y",
+        "Output": "QSVC",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVC.predict",
+        "Path": "src/squlearn/kernel/qsvc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVR.fit",
+        "Path": "src/squlearn/kernel/qsvr.py",
+        "Input": "self, X, y",
+        "Output": "QSVR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVR.predict",
+        "Path": "src/squlearn/kernel/qsvr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      }
+    ]
+  }
+}

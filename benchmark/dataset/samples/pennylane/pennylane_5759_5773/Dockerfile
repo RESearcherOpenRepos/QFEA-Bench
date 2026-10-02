@@ -1,0 +1,15 @@
+FROM benchmark-base:pennylane_5759_5773
+
+ENV SAMPLE_ID=pennylane_5759_5773
+ENV REPOSITORY_URL=https://github.com/PennyLaneAI/pennylane.git
+ENV BASE_COMMIT=c874bbd7ff75f372351e0f73c32b92177e7621b4
+ENV PATCHED_COMMIT=c920e7a32d02121a0f384d3c31b76b14bafc7cd6
+ENV FAIL_PASS_TEST_PATHS="tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op0-pl_op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op5-pl_op5] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_qubit tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_sum_qubit tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_invalid_format_qubit tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op0-pl_op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op5-pl_op5] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fw tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fs tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_fermionic tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_fail_import_openfermion_fermionic tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op0-of_op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op4-of_op4] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op1] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_mapping_wires[pl_op0-of_op0-wires0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_not_xyz[op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_wires_not_covered[pl_op0] tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_invalid_op"
+ENV PASS_PASS_TEST_PATHS="tests/qchem/openfermion_pyscf_tests/test_convert.py::test_identities_pennylane_to_openfermion tests/qchem/openfermion_pyscf_tests/test_convert.py::test_singlewire_pennylane_to_openfermion tests/qchem/openfermion_pyscf_tests/test_convert.py::test_pennylane_to_openfermion_no_decomp tests/qchem/openfermion_pyscf_tests/test_convert.py::test_wires_not_covered_pennylane_to_openfermion tests/qchem/openfermion_pyscf_tests/test_convert.py::test_not_xyz_pennylane_to_openfermion[op0]"
+
+WORKDIR /benchmark
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]

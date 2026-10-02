@@ -1,0 +1,157 @@
+{
+  "id": 27,
+  "sample_id": "qiskit_machine_learning_326_360",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "c81306a30435cdc5ab511552aba85b569f17d2a5",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/model_serialization_roundtrip": 6,
+      "general_semantics/model_training_performance": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_1_opflow",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 323,
+          "expected": "Loaded OpflowQNN classifier preserves predictions"
+        },
+        {
+          "line": 331,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_2_circuit_qnn",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 323,
+          "expected": "Loaded CircuitQNN classifier preserves predictions"
+        },
+        {
+          "line": 331,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_save_load",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 256,
+          "expected": "Loaded PegasosQSVC preserves predictions"
+        },
+        {
+          "line": 264,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_save_load",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Loaded QSVC preserves predictions"
+        },
+        {
+          "line": 148,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_save_load",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 164,
+          "expected": "Loaded neural-network regressor preserves predictions"
+        },
+        {
+          "line": 172,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_save_load",
+      "label": "interface/model_serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Loaded QSVR preserves predictions"
+        },
+        {
+          "line": 148,
+          "expected": "Loading through an incompatible class raises TypeError"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "QSVC attains the expected classification score"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "PegasosQSVC attains the expected classification score"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "QSVR attains the expected regression score"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/c81306a30435cdc5ab511552aba85b569f17d2a5/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/c81306a30435cdc5ab511552aba85b569f17d2a5/test/algorithms/classifiers/test_pegasos_qsvc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/c81306a30435cdc5ab511552aba85b569f17d2a5/test/algorithms/classifiers/test_qsvc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/c81306a30435cdc5ab511552aba85b569f17d2a5/test/algorithms/regressors/test_neural_network_regressor.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/c81306a30435cdc5ab511552aba85b569f17d2a5/test/algorithms/regressors/test_qsvr.py"
+  ],
+  "rationale": "The new cases assert save/load prediction preservation and load-time class checking, which define the model persistence interface. Existing kernel-model cases only assert generic classifier/regressor scores."
+}

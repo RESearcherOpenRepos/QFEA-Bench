@@ -1,0 +1,241 @@
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..dddc04b 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -5,10 +5,11 @@ from sklearn.gaussian_process import GaussianProcessClassifier
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(SerializableModelMixin, GaussianProcessClassifier):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..7a38f84 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -22,10 +22,11 @@ else:
+ 
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ from .lowlevel_kernel.regularization import regularize_full_kernel
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..dd672b5 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -19,9 +19,10 @@ else:
+ 
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(SerializableModelMixin, BaseEstimator, RegressorMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..b2892c2 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -6,9 +6,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SerializableModelMixin, SVC):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..d53d0c8 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -7,9 +7,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SerializableModelMixin, SVR):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index f8cc139..cf0b1eb 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -31,9 +31,10 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QNNClassifier(BaseQNN, ClassifierMixin):
++class QNNClassifier(SerializableModelMixin, BaseQNN, ClassifierMixin):
+     """Quantum Neural Network for Classification.
+ 
+     This class implements a quantum neural network (QNN) for classification with a scikit-learn
+diff --git a/src/squlearn/qnn/qnnr.py b/src/squlearn/qnn/qnnr.py
+index 8eeec69..f702cd2 100644
+--- a/src/squlearn/qnn/qnnr.py
++++ b/src/squlearn/qnn/qnnr.py
+@@ -30,9 +30,10 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QNNRegressor(BaseQNN, RegressorMixin):
++class QNNRegressor(SerializableModelMixin, BaseQNN, RegressorMixin):
+     """Quantum Neural Network for Regression.
+ 
+     This class implements a quantum neural network (QNN) for regression with a scikit-learn
+diff --git a/src/squlearn/qrc/base_qrc.py b/src/squlearn/qrc/base_qrc.py
+index 62312ed..9c4ee78 100644
+--- a/src/squlearn/qrc/base_qrc.py
++++ b/src/squlearn/qrc/base_qrc.py
+@@ -23,11 +23,12 @@ from ..observables.observable_base import ObservableBase
+ from ..observables import CustomObservable, SinglePauli
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ from ..qnn.lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ..qnn.lowlevel_qnn import LowLevelQNN
+ 
+ 
+-class BaseQRC(BaseEstimator, ABC):
++class BaseQRC(SerializableModelMixin, BaseEstimator, ABC):
+     """Base class for Quantum Reservoir Computing (QRC) models.
+ 
+     Args:
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..6b1e699
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,5 @@
++"""Serialization utilities."""
++
++from .serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..7318c69
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,92 @@
++"""Serialization support for trained squlearn models."""
++
++from __future__ import annotations
++
++import copy
++import io
++import pickle
++from os import PathLike
++from typing import Any, BinaryIO, Union
++
++from squlearn.util.executor import Executor
++
++
++_EXECUTOR_SENTINEL = {"__squlearn_executor__": True}
++
++
++class SerializableModelMixin:
++    """Mixin adding executor-free pickle serialization to model classes."""
++
++    def dump(self, target: Union[str, PathLike, BinaryIO]) -> None:
++        """Serialize this model to a path or binary stream without executor instances."""
++        payload = _replace_executors(copy.deepcopy(self), _EXECUTOR_SENTINEL, {})
++        if isinstance(target, (str, PathLike)):
++            with open(target, "wb") as file:
++                pickle.dump(payload, file)
++            return
++        if isinstance(target, io.IOBase) and target.writable():
++            pickle.dump(payload, target)
++            return
++        raise TypeError("target must be a file path or writable binary IOBase stream")
++
++    @classmethod
++    def load(cls, source: Union[str, PathLike, BinaryIO], executor: Executor):
++        """Restore a model from a path or binary stream and insert the supplied executor."""
++        if not isinstance(executor, Executor):
++            raise TypeError("executor must be an Executor instance")
++        if isinstance(source, (str, PathLike)):
++            with open(source, "rb") as file:
++                model = pickle.load(file)
++        elif isinstance(source, io.IOBase) and source.readable():
++            model = pickle.load(source)
++        else:
++            raise TypeError("source must be a file path or readable binary IOBase stream")
++        if not isinstance(model, cls):
++            raise TypeError(f"serialized object is not an instance of {cls.__name__}")
++        return _replace_executors(model, executor, {})
++
++
++def _replace_executors(obj: Any, replacement: Any, memo: dict[int, Any]) -> Any:
++    obj_id = id(obj)
++    if obj_id in memo:
++        return memo[obj_id]
++
++    if isinstance(obj, Executor) or obj == _EXECUTOR_SENTINEL:
++        return replacement
++
++    if isinstance(obj, dict):
++        memo[obj_id] = obj
++        for key, value in list(obj.items()):
++            new_key = _replace_executors(key, replacement, memo)
++            new_value = _replace_executors(value, replacement, memo)
++            if new_key is not key:
++                del obj[key]
++                obj[new_key] = new_value
++            else:
++                obj[key] = new_value
++        return obj
++
++    if isinstance(obj, list):
++        memo[obj_id] = obj
++        obj[:] = [_replace_executors(value, replacement, memo) for value in obj]
++        return obj
++
++    if isinstance(obj, set):
++        memo[obj_id] = obj
++        values = [_replace_executors(value, replacement, memo) for value in obj]
++        obj.clear()
++        obj.update(values)
++        return obj
++
++    if isinstance(obj, tuple):
++        converted = tuple(_replace_executors(value, replacement, memo) for value in obj)
++        memo[obj_id] = converted
++        return converted
++
++    if hasattr(obj, "__dict__"):
++        memo[obj_id] = obj
++        for key, value in vars(obj).items():
++            setattr(obj, key, _replace_executors(value, replacement, memo))
++        return obj
++
++    return obj

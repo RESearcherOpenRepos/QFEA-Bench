@@ -1,0 +1,173 @@
+{
+  "instance": {
+    "id": 17,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_5759_5773",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/5759",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/5773",
+    "base_commit": "c874bbd7ff75f372351e0f73c32b92177e7621b4",
+    "patch": "c920e7a32d02121a0f384d3c31b76b14bafc7cd6"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task converts PennyLane and OpenFermion quantum objects while mainly preserving representation, wires, and tolerance behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/__init__.py",
+      "pennylane/fermi/fermionic.py",
+      "pennylane/qchem/__init__.py",
+      "pennylane/qchem/convert.py",
+      "pennylane/qchem/convert_openfermion.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PennyLane can represent qubit observables and fermionic operators, while quantum chemistry users often need to exchange those objects with OpenFermion. The repository should provide a direct conversion path between PennyLane operator or fermionic representations and OpenFermion's qubit and fermion operator representations, including support for wire mappings and small imaginary numerical noise.",
+    "requirements": [
+      "PennyLane qubit operators made from sums, products, and linear combinations of Pauli words must be convertible to equivalent OpenFermion QubitOperator objects.",
+      "PennyLane FermiWord and FermiSentence objects must be convertible to equivalent OpenFermion FermionOperator objects.",
+      "OpenFermion QubitOperator objects must be convertible back into PennyLane qubit-operator containers with matching coefficients and wires, using the requested supported PennyLane output style when the lower-level qubit helper is called directly.",
+      "OpenFermion FermionOperator objects must be convertible back into PennyLane fermionic representations.",
+      "Explicit wire mappings must be honored in both conversion directions for qubit wires and fermionic orbital labels, and mappings that do not cover all required labels must be rejected.",
+      "The conversion routines must drop imaginary coefficient parts only when they are below the requested tolerance and must preserve them when they exceed that tolerance.",
+      "Unsupported top-level input objects, unsupported qubit output-style selectors, or non-Pauli PennyLane operators nested inside compound qubit expressions must raise clear ValueError exceptions instead of producing invalid or partial conversions."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "from_openfermion",
+        "Path": "pennylane/qchem/convert_openfermion.py",
+        "Input": "openfermion operator, wires=None, tol=1e-16",
+        "Output": "PennyLane LinearCombination, Sum, FermiWord, or FermiSentence",
+        "Description": "Converts OpenFermion qubit and fermion operators into PennyLane representations while preserving coefficients, labels, and requested wire mappings."
+      },
+      {
+        "Type": "Function",
+        "Name": "_from_openfermion_qubit",
+        "Path": "pennylane/qchem/convert_openfermion.py",
+        "Input": "OpenFermion QubitOperator, wires=None, tol=1e-16, format='LinearCombination'",
+        "Output": "PennyLane LinearCombination or Sum, according to the requested supported format",
+        "Description": "Internal conversion helper for OpenFermion QubitOperator conversion. It should support the repository's qubit-container output styles and reject unsupported format selectors with ValueError."
+      },
+      {
+        "Type": "Function",
+        "Name": "to_openfermion",
+        "Path": "pennylane/qchem/convert_openfermion.py",
+        "Input": "PennyLane Sum, LinearCombination, FermiWord, or FermiSentence; wires=None; tol=1e-16",
+        "Output": "OpenFermion QubitOperator or FermionOperator",
+        "Description": "Converts PennyLane qubit and fermionic representations into OpenFermion operators. Wire mappings apply to qubit wires and fermionic orbital labels, and non-Pauli qubit components must be rejected before producing a partial OpenFermion operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermiWord.to_string",
+        "Path": "pennylane/fermi/fermionic.py",
+        "Input": "self, wire_map=None",
+        "Output": "str",
+        "Description": "Returns the OpenFermion-compatible string form needed for fermionic conversion, applying wire_map to fermionic orbital labels when provided."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_5759_5773",
+      "image_id": "sha256:d65208db314bd5c4e2d8c77af2b5d4ab27cfab3b4076fad86ddc77a24fce82ef",
+      "image_size": "1849968892"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pennylane-lightning==0.37.0",
+        "autoray>=0.6.11,<0.7",
+        "openfermionpyscf",
+        "basis-set-exchange"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op0-pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op5-pl_op5]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_qubit",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_sum_qubit",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op0-pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op5-pl_op5]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fw",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fs",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_fermionic",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_fail_import_openfermion_fermionic",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op0-of_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op4-of_op4]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op1]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_mapping_wires[pl_op0-of_op0-wires0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_wires_not_covered[pl_op0]"
+        ],
+        "summary": "19 passed in 2.30s",
+        "duration_seconds": 18.0
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_identities_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_singlewire_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_pennylane_to_openfermion_no_decomp",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_wires_not_covered_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_not_xyz_pennylane_to_openfermion[op0]"
+        ],
+        "summary": "5 passed in 4.32s",
+        "duration_seconds": 30.0
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op0-pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op5-pl_op5]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_qubit",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_sum_qubit",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_invalid_format_qubit",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op0-pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op5-pl_op5]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fw",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fs",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_fermionic",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_fail_import_openfermion_fermionic",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op0-of_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op4-of_op4]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op1]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_mapping_wires[pl_op0-of_op0-wires0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_not_xyz[op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_wires_not_covered[pl_op0]",
+          "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_invalid_op"
+        ],
+        "summary": "ImportError during collection: cannot import name '_from_openfermion_qubit' from pennylane.qchem.convert_openfermion; 1 error in 0.33s",
+        "duration_seconds": 19.0
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_identities_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_singlewire_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_pennylane_to_openfermion_no_decomp",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_wires_not_covered_pennylane_to_openfermion",
+          "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_not_xyz_pennylane_to_openfermion[op0]"
+        ],
+        "summary": "5 passed in 4.37s",
+        "duration_seconds": 27.0
+      }
+    }
+  }
+}

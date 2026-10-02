@@ -1,0 +1,121 @@
+{
+  "instance": {
+    "id": 106,
+    "repo": "sandbox-quantum/Tangelo",
+    "instance_id": "tangelo_387_390",
+    "status": "completed",
+    "issue_url": "https://github.com/sandbox-quantum/Tangelo/issues/387",
+    "pr_url": "https://github.com/sandbox-quantum/Tangelo/pull/390",
+    "base_commit": "7ae4afd67f281e2b3dffb5f4ed616074ef38e387",
+    "patch": "651c28ec97ed2da097254e39f171191870105799"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts circuit translation to Qiskit's native multi-controlled rotation gates."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "tangelo/linq/translator/translate_qiskit.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Tangelo can translate abstract circuits to Qiskit, but it still rejects multi-controlled controlled-rotation style gates even though Qiskit now supports native multi-controlled variants for these operations. Users working with Tangelo circuits that contain multi-controlled CRX, CRY, CRZ, or phase-style controlled rotations need the Qiskit translator to emit the equivalent native Qiskit circuit instead of raising an unsupported multi-control error.",
+    "requirements": [
+      "Translating a Tangelo circuit to the qiskit backend must support multi-controlled CRX, CRY, CRZ, and controlled phase style rotation gates when the gate control field contains multiple qubits.",
+      "For these supported multi-controlled rotation and phase gates, the translated qiskit circuit must use the corresponding native multi-controlled Qiskit gate behavior rather than rejecting the gate.",
+      "Existing qiskit translation behavior for single-control gates and for unsupported multi-controlled gate families must remain unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "translate_circuit",
+        "Path": "tangelo/linq/translator/translate_circuit.py",
+        "Input": "circuit, target, source='tangelo', output_options=None",
+        "Output": "backend-specific circuit object",
+        "Description": "Dispatches Tangelo circuit translation to the requested backend-specific translator."
+      },
+      {
+        "Type": "Function",
+        "Name": "translate_c_to_qiskit",
+        "Path": "tangelo/linq/translator/translate_qiskit.py",
+        "Input": "source_circuit, save_measurements=False, no_classical_register=False",
+        "Output": "qiskit.QuantumCircuit",
+        "Description": "Translates a Tangelo abstract circuit into an equivalent qiskit circuit, including supported multi-controlled controlled-rotation and phase gates."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_qiskit_gates",
+        "Path": "tangelo/linq/translator/translate_qiskit.py",
+        "Input": "",
+        "Output": "dict",
+        "Description": "Provides the Tangelo-to-Qiskit gate mapping used by qiskit circuit translation."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:tangelo_387_390",
+      "image_id": "sha256:91afd92909a9432b59a00fe262ad892217a85d8d468151d40e3a2ae4ca3084a5",
+      "image_size": "1270843212"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "wheel",
+        "pytest<8",
+        "numpy<2",
+        "qiskit==1.1.0",
+        "qiskit-aer==0.14.2"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit_multi_control"
+        ],
+        "summary": "1 passed in 3.41s",
+        "duration_seconds": 6.88
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit",
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_openqasm2abs",
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_unsupported_gate"
+        ],
+        "summary": "3 passed in 4.39s",
+        "duration_seconds": 8.42
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit_multi_control"
+        ],
+        "summary": "1 failed in 3.62s",
+        "duration_seconds": 10.65
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit",
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_openqasm2abs",
+          "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_unsupported_gate"
+        ],
+        "summary": "3 passed in 3.55s",
+        "duration_seconds": 9.66
+      }
+    }
+  }
+}

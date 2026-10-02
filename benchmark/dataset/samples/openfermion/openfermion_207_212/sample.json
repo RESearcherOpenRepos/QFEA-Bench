@@ -1,0 +1,112 @@
+{
+  "instance": {
+    "id": 2,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_207_212",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/207",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/212",
+    "base_commit": "6391cb79854c9510ed3a59f16244a077579f084d",
+    "patch": "d7f462aeae97413b1b7a9ceb0eeddd07f6eec6ce"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task depends on active-space orbital freezing while preserving fermionic anticommutation signs."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/_fermion_operator.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion should support freezing occupied and unoccupied orbitals directly on a FermionOperator so users can form active-space Hamiltonians from second-quantized operators while preserving the correct fermionic signs and removing gaps in the remaining orbital numbering.",
+    "requirements": [
+      "Provide a freeze_orbitals helper for FermionOperator inputs.",
+      "Allow freeze_orbitals to freeze specified occupied orbitals and specified unoccupied orbitals by removing operators on those modes from each term.",
+      "Preserve fermionic anticommutation signs when freezing orbitals changes the ordering parity of surviving operators.",
+      "Drop any term that vanishes because a frozen orbital occupation is incompatible with the ladder operators acting on that mode.",
+      "Renumber the surviving orbital indices so the returned FermionOperator has no unused index gaps.",
+      "Keep existing normal-ordering and molecular-term classification behavior unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "freeze_orbitals",
+        "Path": "src/openfermion/ops/_fermion_operator.py",
+        "Input": "fermion_operator, occupied, unoccupied=None, prune=True",
+        "Output": "FermionOperator",
+        "Description": "Returns a FermionOperator with the specified occupied and unoccupied orbitals frozen out."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_207_212",
+      "image_id": "sha256:78b73196e74a6ec2ff84c8ea25d40f419a391c5116a7c5a870b1e02ff8c12851",
+      "image_size": "463193698"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_nonvanishing",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_vanishing"
+        ],
+        "summary": "2 passed, 46 warnings in 1.17s",
+        "duration_seconds": 4.85
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_number_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_offsite_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_multi",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_molecular_term_out_of_order"
+        ],
+        "summary": "4 passed, 45 warnings in 1.12s",
+        "duration_seconds": 5.14
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_nonvanishing",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_vanishing"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_freeze_orbitals_vanishing",
+        "duration_seconds": 4.88
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_number_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_offsite_reversed",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_normal_ordered_multi",
+          "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_molecular_term_out_of_order"
+        ],
+        "summary": "4 passed, 45 warnings in 1.18s",
+        "duration_seconds": 4.84
+      }
+    }
+  }
+}

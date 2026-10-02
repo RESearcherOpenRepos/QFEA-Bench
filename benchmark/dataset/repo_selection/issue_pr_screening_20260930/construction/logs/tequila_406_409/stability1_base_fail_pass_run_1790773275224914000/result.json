@@ -1,0 +1,87 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 14.06433975699997,
+  "items": [
+    "tests/test_chemistry.py::test_wfn_fci[H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6]",
+    "tests/test_chemistry.py::test_wfn_fci[Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5]",
+    "tests/test_chemistry.py::test_wfn_fci[Be 0.0 0.0 0.0]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0007332080000423957,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.35124608300009186,
+      "wasxfail": null,
+      "longrepr": "geometry = 'H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6'\n\n    @pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"pyscf not found\")\n    @pytest.mark.parametrize(\n        \"geometry\",\n        [\n            \"H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6\",\n            \"Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5\",\n            \"Be 0.0 0.0 0.0\",\n        ],\n    )\n    def test_wfn_fci(geometry):\n        mol = tq.Molecule(geometry=geometry, basis_set=\"sto-3g\", backend=\"pyscf\")\n        H = mol.make_hamiltonian()\n        v, vv = numpy.linalg.eigh(H.to_matrix())\n    \n        # ground state wavefunction\n        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])\n        energy = v[0]\n    \n>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)\nE       TypeError: cannot unpack non-iterable numpy.float64 object\n\ntest_chemistry.py:476: TypeError"
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0017447499999434513,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0004642080000394344,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 6.213060086999917,
+      "wasxfail": null,
+      "longrepr": "geometry = 'Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5'\n\n    @pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"pyscf not found\")\n    @pytest.mark.parametrize(\n        \"geometry\",\n        [\n            \"H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6\",\n            \"Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5\",\n            \"Be 0.0 0.0 0.0\",\n        ],\n    )\n    def test_wfn_fci(geometry):\n        mol = tq.Molecule(geometry=geometry, basis_set=\"sto-3g\", backend=\"pyscf\")\n        H = mol.make_hamiltonian()\n        v, vv = numpy.linalg.eigh(H.to_matrix())\n    \n        # ground state wavefunction\n        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])\n        energy = v[0]\n    \n>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)\nE       TypeError: cannot unpack non-iterable numpy.float64 object\n\ntest_chemistry.py:476: TypeError"
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.00273045800008731,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Be 0.0 0.0 0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0013643339999589443,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Be 0.0 0.0 0.0]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.19013504199995168,
+      "wasxfail": null,
+      "longrepr": "geometry = 'Be 0.0 0.0 0.0'\n\n    @pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"pyscf not found\")\n    @pytest.mark.parametrize(\n        \"geometry\",\n        [\n            \"H 0.0 0.0 0.0\\nHe 0.0 0.0 1.3\\nH 0.0 0.0 2.6\",\n            \"Li 0.0 0.0 0.0\\nH 0.0 0.0 1.5\",\n            \"Be 0.0 0.0 0.0\",\n        ],\n    )\n    def test_wfn_fci(geometry):\n        mol = tq.Molecule(geometry=geometry, basis_set=\"sto-3g\", backend=\"pyscf\")\n        H = mol.make_hamiltonian()\n        v, vv = numpy.linalg.eigh(H.to_matrix())\n    \n        # ground state wavefunction\n        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])\n        energy = v[0]\n    \n>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)\nE       TypeError: cannot unpack non-iterable numpy.float64 object\n\ntest_chemistry.py:476: TypeError"
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_wfn_fci[Be 0.0 0.0 0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0008927499999344946,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

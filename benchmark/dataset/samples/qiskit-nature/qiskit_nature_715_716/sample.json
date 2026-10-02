@@ -1,0 +1,117 @@
+{
+  "instance": {
+    "id": 75,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_715_716",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/715",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/716",
+    "base_commit": "efab7e03cfc1904fdff49dd13ed7386bb2fb91ce",
+    "patch": "2844bba54f0f9355d1d2e0119fa5e461f7e7baaa"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds approximate equality for second-quantized operators, a numeric comparison helper over existing operator contents."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/second_quantized_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Second-quantized operators can be compared exactly, but users do not have a simple operator-level helper for approximate equality when coefficients differ only within numerical tolerance. This makes it awkward to compare constructed operators in tests or numerical workflows, especially across different concrete second-quantized operator subclasses.",
+    "requirements": [
+      "Second-quantized operators must provide an approximate-equality helper that compares two operators of the same concrete type.",
+      "The helper must return false when one operator contains terms or coefficients that are not equal to the other within the active tolerance.",
+      "The helper must return true when matching terms differ only within an explicitly supplied absolute tolerance.",
+      "When no tolerance is supplied, the helper must use the operator's default absolute tolerance.",
+      "Comparing against an object of an unsupported type must raise a TypeError whose message identifies the unsupported operand type.",
+      "Existing hermiticity and simplification behavior for the affected operator classes must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "SecondQuantizedOp.equiv",
+        "Path": "qiskit_nature/second_q/operators/second_quantized_op.py",
+        "Input": "self, other, atol=None",
+        "Output": "bool",
+        "Description": "Checks whether another operator of the same concrete SecondQuantizedOp type is approximately equal to this operator under the given absolute tolerance, using the operator default tolerance when none is supplied, and raises TypeError with a message identifying the unsupported operand type."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_715_716",
+      "image_id": "sha256:7c6bd416cff2145eed113e5efe2be4cfc090c1621c4a272b2699df05d102066f",
+      "image_size": "1216973841"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv"
+        ],
+        "summary": "3 passed in 1.64s",
+        "duration_seconds": 4.87
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_hermiticity",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify"
+        ],
+        "summary": "3 passed in 1.33s",
+        "duration_seconds": 4.28
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv"
+        ],
+        "summary": "3 failed with AttributeError: FermionicOp, SpinOp, and VibrationalOp have no attribute 'equiv' in 1.63s",
+        "duration_seconds": 6.61
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_hermiticity",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify"
+        ],
+        "summary": "3 passed in 1.49s",
+        "duration_seconds": 6.59
+      }
+    }
+  }
+}

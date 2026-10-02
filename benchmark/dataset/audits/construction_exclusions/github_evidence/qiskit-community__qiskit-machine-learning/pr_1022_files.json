@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "639391e78e0eb5ede7c930cce412fb5be7ce2e9f",
+    "filename": ".pylintdict",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/16ac2151f09ad4ada5db5db06e707eabd237a9cd/.pylintdict",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/16ac2151f09ad4ada5db5db06e707eabd237a9cd/.pylintdict",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/.pylintdict?ref=16ac2151f09ad4ada5db5db06e707eabd237a9cd",
+    "patch": "@@ -348,6 +348,7 @@ mosca\n mpl\n mprev\n msg\n+msr\n multiclass\n multinomial\n multioutput"
+  },
+  {
+    "sha": "4907ce9961a11447f91b021cb25b87ee38a42370",
+    "filename": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+    "status": "modified",
+    "additions": 26,
+    "deletions": 10,
+    "changes": 36,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/16ac2151f09ad4ada5db5db06e707eabd237a9cd/qiskit_machine_learning%2Fkernels%2Falgorithms%2Fquantum_kernel_trainer.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/16ac2151f09ad4ada5db5db06e707eabd237a9cd/qiskit_machine_learning%2Fkernels%2Falgorithms%2Fquantum_kernel_trainer.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/qiskit_machine_learning%2Fkernels%2Falgorithms%2Fquantum_kernel_trainer.py?ref=16ac2151f09ad4ada5db5db06e707eabd237a9cd",
+    "patch": "@@ -1,6 +1,6 @@\n # This code is part of a Qiskit project.\n #\n-# (C) Copyright IBM 2021, 2024.\n+# (C) Copyright IBM 2021, 2026.\n #\n # This code is licensed under the Apache License, Version 2.0. You may\n # obtain a copy of this license in the LICENSE.txt file in the root directory\n@@ -21,7 +21,14 @@\n from ...optimizers import Optimizer, SPSA, Minimizer\n from ...utils import algorithm_globals\n from ...variational_algorithm import VariationalResult\n-from ...utils.loss_functions import KernelLoss, SVCLoss\n+from ...utils.loss_functions import (\n+    KernelLoss,\n+    SVCLoss,\n+    SVRLoss,\n+    MSRLoss,\n+    MARLoss,\n+    HuberLoss,\n+)\n from ...kernels import TrainableKernel\n \n \n@@ -97,10 +104,11 @@ def __init__(\n             quantum_kernel: a trainable quantum kernel to be trained. The\n                 :attr:`~.TrainableKernel.parameter_values` will be modified in place after the training.\n             loss: A loss function available via string is \"svc_loss\" which is the same as\n-                :class:`~qiskit_machine_learning.utils.loss_functions.SVCLoss`. If a string is\n-                passed as the loss function, then the underlying\n-                :class:`~qiskit_machine_learning.utils.loss_functions.SVCLoss` object will exhibit\n-                default behavior.\n+                :class:`~qiskit_machine_learning.utils.loss_functions.SVCLoss`. Other available\n+                options are \"svr_loss\", \"msr_loss\", \"mar_loss\", and \"huber_loss\", corresponding to\n+                their respective classes in :mod:`~qiskit_machine_learning.utils.loss_functions`.\n+                If a string is passed as the loss function, then the underlying loss object will\n+                exhibit default behavior.\n             optimizer: An instance of :class:`~qiskit_machine_learning.optimizers.Optimizer` or a\n                 callable to be used in training. Refer to\n                 :class:`~qiskit_machine_learning.optimizers.Minimizer` for more information on the\n@@ -241,9 +249,17 @@ def _set_loss(self, loss: str | KernelLoss | None) -> None:\n \n     def _str_to_loss(self, loss_str: str) -> KernelLoss:\n         \"\"\"Function which maps strings to default KernelLoss objects.\"\"\"\n-        if loss_str == \"svc_loss\":\n-            loss_obj = SVCLoss()\n-        else:\n-            raise ValueError(f\"Unknown loss {loss_str}!\")\n+        string_to_loss_map = {\n+            \"svc_loss\": SVCLoss,\n+            \"svr_loss\": SVRLoss,\n+            \"msr_loss\": MSRLoss,\n+            \"mar_loss\": MARLoss,\n+            \"huber_loss\": HuberLoss,\n+        }\n+        try:\n+            loss_class = string_to_loss_map[loss_str]\n+            loss_obj = loss_class()\n+        except KeyError as unknown_loss:\n+            raise ValueError(f\"Unknown loss {unknown_loss}!\") from unknown_loss\n \n         return loss_obj"
+  },
+  {
+    "sha": "c070261c6342f4bf4b5d9b5fb29d95aef4038f13",
+    "filename": "releasenotes/notes/0.9/add-regression-kernel-loss-functions-960.yaml",
+    "status": "modified",
+    "additions": 20,
+    "deletions": 0,
+    "changes": 20,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/16ac2151f09ad4ada5db5db06e707eabd237a9cd/releasenotes%2Fnotes%2F0.9%2Fadd-regression-kernel-loss-functions-960.yaml",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/16ac2151f09ad4ada5db5db06e707eabd237a9cd/releasenotes%2Fnotes%2F0.9%2Fadd-regression-kernel-loss-functions-960.yaml",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/releasenotes%2Fnotes%2F0.9%2Fadd-regression-kernel-loss-functions-960.yaml?ref=16ac2151f09ad4ada5db5db06e707eabd237a9cd",
+    "patch": "@@ -16,4 +16,24 @@ features:\n \n     These enable training quantum kernels for regression tasks with algorithms\n     like :class:`~qiskit_machine_learning.algorithms.regressors.QSVR`.\n+\n+    Example usage:\n+\n+    .. code-block:: python\n+\n+        from qiskit_machine_learning.kernels import TrainableFidelityQuantumKernel\n+        from qiskit_machine_learning.kernels.algorithms import QuantumKernelTrainer\n+        from qiskit_machine_learning.utils.loss_functions import SVRLoss\n+        from qiskit.circuit.library import ZZFeatureMap\n+\n+        feature_map = ZZFeatureMap(2)\n+        kernel = TrainableFidelityQuantumKernel(\n+            feature_map=feature_map,\n+            training_parameters=feature_map.parameters\n+        )\n+        # Use SVRLoss for regression\n+        loss = SVRLoss(C=1.0, epsilon=0.1)\n+        trainer = QuantumKernelTrainer(quantum_kernel=kernel, loss=loss)\n+        # result = trainer.fit(X_train, y_train)\n+\n     Closes `#960 <https://github.com/qiskit-community/qiskit-machine-learning/issues/960>`_."
+  },
+  {
+    "sha": "353cc67d148616c92f2893f6e237ee18466307e3",
+    "filename": "test/utils/loss_functions/test_regression_kernel_loss.py",
+    "status": "modified",
+    "additions": 16,
+    "deletions": 0,
+    "changes": 16,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/16ac2151f09ad4ada5db5db06e707eabd237a9cd/test%2Futils%2Floss_functions%2Ftest_regression_kernel_loss.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/16ac2151f09ad4ada5db5db06e707eabd237a9cd/test%2Futils%2Floss_functions%2Ftest_regression_kernel_loss.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/test%2Futils%2Floss_functions%2Ftest_regression_kernel_loss.py?ref=16ac2151f09ad4ada5db5db06e707eabd237a9cd",
+    "patch": "@@ -78,6 +78,22 @@ def test_regression_loss_fit(self, loss_type):\n         # but we expect it to be a finite number.\n         self.assertTrue(np.isfinite(score))\n \n+    @data(\n+        (\"svr_loss\", SVRLoss),\n+        (\"msr_loss\", MSRLoss),\n+        (\"mar_loss\", MARLoss),\n+        (\"huber_loss\", HuberLoss),\n+    )\n+    def test_loss_strings(self, config):\n+        \"\"\"Test trainer with regression loss function strings.\"\"\"\n+        loss_str, loss_cls = config\n+        quantum_kernel = TrainableFidelityQuantumKernel(\n+            feature_map=self.feature_map,\n+            training_parameters=self.training_parameters,\n+        )\n+        qkt = QuantumKernelTrainer(quantum_kernel=quantum_kernel, loss=loss_str)\n+        self.assertIsInstance(qkt.loss, loss_cls)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  }
+]

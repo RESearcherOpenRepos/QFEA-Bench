@@ -1,0 +1,144 @@
+{
+  "id": 68,
+  "sample_id": "qiskit_nature_571_632",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "68fa5fbd45bb950b5693aca0933a8369fe6f4934",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/input_validation": 1,
+      "quantum_semantics/hartree_fock_initial_point": 2,
+      "interface/constructor_defaults": 1,
+      "quantum_semantics/ground_state_energy": 3,
+      "general_semantics/input_immutability": 1,
+      "quantum_semantics/particle_number_expectation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_missing_ansatz",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 43,
+          "expected": "Computing an HF initial point without ansatz or excitation list raises QiskitNatureError."
+        }
+      ],
+      "rationale": "The assertion checks required-input rejection."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/initial_points/test_hf_initial_point.py::TestHFInitialPoint::test_compute",
+      "label": "quantum_semantics/hartree_fock_initial_point",
+      "assertions": [
+        {
+          "line": 95,
+          "expected": "HF initial point for the chosen excitation has a zero-valued UCC parameter."
+        }
+      ],
+      "rationale": "The zero point encodes the Hartree-Fock reference in a UCC ansatz."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/ground_state_solvers/minimum_eigensolver_factories/test_vqe_ucc_factory.py::TestVQEUCCFactory::test_setters_getters",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "VQEUCCFactory exposes HFInitialPoint by default and retains setter/getter behavior."
+        }
+      ],
+      "rationale": "The new default public object is the distinctive assertion."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_default_initial_point",
+      "label": "quantum_semantics/hartree_fock_initial_point",
+      "assertions": [
+        {
+          "line": 550,
+          "expected": "Default UCC solver resolves three zero parameters and reproduces reference energy."
+        }
+      ],
+      "rationale": "The selected test links HF UCC parameters with ground-state physics."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "UCCSD solver returns the reference molecular total energy."
+        }
+      ],
+      "rationale": "The numerical physical energy is the asserted result."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_ucc_custom",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 122,
+          "expected": "Custom UCC solver returns the reference molecular total energy."
+        }
+      ],
+      "rationale": "The numerical physical energy is the asserted result."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_vqe_uccsd_with_callback",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "Callback-enabled UCCSD solver returns the reference energy."
+        }
+      ],
+      "rationale": "The energy equality is primary; callback text is an additional check."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_aux_ops_reusability",
+      "label": "general_semantics/input_immutability",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Ground-state solve does not mutate reusable auxiliary operators."
+        }
+      ],
+      "rationale": "The test compares original and copied symbolic inputs after execution."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single",
+      "label": "quantum_semantics/particle_number_expectation",
+      "assertions": [
+        {
+          "line": 208,
+          "expected": "Evaluating the ParticleNumber auxiliary observable gives expectation two."
+        }
+      ],
+      "rationale": "The numerical assertion has direct quantum particle-number meaning."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/68fa5fbd45bb950b5693aca0933a8369fe6f4934/test/algorithms/ground_state_solvers/minimum_eigensolver_factories/test_vqe_ucc_factory.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/68fa5fbd45bb950b5693aca0933a8369fe6f4934/test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/68fa5fbd45bb950b5693aca0933a8369fe6f4934/test/algorithms/initial_points/test_hf_initial_point.py"
+  ],
+  "rationale": "Reviewed all 9 selected cases against exact-patch source; physical operator equalities are quantum constraints and result-container contracts are interface constraints."
+}

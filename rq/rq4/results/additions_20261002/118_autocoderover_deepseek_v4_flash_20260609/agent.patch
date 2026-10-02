@@ -1,0 +1,163 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..d85b3db 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,158 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def set_params(self, **params):
++        """Set the parameters of this estimator.
++
++        This method updates the hyperparameters and reinitializes the derived
++        parameter arrays and the internal QNN object accordingly.
++
++        Args:
++            **params: Estimator parameters
++
++        Returns:
++            self: Estimator instance
++        """
++        # Check if pqc or operator are being updated
++        update_pqc = "pqc" in params
++        update_operator = "operator" in params
++        update_param_ini = "param_ini" in params
++        update_param_op_ini = "param_op_ini" in params
++        update_parameter_seed = "parameter_seed" in params
++
++        # Call parent set_params to update the attributes
++        super().set_params(**params)
++
++        # Reinitialize param_ini if pqc changed or param_ini was explicitly set
++        if update_pqc or update_param_ini or update_parameter_seed:
++            if update_param_ini:
++                self.param_ini = params["param_ini"]
++            else:
++                self.param_ini = self.pqc.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            self.param = self.param_ini.copy()
++
++        # Reinitialize param_op_ini if operator changed or param_op_ini was explicitly set
++        if update_operator or update_param_op_ini or update_parameter_seed:
++            if update_param_op_ini:
++                self.param_op_ini = params["param_op_ini"]
++            else:
++                if isinstance(self.operator, list):
++                    self.param_op_ini = np.concatenate(
++                        [
++                            op.generate_initial_parameters(seed=self.parameter_seed)
++                            for op in self.operator
++                        ]
++                    )
++                else:
++                    self.param_op_ini = self.operator.generate_initial_parameters(
++                        seed=self.parameter_seed
++                    )
++            self.param_op = self.param_op_ini.copy()
++
++        # Recreate the internal QNN if pqc or operator changed
++        if update_pqc or update_operator:
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self._is_fitted = False
++
++        return self
++
++    def get_params(self, deep=True):
++        """Get parameters for this estimator.
++
++        Returns the parameters of the estimator as well as the parameters of
++        the nested pqc and operator objects.
++
++        Args:
++            deep: If True, will return the parameters for this estimator and
++                contained subobjects that are estimators.
++
++        Returns:
++            params: Parameter names mapped to their values.
++        """
++        params = super().get_params(deep=deep)
++
++        if deep:
++            # Add nested parameters from pqc
++            if hasattr(self, "pqc") and hasattr(self.pqc, "get_params"):
++                pqc_params = self.pqc.get_params(deep=True)
++                for key, value in pqc_params.items():
++                    params[f"pqc__{key}"] = value
++
++            # Add nested parameters from operator(s)
++            if hasattr(self, "operator"):
++                if isinstance(self.operator, list):
++                    for i, op in enumerate(self.operator):
++                        if hasattr(op, "get_params"):
++                            op_params = op.get_params(deep=True)
++                            for key, value in op_params.items():
++                                params[f"operator__{i}__{key}"] = value
++                else:
++                    if hasattr(self.operator, "get_params"):
++                        op_params = self.operator.get_params(deep=True)
++                        for key, value in op_params.items():
++                            params[f"operator__{key}"] = value
++
++        return params
++
++    def set_params(self, **params):
++        """Set the parameters of this estimator.
++
++        This method updates the hyperparameters and reinitializes the derived
++        parameter arrays and the internal QNN object accordingly.
++
++        Args:
++            **params: Estimator parameters
++
++        Returns:
++            self: Estimator instance
++        """
++        # Check if pqc or operator are being updated
++        update_pqc = "pqc" in params
++        update_operator = "operator" in params
++        update_param_ini = "param_ini" in params
++        update_param_op_ini = "param_op_ini" in params
++        update_parameter_seed = "parameter_seed" in params
++
++        # Call parent set_params to update the attributes
++        super().set_params(**params)
++
++        # Reinitialize param_ini if pqc changed or param_ini was explicitly set
++        if update_pqc or update_param_ini or update_parameter_seed:
++            if update_param_ini:
++                self.param_ini = params["param_ini"]
++            else:
++                self.param_ini = self.pqc.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            self.param = self.param_ini.copy()
++
++        # Reinitialize param_op_ini if operator changed or param_op_ini was explicitly set
++        if update_operator or update_param_op_ini or update_parameter_seed:
++            if update_param_op_ini:
++                self.param_op_ini = params["param_op_ini"]
++            else:
++                if isinstance(self.operator, list):
++                    self.param_op_ini = np.concatenate(
++                        [
++                            op.generate_initial_parameters(seed=self.parameter_seed)
++                            for op in self.operator
++                        ]
++                    )
++                else:
++                    self.param_op_ini = self.operator.generate_initial_parameters(
++                        seed=self.parameter_seed
++                    )
++            self.param_op = self.param_op_ini.copy()
++
++        # Recreate the internal QNN if pqc or operator changed
++        if update_pqc or update_operator:
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

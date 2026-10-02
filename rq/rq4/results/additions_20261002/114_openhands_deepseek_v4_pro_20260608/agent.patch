@@ -1,0 +1,204 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..1a5cddb
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,153 @@
++"""Cross-Entropy Loss for QNNs."""
++
++from typing import Union
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    r"""Cross-entropy loss for classification.
++
++    This loss function computes the cross-entropy between the model output and the
++    ground truth labels. For binary classification, the sigmoid activation is applied
++    to the model output. For multi-output classification, the softmax activation is
++    applied.
++
++    Args:
++        eps (float): Numerical clipping value for probabilities (default: 1e-8).
++    """
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self.eps = eps
++
++    @property
++    def loss_variance_available(self) -> bool:
++        """Returns False since cross-entropy loss has no variance function."""
++        return False
++
++    @property
++    def loss_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss calculation."""
++        return ("f",)
++
++    @property
++    def gradient_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss gradient calculation."""
++        if self._opt_param_op:
++            return ("f", "dfdp", "dfdop")
++        return ("f", "dfdp")
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        r"""Calculates the cross-entropy loss.
++
++        This function calculates the cross-entropy loss between the values in value_dict
++        and ground_truth. For binary classification (single output), the sigmoid
++        activation is applied. For multi-output classification, the softmax activation
++        is applied.
++
++        .. math::
++            L_\text{CE} = -\sum_i \left[y_i \log(p_i) + (1-y_i) \log(1-p_i)\right]
++
++        for binary classification, and
++
++        .. math::
++            L_\text{CE} = -\sum_i \sum_j y_{ij} \log(p_{ij})
++
++        for multi-output classification.
++
++        Args:
++            value_dict (dict): Contains calculated values of the model
++            ground_truth (np.ndarray): The true labels
++
++        Returns:
++            Loss value
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++        ground_truth = kwargs["ground_truth"]
++        f = value_dict["f"]
++
++        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
++            # Binary classification: apply sigmoid
++            f = f.ravel()
++            p = 1.0 / (1.0 + np.exp(-f))
++            p = np.clip(p, self.eps, 1.0 - self.eps)
++            gt = ground_truth.ravel()
++            return -np.sum(gt * np.log(p) + (1.0 - gt) * np.log(1.0 - p))
++        else:
++            # Multi-output classification: apply softmax
++            f_max = np.max(f, axis=1, keepdims=True)
++            exp_f = np.exp(f - f_max)
++            p = exp_f / np.sum(exp_f, axis=1, keepdims=True)
++            p = np.clip(p, self.eps, 1.0 - self.eps)
++            return -np.sum(ground_truth * np.log(p))
++
++    def gradient(
++        self, value_dict: dict, **kwargs
++    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
++        r"""Returns the gradient of the cross-entropy loss.
++
++        This function calculates the gradient of the cross-entropy loss between the
++        values in value_dict and ground_truth.
++
++        For binary classification:
++        .. math::
++            \frac{\partial L}{\partial p_j} = \sum_i (p_i - y_i)
++            \frac{\partial f(x_i)}{\partial p_j}
++
++        For multi-output classification:
++        .. math::
++            \frac{\partial L}{\partial p_j} = \sum_i \sum_k (p_{ik} - y_{ik})
++            \frac{\partial f_k(x_i)}{\partial p_j}
++
++        Args:
++            value_dict (dict): Contains calculated values of the model
++            ground_truth (np.ndarray): The true labels
++            multiple_output (bool): True if the QNN has multiple outputs
++            opt_param_op (bool): True if the operator parameters are optimized
++
++        Returns:
++            Gradient values
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = kwargs["ground_truth"]
++        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
++        f = value_dict["f"]
++
++        if not multiple_output:
++            # Binary classification: apply sigmoid
++            f = f.ravel()
++            p = 1.0 / (1.0 + np.exp(-f))
++            diff = p - ground_truth.ravel()
++        else:
++            # Multi-output classification: apply softmax
++            f_max = np.max(f, axis=1, keepdims=True)
++            exp_f = np.exp(f - f_max)
++            p = exp_f / np.sum(exp_f, axis=1, keepdims=True)
++            diff = p - ground_truth
++
++        if value_dict["dfdp"].shape[0] == 0:
++            d_p = np.array([])
++        else:
++            if multiple_output:
++                d_p = np.einsum("ij,ijk->k", diff, value_dict["dfdp"])
++            else:
++                d_p = np.einsum("j,jk->k", diff, value_dict["dfdp"])
++
++        # Extra code for the cost operator derivatives
++        if not self._opt_param_op:
++            return d_p
++
++        if value_dict["dfdop"].shape[0] == 0:
++            d_op = np.array([])
++        else:
++            if multiple_output:
++                d_op = np.einsum("ij,ijk->k", diff, value_dict["dfdop"])
++            else:
++                d_op = np.einsum("j,jk->k", diff, value_dict["dfdop"])
++        return d_p, d_op
+\ No newline at end of file

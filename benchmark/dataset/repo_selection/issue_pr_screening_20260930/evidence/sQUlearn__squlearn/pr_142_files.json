@@ -1,0 +1,72 @@
+[
+  {
+    "sha": "9d343a691785cd90b0d26c7b7b75e1240b3eb4c7",
+    "filename": "docs/examples/example_quantum_bayesian_optimization.nblink",
+    "status": "added",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/docs%2Fexamples%2Fexample_quantum_bayesian_optimization.nblink",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/docs%2Fexamples%2Fexample_quantum_bayesian_optimization.nblink",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/docs%2Fexamples%2Fexample_quantum_bayesian_optimization.nblink?ref=90c9046408a38f1ecb651689219db52c90b5c3d0",
+    "patch": "@@ -0,0 +1,6 @@\n+{\n+    \"path\": \"../../examples/tutorials/quantum_bayesian_optimization.ipynb\",\n+    \"extra-media\": [\n+        \"../../examples/tutorials/images\"\n+    ]\n+}\n\\ No newline at end of file"
+  },
+  {
+    "sha": "28107066fa05ff4909ebdcd776ad8f3616385967",
+    "filename": "docs/examples/examples_index.rst",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/docs%2Fexamples%2Fexamples_index.rst",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/docs%2Fexamples%2Fexamples_index.rst",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/docs%2Fexamples%2Fexamples_index.rst?ref=90c9046408a38f1ecb651689219db52c90b5c3d0",
+    "patch": "@@ -9,3 +9,4 @@ Examples\n \n     example_kernel_digit_classification\n     example_kernel_grid_search\n+    example_quantum_bayesian_optimization"
+  },
+  {
+    "sha": "2253b7cbe2fda5b2df5c03435ee490210edd624c",
+    "filename": "examples/tutorials/images/quantum_bo.png",
+    "status": "added",
+    "additions": 0,
+    "deletions": 0,
+    "changes": 0,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/examples%2Ftutorials%2Fimages%2Fquantum_bo.png",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/examples%2Ftutorials%2Fimages%2Fquantum_bo.png",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/examples%2Ftutorials%2Fimages%2Fquantum_bo.png?ref=90c9046408a38f1ecb651689219db52c90b5c3d0"
+  },
+  {
+    "sha": "2ce55edbeba25c92c1facd1d1d53c046a04a8ef7",
+    "filename": "examples/tutorials/quantum_bayesian_optimization.ipynb",
+    "status": "added",
+    "additions": 535,
+    "deletions": 0,
+    "changes": 535,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/examples%2Ftutorials%2Fquantum_bayesian_optimization.ipynb",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/examples%2Ftutorials%2Fquantum_bayesian_optimization.ipynb",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/examples%2Ftutorials%2Fquantum_bayesian_optimization.ipynb?ref=90c9046408a38f1ecb651689219db52c90b5c3d0"
+  },
+  {
+    "sha": "aed3e00020767fd151898713dd97dcc80e3d0850",
+    "filename": "src/squlearn/kernel/matrix/regularization.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 1,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fregularization.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fregularization.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Fregularization.py?ref=90c9046408a38f1ecb651689219db52c90b5c3d0",
+    "patch": "@@ -61,7 +61,6 @@ def regularize_full_kernel(K_train, K_testtrain, K_test):\n     \"\"\"\n     gram_matrix_total = np.block([[K_train, K_testtrain.T], [K_testtrain, K_test]])\n     reconstruction = thresholding_regularization(gram_matrix_total)\n-    print(f\"Reconstruction error {np.sum(reconstruction - gram_matrix_total)}\")\n \n     K_train = reconstruction[: K_train.shape[0], : K_train.shape[1]]\n     K_testtrain = reconstruction[K_train.shape[0] :, : K_testtrain.shape[1]]"
+  },
+  {
+    "sha": "3ca1c671e7679e93c103d844c2cf0376ea880d60",
+    "filename": "src/squlearn/kernel/ml/qgpr.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 2,
+    "changes": 2,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/90c9046408a38f1ecb651689219db52c90b5c3d0/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/90c9046408a38f1ecb651689219db52c90b5c3d0/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py?ref=90c9046408a38f1ecb651689219db52c90b5c3d0",
+    "patch": "@@ -167,7 +167,6 @@ def predict(self, X_test, return_std=False, return_cov=False):\n         self.K_test = self._quantum_kernel.evaluate(x=X_test)\n         self.K_testtrain = self._quantum_kernel.evaluate(x=X_test, y=self.X_train)\n         if self.full_regularization:\n-            print(\"Regularizing full Gram matrix\")\n             self.K_train, self.K_testtrain, self.K_test = regularize_full_kernel(\n                 self.K_train, self.K_testtrain, self.K_test\n             )\n@@ -177,7 +176,6 @@ def predict(self, X_test, return_std=False, return_cov=False):\n         try:\n             self._L = cholesky(self.K_train, lower=True)\n         except np.linalg.LinAlgError:\n-            print(\"corrected the train matrix a bit\")\n             self.K_train += 1e-8 * np.identity(self.K_train.shape[0])\n             self._L = cholesky(self.K_train, lower=True)\n         self._alpha = cho_solve((self._L, True), self.y_train)"
+  }
+]

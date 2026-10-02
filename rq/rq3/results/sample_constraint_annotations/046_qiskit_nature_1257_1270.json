@@ -1,0 +1,393 @@
+{
+  "id": 46,
+  "sample_id": "qiskit_nature_1257_1270",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "27a14604f04484261a522fcf7865e16dcee639f5",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 13,
+    "p2p_tests": 14,
+    "subtype_test_counts": {
+      "interface/mode_count_contract": 3,
+      "interface/input_validation": 1,
+      "interface/constructor_validation_option": 1,
+      "interface/copy_by_reference": 1,
+      "quantum_semantics/majorana_operator_algebra": 4,
+      "quantum_semantics/majorana_hermiticity": 1,
+      "interface/operator_term_roundtrip": 3,
+      "quantum_semantics/majorana_tensor_mapping": 1,
+      "quantum_semantics/majorana_fermion_mapping": 1,
+      "quantum_semantics/majorana_index_permutation": 1,
+      "quantum_semantics/fermionic_tensor_mapping": 1,
+      "quantum_semantics/fermionic_index_permutation": 1,
+      "quantum_semantics/bosonic_operator_algebra": 1,
+      "interface/user_parameter_binding": 1,
+      "general_semantics/symbolic_tensor_composition": 1,
+      "quantum_semantics/fermionic_operator_algebra": 4,
+      "quantum_semantics/fermionic_hermiticity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_num_modes",
+      "label": "interface/mode_count_contract",
+      "assertions": [
+        {
+          "line": 463,
+          "expected": "MajoranaOp infers zero, two and three modes from sparse labels."
+        }
+      ],
+      "rationale": "The additional arithmetic checks num_modes; the public dimension property is primary."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_validate_16____2___2__False_",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "Invalid Majorana sparse labels raise QiskitNatureError."
+        }
+      ],
+      "rationale": "The selected invalid key/length parameter case explicitly expects the repository error."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_validate",
+      "label": "interface/constructor_validation_option",
+      "assertions": [
+        {
+          "line": 369,
+          "expected": "validate=False permits construction but malformed term parsing later raises ValueError."
+        }
+      ],
+      "rationale": "This test distinguishes construction-time validation from later term interpretation."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_no_copy",
+      "label": "interface/copy_by_reference",
+      "assertions": [
+        {
+          "line": 355,
+          "expected": "copy=False reflects later mutation of the source coefficient mapping."
+        }
+      ],
+      "rationale": "The assertion tests a public ownership option."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_compose",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {
+          "line": 130,
+          "expected": "Composing Majorana products yields correctly signed terms after simplification."
+        }
+      ],
+      "rationale": "The multi-compose subcase includes anticommuting Majorana signs."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_tensor",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {
+          "line": 151,
+          "expected": "Tensoring Majorana operators shifts mode indices to the expected term."
+        }
+      ],
+      "rationale": "The resulting Majorana mode labels encode quantum tensor ordering."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_simplify",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {
+          "line": 216,
+          "expected": "Repeated Majorana factors cancel and aggregate coefficients."
+        }
+      ],
+      "rationale": "The simplification case uses Majorana square and sign identities."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_index_order",
+      "label": "quantum_semantics/majorana_operator_algebra",
+      "assertions": [
+        {
+          "line": 303,
+          "expected": "Reversing two Majorana factors changes sign when index_order is applied."
+        }
+      ],
+      "rationale": "This assertion directly checks anticommutation ordering."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_hermiticity",
+      "label": "quantum_semantics/majorana_hermiticity",
+      "assertions": [
+        {
+          "line": 260,
+          "expected": "Expected Majorana expression is Hermitian while the counterpart is not."
+        }
+      ],
+      "rationale": "The test checks adjoint algebra and complex coefficients."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_terms",
+      "label": "interface/operator_term_roundtrip",
+      "assertions": [
+        {
+          "line": 492,
+          "expected": "terms() exposes the requested index tuples and coefficients."
+        }
+      ],
+      "rationale": "The test checks the public iterator and from_terms representation."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_polynomial_tensor",
+      "label": "quantum_semantics/majorana_tensor_mapping",
+      "assertions": [
+        {
+          "line": 401,
+          "expected": "Polynomial tensor coefficients map to expected Majorana products."
+        }
+      ],
+      "rationale": "The result is checked against explicit Majorana labels and coefficients."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_from_fermionic_op",
+      "label": "quantum_semantics/majorana_fermion_mapping",
+      "assertions": [
+        {
+          "line": 688,
+          "expected": "Fermionic ladder expressions expand to the prescribed Majorana operator."
+        }
+      ],
+      "rationale": "The test covers the quantum creation/annihilation to Majorana convention."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_majorana_op.py::TestMajoranaOp::test_permute_indices",
+      "label": "quantum_semantics/majorana_index_permutation",
+      "assertions": [
+        {
+          "line": 514,
+          "expected": "Mode permutation maps _0 _1 and _1 _2 to the expected new labels."
+        }
+      ],
+      "rationale": "The substantive assertion checks a four-mode Majorana relabeling; length rejection is secondary."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_from_polynomial_tensor",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "Polynomial tensor entries become the expected fermionic ladder terms."
+        }
+      ],
+      "rationale": "The retained conversion test checks quantum operator labels and coefficients."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_permute_indices",
+      "label": "quantum_semantics/fermionic_index_permutation",
+      "assertions": [
+        {
+          "line": 586,
+          "expected": "Fermionic orbital permutation maps each ladder term to expected indices."
+        }
+      ],
+      "rationale": "The substantive P2P assertion checks fermionic orbital relabeling."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_bosonic_op.py::TestBosonicOp::test_simplify",
+      "label": "quantum_semantics/bosonic_operator_algebra",
+      "assertions": [
+        {
+          "line": 214,
+          "expected": "Bosonic repeated ladder factors simplify to the expected operator."
+        }
+      ],
+      "rationale": "The retained simplify test checks bosonic ladder algebra."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_assign_parameters",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 440,
+          "expected": "Assigning symbolic coefficient parameters exposes expected terms."
+        }
+      ],
+      "rationale": "The sparse-label base class test checks the public coefficient-binding API."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+      "label": "general_semantics/symbolic_tensor_composition",
+      "assertions": [
+        {
+          "line": 348,
+          "expected": "PolynomialTensor composition multiplies and aggregates coefficient arrays correctly."
+        }
+      ],
+      "rationale": "This tensor container test has no Majorana or fermionic ladder convention."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_terms",
+      "label": "interface/operator_term_roundtrip",
+      "assertions": [
+        {
+          "line": 281,
+          "expected": "SpinOp terms() exposes expected term tuples."
+        }
+      ],
+      "rationale": "The public iterator and reconstruction representation are asserted."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_automatic_num_modals",
+      "label": "interface/mode_count_contract",
+      "assertions": [
+        {
+          "line": 33,
+          "expected": "VibrationalOp infers modal counts from labels."
+        }
+      ],
+      "rationale": "The selected case directly reads num_modals across several labels."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_no_num_spin_orbitals",
+      "label": "interface/mode_count_contract",
+      "assertions": [
+        {
+          "line": 535,
+          "expected": "FermionicOp infers spin-orbital count from sparse labels."
+        }
+      ],
+      "rationale": "The selected case checks the public orbital count and arithmetic propagation."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_compose",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "Fermionic composition yields expected signed ladder products."
+        }
+      ],
+      "rationale": "Multi-term products require fermionic anticommutation."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_tensor",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "Fermionic tensor product yields expected reindexed ladder terms."
+        }
+      ],
+      "rationale": "The resulting mode ordering is specific to fermionic operators."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_simplify",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 215,
+          "expected": "Fermionic simplification cancels repeated or equivalent ladder terms."
+        }
+      ],
+      "rationale": "The selected retained case uses fermionic reduction rules."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_index_order",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 383,
+          "expected": "Fermionic index ordering applies the correct sign changes."
+        }
+      ],
+      "rationale": "The expected labels and coefficients depend on fermionic anticommutation."
+    },
+    {
+      "test_number": 26,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/fermionic_hermiticity",
+      "assertions": [
+        {
+          "line": 266,
+          "expected": "Fermionic operator expressions have expected Hermiticity."
+        }
+      ],
+      "rationale": "Adjoint and coefficient conventions determine the predicate result."
+    },
+    {
+      "test_number": 27,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_terms",
+      "label": "interface/operator_term_roundtrip",
+      "assertions": [
+        {
+          "line": 564,
+          "expected": "Fermionic terms() returns expected tuples and from_terms reconstructs them."
+        }
+      ],
+      "rationale": "This retained case inspects public term representation."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_bosonic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_majorana_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_polynomial_tensor.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_sparse_label_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_spin_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/27a14604f04484261a522fcf7865e16dcee639f5/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Reviewed all 13 new Majorana selectors and 14 neighboring operator selectors. For mixed tests, the rationale identifies the directly asserted operator rule or exposed API chosen as primary."
+}

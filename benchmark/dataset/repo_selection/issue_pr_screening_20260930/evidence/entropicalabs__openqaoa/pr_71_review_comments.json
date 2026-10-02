@@ -1,0 +1,628 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932941321",
+    "pull_request_review_id": 1055112635,
+    "id": 932941321,
+    "node_id": "PRRC_kwDOHMYLyM43m44J",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Why did we choose the camelcase for a class method here?",
+    "created_at": "2022-07-29T07:19:58Z",
+    "updated_at": "2022-07-29T07:19:59Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932941321",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932941321"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932941321"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932941321/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 80,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 80,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942273",
+    "pull_request_review_id": 1055113937,
+    "id": 932942273,
+    "node_id": "PRRC_kwDOHMYLyM43m5HB",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Also, perhaps this method should be a `staticmethod`? I don't see any updates to `self`",
+    "created_at": "2022-07-29T07:21:14Z",
+    "updated_at": "2022-07-29T07:21:14Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932942273",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942273"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932942273"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942273/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 80,
+    "side": "RIGHT",
+    "in_reply_to_id": 932941321,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 80,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942748",
+    "pull_request_review_id": 1055114670,
+    "id": 932942748,
+    "node_id": "PRRC_kwDOHMYLyM43m5Oc",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):\n+        \"\"\"\n+        Add equality constraints to the cost function using the penality representation.\n+        The constraints should be linear.\n+        \n+        Parameters\n+        ----------\n+        expression : docplex.mp.linear.LinearExpr\n+            docplex equality constraint \"expression == 0\".\n+        multiplier : float\n+            Lagrange multiplier of the penalty\n+\n+        Returns\n+        -------\n+        penalty : docplex.mp.quad.QuadExpr\n+            Penalty that will be added to the cost function.\n+\n+        \"\"\"\n+        penalty = multiplier * (expression) ** 2\n+        return penalty\n+\n+    def bounds(self, linear_expression):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This method also seems like it could be a staticmethod",
+    "created_at": "2022-07-29T07:21:58Z",
+    "updated_at": "2022-07-29T07:21:58Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932942748",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942748"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932942748"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932942748/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 101,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 101,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932944193",
+    "pull_request_review_id": 1055116632,
+    "id": 932944193,
+    "node_id": "PRRC_kwDOHMYLyM43m5lB",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):\n+        \"\"\"\n+        Add equality constraints to the cost function using the penality representation.\n+        The constraints should be linear.\n+        \n+        Parameters\n+        ----------\n+        expression : docplex.mp.linear.LinearExpr\n+            docplex equality constraint \"expression == 0\".\n+        multiplier : float\n+            Lagrange multiplier of the penalty\n+\n+        Returns\n+        -------\n+        penalty : docplex.mp.quad.QuadExpr\n+            Penalty that will be added to the cost function.\n+\n+        \"\"\"\n+        penalty = multiplier * (expression) ** 2\n+        return penalty\n+\n+    def bounds(self, linear_expression):\n+        \"\"\"\n+        Generates the limits of a linear term\n+\n+        Parameters\n+        ----------\n+        linear_exp : generator\n+            Iterable term with the quadratic terms of the cost function.\n+\n+        Returns\n+        -------\n+        l_bound : float\n+            Lower bound of the quadratic term.\n+        u_bound : float\n+            Upper bound of the quadratic term\n+        \"\"\"\n+\n+        l_bound = (\n+            u_bound\n+        ) = linear_expression.constant  # Lower and upper bound of the contraint",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "typo in constraint spelling",
+    "created_at": "2022-07-29T07:23:51Z",
+    "updated_at": "2022-07-29T07:23:52Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932944193",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932944193"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932944193"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932944193/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 120,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 120,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932958287",
+    "pull_request_review_id": 1055136497,
+    "id": 932958287,
+    "node_id": "PRRC_kwDOHMYLyM43m9BP",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):\n+        \"\"\"\n+        Add equality constraints to the cost function using the penality representation.\n+        The constraints should be linear.\n+        \n+        Parameters\n+        ----------\n+        expression : docplex.mp.linear.LinearExpr\n+            docplex equality constraint \"expression == 0\".\n+        multiplier : float\n+            Lagrange multiplier of the penalty\n+\n+        Returns\n+        -------\n+        penalty : docplex.mp.quad.QuadExpr\n+            Penalty that will be added to the cost function.\n+\n+        \"\"\"\n+        penalty = multiplier * (expression) ** 2\n+        return penalty\n+\n+    def bounds(self, linear_expression):\n+        \"\"\"\n+        Generates the limits of a linear term\n+\n+        Parameters\n+        ----------\n+        linear_exp : generator\n+            Iterable term with the quadratic terms of the cost function.\n+\n+        Returns\n+        -------\n+        l_bound : float\n+            Lower bound of the quadratic term.\n+        u_bound : float\n+            Upper bound of the quadratic term\n+        \"\"\"\n+\n+        l_bound = (\n+            u_bound\n+        ) = linear_expression.constant  # Lower and upper bound of the contraint\n+        for term, coeff in linear_expression.iter_terms():\n+            l_bound += min(0, coeff)\n+            u_bound += max(0, coeff)\n+\n+        return l_bound, u_bound\n+\n+    def quadratic_bounds(self, iter_exp):\n+        \"\"\"\n+        Generates the limits of the quadratic terms\n+\n+        Parameters\n+        ----------\n+        iter_exp : generator\n+            Iterable term with the quadratic terms of the cost function.\n+\n+        Returns\n+        -------\n+        l_bound : float\n+            Lower bound of the quadratic term.\n+        u_bound : float\n+            Upper bound of the quadratic term\n+\n+        \"\"\"\n+        l_bound = 0\n+        u_bound = 0\n+        for z1, z2, coeff in iter_exp:\n+            l_bound += min(0, coeff)\n+            u_bound += max(0, coeff)\n+        return l_bound, u_bound\n+\n+    def Inequaility2Equality(self, constraint):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "CamelCase for class method",
+    "created_at": "2022-07-29T07:42:14Z",
+    "updated_at": "2022-07-29T07:42:15Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932958287",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932958287"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932958287"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932958287/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 151,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 151,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961127",
+    "pull_request_review_id": 1055140457,
+    "id": 932961127,
+    "node_id": "PRRC_kwDOHMYLyM43m9tn",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):\n+        \"\"\"\n+        Add equality constraints to the cost function using the penality representation.\n+        The constraints should be linear.\n+        \n+        Parameters\n+        ----------\n+        expression : docplex.mp.linear.LinearExpr\n+            docplex equality constraint \"expression == 0\".\n+        multiplier : float\n+            Lagrange multiplier of the penalty\n+\n+        Returns\n+        -------\n+        penalty : docplex.mp.quad.QuadExpr\n+            Penalty that will be added to the cost function.\n+\n+        \"\"\"\n+        penalty = multiplier * (expression) ** 2\n+        return penalty\n+\n+    def bounds(self, linear_expression):\n+        \"\"\"\n+        Generates the limits of a linear term\n+\n+        Parameters\n+        ----------\n+        linear_exp : generator\n+            Iterable term with the quadratic terms of the cost function.\n+\n+        Returns\n+        -------\n+        l_bound : float\n+            Lower bound of the quadratic term.\n+        u_bound : float\n+            Upper bound of the quadratic term\n+        \"\"\"\n+\n+        l_bound = (\n+            u_bound\n+        ) = linear_expression.constant  # Lower and upper bound of the contraint",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "alejomonbar",
+      "id": 11268357,
+      "node_id": "MDQ6VXNlcjExMjY4MzU3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11268357?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/alejomonbar",
+      "html_url": "https://github.com/alejomonbar",
+      "followers_url": "https://api.github.com/users/alejomonbar/followers",
+      "following_url": "https://api.github.com/users/alejomonbar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/alejomonbar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/alejomonbar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/alejomonbar/subscriptions",
+      "organizations_url": "https://api.github.com/users/alejomonbar/orgs",
+      "repos_url": "https://api.github.com/users/alejomonbar/repos",
+      "events_url": "https://api.github.com/users/alejomonbar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/alejomonbar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "done",
+    "created_at": "2022-07-29T07:45:49Z",
+    "updated_at": "2022-07-29T07:45:49Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932961127",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961127"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932961127"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961127/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 120,
+    "side": "RIGHT",
+    "in_reply_to_id": 932944193,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 120,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961364",
+    "pull_request_review_id": 1055140778,
+    "id": 932961364,
+    "node_id": "PRRC_kwDOHMYLyM43m9xU",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):\n+        \"\"\"\n+        Add equality constraints to the cost function using the penality representation.\n+        The constraints should be linear.\n+        \n+        Parameters\n+        ----------\n+        expression : docplex.mp.linear.LinearExpr\n+            docplex equality constraint \"expression == 0\".\n+        multiplier : float\n+            Lagrange multiplier of the penalty\n+\n+        Returns\n+        -------\n+        penalty : docplex.mp.quad.QuadExpr\n+            Penalty that will be added to the cost function.\n+\n+        \"\"\"\n+        penalty = multiplier * (expression) ** 2\n+        return penalty\n+\n+    def bounds(self, linear_expression):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "alejomonbar",
+      "id": 11268357,
+      "node_id": "MDQ6VXNlcjExMjY4MzU3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11268357?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/alejomonbar",
+      "html_url": "https://github.com/alejomonbar",
+      "followers_url": "https://api.github.com/users/alejomonbar/followers",
+      "following_url": "https://api.github.com/users/alejomonbar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/alejomonbar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/alejomonbar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/alejomonbar/subscriptions",
+      "organizations_url": "https://api.github.com/users/alejomonbar/orgs",
+      "repos_url": "https://api.github.com/users/alejomonbar/repos",
+      "events_url": "https://api.github.com/users/alejomonbar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/alejomonbar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "sure, I'll fix it.",
+    "created_at": "2022-07-29T07:46:06Z",
+    "updated_at": "2022-07-29T07:46:07Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932961364",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961364"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932961364"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932961364/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 101,
+    "side": "RIGHT",
+    "in_reply_to_id": 932942748,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 101,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932962553",
+    "pull_request_review_id": 1055142451,
+    "id": 932962553,
+    "node_id": "PRRC_kwDOHMYLyM43m-D5",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "alejomonbar",
+      "id": 11268357,
+      "node_id": "MDQ6VXNlcjExMjY4MzU3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11268357?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/alejomonbar",
+      "html_url": "https://github.com/alejomonbar",
+      "followers_url": "https://api.github.com/users/alejomonbar/followers",
+      "following_url": "https://api.github.com/users/alejomonbar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/alejomonbar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/alejomonbar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/alejomonbar/subscriptions",
+      "organizations_url": "https://api.github.com/users/alejomonbar/orgs",
+      "repos_url": "https://api.github.com/users/alejomonbar/repos",
+      "events_url": "https://api.github.com/users/alejomonbar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/alejomonbar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I will modify the camelcase and the static method, thanks Vishal! :) @vishal-ph ",
+    "created_at": "2022-07-29T07:47:40Z",
+    "updated_at": "2022-07-29T07:47:52Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932962553",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932962553"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932962553"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932962553/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 80,
+    "side": "RIGHT",
+    "in_reply_to_id": 932941321,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 80,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932972677",
+    "pull_request_review_id": 1055156475,
+    "id": 932972677,
+    "node_id": "PRRC_kwDOHMYLyM43nAiF",
+    "diff_hunk": "@@ -0,0 +1,384 @@\n+#   Copyright 2022 Entropica Labs\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+\n+import numpy as np\n+from collections import defaultdict\n+from .problem import QUBO\n+from ..optimizers.result import Result\n+\n+\n+class FromDocplex2IsingModel:\n+    def __init__(self, model, multipliers: float = None):\n+\n+        \"\"\"\n+        Creates an instance to translate Docplex models to its Ising Model representation\n+\n+        Parameters\n+        ----------\n+        model : Docplex model\n+            It is an object that has the mathematical expressions (Cost function,\n+            Inequality and Equality constraints) of an optimization problem in\n+            binary representation.\n+\n+        \"\"\"\n+        # assign the docplex Model\n+        self.model = model.copy()\n+\n+        # save the index in a dict\n+        self.idx_terms = {}\n+        for x in self.model.iter_variables():\n+            self.idx_terms[x] = x.index\n+            if x.vartype.short_name != \"binary\":\n+                TypeError(f\"Variable {x.vartype.short_name} is not allowed.\")\n+        # get doclex qubo and ising model\n+        self.qubo_docplex, self.ising_model = self.get_models(multipliers)\n+\n+    def linear_expr(self, expr):\n+        \"\"\"\n+        Adds linear expresions to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+\n+        \"\"\"\n+        for x, weight in expr.get_linear_part().iter_terms():\n+            self.qubo_dict[(self.idx_terms[x],)] += weight\n+\n+    def quadratic_expr(self, expr):\n+        \"\"\"\n+        Adds quadratic terms to the objective function stored in self.qubo_dict.\n+\n+        Parameters\n+        ----------\n+        expr : model.objective_expr\n+            A docplex model attribute.\n+        \"\"\"\n+\n+        # save the terms and coeffs of the quadratic part,\n+        # considering two index i and j\n+        for x, y, weight in expr.iter_quad_triplets():\n+            i = self.idx_terms[x]\n+            j = self.idx_terms[y]\n+            if i == j:  # if this is the term is  Z1**2 for example\n+                self.qubo_dict[(i,)] += weight\n+            else:\n+                self.qubo_dict[(i, j)] += weight\n+\n+    def Equality2Penalty(self, expression, multiplier: float):",
+    "path": "openqaoa/problems/converters.py",
+    "commit_id": "e3698c12088016210d95bfc41cf0512a05cdae6c",
+    "original_commit_id": "0a3475d7c3826dea722b258eae72ac1104b54783",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "great, thanks!",
+    "created_at": "2022-07-29T08:00:11Z",
+    "updated_at": "2022-07-29T08:00:11Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932972677",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932972677"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/71#discussion_r932972677"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/71"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/932972677/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 80,
+    "side": "RIGHT",
+    "in_reply_to_id": 932941321,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 80,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

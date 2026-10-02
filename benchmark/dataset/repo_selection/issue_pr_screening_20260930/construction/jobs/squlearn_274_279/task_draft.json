@@ -1,0 +1,101 @@
+{
+  "oracle_files": [
+    "src/squlearn/kernel/__init__.py",
+    "src/squlearn/kernel/loss/__init__.py",
+    "src/squlearn/kernel/loss/kernel_loss_base.py",
+    "src/squlearn/kernel/loss/negative_log_likelihood.py",
+    "src/squlearn/kernel/loss/target_alignment.py",
+    "src/squlearn/kernel/matrix/__init__.py",
+    "src/squlearn/kernel/matrix/kernel_matrix_base.py",
+    "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "src/squlearn/kernel/ml/qgpc.py",
+    "src/squlearn/kernel/ml/qgpr.py",
+    "src/squlearn/kernel/ml/qkrr.py",
+    "src/squlearn/kernel/ml/qsvc.py",
+    "src/squlearn/kernel/ml/qsvr.py",
+    "src/squlearn/optimizers/approximated_gradients.py"
+  ],
+  "task": {
+    "problem_statement": "Quantum-kernel optimization needs to work as part of the high-level regression and classification models. Users should be able to wrap an existing kernel with an optimizer and have model fitting optimize the kernel parameters.",
+    "requirements": [
+      "Provide a quantum-kernel optimizer usable wherever a quantum kernel is accepted by the supported models.",
+      "Fit optimized kernels through QGPR, QKRR, QSVR, QGPC, and QSVC.",
+      "Retain the selected optimizer, fitted state, and optimal parameter values after fitting.",
+      "Support negative log likelihood for fidelity kernels and target alignment for projected kernels."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "KernelOptimizer",
+        "Path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+        "Input": "constructor: quantum_kernel, loss=None, optimizer=None, initial_parameters=None",
+        "Output": "",
+        "Description": "Wraps a quantum kernel and exposes fitted state and optimized parameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "KernelOptimizer.get_optimal_parameters",
+        "Path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+        "Input": "self",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the optimized kernel parameters after fitting."
+      },
+      {
+        "Type": "Class",
+        "Name": "NLL",
+        "Path": "src/squlearn/kernel/loss/negative_log_likelihood.py",
+        "Input": "constructor: sigma=0.0",
+        "Output": "",
+        "Description": "Kernel negative-log-likelihood loss."
+      },
+      {
+        "Type": "Class",
+        "Name": "TargetAlignment",
+        "Path": "src/squlearn/kernel/loss/target_alignment.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Kernel target-alignment loss."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPR.fit",
+        "Path": "src/squlearn/kernel/ml/qgpr.py",
+        "Input": "self, X, y",
+        "Output": "QGPR",
+        "Description": "Fits the model and its wrapped kernel optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "QKRR.fit",
+        "Path": "src/squlearn/kernel/ml/qkrr.py",
+        "Input": "self, X, y",
+        "Output": "QKRR",
+        "Description": "Fits the model and its wrapped kernel optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVR.fit",
+        "Path": "src/squlearn/kernel/ml/qsvr.py",
+        "Input": "self, X, y",
+        "Output": "QSVR",
+        "Description": "Fits the model and its wrapped kernel optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPC.fit",
+        "Path": "src/squlearn/kernel/ml/qgpc.py",
+        "Input": "self, X, y",
+        "Output": "QGPC",
+        "Description": "Fits the model and its wrapped kernel optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVC.fit",
+        "Path": "src/squlearn/kernel/ml/qsvc.py",
+        "Input": "self, X, y",
+        "Output": "QSVC",
+        "Description": "Fits the model and its wrapped kernel optimizer."
+      }
+    ]
+  }
+}

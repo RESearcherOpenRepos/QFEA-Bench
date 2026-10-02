@@ -1,0 +1,182 @@
+FILE pyproject.toml
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "squlearn"
+readme = "README.md"
+authors = [
+    {name = "David Kreplin", email = "david.kreplin@ipa.fraunhofer.de"},
+    {name = "Frederic Rapp", email = "frederic.rapp@ipa.fraunhofer.de"},
+    {name = "Marco Roth", email = "marco.roth@ipa.fraunhofer.de"},
+    {name = "Jan Schnabel", email = "jan.schnabel@ipa.fraunhofer.de"},
+    {name = "Moritz Willmann", email = "moritz.willmann@ipa.fraunhofer.de"},
+]
+maintainers = [
+    {name = "David Kreplin", email = "david.kreplin@ipa.fraunhofer.de"},
+    {name = "Moritz Willmann", email = "moritz.willmann@ipa.fraunhofer.de"},
+]
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["quantum", "machine learning", "qml"]
+dependencies = [
+    "numpy>=1.17",
+    "scipy>=1.5",
+    "scikit-learn>=1.0",
+    "qiskit>=0.42.1",
+    "qiskit-aer>=0.12.0",
+    "qiskit-machine-learning>=0.6.0",
+    "qiskit-ibm-runtime>=0.9",
+    "dill>=0.3",
+]
+requires-python = ">=3.9"
+dynamic = ["version", "description"]
+
+[project.optional-dependencies]
+dev = ["pylint", "black", "pytest", "sphinx", "sphinxcontrib-spelling", "sphinx-rtd-theme", "flit"]
+examples = ["jupyter", "matplotlib>=3.5", "pylatexenc>=2.10"]
+
+[project.urls]
+Homepage = "https://github.com/sQUlearn/squlearn"
+
+[tool.black]
+line-length=99
+
+[tool.pylint]
+max-line-length=99
+good-names=["X", "y", "i", "j"]
+
+[tool.pylint.main]
+extension-pkg-allow-list = [
+    "numpy",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+FILE .github/workflows/publish.yml
+name: Publish to PyPI
+on:
+  release:
+    types: [published]
+
+jobs:
+    pypi-publish:
+      name: Upload release to PyPI
+      runs-on: ubuntu-latest
+      environment:
+        name: release
+        url: https://pypi.org/p/squlearn
+      permissions:
+        id-token: write
+      steps:
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.9
+
+        - name: Install dependencies
+          run: pip install flit
+
+        - uses: actions/checkout@v2
+        
+        - name: Build
+          run: flit build
+
+        - name: Publish package distributions to PyPI
+          uses: pypa/gh-action-pypi-publish@release/v1
+
+FILE .github/workflows/format.yml
+name: Formatting check
+on:
+- pull_request
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel Workflow Action
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install black[jupyter]
+
+      - uses: actions/checkout@v2
+
+      - name: Run Black
+        run: |
+          black -l 99 src --check
+          black -l 99 tests --check
+          black -l 99 --ipynb examples --check
+
+FILE .github/workflows/publish_docs.yml
+name: Publish to GH Pages
+on:
+  release:
+    types: [published]
+
+jobs:
+    publish-pages:
+      name: Publish to GH Pages
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout Source Code
+            uses: actions/checkout@v2
+          - name: Checkout GH Pages
+            uses: actions/checkout@v2
+            with:
+              repository: sQUlearn/squlearn.github.io
+              path: "docs/_build"
+              token: ${{ secrets.GITHUB_TOKEN }}
+          - name: Build Docs
+            uses: sQUlearn/sphinx-action@master
+            with:
+              docs-folder: "docs/"
+              pre-build-command: "pip3 install ."
+              build-command: "sphinx-build -b html . _build -W"
+          - name: Commit Files
+            run: |
+              cd docs/_build
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git config --global user.name "github-actions[bot]"
+              git add .
+              git commit -m "update documentation ${{ github.event.release.tag_name }}"
+              git tag -a "${{ github.event.release.tag_name }}" -m "${{ github.event.release.name}}"
+          - name: Push Changes
+            uses: ad-m/github-push-action@master
+            with:
+              directory: docs/_build
+              repository: sQUlearn/squlearn.github.io
+
+FILE .github/workflows/doc_checks.yml
+name: Documentation check
+on:
+- pull_request
+
+jobs:
+  doc_checks:
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Cancel Workflow Action
+          uses: styfle/cancel-workflow-action@0.11.0
+
+        - uses: actions/checkout@v2
+        - uses: sQUlearn/sphinx-action@master
+          with:
+            docs-folder: "docs/"
+            pre-build-command: "apt-get update && apt-get install -y libenchant-2-dev && pip3 install ."
+            build-command: "sphinx-build -b html . _build -W --keep-going"

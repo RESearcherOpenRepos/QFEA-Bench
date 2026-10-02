@@ -1,0 +1,147 @@
+{
+  "id": 3,
+  "sample_id": "openfermion_246_306",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "78c379106b0626a9212d2ac3483a44df4f01187f",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 9,
+    "subtype_test_counts": {
+      "quantum_semantics/hamiltonian_representation_equivalence": 6,
+      "interface/input_validation": 3,
+      "quantum_semantics/hamiltonian_domain_validity": 2,
+      "quantum_semantics/fermionic_tensor_mapping": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 165, "expected": "Converting a Hubbard-model FermionOperator to DiagonalCoulombHamiltonian and back preserves its normal-ordered operator"}]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 175, "expected": "Converting a random quadratic Hamiltonian through the diagonal-Coulomb form preserves its normal-ordered FermionOperator"}]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+      "label": "interface/input_validation",
+      "assertions": [
+        {"line": 188, "expected": "A QubitOperator input raises TypeError"},
+        {"line": 190, "expected": "An n_qubits argument smaller than the used mode range raises ValueError"},
+        {"line": 192, "expected": "A term with two creation operators raises ValueError"},
+        {"line": 194, "expected": "An unsupported four-creation-operator term raises ValueError"},
+        {"line": 196, "expected": "A one-body term without its Hermitian partner raises ValueError"},
+        {"line": 198, "expected": "An imaginary diagonal-Coulomb coefficient raises ValueError"}
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetSparseOperatorDiagonalCoulombHamiltonianTest::test_diagonal_coulomb_hamiltonian",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 301, "expected": "Sparse matrices from direct diagonal-Coulomb conversion and the Jordan–Wigner path agree to numerical tolerance"}]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_hubbard",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 393, "expected": "Jordan–Wigner transforms of a Hubbard model agree before and after diagonal-Coulomb conversion"}]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_random_quadratic",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 401, "expected": "Jordan–Wigner transforms of a random quadratic Hamiltonian agree before and after diagonal-Coulomb conversion"}]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [
+        {"line": 103, "expected": "Conversion round trip preserves a non-particle-number-conserving Hermitian quadratic operator"},
+        {"line": 111, "expected": "The same round trip preserves that operator with a chemical-potential argument"},
+        {"line": 118, "expected": "Conversion round trip preserves a particle-number-conserving Hermitian quadratic operator"}
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian_bad_term",
+      "label": "quantum_semantics/hamiltonian_domain_validity",
+      "assertions": [{"line": 123, "expected": "A Hermitian operator containing a nonquadratic term is rejected as a QuadraticHamiltonian"}]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_not_hermitian",
+      "label": "quantum_semantics/hamiltonian_domain_validity",
+      "assertions": [
+        {"line": 128, "expected": "Non-Hermitian quadratic candidate 1 is rejected"},
+        {"line": 130, "expected": "Non-Hermitian quadratic candidate 2 is rejected"},
+        {"line": 132, "expected": "Non-Hermitian quadratic candidate 3 is rejected"},
+        {"line": 134, "expected": "Non-Hermitian quadratic candidate 4 is rejected"},
+        {"line": 136, "expected": "Non-Hermitian quadratic candidate 5 is rejected"}
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_bad_input",
+      "label": "interface/input_validation",
+      "assertions": [{"line": 141, "expected": "A string input raises TypeError"}]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_too_few_qubits",
+      "label": "interface/input_validation",
+      "assertions": [{"line": 146, "expected": "An n_qubits argument too small for the operator's mode indices raises ValueError"}]
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [{"line": 346, "expected": "Fermionic number term on mode 2 maps to one-body tensor entry [2,2] with coefficient 1"}]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body_twoterm",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [{"line": 356, "expected": "Two complex one-body fermionic terms map to their corresponding tensor entries and coefficients"}]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [{"line": 365, "expected": "A two-body fermionic term maps to tensor entry [3,2,4,2] with coefficient -1"}]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body_distinct",
+      "label": "quantum_semantics/fermionic_tensor_mapping",
+      "assertions": [{"line": 374, "expected": "A four-distinct-mode term maps to tensor entry [1,0,3,2] with coefficient 1"}]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/78c379106b0626a9212d2ac3483a44df4f01187f/src/openfermion/transforms/_conversion_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/78c379106b0626a9212d2ac3483a44df4f01187f/src/openfermion/transforms/_jordan_wigner_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/78c379106b0626a9212d2ac3483a44df4f01187f/src/openfermion/transforms/_conversion.py"
+  ],
+  "rationale": "Each test has one primary label. The six-check test_exceptions method is classified as interface/input_validation because it checks the function's rejection contract across several invalid inputs. Focused nonquadratic and non-Hermitian tests are classified as quantum domain validity because admissibility is their central property."
+}

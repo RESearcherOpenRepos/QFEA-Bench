@@ -1,0 +1,126 @@
+{
+  "method": "Binomial-logit GEE, working independence, task-cluster robust sandwich SE; Wald 95% CI and two-sided p-values",
+  "cohort": "106 original paper tasks; 15 configurations selected by RQ1 100-step table; one recorded result per task/configuration",
+  "outcome": "Resolved, including non-submission/failure as zero; evaluator revalidations are not independent agent runs",
+  "test_count_unit": "Fixed selected test selectors, not expanded parameterized pytest items; F2P + P2P",
+  "scaling": {
+    "patch_z": {
+      "mean": 5.404481893458309e-16,
+      "sd_population": 1.7828658083062112
+    },
+    "tests_z": {
+      "mean": 2.5225368092567826,
+      "sd_population": 0.5978996445565401
+    },
+    "f2p_z": {
+      "mean": 1.5990321822849591,
+      "sd_population": 0.7020411082301073
+    },
+    "p2p_z": {
+      "mean": 2.049957554568501,
+      "sd_population": 0.6333075067517796
+    }
+  },
+  "specificity_patch_correlation": {
+    "n_tasks": 106,
+    "point_biserial_r": 0.26617493964200856,
+    "point_biserial_p": 0.00581769717183885,
+    "spearman_rho": 0.27220378145479335,
+    "spearman_p": 0.004760795329370682
+  },
+  "models": [
+    {
+      "name": "setting_adjusted",
+      "formula": "resolved ~ strong + C(setting)",
+      "observations": 1590,
+      "task_clusters": 106,
+      "resolved": 599,
+      "design_columns": 16,
+      "design_rank": 16,
+      "design_condition_number": 17.396392829601005,
+      "separation_detected": false,
+      "converged": true,
+      "warnings": [],
+      "min_fitted_probability": 0.045472153081673156,
+      "max_fitted_probability": 0.7281283146763002
+    },
+    {
+      "name": "main",
+      "formula": "resolved ~ strong + patch_z + tests_z + C(repo) + C(setting)",
+      "observations": 1590,
+      "task_clusters": 106,
+      "resolved": 599,
+      "design_columns": 24,
+      "design_rank": 24,
+      "design_condition_number": 19.695445914682622,
+      "separation_detected": false,
+      "converged": true,
+      "warnings": [],
+      "min_fitted_probability": 0.0024010750672881468,
+      "max_fitted_probability": 0.9605663016546335
+    },
+    {
+      "name": "separate_test_counts",
+      "formula": "resolved ~ strong + patch_z + f2p_z + p2p_z + C(repo) + C(setting)",
+      "observations": 1590,
+      "task_clusters": 106,
+      "resolved": 599,
+      "design_columns": 25,
+      "design_rank": 25,
+      "design_condition_number": 20.107404701022563,
+      "separation_detected": false,
+      "converged": true,
+      "warnings": [],
+      "min_fitted_probability": 0.0019726400712170534,
+      "max_fitted_probability": 0.962255129036584
+    },
+    {
+      "name": "exclude_qiskit_nature",
+      "formula": "resolved ~ strong + patch_z + tests_z + C(repo) + C(setting)",
+      "observations": 855,
+      "task_clusters": 57,
+      "resolved": 396,
+      "design_columns": 23,
+      "design_rank": 23,
+      "design_condition_number": 18.74814715970377,
+      "separation_detected": false,
+      "converged": true,
+      "warnings": [],
+      "min_fitted_probability": 0.011436927022095035,
+      "max_fitted_probability": 0.9465285311951894
+    }
+  ],
+  "versions": {
+    "python": "3.11.3",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scipy": "1.10.1",
+    "statsmodels": "0.13.5"
+  },
+  "input_sha256": {
+    "rq/rq1/results/rq1_step_cap_main_table.csv": "adeca300f552be4f1434d4480322479aeab89e5f1cad88c231c489f5880d72aa",
+    "rq/rq2/results/engineering_complexity.csv": "4b5a4d16d1410e726935a8066d25bada78961e1d4182c7fe8c132de3b9892536",
+    "rq/rq1/results/corrected_evaluations/mini-swe_gpt55_20260604.json": "c106c9d08a05d33018c5d8724ab79bf79a8676269d93db9274b28865c2a671ba",
+    "rq/rq1/results/corrected_evaluations/mini-swe_glm5_2_20260626.json": "f29acb33c7e0a9faceeb8d5cf025f01e87cbc66bcdb71b522144e275e87d7253",
+    "rq/rq1/results/corrected_evaluations/mini-swe_gemini_3_flash_20260604.json": "a28c026e4bac763e892e210d568a0636b8030af3464e1a0c137061f11cd2d4ed",
+    "rq/rq1/results/corrected_evaluations/mini-swe_deepseek_v4_pro_20260602.json": "fb3cc88535e98ca7cb05faeca6e7ac238be6fb4af14b34881d00a635bd0d9722",
+    "rq/rq1/results/corrected_evaluations/mini-swe_deepseek_v4_flash_20260602.json": "4ac5252831031fce6fd12ca68537f7945690a3b71c91d6c9a190350ce137fcbd",
+    "rq/rq1/results/corrected_evaluations/openhands_gpt55_20260625.json": "ea5445ce13c69bc937a09cdde7840f7e7e964307b9808bddd0fcc5e8f47ca7f8",
+    "rq/rq1/results/corrected_evaluations/openhands_glm5_2_20260627.json": "ad0f26216f677b47176786d360e0b9e0faecfca9a16c17e5c2cc9990fb23a388",
+    "rq/rq1/results/corrected_evaluations/openhands_gemini3_flash_20260606.json": "51301955631691c0245bbd4ccfaf830624154e0789817427a34a2f115714c3f5",
+    "rq/rq1/results/corrected_evaluations/openhands_deepseek_v4_pro_20260608.json": "f39230e4390ba09e02fc532c65699403d2a6c12ae1d2ed401338dd153bdeacbf",
+    "rq/rq1/results/corrected_evaluations/openhands_deepseek_v4_flash_20260608.json": "8ebe0da57475be0c353f86f08d156d226063e8d2b97612c5f004b6834a411823",
+    "rq/rq1/results/corrected_evaluations/autocoderover_gpt55_20260625.json": "76e18d1e5616e99cc0c08f55ff489824d6a050dc1c6f860c77b0912b17b5e39d",
+    "rq/rq1/results/corrected_evaluations/autocoderover_glm5_2_openrouter_20260628.json": "9f198c910d725b8256fd3dbc7d7e8e38ebef84e0ec4a56506a6be43cf2ccff4b",
+    "rq/rq1/results/corrected_evaluations/autocoderover_gemini3_flash_20260609.json": "69db884766d11806d7c3cf7d10c822289eb1484c0881e34ed207057b640b1d30",
+    "rq/rq1/results/corrected_evaluations/autocoderover_deepseek_v4_pro_20260610.json": "96910f2eb870320f832e6186340640030112f45732384ca94fddb82c2da3d516",
+    "rq/rq1/results/corrected_evaluations/autocoderover_deepseek_v4_flash_20260609.json": "ec2f77e18b9d70e97f88d308158ddc1e7f4685b14da00f44738ca7c83366b9aa"
+  },
+  "limitations": [
+    "Observational adjusted associations, not causal effects.",
+    "Only 106 independent task clusters; configurations are fixed evaluated settings.",
+    "Finance and Tangelo have no strong tasks; repository overlap must be reported.",
+    "Confidence intervals use asymptotic cluster-robust Wald inference.",
+    "No multiple-testing correction; sensitivity models are diagnostic."
+  ]
+}

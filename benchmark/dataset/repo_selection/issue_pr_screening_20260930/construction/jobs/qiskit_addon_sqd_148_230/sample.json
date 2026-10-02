@@ -1,0 +1,115 @@
+{
+  "instance": {
+    "id": 110,
+    "repo": "Qiskit/qiskit-addon-sqd",
+    "instance_id": "qiskit_addon_sqd_148_230",
+    "status": "completed",
+    "issue_url": "https://github.com/Qiskit/qiskit-addon-sqd/issues/148",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/230",
+    "base_commit": "780c30c68c877db7d4ce8f70a1ecd055a580277a",
+    "patch": "0f8d2805b811fb0853f99de2756dc97893edcbb3"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "SCI \u5b50\u7a7a\u95f4\u7ef4\u5ea6\u63a7\u5236\u8bf7\u6c42\u7531 max_dim \u5b9e\u73b0\u76f4\u63a5\u5b8c\u6210\uff1b\u6d4b\u8bd5\u65b0\u589e\u81ea\u65cb\u6247\u533a\u7ef4\u5ea6\u4e0e spin-square \u65ad\u8a00\uff0c\u4efb\u52a1\u8fb9\u754c\u96c6\u4e2d\u4e14\u5177\u91cf\u5b50\u8bed\u4e49\u3002"
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_addon_sqd/fermion.py",
+      "qiskit_addon_sqd/counts.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Sample-based quantum diagonalization currently ties the selected configuration-interaction subspace size too closely to the sampling batch size. Users need independent control of the alpha and beta determinant subspace dimensions while preserving the physical interpretation of the resulting state.",
+    "requirements": [
+      "Accept a common maximum determinant dimension or separate alpha/beta maximum dimensions.",
+      "Enforce the requested dimensions in the selected configuration-interaction state, including spin-symmetrized sampling.",
+      "Preserve the spin-square expectation when interpreting the selected state in the full configuration-interaction basis."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "diagonalize_fermionic_hamiltonian",
+        "Path": "qiskit_addon_sqd/fermion.py",
+        "Input": "one_body_tensor, two_body_tensor, bit_array, samples_per_batch, norb, nelec, *, max_dim=None, symmetrize_spin=False, max_iterations=100, seed=None, ...",
+        "Output": "SCIResult",
+        "Description": "Runs SQD with max_dim an integer, an (alpha, beta) pair, or None; result.sci_state exposes amplitudes, ci_strs_a, ci_strs_b and spin_square()."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/arm64",
+      "image": "benchmark-qiskit_addon_sqd_148_230:latest",
+      "image_id": "sha256:b0de3cead001a67de2f3f310e6b1d530e3bd3da2744240b50e0f0454e31f7c5b",
+      "image_size": "1248226567",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.21",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/arm64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": [
+        "amd64 JAX wheel requires AVX unavailable under local emulation; native ARM validation is recorded separately from original amd64 samples."
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim"
+        ],
+        "summary": "1 failed in 1.98s",
+        "duration_seconds": 3.85
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_reproducible_with_seed",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs_large"
+        ],
+        "summary": "3 passed in 2.59s",
+        "duration_seconds": 4.299
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim"
+        ],
+        "summary": "1 passed in 4.50s",
+        "duration_seconds": 8.101
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_reproducible_with_seed",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs_large"
+        ],
+        "summary": "3 passed in 3.42s",
+        "duration_seconds": 5.456
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/qiskit_addon_sqd_148_230",
+    "selector_exclusions": {
+      "test_diagonalize_fermionic_hamiltonian_basic": "Renamed in PR; does not exist with same nodeid on base, so excluded from P2P. Adjacent solver seed and determinant-string cases retained."
+    }
+  }
+}

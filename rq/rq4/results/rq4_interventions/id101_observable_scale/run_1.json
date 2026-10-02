@@ -1,0 +1,708 @@
+{
+  "instance_id": "qiskit_optimization_473_487",
+  "resolved": false,
+  "returncode": 1,
+  "patch_applied": true,
+  "eval_infra_failed": false,
+  "eval_infra_failure": null,
+  "agent": {},
+  "stdout": "Sample: qiskit_optimization_473_487\nRepository: qiskit-community/qiskit-optimization\nIssue: https://github.com/qiskit-community/qiskit-optimization/issues/473\nPR: https://github.com/qiskit-community/qiskit-optimization/pull/487\nTarget mode: base\nTarget commit: b6d004115abb1f86f06b5aef2d6b12d18db60350\nRepository URL: https://github.com/qiskit-community/qiskit-optimization.git\nFail-pass test paths: test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\nPass-pass test paths: test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr test/applications/test_knapsack.py::TestKnapsack::test_interpret test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program test/applications/test_max_cut.py::TestMaxcut::test_interpret test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program test/converters/test_converters.py::TestConverters::test_binary_to_integer test/converters/test_converters.py::TestConverters::test_inequality_binary test/converters/test_converters.py::TestConverters::test_penalize_binary\nTest suite: pass-pass\nPatch applied: true\nRunning fail-pass tests...\nFF.FF..F                                                                 [100%]\n=================================== FAILURES ===================================\n____________ TestQuantumRandomAccessEncoding.test_11p_qrac_encoding ____________\n\nself = <test_quantum_random_access_encoding.TestQuantumRandomAccessEncoding testMethod=test_11p_qrac_encoding>\n\n    def test_11p_qrac_encoding(self):\n        \"\"\"Test (1,1,p) QRAC\"\"\"\n        encoding = QuantumRandomAccessEncoding(1)\n>       self.assertFalse(encoding.frozen)  # frozen is False\nE       AttributeError: 'QuantumRandomAccessEncoding' object has no attribute 'frozen'\n\ntest/algorithms/qrao/test_quantum_random_access_encoding.py:163: AttributeError\n________ TestQuantumRandomAccessEncoding.test_qrac_unsupported_encoding ________\n\nself = <test_quantum_random_access_encoding.TestQuantumRandomAccessEncoding testMethod=test_qrac_unsupported_encoding>\n\n    def test_qrac_unsupported_encoding(self):\n        \"\"\"Test that exception is raised if ``max_vars_per_qubit`` is invalid\"\"\"\n        with self.assertRaises(ValueError):\n>           QuantumRandomAccessEncoding(4)\n\ntest/algorithms/qrao/test_quantum_random_access_encoding.py:246: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def __init__(self, max_vars_per_qubit: int = 3) -> None:\n        \"\"\"Args:\n            max_vars_per_qubit: maximum number of variables packed into a qubit (1, 2, or 3).\n        \"\"\"\n        if max_vars_per_qubit not in (1, 2, 3):\n>           raise QiskitOptimizationError(\n                \"max_vars_per_qubit must be one of 1, 2, or 3 for QRAC encodings.\"\n            )\nE           qiskit_optimization.exceptions.QiskitOptimizationError: 'max_vars_per_qubit must be one of 1, 2, or 3 for QRAC encodings.'\n\nqiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py:43: QiskitOptimizationError\n______________ TestMagicRounding.test_magic_rounding_constructor _______________\n\nself = <test_magic_rounding.TestMagicRounding testMethod=test_magic_rounding_constructor>\n\n    def test_magic_rounding_constructor(self):\n        \"\"\"Test constructor\"\"\"\n        sampler = Sampler(options={\"shots\": 10000, \"seed\": 42})\n        # test default\n        magic_rounding = MagicRounding(sampler)\n>       self.assertEqual(magic_rounding.sampler, sampler)\nE       AttributeError: 'MagicRounding' object has no attribute 'sampler'. Did you mean: '_sampler'?\n\ntest/algorithms/qrao/test_magic_rounding.py:50: AttributeError\n_________ TestMagicRounding.test_magic_rounding_round_uniform_1_1_qrac _________\n\nself = <test_magic_rounding.TestMagicRounding testMethod=test_magic_rounding_round_uniform_1_1_qrac>\n\n    def test_magic_rounding_round_uniform_1_1_qrac(self):\n        \"\"\"Test round method with uniform basis sampling for max_vars_per_qubit=1\"\"\"\n        sampler = Sampler(options={\"shots\": 10000, \"seed\": 42})\n        encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=1)\n        encoding.encode(self.problem)\n        np_solver = NumPyMinimumEigensolver()\n        qrao = QuantumRandomAccessOptimizer(min_eigen_solver=np_solver)\n        _, rounding_context = qrao.solve_relaxed(encoding=encoding)\n        magic_rounding = MagicRounding(sampler, seed=42)\n        rounding_result = magic_rounding.round(rounding_context)\n        self.assertIsInstance(rounding_result, RoundingResult)\n        np.testing.assert_allclose(rounding_result.bases, [[0, 0, 0]])\n>       np.testing.assert_allclose(rounding_result.basis_shots, [10000])\n\ntest/algorithms/qrao/test_magic_rounding.py:76: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_allclose.<locals>.compare at 0x7fffca840f70>, array([1]), array([10000]))\nkwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=1e-07, atol=0', 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Not equal to tolerance rtol=1e-07, atol=0\nE           \nE           Mismatched elements: 1 / 1 (100%)\nE           Max absolute difference: 9999\nE           Max relative difference: 0.9999\nE            x: array([1])\nE            y: array([10000])\n\n/usr/local/lib/python3.10/contextlib.py:79: AssertionError\n________ TestSemideterministicRounding.test_semideterministic_rounding _________\n\nself = <test_semideterministic_rounding.TestSemideterministicRounding testMethod=test_semideterministic_rounding>\n\n    def test_semideterministic_rounding(self):\n        \"\"\"Test SemideterministicRounding\"\"\"\n        encoding = QuantumRandomAccessEncoding()\n        encoding.encode(self.problem)\n        rounding_scheme = SemideterministicRounding(seed=123)\n        expectation_values = [1, -1, 0, 0.7, -0.3]\n        result = rounding_scheme.round(\n            RoundingContext(expectation_values=expectation_values, encoding=encoding)\n        )\n        self.assertIsInstance(result, RoundingResult)\n        self.assertIsInstance(result.samples[0], SolutionSample)\n        self.assertEqual(result.expectation_values, [1, -1, 0, 0.7, -0.3])\n>       np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1, 1, 0, 1])\n\ntest/algorithms/qrao/test_semideterministic_rounding.py:50: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/usr/local/lib/python3.10/contextlib.py:79: in inner\n    return func(*args, **kwds)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = (<function assert_array_almost_equal.<locals>.compare at 0x7fffca726b90>, array([0, 1, 0, 0, 1]), [0, 1, 1, 0, 1])\nkwds = {'err_msg': '', 'header': 'Arrays are not almost equal to 6 decimals', 'precision': 6, 'verbose': True}\n\n    @wraps(func)\n    def inner(*args, **kwds):\n        with self._recreate_cm():\n>           return func(*args, **kwds)\nE           AssertionError: \nE           Arrays are not almost equal to 6 decimals\nE           \nE           Mismatched elements: 1 / 5 (20%)\nE           Max absolute difference: 1\nE           Max relative difference: 1.\nE            x: array([0, 1, 0, 0, 1])\nE            y: array([0, 1, 1, 0, 1])\n\n/usr/local/lib/python3.10/contextlib.py:79: AssertionError\n=============================== warnings summary ===============================\nqiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py:26\n  /workspace/repo/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py:26: DeprecationWarning: invalid escape sequence '\\s'\n    \"\"\"Encode a binary quadratic program as a QRAC-backed relaxation.\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\nFAILED test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\nFAILED test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\nFAILED test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\nFAILED test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\n5 failed, 3 passed, 1 warning in 1.96s\n\n__QUANBENCH_CASE_REPORT_BEGIN__fail_pass\n{\"pytest_exit_code\":1,\"report\":{\"schema_version\":1,\"exitstatus\":1,\"collected\":[\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\",\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\",\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\",\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\",\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\",\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\",\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\",\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\"],\"collected_items\":[{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\",\"selector\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\"},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\",\"selector\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\"},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\",\"selector\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\"},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\",\"selector\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\"},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\",\"selector\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\"},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\",\"selector\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\"},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\",\"selector\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\"},{\"nodeid\":\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\",\"selector\":\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\"}],\"reports\":[{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\",\"when\":\"call\",\"outcome\":\"failed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false}],\"collection_errors\":[]}}\n__QUANBENCH_CASE_REPORT_END__fail_pass\nRunning pass-pass tests...\n...........                                                        [100%]\n=============================== warnings summary ===============================\nqiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py:26\n  /workspace/repo/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py:26: DeprecationWarning: invalid escape sequence '\\s'\n    \"\"\"Encode a binary quadratic program as a QRAC-backed relaxation.\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n11 passed, 1 warning, 6 subtests passed in 1.49s\n\n__QUANBENCH_CASE_REPORT_BEGIN__pass_pass\n{\"pytest_exit_code\":0,\"report\":{\"schema_version\":1,\"exitstatus\":0,\"collected\":[\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\",\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\",\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\",\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\",\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\",\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\",\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\",\"test/converters/test_converters.py::TestConverters::test_inequality_binary\",\"test/converters/test_converters.py::TestConverters::test_penalize_binary\"],\"collected_items\":[{\"nodeid\":\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\",\"selector\":\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\"},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\",\"selector\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\"},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"selector\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\"},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"selector\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\"},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\",\"selector\":\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\"},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\",\"selector\":\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\"},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\",\"selector\":\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\"},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\",\"selector\":\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\"},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\",\"selector\":\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\"},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_inequality_binary\",\"selector\":\"test/converters/test_converters.py::TestConverters::test_inequality_binary\"},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_penalize_binary\",\"selector\":\"test/converters/test_converters.py::TestConverters::test_penalize_binary\"}],\"reports\":[{\"nodeid\":\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_interpret\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_interpret\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_binary_to_integer\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_inequality_binary\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_inequality_binary\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_inequality_binary\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_penalize_binary\",\"when\":\"setup\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_penalize_binary\",\"when\":\"call\",\"outcome\":\"passed\",\"wasxfail\":false},{\"nodeid\":\"test/converters/test_converters.py::TestConverters::test_penalize_binary\",\"when\":\"teardown\",\"outcome\":\"passed\",\"wasxfail\":false}],\"collection_errors\":[]}}\n__QUANBENCH_CASE_REPORT_END__pass_pass\n",
+  "stderr": "Evaluator offline mode: skipping git fetch fetch --all --tags --prune\nPrevious HEAD position was d7b9ddb Integrate QRAO into Qiskit Optimization (#487)\nHEAD is now at b6d0041 Remove deprecation.py (#550)\n",
+  "timed_out": false,
+  "run_index": 1,
+  "eval_attempt": 1,
+  "fail_pass": {
+    "passed": 3,
+    "total": 8,
+    "summary": "3/8",
+    "status": "failed",
+    "counts": {
+      "passed": 3,
+      "failed": 5,
+      "skipped": 0,
+      "not_run": 0,
+      "not_collected": 0
+    },
+    "pytest_exit_code": 1,
+    "collection_errors": [],
+    "unmatched_report_nodeids": []
+  },
+  "pass_pass": {
+    "passed": 11,
+    "total": 11,
+    "summary": "11/11",
+    "status": "passed",
+    "counts": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0,
+      "not_collected": 0
+    },
+    "pytest_exit_code": 0,
+    "collection_errors": [],
+    "unmatched_report_nodeids": []
+  },
+  "test_cases": {
+    "fail_pass": [
+      {
+        "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy"
+        ]
+      },
+      {
+        "selector": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+        "status": "failed",
+        "phase": "call",
+        "pytest_items": [
+          "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding"
+        ]
+      }
+    ],
+    "pass_pass": [
+      {
+        "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list"
+        ]
+      },
+      {
+        "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init"
+        ]
+      },
+      {
+        "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint"
+        ]
+      },
+      {
+        "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr"
+        ]
+      },
+      {
+        "selector": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/applications/test_knapsack.py::TestKnapsack::test_interpret"
+        ]
+      },
+      {
+        "selector": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program"
+        ]
+      },
+      {
+        "selector": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/applications/test_max_cut.py::TestMaxcut::test_interpret"
+        ]
+      },
+      {
+        "selector": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program"
+        ]
+      },
+      {
+        "selector": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/converters/test_converters.py::TestConverters::test_binary_to_integer"
+        ]
+      },
+      {
+        "selector": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary"
+        ]
+      },
+      {
+        "selector": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+        "status": "passed",
+        "phase": "",
+        "pytest_items": [
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary"
+        ]
+      }
+    ]
+  },
+  "pytest_case_reports": {
+    "fail_pass": {
+      "pytest_exit_code": 1,
+      "report": {
+        "schema_version": 1,
+        "exitstatus": 1,
+        "collected": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+          "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding"
+        ],
+        "collected_items": [
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+            "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+            "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+            "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+            "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+            "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+            "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+            "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy"
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+            "selector": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding"
+          }
+        ],
+        "reports": [
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+            "when": "call",
+            "outcome": "failed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          }
+        ],
+        "collection_errors": []
+      }
+    },
+    "pass_pass": {
+      "pytest_exit_code": 0,
+      "report": {
+        "schema_version": 1,
+        "exitstatus": 0,
+        "collected": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+          "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+          "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+          "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary"
+        ],
+        "collected_items": [
+          {
+            "nodeid": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+            "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list"
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+            "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init"
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint"
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr"
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+            "selector": "test/applications/test_knapsack.py::TestKnapsack::test_interpret"
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+            "selector": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program"
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+            "selector": "test/applications/test_max_cut.py::TestMaxcut::test_interpret"
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+            "selector": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program"
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+            "selector": "test/converters/test_converters.py::TestConverters::test_binary_to_integer"
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+            "selector": "test/converters/test_converters.py::TestConverters::test_inequality_binary"
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+            "selector": "test/converters/test_converters.py::TestConverters::test_penalize_binary"
+          }
+        ],
+        "reports": [
+          {
+            "nodeid": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+            "when": "setup",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+            "when": "call",
+            "outcome": "passed",
+            "wasxfail": false
+          },
+          {
+            "nodeid": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+            "when": "teardown",
+            "outcome": "passed",
+            "wasxfail": false
+          }
+        ],
+        "collection_errors": []
+      }
+    }
+  },
+  "duration_seconds": 6.293620458047371
+}

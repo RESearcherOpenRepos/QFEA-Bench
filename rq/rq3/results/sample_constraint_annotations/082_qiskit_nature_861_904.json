@@ -1,0 +1,302 @@
+{
+  "id": 82,
+  "sample_id": "qiskit_nature_861_904",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "aedf3472e2e6f3e729204c099503fefd073c9d2b",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 20,
+    "subtype_test_counts": {
+      "general_semantics/numeric_rounding": 1,
+      "general_semantics/symbolic_operator_arithmetic": 7,
+      "general_semantics/complex_conjugation": 2,
+      "general_semantics/input_immutability": 1,
+      "general_semantics/operator_equality": 1,
+      "general_semantics/numeric_tolerance_comparison": 3,
+      "interface/mapping_access": 3,
+      "interface/zero_operator_representation": 2,
+      "quantum_semantics/operator_hermiticity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_round",
+      "label": "general_semantics/numeric_rounding",
+      "assertions": [
+        {
+          "line": 323,
+          "expected": "Default and three-decimal rounding correctly transform real and imaginary coefficient parts."
+        }
+      ],
+      "rationale": "This is ordinary complex-number rounding across six subcases."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Sparse-label addition combines coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic arithmetic."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 198,
+          "expected": "Sparse-label adjoint conjugates coefficients."
+        }
+      ],
+      "rationale": "The dummy base control checks complex arithmetic."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 209,
+          "expected": "Sparse-label conjugation negates imaginary components."
+        }
+      ],
+      "rationale": "The dummy base control checks complex arithmetic."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+      "label": "general_semantics/input_immutability",
+      "assertions": [
+        {
+          "line": 303,
+          "expected": "Copying input data prevents external mutation."
+        }
+      ],
+      "rationale": "The selected control checks copy semantics."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+      "label": "general_semantics/operator_equality",
+      "assertions": [
+        {
+          "line": 215,
+          "expected": "Exact equality distinguishes sparse mapping contents."
+        }
+      ],
+      "rationale": "The selected control checks generic equality."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 276,
+          "expected": "Approximate equality respects tolerance."
+        }
+      ],
+      "rationale": "The selected control checks numeric closeness."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 288,
+          "expected": "Key lookup returns a stored coefficient."
+        }
+      ],
+      "rationale": "The selected control checks mapping access."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 423,
+          "expected": "Zero predicate classifies empty and near-zero sparse mappings using tolerance."
+        }
+      ],
+      "rationale": "The selected control checks numeric zero threshold."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "Iteration yields sparse-label keys."
+        }
+      ],
+      "rationale": "The selected control checks mapping iteration."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 293,
+          "expected": "Length reports two stored terms."
+        }
+      ],
+      "rationale": "The selected control checks mapping length."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Scalar multiplication scales sparse-label coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic arithmetic."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 313,
+          "expected": "Identity has empty-label coefficient one."
+        }
+      ],
+      "rationale": "The selected control checks exposed identity representation."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 308,
+          "expected": "Zero has an empty data mapping."
+        }
+      ],
+      "rationale": "The selected control checks exposed zero representation."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "VibrationalOp addition combines terms."
+        }
+      ],
+      "rationale": "No vibrational commutation rule is asserted."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_div",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "VibrationalOp division scales coefficients."
+        }
+      ],
+      "rationale": "The selected control checks scalar arithmetic."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "VibrationalOp equivalence uses specified tolerance."
+        }
+      ],
+      "rationale": "The selected control checks numeric closeness."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "Vibrational ladder combination is Hermitian or non-Hermitian as expected."
+        }
+      ],
+      "rationale": "The selected control checks a physical adjoint property."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "VibrationalOp multiplication doubles coefficients."
+        }
+      ],
+      "rationale": "The selected control checks scalar arithmetic."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_neg",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 78,
+          "expected": "VibrationalOp negation reverses coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic negation."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Simplification aggregates duplicate vibrational terms."
+        }
+      ],
+      "rationale": "The selected control checks generic term collection."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/aedf3472e2e6f3e729204c099503fefd073c9d2b/test/second_q/operators/test_sparse_label_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/aedf3472e2e6f3e729204c099503fefd073c9d2b/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Individually reviewed all 21 selected exact-patch tests; the primary label follows the explicit behavior checked."
+}

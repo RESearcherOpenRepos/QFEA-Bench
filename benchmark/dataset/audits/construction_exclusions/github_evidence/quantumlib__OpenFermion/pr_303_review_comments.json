@@ -1,0 +1,209 @@
+[
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179802893",
+    "pull_request_review_id": 110118809,
+    "id": 179802893,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3OTgwMjg5Mw==",
+    "diff_hunk": "@@ -197,12 +206,13 @@ def __iadd__(self, addend):\n         if self.n_qubits != addend.n_qubits:\n             raise TypeError('Invalid tensor shape.')\n \n-        if self.n_body_tensors.keys() != addend.n_body_tensors.keys():\n-            raise TypeError('Invalid tensor type.')\n+        for key in addend.n_body_tensors:\n+            if key in self.n_body_tensors:\n+                self.n_body_tensors[key] = numpy.add(\n+                    self.n_body_tensors[key], addend.n_body_tensors[key])\n+            else:\n+                self.n_body_tensors[key] = addend.n_body_tensors[key]\n ",
+    "path": "src/openfermion/ops/_polynomial_tensor.py",
+    "commit_id": "c43f9e7fb2fe7771b2b4241f54636e600ea67158",
+    "original_commit_id": "5bffeff19061cb7887baa702bc467334678fcca8",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Set `__hash__` to `None`. Put it either right after `__neq__` or at the top.",
+    "created_at": "2018-04-06T15:59:46Z",
+    "updated_at": "2018-04-06T23:52:53Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179802893",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179802893"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179802893"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179802893/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 217,
+    "original_line": 215,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 49,
+    "position": 64,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179826720",
+    "pull_request_review_id": 110147903,
+    "id": 179826720,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3OTgyNjcyMA==",
+    "diff_hunk": "@@ -173,18 +173,27 @@ def __setitem__(self, args, value):\n             index = tuple([operator[0] for operator in args])\n             self.n_body_tensors[key][index] = value\n \n-    def __eq__(self, other_operator):\n-        if self.n_qubits != other_operator.n_qubits:\n-            return False\n-        if self.n_body_tensors.keys() != other_operator.n_body_tensors.keys():\n+    def __eq__(self, other):\n+        if self.n_qubits != other.n_qubits:\n             return False\n+\n         diff = 0.\n-        for key in self.n_body_tensors:\n-            self_tensor = self.n_body_tensors[key]\n-            other_tensor = other_operator.n_body_tensors[key]\n-            discrepancy = numpy.amax(\n-                numpy.absolute(self_tensor - other_tensor))\n+        self_keys = set(self.n_body_tensors.keys())\n+        other_keys = set(other.n_body_tensors.keys())\n+\n+        for key in (self_keys | other_keys):\n+            self_tensor = self.n_body_tensors.get(key)\n+            other_tensor = other.n_body_tensors.get(key)\n+\n+            if self_tensor is not None and other_tensor is not None:\n+                discrepancy = numpy.amax(\n+                    numpy.absolute(self_tensor - other_tensor))\n+            else:\n+                tensor = self_tensor if other_tensor is None else other_tensor\n+                discrepancy = numpy.amax(numpy.absolute(tensor))\n+\n             diff = max(diff, discrepancy)\n+\n         return diff < EQ_TOLERANCE\n \n     def __neq__(self, other_operator):",
+    "path": "src/openfermion/ops/_polynomial_tensor.py",
+    "commit_id": "c43f9e7fb2fe7771b2b4241f54636e600ea67158",
+    "original_commit_id": "5bffeff19061cb7887baa702bc467334678fcca8",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Change this to `__ne__`. Then you can say this resolves #301 too.",
+    "created_at": "2018-04-06T17:37:12Z",
+    "updated_at": "2018-04-06T23:52:53Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179826720",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179826720"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179826720"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179826720/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 199,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 36,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179882117",
+    "pull_request_review_id": 110216523,
+    "id": 179882117,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDE3OTg4MjExNw==",
+    "diff_hunk": "@@ -173,22 +173,34 @@ def __setitem__(self, args, value):\n             index = tuple([operator[0] for operator in args])\n             self.n_body_tensors[key][index] = value\n \n-    def __eq__(self, other_operator):\n-        if self.n_qubits != other_operator.n_qubits:\n-            return False\n-        if self.n_body_tensors.keys() != other_operator.n_body_tensors.keys():\n+    def __eq__(self, other):\n+        if self.n_qubits != other.n_qubits:\n             return False\n+\n         diff = 0.\n-        for key in self.n_body_tensors:\n-            self_tensor = self.n_body_tensors[key]\n-            other_tensor = other_operator.n_body_tensors[key]\n-            discrepancy = numpy.amax(\n-                numpy.absolute(self_tensor - other_tensor))\n+        self_keys = set(self.n_body_tensors.keys())\n+        other_keys = set(other.n_body_tensors.keys())\n+\n+        for key in (self_keys | other_keys):\n+            self_tensor = self.n_body_tensors.get(key)\n+            other_tensor = other.n_body_tensors.get(key)\n+\n+            if self_tensor is not None and other_tensor is not None:\n+                discrepancy = numpy.amax(\n+                    numpy.absolute(self_tensor - other_tensor))\n+            else:\n+                tensor = self_tensor if other_tensor is None else other_tensor\n+                discrepancy = numpy.amax(numpy.absolute(tensor))\n+\n             diff = max(diff, discrepancy)\n+\n         return diff < EQ_TOLERANCE\n \n-    def __neq__(self, other_operator):\n-        return not (self == other_operator)\n+    def __ne__(self, other):\n+        return not (self == other)\n+\n+    def __hash__(self):",
+    "path": "src/openfermion/ops/_polynomial_tensor.py",
+    "commit_id": "c43f9e7fb2fe7771b2b4241f54636e600ea67158",
+    "original_commit_id": "a6ae70e34b9fa680cd701a0bcee0c591731512e3",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Sorry, I should have been more clear. It's `__hash__ = None`.",
+    "created_at": "2018-04-06T21:39:39Z",
+    "updated_at": "2018-04-06T23:52:53Z",
+    "html_url": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179882117",
+    "pull_request_url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179882117"
+      },
+      "html": {
+        "href": "https://github.com/quantumlib/OpenFermion/pull/303#discussion_r179882117"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/quantumlib/OpenFermion/pulls/comments/179882117/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 202,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 41,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

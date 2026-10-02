@@ -1,0 +1,84 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..def001e 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,60 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """
++        Returns the parameters of the QNN.
++
++        Args:
++            deep (bool): If True, returns the parameters of the nested objects.
++
++        Returns:
++            dict: Dictionary of the parameters.
++        """
++        params = super().get_params(deep=deep)
++        if deep:
++            params.update(self.pqc.get_params(deep=True))
++            if isinstance(self.operator, list):
++                for i, op in enumerate(self.operator):
++                    params.update({f"operator_{i}__{k}": v for k, v in op.get_params(deep=True).items()})
++            else:
++                params.update(self.operator.get_params(deep=True))
++            params.update(self.loss.get_params(deep=True))
++            params.update(self.optimizer.get_params(deep=True))
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """
++        Sets the parameters of the QNN.
++
++        Args:
++            params: Parameters to be set.
++
++        Returns:
++            BaseQNN: The QNN instance with the updated parameters.
++        """
++        super().set_params(**params)
++
++        # Re-initialize parameters if pqc or operator has changed
++        self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            self.param_op_ini = np.concatenate(
++                [op.generate_initial_parameters(seed=self.parameter_seed) for op in self.operator]
++            )
++        else:
++            self.param_op_ini = self.operator.generate_initial_parameters(
++                seed=self.parameter_seed
++            )
++        self.param_op = self.param_op_ini.copy()
++
++        # Re-initialize the QNN
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
++        self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 
+@@ -110,7 +164,6 @@ class BaseQNN(BaseEstimator, ABC):
+         """
+         self.param = self.param_ini.copy()
+         self.param_op = self.param_op_ini.copy()
+-        self._is_fitted = False
+         self._fit(X, y, weights)
+ 
+     @abstractmethod
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 1177c3c..d9ea80b 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -235,4 +235,6 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+ 
+     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Internal fit function."""
++        self._is_fitted = False
++        self._label_binarizer = None
+         self.partial_fit(X, y, weights)

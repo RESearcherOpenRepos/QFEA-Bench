@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "2234c825ca4c814263c88c9204d2b0a66a299641",
+    "filename": "src/squlearn/qnn/lowlevel_qnn_pennylane.py",
+    "status": "modified",
+    "additions": 26,
+    "deletions": 9,
+    "changes": 35,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/245d8e411d6d8bf4a6cebd7a504417567fc749f1/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/245d8e411d6d8bf4a6cebd7a504417567fc749f1/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py?ref=245d8e411d6d8bf4a6cebd7a504417567fc749f1",
+    "patch": "@@ -481,9 +481,19 @@ def _evaluate_todo_single_x(\n             Evaluated value of the derivative\n         \"\"\"\n         if todo_class.squared:\n-            func = self._pennylane_circuit_squared\n+            hash_func = self._pennylane_circuit_squared.hash\n+            if todo_class.order <= 1:\n+                func = self._pennylane_circuit_squared\n+            else:\n+                func = self._pennylane_circuit_squared.build_pennylane_circuit(\n+                    max_diff=todo_class.order\n+                )\n         else:\n-            func = self._pennylane_circuit\n+            hash_func = self._pennylane_circuit.hash\n+            if todo_class.order <= 1:\n+                func = self._pennylane_circuit\n+            else:\n+                func = self._pennylane_circuit.build_pennylane_circuit(max_diff=todo_class.order)\n \n         # Convert input to PennyLane arrays and requested gradients\n         param_ = pnp.array(param, requires_grad=todo_class.return_grad_param)\n@@ -533,8 +543,7 @@ def _evaluate_todo_single_x(\n                 else:\n                     deriv = qml.jacobian(deriv, argnum=arg_index)\n \n-            hash_value = func.hash + str(todo_class.argnum)\n-            deriv.hash = hash_value\n+            deriv.hash = hash_func + str(todo_class.argnum)\n             value = self._executor.pennylane_execute(deriv, *(eval_tuple))\n \n         # Convert back to numpy array\n@@ -556,9 +565,19 @@ def _evaluate_todo_all_x(\n             Evaluated value of the derivative\n         \"\"\"\n         if todo_class.squared:\n-            func = self._pennylane_circuit_squared\n+            hash_func = self._pennylane_circuit_squared.hash\n+            if todo_class.order <= 1:\n+                func = self._pennylane_circuit_squared\n+            else:\n+                func = self._pennylane_circuit_squared.build_pennylane_circuit(\n+                    max_diff=todo_class.order\n+                )\n         else:\n-            func = self._pennylane_circuit\n+            hash_func = self._pennylane_circuit.hash\n+            if todo_class.order <= 1:\n+                func = self._pennylane_circuit\n+            else:\n+                func = self._pennylane_circuit.build_pennylane_circuit(max_diff=todo_class.order)\n \n         # Convert input to PennyLane arrays and requested gradients\n         param_ = pnp.array(param, requires_grad=todo_class.return_grad_param)\n@@ -608,9 +627,7 @@ def _evaluate_todo_all_x(\n                 else:\n                     deriv = qml.jacobian(deriv, argnum=arg_index)\n \n-            # value = deriv(*eval_tuple)\n-            hash_value = func.hash + str(todo_class.argnum)\n-            deriv.hash = hash_value\n+            deriv.hash = hash_func + str(todo_class.argnum)\n             value = self._executor.pennylane_execute(deriv, *(eval_tuple))\n \n         # Convert back to numpy format"
+  },
+  {
+    "sha": "9c33816e8d937831bdd04e4a9e1d4b981a0cf522",
+    "filename": "src/squlearn/util/pennylane/pennylane_circuit.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 2,
+    "changes": 7,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/245d8e411d6d8bf4a6cebd7a504417567fc749f1/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/245d8e411d6d8bf4a6cebd7a504417567fc749f1/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py?ref=245d8e411d6d8bf4a6cebd7a504417567fc749f1",
+    "patch": "@@ -460,7 +460,7 @@ def sort_parameters_after_index(parameter_vector):\n                 pennylane_obs_parameters_dimensions,\n             )\n \n-    def build_pennylane_circuit(self):\n+    def build_pennylane_circuit(self, max_diff: Union[int, None] = None):\n         \"\"\"\n         Function to build the PennyLane circuit from the Qiskit circuit and observable.\n \n@@ -472,7 +472,10 @@ def build_pennylane_circuit(self):\n             Callable PennyLane circuit\n         \"\"\"\n \n-        @qml.qnode(self._executor.backend, diff_method=\"best\")\n+        if max_diff is None:\n+            max_diff = 1\n+\n+        @qml.qnode(self._executor.backend, diff_method=\"best\", max_diff=max_diff)\n         def pennylane_circuit(*args):\n             \"\"\"PennyLane circuit that can be called with parameters\"\"\"\n "
+  }
+]

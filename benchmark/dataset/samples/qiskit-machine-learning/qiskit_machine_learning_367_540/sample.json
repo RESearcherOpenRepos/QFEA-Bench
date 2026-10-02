@@ -1,0 +1,199 @@
+{
+  "instance": {
+    "id": 30,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_367_540",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/367",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/540",
+    "base_commit": "7d28022d04e1f9cca6ef49d875d1d9bbb11e2e5b",
+    "patch": "8dcbed77523beed5bcb31b2d47421634c3278400"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts optimizer interfaces across quantum neural-network and quantum-kernel training workflows without new quantum algorithm semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+      "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+      "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+      "qiskit_machine_learning/algorithms/regressors/vqr.py",
+      "qiskit_machine_learning/algorithms/trainable_model.py",
+      "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Training components in Qiskit Machine Learning currently expect optimizer objects with a minimize method. Users need the model and quantum-kernel training APIs to accept callable minimizers as optimizers too, so they can pass SciPy-style minimization functions or compatible custom callables without wrapping them in a Qiskit Optimizer class.",
+    "requirements": [
+      "Trainable model APIs must accept either a Qiskit optimizer object, a callable minimizer, or no optimizer.",
+      "Callable optimizers must be invoked with the objective function, the selected initial point, and the objective gradient when fitting classifiers and regressors.",
+      "The default optimizer behavior must remain unchanged when no optimizer is supplied.",
+      "Neural-network classifiers must train, score, serialize, and continue supporting callbacks and warm starts when using callable optimizers.",
+      "Neural-network regressors must train, score, serialize, and continue supporting callbacks and warm starts when using callable optimizers.",
+      "QuantumKernelTrainer must accept callable optimizers and pass the objective function, initial point, gradient, and bounds expected by the callable minimizer.",
+      "Quantum-kernel training results must still bind trained kernel parameters and produce usable kernels after fitting.",
+      "Existing optimizer-object behavior for related classifier, regressor, VQC, VQR, QSVC, and QSVR workflows must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss=\"squared_error\", one_hot=False, optimizer=None, warm_start=False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Classifier accepting either Qiskit optimizer objects or callable minimizers through the optimizer argument while preserving fit, score, callback, warm-start, and serialization behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.fit",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "X, y",
+        "Output": "NeuralNetworkClassifier",
+        "Description": "Fits the classifier and invokes callable optimizers with the objective, initial point, and gradient."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkClassifier.score",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "X, y, sample_weight=None",
+        "Output": "float",
+        "Description": "Scores a classifier fitted with either an optimizer object or callable optimizer."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkRegressor",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "constructor: neural_network, loss=\"squared_error\", optimizer=None, warm_start=False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Regressor accepting either Qiskit optimizer objects or callable minimizers through the optimizer argument while preserving fit, score, callback, warm-start, and serialization behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkRegressor.fit",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "X, y",
+        "Output": "NeuralNetworkRegressor",
+        "Description": "Fits the regressor and invokes callable optimizers with the objective, initial point, and gradient."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetworkRegressor.score",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "X, y, sample_weight=None",
+        "Output": "float",
+        "Description": "Scores a regressor fitted with either an optimizer object or callable optimizer."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuantumKernelTrainer",
+        "Path": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+        "Input": "constructor: quantum_kernel, loss=None, optimizer=None, initial_point=None",
+        "Output": "",
+        "Description": "Quantum-kernel trainer accepting either Qiskit optimizer objects or callable minimizers through the optimizer argument."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernelTrainer.fit",
+        "Path": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+        "Input": "data, labels",
+        "Output": "QuantumKernelTrainerResult",
+        "Description": "Trains kernel parameters and invokes callable optimizers with objective, initial point, gradient, and bounds."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_367_540",
+      "image_id": "sha256:ef15857db07b3d4df9cffbf2dd555cbcd8f14add1ae9dbddb3975850c866070b",
+      "image_size": "1504119066"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17___callable____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_09___callable____absolute_error___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_09___callable____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_5___callable____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_5___callable___True_",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params",
+          "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params"
+        ],
+        "summary": "7 passed, 7 warnings in 8.34s.",
+        "duration_seconds": 13.38
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_001___statevector___2___zz_feature_map____real_amplitudes____cobyla____binary__",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_1___cobyla___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_01___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_09___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_01___cobyla____absolute_error___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_05___bfgs____absolute_error___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_01___cobyla____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_05___bfgs____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_1___cobyla____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_3___bfgs____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_1___cobyla___True_",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_3___bfgs___True_"
+        ],
+        "summary": "12 passed in 8.51s",
+        "duration_seconds": 11.96
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17___callable____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_09___callable____absolute_error___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_09___callable____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_5___callable____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_5___callable___True_",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params",
+          "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params"
+        ],
+        "summary": "7 failed, 3 warnings in 2.38s. Failures show callable optimizers are treated as objects with a minimize method by the base implementation.",
+        "duration_seconds": 8.87
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_001___statevector___2___zz_feature_map____real_amplitudes____cobyla____binary__",
+          "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_1___cobyla___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_01___cobyla____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_09___bfgs____absolute_error____statevector___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_01___cobyla____absolute_error___True_",
+          "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_05___bfgs____absolute_error___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_01___cobyla____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_05___bfgs____statevector___True_",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_1___cobyla____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_3___bfgs____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_1___cobyla___True_",
+          "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_3___bfgs___True_"
+        ],
+        "summary": "12 passed in 8.28s",
+        "duration_seconds": 13.65
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "4bb80b76dbc711a445c59dd2b53b06a2f30f6ff4",
+    "filename": "openqaoa/problems/problem.py",
+    "status": "modified",
+    "additions": 17,
+    "deletions": 4,
+    "changes": 21,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/e6ae45ab3ec86b119c0845cd21109f31d7137fc6/openqaoa%2Fproblems%2Fproblem.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/e6ae45ab3ec86b119c0845cd21109f31d7137fc6/openqaoa%2Fproblems%2Fproblem.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/openqaoa%2Fproblems%2Fproblem.py?ref=e6ae45ab3ec86b119c0845cd21109f31d7137fc6",
+    "patch": "@@ -639,9 +639,16 @@ def random_instance(**kwargs):\n \n         values = list(map(int, np.random.randint(1, n_items, size=n_items)))\n         weights = list(map(int, np.random.randint(1, n_items, size=n_items)))\n-        weight_capacity = np.random.randint(np.min(weights) * n_items, np.max(weights) * n_items)\n-        penalty = 2 * np.max(values)\n \n+        min_weights = np.min(weights)\n+        max_weights = np.max(weights)\n+\n+        if min_weights != max_weights:\n+            weight_capacity = np.random.randint(min_weights * n_items, max_weights * n_items)\n+        else:\n+            weight_capacity = np.random.randint(max_weights, max_weights * n_items)\n+        \n+        penalty = 2 * np.max(values)\n         return Knapsack(values, weights, weight_capacity, int(penalty))\n \n     def terms_and_weights(self):\n@@ -777,9 +784,15 @@ def random_instance(**kwargs):\n \n         values = list(map(int, np.random.randint(1, n_items, size=n_items)))\n         weights = list(map(int, np.random.randint(1, n_items, size=n_items)))\n-        weight_capacity = np.random.randint(np.min(weights) * n_items, np.max(weights) * n_items)\n-        penalty = 2 * np.max(values)\n \n+        min_weights = np.min(weights)\n+        max_weights = np.max(weights)\n+        if min_weights != max_weights:\n+            weight_capacity = np.random.randint(min_weights * n_items, max_weights * n_items)\n+        else:\n+            weight_capacity = np.random.randint(max_weights, max_weights * n_items)\n+        \n+        penalty = 2 * np.max(values)\n         return SlackFreeKnapsack(values, weights, weight_capacity, int(penalty))\n     \n     def terms_and_weights(self):"
+  },
+  {
+    "sha": "78002ceab33b6ea1e4132e6a2bfba29c89caa491",
+    "filename": "tests/test_problems.py",
+    "status": "modified",
+    "additions": 20,
+    "deletions": 0,
+    "changes": 20,
+    "blob_url": "https://github.com/entropicalabs/openqaoa/blob/e6ae45ab3ec86b119c0845cd21109f31d7137fc6/tests%2Ftest_problems.py",
+    "raw_url": "https://github.com/entropicalabs/openqaoa/raw/e6ae45ab3ec86b119c0845cd21109f31d7137fc6/tests%2Ftest_problems.py",
+    "contents_url": "https://api.github.com/repos/entropicalabs/openqaoa/contents/tests%2Ftest_problems.py?ref=e6ae45ab3ec86b119c0845cd21109f31d7137fc6",
+    "patch": "@@ -250,6 +250,26 @@ def test_knapsack_random_problem(self):\n         self.assertEqual(knap_manual.weights,knap_random_instance.weights)\n         self.assertEqual(knap_manual.constant,knap_random_instance.constant)\n         self.assertEqual(knap_manual.n,knap_random_instance.n)\n+\n+    def test_knapsack_random_problem_smallsize(self):\n+        \"\"\"Test random instance method of Knapsack problem class\"\"\"\n+\n+        np.random.seed(1234)\n+        n_items = 3\n+        values = list(map(int, np.random.randint(1, n_items, size=n_items)))\n+        weights = list(map(int, np.random.randint(1, n_items, size=n_items)))\n+        weight_capacity = np.random.randint(np.min(weights) * n_items, np.max(weights) * n_items)\n+        penalty = 2*np.max(values)\n+\n+        knap_manual = Knapsack(values,weights,weight_capacity,int(penalty)).get_qubo_problem()\n+\n+        np.random.seed(1234)\n+        knap_random_instance = Knapsack.random_instance(n_items=n_items).get_qubo_problem()\n+\n+        self.assertTrue(terms_list_equality(knap_manual.terms,knap_random_instance.terms))\n+        self.assertEqual(knap_manual.weights,knap_random_instance.weights)\n+        self.assertEqual(knap_manual.constant,knap_random_instance.constant)\n+        self.assertEqual(knap_manual.n,knap_random_instance.n)\n         \n     def test_knapsack_type_checking(self):\n         "
+  }
+]

@@ -1,0 +1,60 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________ TestQNNClassifier.test_serialization[pennylane] ________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19d9b40>
+request = <FixtureRequest for <Function test_serialization[pennylane]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'pennylane'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+E       AttributeError: 'QNNClassifier' object has no attribute 'dump'
+
+tests/qnn/test_qnnc.py:226: AttributeError
+----------------------------- Captured stdout call -----------------------------
+fit:   0%|          | 0/2 [00:00<?, ?it/s]fit:  50%|█████     | 1/2 [00:00<00:00,  5.38it/s]fit: 100%|██████████| 2/2 [00:00<00:00,  8.52it/s]
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+=========================== short test summary info ============================
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[pennylane]
+1 failed, 3 warnings in 4.53s

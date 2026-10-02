@@ -1,0 +1,157 @@
+{
+  "instance": {
+    "id": 104,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_8_18",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/8",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/18",
+    "base_commit": "6fba541812d6c37943f418c4b522542d442888bb",
+    "patch": "fb58e1c9da67bcb3fa81ee68422acb2daebf5abd"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements warm-start QAOA with problem-dependent initial states, mixers, and quantum optimization result semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/__init__.py",
+      "qiskit_optimization/algorithms/goemans_williamson_optimizer.py",
+      "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+      "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+      "qiskit_optimization/applications/ising/max_cut.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Optimization users need native support for warm-start QAOA. The optimizer should be able to use a classical pre-solver or max-cut relaxation result to initialize QAOA with problem-dependent initial states and mixers, then return optimization results through the same result pathway as existing minimum-eigen optimizers.",
+    "requirements": [
+      "Provide a warm-start QAOA optimizer that accepts a pre-solver, QAOA instance, relaxation mode, epsilon regularization, optional multiple initial solutions, optional warm-start factory, and optional aggregation strategy.",
+      "Use relaxed or pre-solved binary optimization results to construct valid warm-start initial variables, initial states, and mixer operators for QAOA.",
+      "Solve max-cut, constrained binary, and simple QUBO problems through the warm-start QAOA workflow and return interpreted optimization results with solution vectors and objective values.",
+      "Support aggregating multiple warm-start QAOA results when the pre-solver provides multiple initial solutions, using a callable aggregation strategy when supplied.",
+      "Keep existing minimum-eigen optimizer sample handling and SLSQP-based QUBO solving behavior working."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "WarmStartQAOAOptimizer",
+        "Path": "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+        "Input": "constructor: pre_solver, relax_for_pre_solver, qaoa, epsilon = 0.25, num_initial_solutions = 1, warm_start_factory = None, aggregator = None, penalty = None, converters = None",
+        "Output": "",
+        "Description": "Optimizer that prepares warm-start QAOA runs from pre-solved optimization results and invokes a supplied callable aggregator when multiple warm-start results must be combined."
+      },
+      {
+        "Type": "Method",
+        "Name": "WarmStartQAOAOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "MinimumEigenOptimizationResult",
+        "Description": "Solves an optimization problem by preparing warm-start QAOA circuits, optionally aggregating multiple warm-start results, and interpreting the resulting samples."
+      },
+      {
+        "Type": "Class",
+        "Name": "WarmStartQAOAFactory",
+        "Path": "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+        "Input": "constructor: epsilon = 0.25",
+        "Output": "",
+        "Description": "Creates warm-start initial variables, initial states, and mixer operators from relaxed binary solutions."
+      },
+      {
+        "Type": "Class",
+        "Name": "MeanAggregator",
+        "Path": "qiskit_optimization/algorithms/warm_start_qaoa_optimizer.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Callable aggregator that combines samples from multiple warm-start QAOA optimization results."
+      },
+      {
+        "Type": "Class",
+        "Name": "GoemansWilliamsonOptimizer",
+        "Path": "qiskit_optimization/algorithms/goemans_williamson_optimizer.py",
+        "Input": "constructor: num_cuts: int, sort_cuts: bool = True, unique_cuts: bool = True, seed: int = 0",
+        "Output": "",
+        "Description": "Produces max-cut candidate solutions that can be used as warm-start pre-solver results."
+      },
+      {
+        "Type": "Function",
+        "Name": "max_cut_qp",
+        "Path": "qiskit_optimization/applications/ising/max_cut.py",
+        "Input": "adjacency_matrix: np.ndarray",
+        "Output": "QuadraticProgram",
+        "Description": "Builds a QuadraticProgram representation of a max-cut instance from an adjacency matrix."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_8_18",
+      "image_id": "sha256:7d97c119a76688eb937f9ce74e991da1a116bf7dc3a340e1fb953a836832b5b3",
+      "image_size": "954857090"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy==1.23.5",
+        "scipy==1.10.1",
+        "qiskit-terra==0.17.4",
+        "qiskit-aer==0.8.2",
+        "docplex==2.21.207",
+        "networkx>=2.6.3,<3",
+        "cvxpy==1.3.2",
+        "pytest<8",
+        "ddt"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_max_cut",
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_constrained_binary",
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo"
+        ],
+        "summary": "3 passed in 3.93s",
+        "duration_seconds": 8.61
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples",
+          "test/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer"
+        ],
+        "summary": "3 passed in 3.07s",
+        "duration_seconds": 7.92
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_max_cut",
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_constrained_binary",
+          "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo"
+        ],
+        "summary": "collection error: missing qiskit_optimization.algorithms.goemans_williamson_optimizer",
+        "duration_seconds": 10.79
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples",
+          "test/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer"
+        ],
+        "summary": "3 passed in 3.35s",
+        "duration_seconds": 12.61
+      }
+    }
+  }
+}

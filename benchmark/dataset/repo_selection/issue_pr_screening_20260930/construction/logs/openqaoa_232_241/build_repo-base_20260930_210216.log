@@ -1,0 +1,644 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [stage-0 1/7] FROM docker.io/library/qfea-python310:trixie-db7a1753878f
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.repo-base
+#2 transferring dockerfile: 1.26kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/qfea-python310:trixie-db7a1753878f
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 71B done
+#5 DONE 0.0s
+
+#6 [stage-0 2/7] RUN sed -i "s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g" /etc/apt/sources.list.d/debian.sources && apt-get -o Acquire::Retries=3 update && apt-get install -y --no-install-recommends git gcc g++ gfortran make libgomp1 && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [stage-0 3/7] WORKDIR /workspace/repo
+#7 CACHED
+
+#8 [stage-0 4/7] ADD --chown=0:0 source.tar.gz /workspace/repo
+#8 CACHED
+
+#9 [stage-0 5/7] RUN chown -R root:root /workspace/repo && git checkout --detach 137d3f0a10391adce5bb23cf7536f2d221defb79 && git cat-file -e cf30131c4d7927e86daf6104399ee612cd6f78ec^{commit}
+#9 2.012 HEAD is now at 137d3f0 Merge pull request #241 from AlexisRalli/as_matrix_H
+#9 DONE 2.5s
+
+#10 [stage-0 6/7] COPY constraints.txt /opt/constraints.txt
+#10 DONE 0.1s
+
+#11 [stage-0 7/7] RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip python -m pip install 'pip<25' 'setuptools<81' wheel && python -m pip install -c /opt/constraints.txt -e . pytest && python -m pip freeze > /opt/build-freeze.txt
+#11 4.690 Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+#11 4.691 Requirement already satisfied: pip<25 in /usr/local/lib/python3.10/site-packages (23.0.1)
+#11 4.693 Requirement already satisfied: setuptools<81 in /usr/local/lib/python3.10/site-packages (79.0.1)
+#11 4.694 Requirement already satisfied: wheel in /usr/local/lib/python3.10/site-packages (0.45.1)
+#11 4.791 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#11 4.808 
+#11 4.808 [notice] A new release of pip is available: 23.0.1 -> 26.2.1
+#11 4.808 [notice] To update, run: pip install --upgrade pip
+#11 5.564 Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+#11 5.565 Obtaining file:///workspace/repo
+#11 5.571   Installing build dependencies: started
+#11 8.062   Installing build dependencies: finished with status 'done'
+#11 8.075   Checking if build backend supports build_editable: started
+#11 8.510   Checking if build backend supports build_editable: finished with status 'done'
+#11 8.519   Getting requirements to build editable: started
+#11 9.162   Getting requirements to build editable: finished with status 'done'
+#11 9.171   Preparing editable metadata (pyproject.toml): started
+#11 10.05   Preparing editable metadata (pyproject.toml): finished with status 'done'
+#11 10.73 Collecting pytest
+#11 10.82   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/24/25/1de2678b631f5a49215c6c96fff41ba892b0a34df68d6d80292b1b48aa7f/pytest-9.1.1-py3-none-any.whl (386 kB)
+#11 10.96 Collecting iniconfig>=1.0.1
+#11 11.04   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+#11 11.15 Collecting packaging>=22
+#11 11.22   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl (129 kB)
+#11 11.33 Collecting pygments>=2.7.2
+#11 11.47   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#11 11.57 Collecting exceptiongroup>=1
+#11 11.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8a/0e/97c33bf5009bdbac74fd2beace167cab3f978feb69cc36f1ef79360d6c4e/exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+#11 11.78 Collecting tomli>=1
+#11 11.85   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/7b/61/cceae43728b7de99d9b847560c262873a1f6c98202171fd5ed62640b494b/tomli-2.4.1-py3-none-any.whl (14 kB)
+#11 11.96 Collecting pluggy<2,>=1.5
+#11 12.04   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl (20 kB)
+#11 12.30 Collecting qiskit-ionq
+#11 12.38   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f7/59/055d27a4cc6af96faf0b80bc6989c6cc69863e9cb5963c3867cac6113d72/qiskit_ionq-1.1.1-py3-none-any.whl (60 kB)
+#11 12.42      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.9/60.9 kB 2.1 MB/s eta 0:00:00
+#11 12.53 Collecting sympy>=1.10.1
+#11 12.77   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl (6.3 MB)
+#11 13.65 Collecting amazon-braket-sdk>=1.23.0
+#11 13.73   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bb/67/a42f205852517e5de695a5b5ba7bbd5420ebd97e9b7555b48acab61f244b/amazon_braket_sdk-1.110.1-py3-none-any.whl (374 kB)
+#11 14.31 Collecting matplotlib>=3.4.3
+#11 14.51   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fc/b7/d8bcec2626c35f96972bff656299fef4578113ea6193c8fdad324710410c/matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (8.8 MB)
+#11 14.68 Collecting qiskit-ibm-provider
+#11 14.76   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a3/86/2f775a9ce2514da2ad2b0a5e52640536cbd6dcc1b5e0f6a48297ede96dcb/qiskit_ibm_provider-0.11.0-py3-none-any.whl (249 kB)
+#11 14.87 Collecting qiskit-qir
+#11 14.94   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/ad/359059ba1169a106fa9f0bfdd7068423ead0490aa313fb2361cb03116dde/qiskit_qir-0.5.0-py2.py3-none-any.whl (19 kB)
+#11 15.05 Collecting docplex>=2.23.1
+#11 15.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b4/02/7aec9042e1727b9f8fd745fa799bc8b4fd76e4db57f05a81eb676ead401b/docplex-2.32.264.tar.gz (663 kB)
+#11 15.25   Installing build dependencies: started
+#11 18.78   Installing build dependencies: finished with status 'done'
+#11 18.79   Getting requirements to build wheel: started
+#11 19.35   Getting requirements to build wheel: finished with status 'done'
+#11 19.36   Preparing metadata (pyproject.toml): started
+#11 20.04   Preparing metadata (pyproject.toml): finished with status 'done'
+#11 20.90 Collecting scipy>=1.8
+#11 21.67   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8e/6d/41991e503e51fc1134502694c5fa7a1671501a17ffa12716a4a9151af3df/scipy-1.15.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.7 MB)
+#11 23.03 Collecting pyquil>=3.1.0
+#11 23.10   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/da/45dfa58a121da5e6cafddad62f0004fcbf5986522a44e670389553752341/pyquil-3.5.4-py3-none-any.whl (223 kB)
+#11 24.05 Collecting pandas>=1.3.5
+#11 24.60   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/40/a8/4dac1f8f8235e5d25b9955d02ff6f29396191d4e665d71122c3722ca83c5/pandas-2.3.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
+#11 24.85 Collecting semantic_version>=2.10
+#11 24.95   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6a/23/8146aad7d88f4fcb3a6218f41a60f6c2d4e3a72de72da1825dc7c8f7877c/semantic_version-2.10.0-py2.py3-none-any.whl (15 kB)
+#11 25.08 Collecting autoray>=0.3.1
+#11 25.20   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9f/be/f0352174093c8beed98e85e37f9190cc7da8f26330b9853f5153a9514a0a/autoray-0.8.11-py3-none-any.whl (941 kB)
+#11 25.29 Collecting autograd>=1.4
+#11 25.36   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6e/ce/8c98e6604bb1ec9d03c8493c328185b69bb7533fe08f3640f0f3641bd9d1/autograd-1.9.1-py3-none-any.whl (54 kB)
+#11 26.64 Collecting numpy>=1.22.3
+#11 27.21   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4b/d7/ecf66c1cd12dc28b4040b15ab4d17b773b87fa9d29ca16125de01adb36cd/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+#11 27.96 Collecting qiskit>=0.36.1
+#11 28.05   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/23/2f/914a02eb5366ae8cf3ea779a297c41bddf0f323383a492b3f38f8d7b09a7/qiskit-0.46.3-py3-none-any.whl (10.0 kB)
+#11 28.46 Collecting qdk
+#11 28.54   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/60/b9/42b4b676fc30b7d52b2925adb8dd189e005f798bb2736ed7d1d47e391979/qdk-1.32.3-cp310-abi3-manylinux_2_35_x86_64.whl (8.1 MB)
+#11 29.08      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.1/8.1 MB 15.5 MB/s eta 0:00:00
+#11 29.38 Collecting azure-quantum
+#11 29.45   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cc/40/415ee5e1eec37d8fc3fa51bbd56a1b22b84457d342bf26cf6cbc06cf7cf1/azure_quantum-3.12.0-py3-none-any.whl (167 kB)
+#11 29.47      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 167.8/167.8 kB 16.4 MB/s eta 0:00:00
+#11 29.60 Collecting networkx>=2.8
+#11 29.71   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/42/31/d2f89f1ae42718f8c8a9e440ebe38d7d5fe1e0d9eb9178ce779e365b3ab0/networkx-2.8.8-py3-none-any.whl (2.0 MB)
+#11 29.86 Collecting boltons
+#11 29.93   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d2/ac/1f8e4f4855e382a67392ca3bba329cb93aba1e3039289c52a86bf337f7a2/boltons-26.2.0-py3-none-any.whl (199 kB)
+#11 30.14 Collecting amazon-braket-default-simulator>=1.32.0
+#11 30.23   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3a/3e/c657bf649dd00edbc2c0fac1184dc87422de09f113255535ea7843ede308/amazon_braket_default_simulator-1.33.0-py3-none-any.whl (229 kB)
+#11 30.32 Collecting backports.entry-points-selectable
+#11 30.38   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5a/78/b3ba5d804ae21e26e6179bbe4e1338deaaba9d20161918f59e20e9d92ea0/backports.entry_points_selectable-1.3.0-py3-none-any.whl (6.2 kB)
+#11 30.55 Collecting openpulse
+#11 30.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/75/41/429b613fe56124f5714f0d7ff5c1a2c74913e3db2fdde3fd13bf732a116f/openpulse-1.0.1-py3-none-any.whl (537 kB)
+#11 30.74 Collecting openqasm3
+#11 30.90   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/75/dd/2aa7698341948f3229f7a1cb75e84d9677444d9c730632d1907716574dc5/openqasm3-1.0.1-py3-none-any.whl (541 kB)
+#11 31.03 Collecting nest-asyncio
+#11 31.15   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/c4/c2971a3ba4c6103a3d10c4b0f24f461ddc027f0f09763220cf35ca1401b3/nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+#11 31.24 Collecting backoff
+#11 31.31   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl (15 kB)
+#11 31.43 Collecting oqpy~=0.3.7
+#11 31.50   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5b/47/157996e81032852e68af47dde52a9df7568306df2420c4fa8ec0fbac41a5/oqpy-0.3.10-py3-none-any.whl (35 kB)
+#11 33.44 Collecting boto3>=1.28.53
+#11 33.53   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bc/8e/0310a37ff609529dab9153cbc9fd0b66c685364d741bb6d1ae31134b728e/boto3-1.43.105-py3-none-any.whl (140 kB)
+#11 33.74 Collecting amazon-braket-schemas>=1.27.0
+#11 33.81   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/56/4b/3bcbe1a7ed4ea71ade6f6fa13dd0ad22b2c641c3599f416fe42b6dc8392f/amazon_braket_schemas-1.28.0-py3-none-any.whl (152 kB)
+#11 33.92 Collecting cloudpickle==2.2.1
+#11 33.99   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/15/80/44286939ca215e88fa827b2aeb6fa3fd2b4a7af322485c7170d6f9fd96e0/cloudpickle-2.2.1-py3-none-any.whl (25 kB)
+#11 34.11 Collecting six
+#11 34.17   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl (11 kB)
+#11 34.30 Collecting typing-extensions>=4.6.0
+#11 34.37   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#11 34.73 Collecting contourpy>=1.0.1
+#11 34.80   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/32/5c/1ee32d1c7956923202f00cf8d2a14a62ed7517bdc0ee1e55301227fc273c/contourpy-1.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (325 kB)
+#11 35.12 Collecting kiwisolver>=1.3.1
+#11 35.21   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f1/0e/9f394d693be549fa3fab62498c2778294595991047adc3dcf10aa99b91c0/kiwisolver-1.5.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.6 MB)
+#11 35.92 Collecting fonttools>=4.22.0
+#11 36.07   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ee/56/151b5e81d20c63834f48ad37a0cbbbe2f9b248e38f8d10387f0cf5219244/fonttools-4.65.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.3 MB)
+#11 37.07 Collecting pillow>=8
+#11 37.22   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4e/89/36f4cd76cf4baf05c50ababb976249153f18c959171c7f6ba09a6f217260/pillow-12.3.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+#11 37.40 Collecting cycler>=0.10
+#11 37.48   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl (8.3 kB)
+#11 37.63 Collecting pyparsing>=3
+#11 37.70   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/38/bb/d215ee7c73b61497b28a5503f9f53523f294fcc936762b7caf90e0c1c2b5/pyparsing-3.3.3-py3-none-any.whl (126 kB)
+#11 37.78 Collecting python-dateutil>=2.7
+#11 37.85   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#11 38.07 Collecting tzdata>=2022.7
+#11 38.15   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f9/bc/8737e8d54cf51106118039b83f485a4783112fab49ea9d044b234978a46e/tzdata-2026.4-py2.py3-none-any.whl (347 kB)
+#11 38.35 Collecting pytz>=2020.1
+#11 38.42   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d5/11/e3df59614bebe0ca50c905442603eda64ae7ac19811d4e4f74aa2d51ca85/pytz-2026.4-py2.py3-none-any.whl (506 kB)
+#11 38.59 Collecting rpcq<4.0.0,>=3.10.0
+#11 38.59   Using cached rpcq-3.11.0-py3-none-any.whl
+#11 38.74 Collecting deprecated<2.0.0,>=1.2.13
+#11 38.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/84/d0/205d54408c08b13550c733c4b85429e7ead111c7f0014309637425520a9a/deprecated-1.3.1-py2.py3-none-any.whl (11 kB)
+#11 38.93 Collecting types-deprecated<2.0.0.0,>=1.2.9.2
+#11 39.00   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e3/50/8c0b1e3a953669f9b9782b4b948136a3e719d70d8e0e16e6c128b0da1e45/types_deprecated-1.3.1.20260928-py3-none-any.whl (9.3 kB)
+#11 39.15 Collecting types-python-dateutil<3.0.0,>=2.8.19
+#11 39.22   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/5e/3715867caea2f4cea56ccb04c851cde23ed063449c3b004c7a047f20dd48/types_python_dateutil-2.9.0.20260807-py3-none-any.whl (18 kB)
+#11 39.35 Collecting lark<0.12.0,>=0.11.1
+#11 39.35   Using cached lark-0.11.3-py2.py3-none-any.whl
+#11 39.50 Collecting tenacity<9.0.0,>=8.2.2
+#11 39.57   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl (28 kB)
+#11 39.68 Collecting types-retry<0.10.0,>=0.9.9
+#11 39.75   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ca/f5/d6d49f1e99ae6e40fb6a9861e6cb78018cfbeff546fd5e5ab2a3719f3fe1/types_retry-0.9.9.20260408-py3-none-any.whl (7.6 kB)
+#11 39.91 Collecting qcs-api-client<0.22.0,>=0.21.0
+#11 40.00   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/72/16/19e988c8d36c9a3eb5c68b0aa2fa3c289e2e92895747bff7f48a64b4d9d1/qcs_api_client-0.21.6-py3-none-any.whl (151 kB)
+#11 40.63 Collecting qiskit-terra==0.46.3
+#11 40.80   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e1/f9/1531226e78a46e7ef6108b844531ccaa4880345314614941a2da8cd77794/qiskit_terra-0.46.3-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.4 MB)
+#11 41.04 Collecting dill>=0.3
+#11 41.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1e/77/dc8c558f7593132cf8fefec57c4f60c83b16941c574ac5f619abb3ae7933/dill-0.4.1-py3-none-any.whl (120 kB)
+#11 41.32 Collecting rustworkx>=0.13.0
+#11 41.41   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/ec/80ffcc38ffd28798a31563485a7c35d7d7ccebad83d388717442731e7477/rustworkx-0.18.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.4 MB)
+#11 41.63 Collecting stevedore>=3.0.0
+#11 41.74   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f5/ac/19f9941c74add59d17694930ec8105d5eddeee4ce56dd8632b765ca16d6c/stevedore-5.8.0-py3-none-any.whl (54 kB)
+#11 42.05 Collecting psutil>=5
+#11 42.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+#11 42.22 Collecting ply>=3.10
+#11 42.28   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl (49 kB)
+#11 42.47 Collecting symengine>=0.11
+#11 43.73   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5e/8f/3c335e44db300f4d91f7b098661a2add403367833cc27d26dc235520661a/symengine-0.14.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (50.4 MB)
+#11 44.99 Collecting mpmath<1.4,>=1.1.0
+#11 45.08   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl (536 kB)
+#11 45.36 Collecting azure-core<2.0,>=1.41.0
+#11 45.43   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5b/db/325c6d7312d2200251c52323878281045aaffcb5586612296484e4280eaa/azure_core-1.41.0-py3-none-any.whl (220 kB)
+#11 45.45      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 220.9/220.9 kB 18.1 MB/s eta 0:00:00
+#11 45.62 Collecting msrest<1.0,>=0.7.1
+#11 45.69   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/15/cf/f2966a2638144491f8696c27320d5219f48a072715075d168b31d3237720/msrest-0.7.1-py3-none-any.whl (85 kB)
+#11 45.73      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 85.4/85.4 kB 1.8 MB/s eta 0:00:00
+#11 45.96 Collecting azure-storage-blob<13.0,>=12.20
+#11 46.02   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ff/20/6530bbc13fea536a1f2c0194034ae3f6880fbc0c1e7c229e3569450f7aef/azure_storage_blob-12.30.3-py3-none-any.whl (438 kB)
+#11 46.11      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 438.4/438.4 kB 5.1 MB/s eta 0:00:00
+#11 46.29 Collecting azure-identity<2.0,>=1.25.3
+#11 46.37   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/49/9a/417b3a533e01953a7c618884df2cb05a71e7b68bdbce4fbdb62349d2a2e8/azure_identity-1.25.3-py3-none-any.whl (192 kB)
+#11 46.40      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 192.1/192.1 kB 7.0 MB/s eta 0:00:00
+#11 46.43 Collecting azure-quantum
+#11 46.50   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bf/22/380e2c6184714b41f81815a1f6dfbcaafb84d9210da35b43dcd77e1ef231/azure_quantum-3.11.0-py3-none-any.whl (166 kB)
+#11 46.51      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 166.9/166.9 kB 19.5 MB/s eta 0:00:00
+#11 46.61   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/24/64/b81b323e4bdb2a91893258ee031b5d2c0472d67e1f8d5368c21102517255/azure_quantum-3.10.0-py3-none-any.whl (166 kB)
+#11 46.62      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 166.8/166.8 kB 14.6 MB/s eta 0:00:00
+#11 47.47 Collecting qsharp[qiskit]<2.0,>=1.22.0
+#11 47.54   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d2/98/94ea86973f41da1f24a4c8048349a91df16e83f8ef3588184559ffbc3b9f/qsharp-1.31.0-py3-none-any.whl (15 kB)
+#11 47.73 Collecting pyqir<0.13,>=0.12.5
+#11 47.82   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5b/b7/da263a4c694b062d94b899a7248dec2238f965dc4ee58c69c6ba1263297e/pyqir-0.12.5-cp39-abi3-manylinux_2_34_x86_64.whl (2.6 MB)
+#11 47.94      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.6/2.6 MB 27.5 MB/s eta 0:00:00
+#11 48.13 Collecting requests>=2.19
+#11 48.22   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl (73 kB)
+#11 48.35 Collecting websocket-client>=1.5.1
+#11 48.44   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744025c04da585a3e/websocket_client-1.9.2-py3-none-any.whl (95 kB)
+#11 49.00 Collecting websockets>=10.0
+#11 49.07   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/18/a17e2f0cde02dc10154c808deed7e1d8528afff93612f70d3f0a5b19b011/websockets-16.1.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (186 kB)
+#11 49.19 Collecting requests-ntlm>=1.1.0
+#11 49.26   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9e/5d/836b97537a390cf811b0488490c389c5a614f0a93acb23f347bd37a2d914/requests_ntlm-1.3.0-py3-none-any.whl (6.6 kB)
+#11 49.44 Collecting urllib3>=1.21.1
+#11 49.53   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl (135 kB)
+#11 49.84 Collecting decorator>=5.1.0
+#11 49.95   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/05/7f/798705f5296a58ca505d600456748d1be48078eac8a7050d8a98bc9edb89/decorator-5.3.1-py3-none-any.whl (10 kB)
+#11 50.00 Collecting qiskit-ionq
+#11 50.06   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6f/27/ad44f003b9d054bc4913bb56a2c36b982cbe473b2be742353b2681c82f46/qiskit_ionq-1.1.0-py3-none-any.whl (60 kB)
+#11 50.08      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.6/60.6 kB 4.0 MB/s eta 0:00:00
+#11 50.16   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2c/09/7e953982cfc1d7eb0290728167f43d44f2e963cbdc5304e374c6d7578477/qiskit_ionq-1.0.3-py3-none-any.whl (58 kB)
+#11 50.19      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.0/58.0 kB 2.0 MB/s eta 0:00:00
+#11 50.26   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/21/a0/08be5d4aec05fb2ebbaa68ae18c2da8c1029dc048578ee0cf00ae3998d0e/qiskit_ionq-1.0.2-py3-none-any.whl (53 kB)
+#11 50.27      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.0/53.0 kB 5.9 MB/s eta 0:00:00
+#11 50.36   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d7/36/4d1b2b02b804aa4844e0915600984b9cfabaff235b1f5327b36f93a819df/qiskit_ionq-1.0.1-py3-none-any.whl (52 kB)
+#11 50.37      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.8/52.8 kB 6.3 MB/s eta 0:00:00
+#11 50.48   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f4/dc/333a2fc7ee04829fb030bb4c9bb360808844576d000a2509c1a2fb3ae8bd/qiskit_ionq-1.0.0-py3-none-any.whl (52 kB)
+#11 50.50      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.6/52.6 kB 2.4 MB/s eta 0:00:00
+#11 50.63   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ea/79/f72fc2be9cde553367d100e6e1274a85e000d213b7500a3f005442ab15dc/qiskit_ionq-0.6.1-py3-none-any.whl (51 kB)
+#11 50.69      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 51.2/51.2 kB 828.2 kB/s eta 0:00:00
+#11 50.94 Collecting importlib-metadata>=4.11.4
+#11 51.00   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b3/55/ecca97ae19075f1fac62def77731e7f535e6c1fb8f92ff08160c5e6dade8/importlib_metadata-9.0.1-py3-none-any.whl (27 kB)
+#11 51.18 Collecting python-dotenv>=1.0.1
+#11 51.25   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0d/17/c5c6b53ddc18f297992099b3d9ec16c855c0ccc83263a21fe4d1c625ec6c/python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+#11 51.33 Collecting qiskit-qir
+#11 51.40   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9c/b1/6217ab3efa91cfbf36e5ac647eedfb75352e37dd9331b62e8c9a42235ef6/qiskit_qir-0.4.0-py2.py3-none-any.whl (19 kB)
+#11 51.52   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a3/47/40001bbe379686e78aa8903119fa45ad0a75403082458ad99c03783c4e79/qiskit_qir-0.3.1-py2.py3-none-any.whl (19 kB)
+#11 51.66   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1a/83/e82e6383374ae5c0d048e1a1627e8352cc8f090cba1575b1df8d7364d4d0/qiskit_qir-0.3.0-py2.py3-none-any.whl (19 kB)
+#11 51.74   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/45/73/d398cac44052c28049e519ca67fe4d27630156634d144955d4d4f7dfd340/qiskit_qir-0.2.0-py2.py3-none-any.whl (18 kB)
+#11 51.87 Collecting pyqir-generator==0.4.2a1
+#11 51.94   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/76/5b/915dd50c9bcbb597826421daa0a07c5f407796218275f6fc73d124bfc31f/pyqir_generator-0.4.2a1-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (6.4 MB)
+#11 52.28      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.4/6.4 MB 19.1 MB/s eta 0:00:00
+#11 52.51 Collecting opt_einsum
+#11 52.59   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+#11 52.69 Collecting antlr4-python3-runtime==4.13.2
+#11 52.76   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/89/03/a851e84fcbb85214dc637b6378121ef9a0dd61b4c65264675d8a5c9b1ae7/antlr4_python3_runtime-4.13.2-py3-none-any.whl (144 kB)
+#11 53.30 Collecting numba
+#11 53.43   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e5/17/5358f24235ef1a5a80b7e28f3e1baa886c0bcf07dc68557009284e6ba698/numba-0.67.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.8 MB)
+#11 53.91 Collecting pydantic>2
+#11 54.02   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/eb/47/c95ffc2009878c7aac0c5e08528022dcb885933252a88b5f170058014464/pydantic-2.13.5-py3-none-any.whl (472 kB)
+#11 55.28 Collecting cryptography>=2.5
+#11 55.48   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8c/eb/5d7124083e8d8cda8f5b348f544b71ad6f707ad63193758ef4d8e569da02/cryptography-50.0.1-cp39-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+#11 56.18 Collecting msal>=1.35.1
+#11 56.26   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a4/32/178457385925ce301c7b3232bd85665d4df57da39568b62dcfc74031873f/msal-1.39.0-py3-none-any.whl (131 kB)
+#11 56.36      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.6/131.6 kB 1.4 MB/s eta 0:00:00
+#11 56.50 Collecting msal-extensions>=1.2.0
+#11 56.57   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5e/75/bd9b7bb966668920f06b200e84454c8f3566b102183bc55c5473d96cb2b9/msal_extensions-1.3.1-py3-none-any.whl (20 kB)
+#11 56.76 Collecting isodate>=0.6.1
+#11 56.83   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/15/aa/0aca39a37d3c7eb941ba736ede56d689e7be91cab5d9ca846bde3999eba6/isodate-0.7.2-py3-none-any.whl (22 kB)
+#11 58.53 Collecting botocore<1.44.0,>=1.43.105
+#11 58.87   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/94/50923cd46840e4d2b56cad1dcf5008fb20c099b04b2d93d32231f2d0bfaa/botocore-1.43.105-py3-none-any.whl (16.0 MB)
+#11 59.11 Collecting jmespath<2.0.0,>=0.7.1
+#11 59.17   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl (20 kB)
+#11 59.29 Collecting s3transfer<0.20.0,>=0.19.0
+#11 59.37   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bc/e7/5c595c75e9f41a44f30e526eda465ea0b4eec93470e074e4a111b253f13a/s3transfer-0.19.2-py3-none-any.whl (90 kB)
+#11 61.17 Collecting wrapt<3,>=1.10
+#11 61.24   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c3/e1/6f46c822f6657a69c8fef5d0824e0b5287d27b76d3769b501770b917fbb8/wrapt-2.5.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+#11 61.42 Collecting zipp>=3.20
+#11 61.48   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3a/13/547360d81e6d88d58492968ffda9f9542854f11310ee556fef14260cc886/zipp-4.1.0-py3-none-any.whl (10 kB)
+#11 61.65 Collecting requests-oauthlib>=0.5.0
+#11 61.71   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+#11 61.84 Collecting certifi>=2017.4.17
+#11 61.92   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl (136 kB)
+#11 62.06 Collecting mypy-extensions>=0.2.0
+#11 62.13   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+#11 62.27 Collecting qcs-api-client<0.22.0,>=0.21.0
+#11 62.33   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/55/07/b288b7b4122746df641f24b89dc6ceb4b3303189452fdfccac4a6547ffbe/qcs_api_client-0.21.5-py3-none-any.whl (151 kB)
+#11 62.52   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9e/8f/be1e77478b8b7882a3a119cfc42b74c3b20a446b8a987f8dc8109b8fba4e/qcs_api_client-0.21.4-py3-none-any.whl (151 kB)
+#11 62.63   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1b/86/1831dd12269d4de968994b6b629e4958e0c1aa3d1d3dc0cde16929de00f9/qcs_api_client-0.21.3-py3-none-any.whl (147 kB)
+#11 62.75   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/f1/d4ca3423faa43837ea5de27c3e4552ca4cd0ab8d5398e15787f9cbd760f1/qcs_api_client-0.21.2-py3-none-any.whl (147 kB)
+#11 62.85 Collecting iso8601<2.0.0,>=1.0.2
+#11 62.92   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/65/6c/9d72435c72adfa6e4ed1824b6df7fffbeaaf15c653881e9b041a318ba572/iso8601-1.1.0-py3-none-any.whl (9.9 kB)
+#11 62.94 Collecting qcs-api-client<0.22.0,>=0.21.0
+#11 63.01   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/79/5a/9f8bfe56f2f5923d4957b9b4b8d2f538c4ab25a4f0b1b95cd3b21db16fd8/qcs_api_client-0.21.1-py3-none-any.whl (147 kB)
+#11 63.11   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/85/bf/04bbeedcdbe5ee400ae84ee0832be9418e633fe1487778920ec2c654ebf5/qcs_api_client-0.21.0-py3-none-any.whl (142 kB)
+#11 63.12 INFO: pip is looking at multiple versions of pytz to determine which version is compatible with other requirements. This could take a while.
+#11 63.13 Collecting pytz>=2020.1
+#11 63.22   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/7b/39c34ca613b0b198cb866466651b26b045e2009864c5183c979a3b83f383/pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+#11 63.25 INFO: pip is looking at multiple versions of python-dotenv to determine which version is compatible with other requirements. This could take a while.
+#11 63.26 Collecting python-dotenv>=1.0.1
+#11 63.32   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0b/d7/1959b9648791274998a9c3526f6d0ec8fd2233e4d4acce81bbae76b44b2a/python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+#11 63.35 INFO: pip is looking at multiple versions of python-dateutil to determine which version is compatible with other requirements. This could take a while.
+#11 63.38 Collecting python-dateutil>=2.7
+#11 63.46   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/13/7f/98d6f9ca8b731506c85785bbb8806c01f5966a4df6d68c0d1cf3b16967e1/python_dateutil-2.9.0-py2.py3-none-any.whl (230 kB)
+#11 63.48 INFO: pip is looking at multiple versions of pyqir to determine which version is compatible with other requirements. This could take a while.
+#11 63.48 INFO: pip is looking at multiple versions of pyparsing to determine which version is compatible with other requirements. This could take a while.
+#11 63.49 Collecting pyparsing>=3
+#11 63.56   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/10/bd/c038d7cc38edc1aa5bf91ab8068b63d4308c66c4c8bb3cbba7dfbc049f9c/pyparsing-3.3.2-py3-none-any.whl (122 kB)
+#11 63.57 INFO: pip is looking at multiple versions of pillow to determine which version is compatible with other requirements. This could take a while.
+#11 63.57 Collecting pillow>=8
+#11 63.74   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b5/42/bbcb6051030e1e421d103ce7a8ecadf837aa2f39b8f82ef1a8d37c3d4ebc/pillow-12.2.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+#11 63.82 INFO: pip is looking at multiple versions of openpulse to determine which version is compatible with other requirements. This could take a while.
+#11 63.83 Collecting openpulse
+#11 63.92   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/62/c6/fb74e6ed5005fc4d57bfadc1d0154788e5d16b7453cf90f1018636fdba25/openpulse-1.0.0-py3-none-any.whl (536 kB)
+#11 63.95 INFO: pip is looking at multiple versions of oqpy to determine which version is compatible with other requirements. This could take a while.
+#11 63.95 Collecting oqpy~=0.3.7
+#11 64.03   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c7/b5/a9e931b4e0c9bd44d3e0b2da37544b22cdba375fbd0c87a67668568e3a6e/oqpy-0.3.9-py3-none-any.whl (35 kB)
+#11 64.04 INFO: pip is looking at multiple versions of msrest to determine which version is compatible with other requirements. This could take a while.
+#11 64.04 INFO: pip is looking at multiple versions of mpmath to determine which version is compatible with other requirements. This could take a while.
+#11 64.05 Collecting mpmath<1.4,>=1.1.0
+#11 64.13   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d4/cf/3965bddbb4f1a61c49aacae0e78fd1fe36b5dc36c797b31f30cf07dcbbb7/mpmath-1.2.1-py3-none-any.whl (532 kB)
+#11 64.14 INFO: pip is looking at multiple versions of lark to determine which version is compatible with other requirements. This could take a while.
+#11 64.15 Collecting lark<0.12.0,>=0.11.1
+#11 64.23   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/69/8b/9418c0d24df0e8261c24e4b7218e80369f175c68eb3dfa119bc89d53f7fc/lark-0.11.1-py2.py3-none-any.whl (93 kB)
+#11 64.25 INFO: pip is looking at multiple versions of kiwisolver to determine which version is compatible with other requirements. This could take a while.
+#11 64.27 Collecting kiwisolver>=1.3.1
+#11 64.36   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f1/0e/ba4ae25d03722f64de8b2c13e80d82ab537a06b30fc7065183c6439357e3/kiwisolver-1.5.0-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.6 MB)
+#11 64.39 INFO: pip is looking at multiple versions of importlib-metadata to determine which version is compatible with other requirements. This could take a while.
+#11 64.40 Collecting importlib-metadata>=4.11.4
+#11 64.47   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/38/3d/2d244233ac4f76e38533cfcb2991c9eb4c7bf688ae0a036d30725b8faafe/importlib_metadata-9.0.0-py3-none-any.whl (27 kB)
+#11 64.51 INFO: pip is looking at multiple versions of fonttools to determine which version is compatible with other requirements. This could take a while.
+#11 64.53 Collecting fonttools>=4.22.0
+#11 64.84   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d6/93/515ea8d3f637450c4d354acbabea576ec977ab03684a775116a9e6e30fc3/fonttools-4.64.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.3 MB)
+#11 64.91 INFO: pip is looking at multiple versions of deprecated to determine which version is compatible with other requirements. This could take a while.
+#11 64.92 Collecting deprecated<2.0.0,>=1.2.13
+#11 65.00   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6e/c6/ac0b6c1e2d138f1002bcf799d330bd6d85084fece321e662a14223794041/Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
+#11 65.01 INFO: pip is looking at multiple versions of decorator to determine which version is compatible with other requirements. This could take a while.
+#11 65.03 Collecting decorator>=5.1.0
+#11 65.09   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d5/6f/f8d0bba4dc2a69817d74f640d504650241ebf2f9f7263426f1b953b344d4/decorator-5.3.0-py3-none-any.whl (11 kB)
+#11 65.12 INFO: pip is looking at multiple versions of cycler to determine which version is compatible with other requirements. This could take a while.
+#11 65.12 Collecting cycler>=0.10
+#11 65.19   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2b/b3/70c33027c4918c10ccf176014b38f8b91cb18ac018a78854543a4fc72609/cycler-0.12.0-py3-none-any.whl (8.2 kB)
+#11 65.22 INFO: pip is looking at multiple versions of contourpy to determine which version is compatible with other requirements. This could take a while.
+#11 65.22 Collecting contourpy>=1.0.1
+#11 65.32   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a9/57/86c500d63b3e26e5b73a28b8291a67c5608d4aa87ebd17bd15bb33c178bc/contourpy-1.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (324 kB)
+#11 65.34 INFO: pip is looking at multiple versions of boto3 to determine which version is compatible with other requirements. This could take a while.
+#11 65.35 Collecting boto3>=1.28.53
+#11 65.43   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c7/94/518f876ac2ea906c67ab3d08c7659c78bbeed358604911bfba773bc2bbda/boto3-1.43.104-py3-none-any.whl (140 kB)
+#11 65.46 INFO: pip is looking at multiple versions of azure-storage-blob to determine which version is compatible with other requirements. This could take a while.
+#11 65.47 Collecting azure-storage-blob<13.0,>=12.20
+#11 65.56   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4a/05/d932e048368f634a73b29385e59120aef161bea774d2f1ccddff9b2147cd/azure_storage_blob-12.30.2-py3-none-any.whl (438 kB)
+#11 65.61      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 438.2/438.2 kB 20.7 MB/s eta 0:00:00
+#11 65.63 INFO: pip is looking at multiple versions of azure-identity to determine which version is compatible with other requirements. This could take a while.
+#11 65.65 Collecting azure-identity<2.0,>=1.17
+#11 65.72   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9b/77/f658c76f9e9a52c784bd836aaca6fd5b9aae176f1f53273e758a2bcda695/azure_identity-1.25.2-py3-none-any.whl (191 kB)
+#11 65.76      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 191.4/191.4 kB 9.6 MB/s eta 0:00:00
+#11 65.78 INFO: pip is looking at multiple versions of azure-core to determine which version is compatible with other requirements. This could take a while.
+#11 65.79 Collecting azure-core<2.0,>=1.30
+#11 65.87   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ec/c9/25edc67692fb17523c7d29c73898be649b4d3c7ae13cc0f74f5c91938022/azure_core-1.40.0-py3-none-any.whl (220 kB)
+#11 65.90      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 220.4/220.4 kB 8.7 MB/s eta 0:00:00
+#11 65.92 INFO: pip is looking at multiple versions of amazon-braket-schemas to determine which version is compatible with other requirements. This could take a while.
+#11 65.93 Collecting amazon-braket-schemas>=1.27.0
+#11 66.00   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/88/63/b833ec54afe8470749a46ac75d68e466ab585209a54161432c3bcbab3824/amazon_braket_schemas-1.27.0-py3-none-any.whl (152 kB)
+#11 66.03 INFO: pip is looking at multiple versions of antlr4-python3-runtime to determine which version is compatible with other requirements. This could take a while.
+#11 66.03 INFO: pip is looking at multiple versions of amazon-braket-default-simulator to determine which version is compatible with other requirements. This could take a while.
+#11 66.04 Collecting amazon-braket-default-simulator>=1.32.0
+#11 66.11   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/16/3c/f2a5511b296e32c16e23d096c2b6ae4c9b706682a24c90155cb6be304cf7/amazon_braket_default_simulator-1.32.2-py3-none-any.whl (229 kB)
+#11 66.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e3/7a/1a0e3be9766ac41ad6093adf8700c8b3dc33c30e1ef44a084fac83e267a4/amazon_braket_default_simulator-1.32.1-py3-none-any.whl (232 kB)
+#11 66.41   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0e/29/f8cc2a59d5a047a80cc87ea0a8a3a8b9e9eb31a4fc0ba3b339634ca331ec/amazon_braket_default_simulator-1.32.0-py3-none-any.whl (232 kB)
+#11 66.46 INFO: pip is looking at multiple versions of amazon-braket-schemas to determine which version is compatible with other requirements. This could take a while.
+#11 66.46 INFO: pip is looking at multiple versions of pyqir-generator to determine which version is compatible with other requirements. This could take a while.
+#11 66.46 INFO: pip is looking at multiple versions of qiskit-qir to determine which version is compatible with other requirements. This could take a while.
+#11 66.56 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 66.64 INFO: pip is looking at multiple versions of antlr4-python3-runtime to determine which version is compatible with other requirements. This could take a while.
+#11 66.64 INFO: pip is looking at multiple versions of amazon-braket-default-simulator to determine which version is compatible with other requirements. This could take a while.
+#11 66.64 INFO: pip is looking at multiple versions of qiskit-ionq to determine which version is compatible with other requirements. This could take a while.
+#11 66.80 INFO: pip is looking at multiple versions of qiskit-ibm-provider to determine which version is compatible with other requirements. This could take a while.
+#11 66.81 Collecting qiskit-ibm-provider
+#11 66.91   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8d/76/acdf3470dd77c24d72508aaca84b2f64f24421c7d8c5a3bd5377bbfbd70b/qiskit_ibm_provider-0.10.0-py3-none-any.whl (249 kB)
+#11 66.97 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 66.98 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 67.10 INFO: pip is looking at multiple versions of qdk to determine which version is compatible with other requirements. This could take a while.
+#11 67.11 Collecting qdk
+#11 67.18   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4e/22/7d970a2fc959634fa24e4376e740cb2007c0180ed6f55d915c00688aa51c/qdk-1.32.0-cp310-abi3-manylinux_2_35_x86_64.whl (8.0 MB)
+#11 67.53      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 23.9 MB/s eta 0:00:00
+#11 67.75 INFO: pip is looking at multiple versions of azure-quantum[qiskit] to determine which version is compatible with other requirements. This could take a while.
+#11 67.98 INFO: pip is looking at multiple versions of azure-quantum to determine which version is compatible with other requirements. This could take a while.
+#11 68.21 INFO: pip is looking at multiple versions of tomli to determine which version is compatible with other requirements. This could take a while.
+#11 68.22 Collecting tomli>=1
+#11 68.29   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/23/d1/136eb2cb77520a31e1f64cbae9d33ec6df0d78bdf4160398e86eec8a8754/tomli-2.4.0-py3-none-any.whl (14 kB)
+#11 68.55 INFO: pip is looking at multiple versions of sympy to determine which version is compatible with other requirements. This could take a while.
+#11 68.55 Collecting sympy>=1.10.1
+#11 68.72   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/99/ff/c87e0622b1dadea79d2fb0b25ade9ed98954c9033722eb707053d310d4f3/sympy-1.13.3-py3-none-any.whl (6.2 MB)
+#11 68.91 INFO: pip is looking at multiple versions of semantic-version to determine which version is compatible with other requirements. This could take a while.
+#11 68.91 INFO: pip is looking at multiple versions of scipy to determine which version is compatible with other requirements. This could take a while.
+#11 68.92 Collecting scipy>=1.8
+#11 69.96   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/de/3c/c96d904b9892beec978562f64d8cc43f9cca0842e65bd3cd1b7f7389b0ba/scipy-1.15.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.6 MB)
+#11 70.36 INFO: pip is looking at multiple versions of qiskit-terra to determine which version is compatible with other requirements. This could take a while.
+#11 70.36 INFO: pip is looking at multiple versions of qiskit to determine which version is compatible with other requirements. This could take a while.
+#11 70.36 Collecting qiskit>=0.36.1
+#11 70.45   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2a/ee/e30ef1a0fae35cd97097e72e7f5b9d7d41c1ee0c163981b168b280968e26/qiskit-0.46.2-py3-none-any.whl (10.0 kB)
+#11 70.56 INFO: pip is looking at multiple versions of pyquil to determine which version is compatible with other requirements. This could take a while.
+#11 70.57 Collecting pyquil>=3.1.0
+#11 70.63   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/81/a2/ece3bac50925581fe6bc07dd146f914ca5a58fbfdbaf1cbdbcce029309fd/pyquil-3.5.3-py3-none-any.whl (223 kB)
+#11 70.76 Collecting annotated-types>=0.6.0
+#11 70.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#11 70.92 Collecting typing-inspection>=0.4.2
+#11 70.99   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/67/81/4add07e5172b7ac40d8ed5ff580409a7801a4fe26d529bdd915401dabfbe/typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#11 74.42 Collecting pydantic-core==2.46.5
+#11 74.53   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/34/a1/c8e6b66f499f510752c07a092dfe27621f9c255635e59d38704b5681c35a/pydantic_core-2.46.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 74.61 Collecting pyquil>=3.1.0
+#11 74.68   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/cf/9a/ca30e005e1aa0f13bb94910f043fe1e5bed1a8f51d76b9b38a24ecec171c/pyquil-3.5.2-py3-none-any.whl (223 kB)
+#11 74.79   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f6/c6/7d18809a4472abe553b4c165c29dcff2a440e49fae4e99675f4de1fabc4d/pyquil-3.5.1-py3-none-any.whl (223 kB)
+#11 74.90 Collecting retry<0.10.0,>=0.9.2
+#11 74.97   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4b/0d/53aea75710af4528a25ed6837d71d117602b01946b307a3912cb3cfcbcba/retry-0.9.2-py2.py3-none-any.whl (8.0 kB)
+#11 74.99 Collecting pyquil>=3.1.0
+#11 75.07   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/94/1441a29d619ea7e2d01623c26d1f338fb41f5f2778b7be923adf631ed82f/pyquil-3.5.0-py3-none-any.whl (223 kB)
+#11 75.24   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ad/58/284879edf24ab9e5555b73d63eddbf4da87a4f11722b20aeecfd76b2fcd8/pyquil-3.4.1-py3-none-any.whl (223 kB)
+#11 75.39   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d7/bb/9956eab714ab30572b9701f1b38b937a3531d75b50d68bef02af71ed86b2/pyquil-3.4.0-py3-none-any.whl (223 kB)
+#11 75.50   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/19/0e/ee7cf658a5cf9562c8f02844661feacba0dea607000d2481282844420819/pyquil-3.3.5-py3-none-any.whl (221 kB)
+#11 75.53 INFO: pip is looking at multiple versions of pyquil to determine which version is compatible with other requirements. This could take a while.
+#11 75.60   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/56/2b/078fb646e05870eefc594f4dd404470bd30f9fedd97130d44fc8ef62914b/pyquil-3.3.4-py3-none-any.whl (221 kB)
+#11 75.71   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0e/1e/722986e6e8218b11ad79365e7b069c8678aa2272f3ece66eab230d6a60f3/pyquil-3.3.3-py3-none-any.whl (221 kB)
+#11 75.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0c/fd/247446325758d9c2f9c6dbba6f229223341d79746b81434a685c7ff2c320/pyquil-3.3.2-py3-none-any.whl (221 kB)
+#11 75.96   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/06/0e/e8212466149ffe85b11fe3dc6e4376dab199bd20637ee784573956bd119f/pyquil-3.3.1-py3-none-any.whl (221 kB)
+#11 76.07 Collecting qcs-api-client<0.22.0,>=0.20.13
+#11 76.15   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/29/cc/b3b0b143d99d8af4284ea914fb6e7460cfd040eb8d865b5da429ac973537/qcs_api_client-0.20.17-py3-none-any.whl (142 kB)
+#11 76.36 Collecting pyjwt<2.0.0,>=1.7.1
+#11 76.47   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/87/8b/6a9f14b5f781697e51259d81657e6048fd31a113229cf346880bb7545565/PyJWT-1.7.1-py2.py3-none-any.whl (18 kB)
+#11 76.49 Collecting qcs-api-client<0.22.0,>=0.20.13
+#11 76.58   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/38/73/844cd40dcae9faf85048be1b1577fc0a01cd7973589fc3d57f6c083bf14f/qcs_api_client-0.20.13-py3-none-any.whl (101 kB)
+#11 76.59 Collecting pyquil>=3.1.0
+#11 76.67   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/be/95/67107cc680445a4aafd793ac4afbe5fb6b826722887b66e14ae6b1c87913/pyquil-3.3.0-py3-none-any.whl (221 kB)
+#11 76.72 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 76.82   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c9/68/409f546e0ca5fa76b7b2790d52e1fffa91caa84e53b5b5300293e7055fa4/pyquil-3.2.1-py3-none-any.whl (221 kB)
+#11 77.06   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b3/f7/7e10676157fe181ccc1e124106c6a6ee6bd7a483615dcd8fab89e88a5711/pyquil-3.2.0-py3-none-any.whl (221 kB)
+#11 77.16   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/98/998643e41897905a61e5dcd7f5499bf3db33af2574d13e650ffd7438591e/pyquil-3.1.0-py3-none-any.whl (220 kB)
+#11 77.19 Collecting qcs-api-client<0.21.0,>=0.8.1
+#11 77.32   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ba/c7/7832b2e9226645467e584492797d5cc31cf81edd8587e37f2825105901ea/qcs_api_client-0.20.12-py3-none-any.whl (101 kB)
+#11 77.46   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bd/4f/709a2da73f26f65d0054b8611045a13add1ba7a5dec91ab76ae7ac08ef62/qcs_api_client-0.20.11-py3-none-any.whl (101 kB)
+#11 77.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d0/37/54494f2a5835922cfc48a8fc8156870b47326387a96114b3ae3bef2785c7/qcs_api_client-0.20.10-py3-none-any.whl (100 kB)
+#11 77.63   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/76/4beb6fcc85013f67ae792486515ff3a61998c08c2337eaaeef7b4c6378b5/qcs_api_client-0.20.9-py3-none-any.whl (100 kB)
+#11 77.72   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/03/86/83606b374e6b71bbd85d4cb2b6a3d83afe2aa5233e1349ed2827935569f1/qcs_api_client-0.20.8-py3-none-any.whl (100 kB)
+#11 77.81   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1e/ae/c709e743c466e62d46b1f8fe3706ae0910fa711d040bfc39d7c7044a81ef/qcs_api_client-0.20.7-py3-none-any.whl (100 kB)
+#11 77.91   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c6/79/37805c00bdd5809fcf8a7e1f15cce170fb617baf5079ec6222de6578136d/qcs_api_client-0.20.6-py3-none-any.whl (100 kB)
+#11 77.99   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/ac/aef69e3ede1a10509f452a46ad46f3aa6f5445ca734c2271e6a29309795f/qcs_api_client-0.20.5-py3-none-any.whl (100 kB)
+#11 78.08   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/55/b3/2252bfad43b92e2c7ee9f73483b220d4d469f2bef1155a20df09b645a789/qcs_api_client-0.20.4-py3-none-any.whl (100 kB)
+#11 78.17   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/79/4e/b808c913ffc72f1362a4279cf382e95920c2d209b8832bb841c08068502f/qcs_api_client-0.20.3-py3-none-any.whl (100 kB)
+#11 78.77   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a8/38/858400fa50e1902a95c1cdff3f759801a5f5dabe95ff17c92e086905e673/qcs_api_client-0.20.2-py3-none-any.whl (100 kB)
+#11 78.86   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/65/dc/fe9b8274dfcb51b7f04ac62eb98bffee067e6f5e2d4b600f1b03782b3733/qcs_api_client-0.20.1-py3-none-any.whl (100 kB)
+#11 78.98   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c2/9a/fb29e9983aa8d124703358852a62cf371efb25f88ad97e2091239f39e1c1/qcs_api_client-0.20.0-py3-none-any.whl (100 kB)
+#11 79.07   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b6/97/8715f38cad64dea2725ccf26f0b1a20629804c050d05ec09a631e048973e/qcs_api_client-0.19.0-py3-none-any.whl (100 kB)
+#11 79.17   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d8/90/ada8bd8f278c9402384c03cee1540477d53d1cb9b0ef87b0caac60d10878/qcs_api_client-0.18.0-py3-none-any.whl (100 kB)
+#11 79.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6c/69/58db272e941eabfd126b5baf6070bb441bf31b62c2035da074aff3b2ec78/qcs_api_client-0.17.0-py3-none-any.whl (100 kB)
+#11 79.36   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/93/aa/27150f336e344a63cade72d0fc354526fdf24ba21d412add7cb97752ec52/qcs_api_client-0.16.0-py3-none-any.whl (100 kB)
+#11 79.46   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/67/e5/c87eac8b126cfb9be6e7600b0b71d9d0eb93d2fdf2e1741861bf986e8d01/qcs_api_client-0.15.0-py3-none-any.whl (100 kB)
+#11 79.54   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d8/c2/0bc7515e44b33263c5dd866a9ef3c9135fe34a37310db3a8d556d6f2d0ee/qcs_api_client-0.14.0-py3-none-any.whl (100 kB)
+#11 79.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a6/e2/a9c344a237c157bf41d109f5c665b2f24c659af588d72e747ff67885e665/qcs_api_client-0.13.0-py3-none-any.whl (100 kB)
+#11 79.72   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a5/59/f6afa5b6c7acc8e49bae13abcb28acaba12bbf678545c92d6941b77cc9d3/qcs_api_client-0.12.1-py3-none-any.whl (100 kB)
+#11 79.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/52/36/53739d84e8fa0fb66389912ad921351ae58e9aae7f23de9c24baa9828fe1/qcs_api_client-0.12.0-py3-none-any.whl (100 kB)
+#11 79.97   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/60/5d/bb8cdaa85eec844ce73a733945642c4de1f2e20d95d496a03fb1f34311ad/qcs_api_client-0.11.0-py3-none-any.whl (100 kB)
+#11 80.08   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e9/fc/48874453f19d968155566fe358027acee794902c24ff4e82702dfeee912c/qcs_api_client-0.10.0-py3-none-any.whl (100 kB)
+#11 80.19   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f9/c2/7ad007b885e58513e0b044f18513fbcd594d4e8444044f8b1bbb815b20f1/qcs_api_client-0.9.0-py3-none-any.whl (100 kB)
+#11 80.23 INFO: pip is looking at multiple versions of pydantic-core to determine which version is compatible with other requirements. This could take a while.
+#11 80.23 INFO: pip is looking at multiple versions of pydantic to determine which version is compatible with other requirements. This could take a while.
+#11 80.23 Collecting pydantic>2
+#11 80.32   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fd/7b/122376b1fd3c62c1ed9dc80c931ace4844b3c55407b6fb2d199377c9736f/pydantic-2.13.4-py3-none-any.whl (472 kB)
+#11 80.36 Collecting pydantic-core==2.46.4
+#11 80.47   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ba/1e/acc4d70f88a0a277e4a1fa77ebb985ceabaf900430f875bf9338e11c9420/pydantic_core-2.46.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 80.74 Collecting pydantic>2
+#11 80.86   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/0a/fd7d723f8f8153418fb40cf9c940e82004fce7e987026b08a68a36dd3fe7/pydantic-2.13.3-py3-none-any.whl (471 kB)
+#11 80.95 Collecting pydantic-core==2.46.3
+#11 81.05   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2a/6d/c228219080817bec4982f9531cadb18da6aaa770fdeb114f49c237ac2c9f/pydantic_core-2.46.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 81.41 Collecting pydantic>2
+#11 81.49   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/77/ca/b45c378e6e8d0b90577288b533e04e95b7afd61bb1d51b6c263176435489/pydantic-2.13.2-py3-none-any.whl (471 kB)
+#11 81.53 Collecting pydantic-core==2.46.2
+#11 81.62   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/85/70/50b1b62990996e7916aae2852b29cbf3ecc3fdae78209eb284cd61e2c918/pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 81.96 Collecting pydantic>2
+#11 82.05   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/81/5a/2225f4c176dbfed0d809e848b50ef08f70e61daa667b7fa14b0d311ae44d/pydantic-2.13.1-py3-none-any.whl (471 kB)
+#11 82.12 Collecting pydantic-core==2.46.1
+#11 82.21   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/98/ae/46f8d693caefc09d8e2d3f19a6b4f2252cf6542f0b555759f2b5ec2b4ca5/pydantic_core-2.46.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 82.47 Collecting pydantic>2
+#11 82.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/01/d7/c3a52c61f5b7be648e919005820fbac33028c6149994cd64453f49951c17/pydantic-2.13.0-py3-none-any.whl (471 kB)
+#11 82.59 Collecting pydantic-core==2.46.0
+#11 82.70   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/08/ab/f3bc576d37eb3036f7b1b2721ab0f89e4684fab48e1de1d0eca0dfef7469/pydantic_core-2.46.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 83.02 Collecting pydantic>2
+#11 83.11   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5a/87/b70ad306ebb6f9b585f114d0ac2137d792b48be34d732d60e597c2f8465a/pydantic-2.12.5-py3-none-any.whl (463 kB)
+#11 83.15 Collecting pydantic-core==2.41.5
+#11 83.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a8/76/7727ef2ffa4b62fcab916686a68a0426b9b790139720e1934e8ba797e238/pydantic_core-2.41.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 83.54 Collecting pydantic>2
+#11 83.61   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/82/2f/e68750da9b04856e2a7ec56fc6f034a5a79775e9b9a81882252789873798/pydantic-2.12.4-py3-none-any.whl (463 kB)
+#11 83.83 INFO: pip is looking at multiple versions of pydantic-core to determine which version is compatible with other requirements. This could take a while.
+#11 83.83 INFO: pip is looking at multiple versions of pydantic to determine which version is compatible with other requirements. This could take a while.
+#11 83.93   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a1/6b/83661fa77dcefa195ad5f8cd9af3d1a7450fd57cc883ad04d65446ac2029/pydantic-2.12.3-py3-none-any.whl (462 kB)
+#11 83.97 Collecting pydantic-core==2.41.4
+#11 84.06   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d3/81/8cece29a6ef1b3a92f956ea6da6250d5b2d2e7e4d513dd3b4f0c7a83dfea/pydantic_core-2.41.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 84.30 Collecting pydantic>2
+#11 84.38   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6c/98/468cb649f208a6f1279448e6e5247b37ae79cf5e4041186f1e2ef3d16345/pydantic-2.12.2-py3-none-any.whl (460 kB)
+#11 84.70   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f4/9d/d5c855424e2e5b6b626fbc6ec514d8e655a600377ce283008b115abb7445/pydantic-2.12.0-py3-none-any.whl (459 kB)
+#11 84.74 Collecting pydantic-core==2.41.1
+#11 84.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/53/25/cd47df3bfb24350e03835f0950288d1054f1cc9a8023401dabe6d4ff2834/pydantic_core-2.41.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 85.17 Collecting pydantic>2
+#11 85.25   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bd/1f/73c53fcbfb0b5a78f91176df41945ca466e71e9d9d836e5c522abda39ee7/pydantic-2.11.10-py3-none-any.whl (444 kB)
+#11 85.29 Collecting pydantic-core==2.33.2
+#11 85.38   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/31/0d/c8f7593e6bc7066289bbc366f2235701dcbebcd1ff0ef8e64f6f239fb47d/pydantic_core-2.33.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 85.81 Collecting pydantic>2
+#11 86.48   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3e/d3/108f2006987c58e76691d5ae5d200dd3e0f532cb4e5fa3560751c3a1feba/pydantic-2.11.9-py3-none-any.whl (444 kB)
+#11 87.04 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 87.05 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 87.19   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/19/49/bdc01f684aff7070253fe32fb9c60788e70de6b8ec527eaebf96bdf1a76b/pydantic-2.11.8-py3-none-any.whl (444 kB)
+#11 87.81   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6a/c0/ec2b1c8712ca690e5d61979dee872603e92b8a32f94cc1b72d53beab008a/pydantic-2.11.7-py3-none-any.whl (444 kB)
+#11 88.23   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/05/11/7912a9a194ee4ea96520740d1534bc31a03a4a59d62e1d7cac9461d3f379/pydantic-2.11.6-py3-none-any.whl (444 kB)
+#11 88.60   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b5/69/831ed22b38ff9b4b64b66569f0e5b7b97cf3638346eb95a2147fdb49ad5f/pydantic-2.11.5-py3-none-any.whl (444 kB)
+#11 89.04   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e7/12/46b65f3534d099349e38ef6ec98b1a5a81f42536d17e0ba382c28c67ba67/pydantic-2.11.4-py3-none-any.whl (443 kB)
+#11 89.41   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b0/1d/407b29780a289868ed696d1616f4aad49d6388e5a77f567dcd2629dcd7b8/pydantic-2.11.3-py3-none-any.whl (443 kB)
+#11 89.48 Collecting pydantic-core==2.33.1
+#11 89.61   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f2/68/866ce83a51dd37e7c604ce0050ff6ad26de65a7799df89f4db87dd93d1d6/pydantic_core-2.33.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 89.85 Collecting pydantic>2
+#11 89.94   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bf/c2/0f3baea344d0b15e35cb3e04ad5b953fa05106b76efbf4c782a3f47f22f5/pydantic-2.11.2-py3-none-any.whl (443 kB)
+#11 90.32   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/cc/12/f9221a949f2419e2e23847303c002476c26fbcfd62dc7f3d25d0bec5ca99/pydantic-2.11.1-py3-none-any.whl (442 kB)
+#11 90.37 Collecting pydantic-core==2.33.0
+#11 90.45   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/53/80/b4879de375cdf3718d05fcb60c9aa1f119d28e261dafa51b6a69c78f7178/pydantic_core-2.33.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 90.76 Collecting pydantic>2
+#11 90.99   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/09/2c/3a0a1b022bb028e4cd455c69a17ceaad809bf6763c110d093efc0d8f67aa/pydantic-2.11.0-py3-none-any.whl (442 kB)
+#11 91.65   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f4/3c/8cc1cc84deffa6e25d2d0c688ebb80635dfdbf1dbea3e30c541c8cf4d860/pydantic-2.10.6-py3-none-any.whl (431 kB)
+#11 91.71 Collecting pydantic-core==2.27.2
+#11 91.80   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/32/90/3b15e31b88ca39e9e626630b4c4a1f5a0dfd09076366f4219429e6786076/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 92.19 Collecting pydantic>2
+#11 92.26   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/58/26/82663c79010b28eddf29dcdd0ea723439535fa917fce5905885c0e9ba562/pydantic-2.10.5-py3-none-any.whl (431 kB)
+#11 92.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/26/3e1bbe954fde7ee22a6e7d31582c642aad9e84ffe4b5fb61e63b87cd326f/pydantic-2.10.4-py3-none-any.whl (431 kB)
+#11 93.04   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/62/51/72c18c55cf2f46ff4f91ebcc8f75aa30f7305f3d726be3f4ebffb4ae972b/pydantic-2.10.3-py3-none-any.whl (456 kB)
+#11 93.09 Collecting pydantic-core==2.27.1
+#11 93.19   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/02/1d/00f2e4626565b3b6d3690dab4d4fe1a26edd6a20e53749eb21ca892ef2df/pydantic_core-2.27.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 93.50 Collecting pydantic>2
+#11 93.58   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d5/74/da832196702d0c56eb86b75bfa346db9238617e29b0b7ee3b8b4eccfe654/pydantic-2.10.2-py3-none-any.whl (456 kB)
+#11 93.96   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e0/fc/fda48d347bd50a788dd2a0f318a52160f911b86fc2d8b4c86f4d7c9bceea/pydantic-2.10.1-py3-none-any.whl (455 kB)
+#11 94.48   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9e/ee/255cbfdbf5c47650de70ac8a5425107511f505ed0366c29d537f7f1842e1/pydantic-2.10.0-py3-none-any.whl (454 kB)
+#11 94.52 Collecting pydantic-core==2.27.0
+#11 94.65   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/7f/ac/e1867e2b808a668f32ad9012eaeac0b0ee377eee8157ab93720f48ee609b/pydantic_core-2.27.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 95.26 Collecting pydantic>2
+#11 95.35   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/df/e4/ba44652d562cbf0bf320e0f3810206149c8a4e99cdbf66da82e97ab53a15/pydantic-2.9.2-py3-none-any.whl (434 kB)
+#11 95.45 Collecting pydantic-core==2.23.4
+#11 95.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/11/ac/1e647dc1121c028b691028fa61a4e7477e6aeb5132628fde41dd34c1671f/pydantic_core-2.23.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 96.17 Collecting pydantic>2
+#11 96.45   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/28/fff23284071bc1ba419635c7e86561c8b9b8cf62a5bcb459b92d7625fd38/pydantic-2.9.1-py3-none-any.whl (434 kB)
+#11 96.50 Collecting pydantic-core==2.23.3
+#11 96.66   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/80/d1/c6f8e23987dc166976996a910876596635d71e529335b846880d856589fd/pydantic_core-2.23.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 97.09 Collecting pydantic>2
+#11 97.17   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/54/38/95bdb5dfcebad2c11c88f7aa2d635fe53a0b7405ef39a6850c8bced455d4/pydantic-2.9.0-py3-none-any.whl (434 kB)
+#11 97.24 Collecting pydantic-core==2.23.2
+#11 97.35   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/90/60/ce282e9f8cf383c73c1b3234835b1aa6e518aa947b162c4e86c2dcffd281/pydantic_core-2.23.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 97.65 Collecting pydantic>2
+#11 97.73   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl (423 kB)
+#11 97.81 Collecting pydantic-core==2.20.1
+#11 97.95   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ae/49/8a6fe79d35e2f3bea566d8ea0e4e6f436d4f749d7838c8e8c4c5148ae706/pydantic_core-2.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 98.33 Collecting pydantic>2
+#11 98.43   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8c/98/a4b7ec8ea033a3b6bef68a8589a94a6575db57431eb70d4ae96687f53b56/pydantic-2.8.1-py3-none-any.whl (423 kB)
+#11 98.94   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d3/07/bbfddb7b532b727a5769a8468a67ab388e74c029d4940e5de6b25231aba2/pydantic-2.8.0-py3-none-any.whl (423 kB)
+#11 98.98 Collecting pydantic-core==2.20.0
+#11 99.12   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/48/da/c8205b857dacc2d17a4be86875a7b52d0f3322a348cad8bcccb37e755c04/pydantic_core-2.20.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 99.42 Collecting pydantic>2
+#11 99.50   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/17/ba/1b65c9cbc49e0c7cd1be086c63209e9ad883c2a409be4746c21db4263f41/pydantic-2.7.4-py3-none-any.whl (409 kB)
+#11 99.58 Collecting pydantic-core==2.18.4
+#11 99.68   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/be/44/18eec2ac121e195662ac0f48c9c2a7bc9e2175edf408004b42adfadfc095/pydantic_core-2.18.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 100.2 Collecting pydantic>2
+#11 100.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e6/f5/80931903275942770f1112b524f1948f6d6ebd44725425025ca838800de2/pydantic-2.7.3-py3-none-any.whl (409 kB)
+#11 100.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6f/b9/ec44b1394957d5aa8d3a7c33f8304cd7670d10a43a286db56cec086346be/pydantic-2.7.2-py3-none-any.whl (409 kB)
+#11 100.8 Collecting pydantic-core==2.18.3
+#11 100.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/27/aeade6d7b2f2bcc8fc835bdf6aa705f6f34508da380f170e13cd37477dd4/pydantic_core-2.18.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 101.3 Collecting pydantic>2
+#11 101.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ed/76/9a17032880ed27f2dbd490c77a3431cbc80f47ba81534131de3c2846e736/pydantic-2.7.1-py3-none-any.whl (409 kB)
+#11 101.4 Collecting pydantic-core==2.18.2
+#11 101.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a6/a5/c351d83454267964d24b79e9116d716157071df4682f865d1274235a0cac/pydantic_core-2.18.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 101.8 Collecting pydantic>2
+#11 102.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/16/ca/330c4f3bd983bb24ac12c7fd1e08c26c8aed70bc64498cf38c770321067f/pydantic-2.7.0-py3-none-any.whl (407 kB)
+#11 102.2 Collecting pydantic-core==2.18.1
+#11 102.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/57/10/e5b53ab5e11719d899e9cc5cccab1147e0c9f8a2643099b0184e50df0ad8/pydantic_core-2.18.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 102.6 Collecting pydantic>2
+#11 102.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e5/f3/8296f550276194a58c5500d55b19a27ae0a5a3a51ffef66710c58544b32d/pydantic-2.6.4-py3-none-any.whl (394 kB)
+#11 102.8 Collecting pydantic-core==2.16.3
+#11 102.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b8/be/a3c2edde00afcf5cdc0fb710ce0289f5af776273f420b4486cf005c94b57/pydantic_core-2.16.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#11 103.3 Collecting pydantic>2
+#11 103.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ac/86/c98520827f58c8753783be4bf2286b4f73a18ac71c93ab597ae1aeb26fc8/pydantic-2.6.3-py3-none-any.whl (395 kB)
+#11 103.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/42/28/f19be8d493c59a8ddf32c15d69765c6423ad712da1c6255b418df2fc1443/pydantic-2.6.2-py3-none-any.whl (394 kB)
+#11 104.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/db/dc/afecbd9650f486889181c6d1a0d675b580c06253ea7e304588e4c7485bdb/pydantic-2.6.1-py3-none-any.whl (394 kB)
+#11 104.4 Collecting pydantic-core==2.16.2
+#11 104.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/50/5e/2978d9f0e8d0cfd78e22115c028a41e0599e3d684e5aef7ed9bd18fcbd0c/pydantic_core-2.16.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#11 105.0 Collecting pydantic>2
+#11 105.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/37/3ffe6e7daa1ea1b4bf5228807a92ccbae538cf57c0c50b93564c310c11a8/pydantic-2.6.0-py3-none-any.whl (394 kB)
+#11 105.2 Collecting pydantic-core==2.16.1
+#11 105.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/7e/96bd9a40f6d5edc3b4566951acac7a8f26e423c77001a7dc065d6200052a/pydantic_core-2.16.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#11 105.7 Collecting pydantic>2
+#11 105.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/dd/b7/9aea7ee6c01fe3f3c03b8ca3c7797c866df5fecece9d6cb27caa138db2e2/pydantic-2.5.3-py3-none-any.whl (381 kB)
+#11 105.9 Collecting pydantic-core==2.14.6
+#11 106.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/90/28/3c6843e6b203999be2660d3f114be196f2182dcac533dc764ad320c9184d/pydantic_core-2.14.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 106.5 Collecting pydantic>2
+#11 106.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0a/2b/64066de1c4cf3d4ed623beeb3bbf3f8d0cc26661f1e7d180ec5eb66b75a5/pydantic-2.5.2-py3-none-any.whl (381 kB)
+#11 106.7 Collecting pydantic-core==2.14.5
+#11 106.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/7c/f5/3e59681bd53955da311a7f4efbb6315d01006e9d18b8a06b527a22d3d923/pydantic_core-2.14.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 107.1 Collecting pydantic>2
+#11 107.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e2/2c/9906b7abc337b0250a5634de5396e2f3cb1b837af0616424c2225a65aa80/pydantic-2.5.1-py3-none-any.whl (381 kB)
+#11 107.3 Collecting pydantic-core==2.14.3
+#11 107.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b8/e7/91f3c2e9ecff2dcd6126f3f5f3f20afcd6ed89d4757accbde8c7ac80c55e/pydantic_core-2.14.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 107.9 Collecting pydantic>2
+#11 108.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d7/10/ddfb9539a6e55f7dfd6c2b9b81d86fcba2761ba87eeb81f8b1012957dcdc/pydantic-2.5.0-py3-none-any.whl (407 kB)
+#11 108.1 Collecting pydantic-core==2.14.1
+#11 108.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/46/f5/b2e3dae75ccae405954e20b47f65493838f7303eb7b7aad39858cd9db0b7/pydantic_core-2.14.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#11 108.7 Collecting pydantic>2
+#11 109.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/73/66/0a72c9fcde42e5650c8d8d5c5c1873b9a3893018020c77ca8eb62708b923/pydantic-2.4.2-py3-none-any.whl (395 kB)
+#11 109.1 Collecting pydantic-core==2.10.1
+#11 109.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/86/67/d36e2237d84ac96f400e29586da1e21eabf9aa227fc9c3e4410fbc6408de/pydantic_core-2.10.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 109.8 Collecting pydantic>2
+#11 109.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/29/0a/ebc4cacc0fd6b38e4f8470f4ceec8ec1d3620b023f0f9c3541be717ff67c/pydantic-2.4.1-py3-none-any.whl (395 kB)
+#11 110.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f9/3e/2c5b1c8c7b0079eea7191f6b5b804d47db433e4e4e229b90455d4af7226d/pydantic-2.4.0-py3-none-any.whl (395 kB)
+#11 110.6 Collecting pydantic-core==2.10.0
+#11 110.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/72/bf/86cb985df21b1542eb7a0f9190903fd7edb06b27bd823018a80628dbe2eb/pydantic_core-2.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+#11 111.1 Collecting pydantic>2
+#11 111.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/82/06/fafdc75e48b248eff364b4249af4bcc6952225e8f20e8205820afc66e88e/pydantic-2.3.0-py3-none-any.whl (374 kB)
+#11 111.3 Collecting pydantic-core==2.6.3
+#11 111.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fc/dc/2443b6224c396b765d2c68d61a8c24eeb05a6b425518cad80ce1fc4d4430/pydantic_core-2.6.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.9 MB)
+#11 111.8 Collecting pydantic>2
+#11 111.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fd/35/86b1e7571e695587df0ddf2937100436dce0caa277d2f016d4e4f7d3791a/pydantic-2.2.1-py3-none-any.whl (373 kB)
+#11 111.9 Collecting pydantic-core==2.6.1
+#11 112.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/15/31/75cd7855b46c11e1d0b40b72489f5c311739aa8e95c4c82c95b21f556f2a/pydantic_core-2.6.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.9 MB)
+#11 112.4 Collecting pydantic>2
+#11 112.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/82/54/ed9a1005c580b619a4c53c324f472c99c165051b22f8885b09be1882aece/pydantic-2.2.0-py3-none-any.whl (373 kB)
+#11 112.5 Collecting pydantic-core==2.6.0
+#11 112.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/17/e6/59af5c1d593e1ef0d8f8f50ac93c77adf9d81d38a488d5cbdfa7d272cee2/pydantic_core-2.6.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.9 MB)
+#11 113.0 Collecting pydantic>2
+#11 113.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/87/80/52770e747e4bee5012e60b2684db36c8fdf010f8dadb4ded0efec808b07d/pydantic-2.1.1-py3-none-any.whl (370 kB)
+#11 113.1 Collecting pydantic-core==2.4.0
+#11 113.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/97/0a/5673dc7f7e232c3421a4c33fd1d261ebe9b963d0f9e9c2c03d5dd7382769/pydantic_core-2.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.9 MB)
+#11 113.6 Collecting pydantic>2
+#11 113.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5a/25/55002e826c764e85bcd0910f21e0de2ebb8796a0cc27b350ca6d2bc41b07/pydantic-2.1.0-py3-none-any.whl (370 kB)
+#11 114.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1f/1a/71b404f9acb44402f5b581ade106e9219d6d83824d50943e630fc0ca12e5/pydantic-2.0.3-py3-none-any.whl (364 kB)
+#11 114.2 Collecting pydantic-core==2.3.0
+#11 114.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2d/1e/d7ef26e565273dd26c0309244f43c0ec555ed4ba9ef83d794967b432c4c9/pydantic_core-2.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.8 MB)
+#11 114.7 Collecting pydantic>2
+#11 114.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/79/bf/ce11dc07156bdbf12009c560ba5fdb308522f77e7484b64f4aff682d93cf/pydantic-2.0.2-py3-none-any.whl (359 kB)
+#11 114.8 Collecting pydantic-core==2.1.2
+#11 114.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/cc/92/e6bb8c9a9cf0d25f7dad6457a194f0c602d13029fab0fa252ecd6f917980/pydantic_core-2.1.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.8 MB)
+#11 115.2 Collecting pydantic>2
+#11 115.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d9/fd/618a146a5958aa356ecf4c39e6f7669e3b21ce230de1f567f6908775696c/pydantic-2.0.1-py3-none-any.whl (358 kB)
+#11 115.4 Collecting pydantic-core==2.0.2
+#11 115.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/44/7a/d64548468ec7f53a911180cc000e52fb6c22bbaea4f958c06ea74485007f/pydantic_core-2.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.5 MB)
+#11 CANCELED
+ERROR: failed to solve: Canceled: context canceled

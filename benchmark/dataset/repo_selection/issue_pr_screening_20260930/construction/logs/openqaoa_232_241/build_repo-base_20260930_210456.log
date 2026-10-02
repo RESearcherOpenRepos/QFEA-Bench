@@ -1,0 +1,1096 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.repo-base
+#1 transferring dockerfile: 1.26kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/qfea-python310:trixie-db7a1753878f
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [stage-0 1/7] FROM docker.io/library/qfea-python310:trixie-db7a1753878f
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 323B done
+#5 DONE 0.0s
+
+#6 [stage-0 3/7] WORKDIR /workspace/repo
+#6 CACHED
+
+#7 [stage-0 4/7] ADD --chown=0:0 source.tar.gz /workspace/repo
+#7 CACHED
+
+#8 [stage-0 2/7] RUN sed -i "s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g" /etc/apt/sources.list.d/debian.sources && apt-get -o Acquire::Retries=3 update && apt-get install -y --no-install-recommends git gcc g++ gfortran make libgomp1 && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [stage-0 5/7] RUN chown -R root:root /workspace/repo && git checkout --detach 137d3f0a10391adce5bb23cf7536f2d221defb79 && git cat-file -e cf30131c4d7927e86daf6104399ee612cd6f78ec^{commit}
+#9 CACHED
+
+#10 [stage-0 6/7] COPY constraints.txt /opt/constraints.txt
+#10 DONE 0.2s
+
+#11 [stage-0 7/7] RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip python -m pip install 'pip<25' 'setuptools<81' wheel && python -m pip install -c /opt/constraints.txt -e . pytest && python -m pip freeze > /opt/build-freeze.txt
+#11 3.860 Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+#11 3.860 Requirement already satisfied: pip<25 in /usr/local/lib/python3.10/site-packages (23.0.1)
+#11 3.860 Requirement already satisfied: setuptools<81 in /usr/local/lib/python3.10/site-packages (79.0.1)
+#11 3.860 Requirement already satisfied: wheel in /usr/local/lib/python3.10/site-packages (0.45.1)
+#11 3.926 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#11 3.934 
+#11 3.934 [notice] A new release of pip is available: 23.0.1 -> 26.2.1
+#11 3.934 [notice] To update, run: pip install --upgrade pip
+#11 4.685 Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+#11 4.687 Obtaining file:///workspace/repo
+#11 4.692   Installing build dependencies: started
+#11 7.110   Installing build dependencies: finished with status 'done'
+#11 7.113   Checking if build backend supports build_editable: started
+#11 7.497   Checking if build backend supports build_editable: finished with status 'done'
+#11 7.503   Getting requirements to build editable: started
+#11 7.912   Getting requirements to build editable: finished with status 'done'
+#11 7.917   Preparing editable metadata (pyproject.toml): started
+#11 8.364   Preparing editable metadata (pyproject.toml): finished with status 'done'
+#11 8.824 Collecting pytest
+#11 9.080   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/24/25/1de2678b631f5a49215c6c96fff41ba892b0a34df68d6d80292b1b48aa7f/pytest-9.1.1-py3-none-any.whl (386 kB)
+#11 9.241 Collecting pluggy<2,>=1.5
+#11 9.321   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl (20 kB)
+#11 9.459 Collecting packaging>=22
+#11 9.531   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl (129 kB)
+#11 9.686 Collecting tomli>=1
+#11 9.794   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/7b/61/cceae43728b7de99d9b847560c262873a1f6c98202171fd5ed62640b494b/tomli-2.4.1-py3-none-any.whl (14 kB)
+#11 9.914 Collecting exceptiongroup>=1
+#11 9.984   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8a/0e/97c33bf5009bdbac74fd2beace167cab3f978feb69cc36f1ef79360d6c4e/exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+#11 10.08 Collecting iniconfig>=1.0.1
+#11 10.16   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+#11 10.30 Collecting pygments>=2.7.2
+#11 10.40   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#11 10.68 Collecting networkx>=2.8
+#11 10.78   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/42/31/d2f89f1ae42718f8c8a9e440ebe38d7d5fe1e0d9eb9178ce779e365b3ab0/networkx-2.8.8-py3-none-any.whl (2.0 MB)
+#11 10.94 Collecting autoray>=0.3.1
+#11 11.02   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9f/be/f0352174093c8beed98e85e37f9190cc7da8f26330b9853f5153a9514a0a/autoray-0.8.11-py3-none-any.whl (941 kB)
+#11 11.26 Collecting qdk
+#11 11.34   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d9/75/1aa8adc17de213d0e5ef6b46469ddf95812f6c7b10239f688ab59a99d167/qdk-0.28.302812-py3-none-any.whl (35 kB)
+#11 11.48 Collecting qiskit-qir
+#11 11.56   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a3/47/40001bbe379686e78aa8903119fa45ad0a75403082458ad99c03783c4e79/qiskit_qir-0.3.1-py2.py3-none-any.whl (19 kB)
+#11 11.66 Collecting qiskit-ibm-provider
+#11 11.82   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ff/48/73fa9d2201353b8592cd880d36024c9e902801b32f253fca2240b72c7cca/qiskit_ibm_provider-0.9.0-py3-none-any.whl (249 kB)
+#11 12.52 Collecting scipy>=1.8
+#11 13.26   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8e/6d/41991e503e51fc1134502694c5fa7a1671501a17ffa12716a4a9151af3df/scipy-1.15.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.7 MB)
+#11 14.38 Collecting matplotlib>=3.4.3
+#11 14.59   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fc/b7/d8bcec2626c35f96972bff656299fef4578113ea6193c8fdad324710410c/matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (8.8 MB)
+#11 14.93 Collecting qiskit>=0.36.1
+#11 15.04   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1d/9a/2097f1b0dd1a29d6b2026c0a4031a6dcc7766d861e6f72671761350fe549/qiskit-0.43.3.tar.gz (9.1 kB)
+#11 15.05   Installing build dependencies: started
+#11 18.54   Installing build dependencies: finished with status 'done'
+#11 18.55   Getting requirements to build wheel: started
+#11 19.01   Getting requirements to build wheel: finished with status 'done'
+#11 19.01   Preparing metadata (pyproject.toml): started
+#11 19.49   Preparing metadata (pyproject.toml): finished with status 'done'
+#11 19.65 Collecting docplex>=2.23.1
+#11 19.74   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b4/02/7aec9042e1727b9f8fd745fa799bc8b4fd76e4db57f05a81eb676ead401b/docplex-2.32.264.tar.gz (663 kB)
+#11 19.88   Installing build dependencies: started
+#11 23.91   Installing build dependencies: finished with status 'done'
+#11 23.94   Getting requirements to build wheel: started
+#11 24.46   Getting requirements to build wheel: finished with status 'done'
+#11 24.47   Preparing metadata (pyproject.toml): started
+#11 25.12   Preparing metadata (pyproject.toml): finished with status 'done'
+#11 25.75 Collecting amazon-braket-sdk>=1.23.0
+#11 25.85   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/83/9c/d630c9deba6b5595bc05ba052f71bc3a6c1c155bf893c06626ccd300a676/amazon_braket_sdk-1.49.1.post0-py3-none-any.whl (266 kB)
+#11 26.04      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 266.1/266.1 kB 2.4 MB/s eta 0:00:00
+#11 26.85 Collecting pandas>=1.3.5
+#11 27.18   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/40/a8/4dac1f8f8235e5d25b9955d02ff6f29396191d4e665d71122c3722ca83c5/pandas-2.3.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
+#11 27.43 Collecting autograd>=1.4
+#11 27.51   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6e/ce/8c98e6604bb1ec9d03c8493c328185b69bb7533fe08f3640f0f3641bd9d1/autograd-1.9.1-py3-none-any.whl (54 kB)
+#11 27.75 Collecting pyquil>=3.1.0
+#11 27.90   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/da/45dfa58a121da5e6cafddad62f0004fcbf5986522a44e670389553752341/pyquil-3.5.4-py3-none-any.whl (223 kB)
+#11 28.02 Collecting sympy>=1.10.1
+#11 28.18   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl (6.3 MB)
+#11 28.47 Collecting azure-quantum[qiskit]
+#11 28.55   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cb/b7/9e4927f3dc763859ee9bd32e94221819ccedb2f1abae97bf99ed5d32cfca/azure_quantum-0.28.302812-py3-none-any.whl (180 kB)
+#11 28.59      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180.2/180.2 kB 7.7 MB/s eta 0:00:00
+#11 29.74 Collecting numpy>=1.22.3
+#11 30.40   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4b/d7/ecf66c1cd12dc28b4040b15ab4d17b773b87fa9d29ca16125de01adb36cd/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+#11 30.84 Collecting qiskit-ionq
+#11 30.91   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/85/50/1e1643435ffcf19a6c8043d63e6a593d7aa441a04d2c447b899737f8b091/qiskit_ionq-0.4.7-py3-none-any.whl (37 kB)
+#11 31.03 Collecting semantic_version>=2.10
+#11 31.10   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6a/23/8146aad7d88f4fcb3a6218f41a60f6c2d4e3a72de72da1825dc7c8f7877c/semantic_version-2.10.0-py2.py3-none-any.whl (15 kB)
+#11 31.29 Collecting openqasm3
+#11 31.38   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/75/dd/2aa7698341948f3229f7a1cb75e84d9677444d9c730632d1907716574dc5/openqasm3-1.0.1-py3-none-any.whl (541 kB)
+#11 31.40 Requirement already satisfied: setuptools in /usr/local/lib/python3.10/site-packages (from amazon-braket-sdk>=1.23.0->openqaoa==0.1.3) (79.0.1)
+#11 31.50 Collecting openpulse
+#11 31.60   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/75/41/429b613fe56124f5714f0d7ff5c1a2c74913e3db2fdde3fd13bf732a116f/openpulse-1.0.1-py3-none-any.whl (537 kB)
+#11 31.85 Collecting amazon-braket-sdk>=1.23.0
+#11 31.94   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/05/ff/1de187c587aa6c6c5bd3c31e1a4a3b0474fc0da54d97c7ee5397136694d5/amazon_braket_sdk-1.49.1-py3-none-any.whl (265 kB)
+#11 32.18   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fd/06/1e5b06e86b60bef5ff0d7f1d0e2479173c3644ef998486f7f7426fa6e02a/amazon_braket_sdk-1.49.0-py3-none-any.whl (265 kB)
+#11 32.35   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/91/f8/4497c0bf765de96fd5cc940c650c12fce1aafc2d43a4c850dfa01ca59dc2/amazon_braket_sdk-1.48.1-py3-none-any.whl (262 kB)
+#11 32.47   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/8c/ae/7df6068e2c594fb8519f99473dfc2fad3f68974804c6fc36b4faaba87917/amazon_braket_sdk-1.48.0-py3-none-any.whl (262 kB)
+#11 32.55      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 262.2/262.2 kB 4.5 MB/s eta 0:00:00
+#11 35.40 Collecting botocore<1.29.160
+#11 35.56   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c9/07/27eeebd78ef91d6fdba2251b4e6703f5a459552e35bcb491ed8f9684ad87/botocore-1.29.159-py3-none-any.whl (10.9 MB)
+#11 36.10      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.9/10.9 MB 19.6 MB/s eta 0:00:00
+#11 36.18 Collecting amazon-braket-sdk>=1.23.0
+#11 36.26   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4b/94/b8107b1ca55d1d6a39b86b6b4a63e8ad1daa58efee77f0c750f1b42f9040/amazon_braket_sdk-1.47.0-py3-none-any.whl (261 kB)
+#11 36.31      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.9/261.9 kB 7.3 MB/s eta 0:00:00
+#11 36.42   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b3/da/30c4737f7eeb6953c50f734650aad0aaf29a129f4c3f6b65908919b4242b/amazon_braket_sdk-1.46.0-py3-none-any.whl (261 kB)
+#11 36.46      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.6/261.6 kB 13.4 MB/s eta 0:00:00
+#11 36.61 Collecting boltons
+#11 36.71   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d2/ac/1f8e4f4855e382a67392ca3bba329cb93aba1e3039289c52a86bf337f7a2/boltons-26.2.0-py3-none-any.whl (199 kB)
+#11 38.49 Collecting boto3>=1.22.3
+#11 38.57   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bc/8e/0310a37ff609529dab9153cbc9fd0b66c685364d741bb6d1ae31134b728e/boto3-1.43.105-py3-none-any.whl (140 kB)
+#11 38.61 Collecting amazon-braket-default-simulator>=1.14.0
+#11 38.68   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/52/e5/b91b0134d79de45bbee179833cbe5f7cbe4826a239f4733746f14f55632d/amazon_braket_default_simulator-1.14.0.post0-py3-none-any.whl (206 kB)
+#11 38.72      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 206.6/206.6 kB 9.4 MB/s eta 0:00:00
+#11 38.88 Collecting oqpy~=0.1.1
+#11 38.96   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/30/b7/d7b87b4cee255f57c5d817ce740eebfb7e5540c48553b55f5c74ad094bf4/oqpy-0.1.2-py3-none-any.whl (27 kB)
+#11 39.15 Collecting amazon-braket-schemas>=1.17.0
+#11 39.23   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6a/b9/a26dea8084395e2a09be3c38d0d45a3b31f1510f04deac1e17e447a6ef1e/amazon_braket_schemas-1.19.1.post0-py3-none-any.whl (117 kB)
+#11 39.35 Collecting nest-asyncio
+#11 39.43   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/c4/c2971a3ba4c6103a3d10c4b0f24f461ddc027f0f09763220cf35ca1401b3/nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+#11 39.53 Collecting backoff
+#11 39.61   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl (15 kB)
+#11 39.76 Collecting six
+#11 39.85   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl (11 kB)
+#11 39.98 Collecting typing-extensions>=4.6.0
+#11 40.07   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#11 40.98 Collecting fonttools>=4.22.0
+#11 41.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ee/56/151b5e81d20c63834f48ad37a0cbbbe2f9b248e38f8d10387f0cf5219244/fonttools-4.65.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.3 MB)
+#11 41.32 Collecting python-dateutil>=2.7
+#11 41.49   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#11 42.15 Collecting kiwisolver>=1.3.1
+#11 42.28   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f1/0e/9f394d693be549fa3fab62498c2778294595991047adc3dcf10aa99b91c0/kiwisolver-1.5.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.6 MB)
+#11 43.49 Collecting pillow>=8
+#11 43.62   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4e/89/36f4cd76cf4baf05c50ababb976249153f18c959171c7f6ba09a6f217260/pillow-12.3.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+#11 44.02 Collecting contourpy>=1.0.1
+#11 44.12   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/32/5c/1ee32d1c7956923202f00cf8d2a14a62ed7517bdc0ee1e55301227fc273c/contourpy-1.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (325 kB)
+#11 44.19 Collecting cycler>=0.10
+#11 44.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl (8.3 kB)
+#11 44.45 Collecting pyparsing>=3
+#11 44.56   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/38/bb/d215ee7c73b61497b28a5503f9f53523f294fcc936762b7caf90e0c1c2b5/pyparsing-3.3.3-py3-none-any.whl (126 kB)
+#11 44.81 Collecting tzdata>=2022.7
+#11 44.89   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f9/bc/8737e8d54cf51106118039b83f485a4783112fab49ea9d044b234978a46e/tzdata-2026.4-py2.py3-none-any.whl (347 kB)
+#11 45.08 Collecting pytz>=2020.1
+#11 45.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d5/11/e3df59614bebe0ca50c905442603eda64ae7ac19811d4e4f74aa2d51ca85/pytz-2026.4-py2.py3-none-any.whl (506 kB)
+#11 45.33 Collecting deprecated<2.0.0,>=1.2.13
+#11 45.39   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/84/d0/205d54408c08b13550c733c4b85429e7ead111c7f0014309637425520a9a/deprecated-1.3.1-py2.py3-none-any.whl (11 kB)
+#11 45.47 Collecting types-deprecated<2.0.0.0,>=1.2.9.2
+#11 45.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e3/50/8c0b1e3a953669f9b9782b4b948136a3e719d70d8e0e16e6c128b0da1e45/types_deprecated-1.3.1.20260928-py3-none-any.whl (9.3 kB)
+#11 45.62 Collecting rpcq<4.0.0,>=3.10.0
+#11 45.62   Using cached rpcq-3.11.0-py3-none-any.whl
+#11 45.71 Collecting tenacity<9.0.0,>=8.2.2
+#11 45.78   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl (28 kB)
+#11 45.86 Collecting types-retry<0.10.0,>=0.9.9
+#11 45.93   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ca/f5/d6d49f1e99ae6e40fb6a9861e6cb78018cfbeff546fd5e5ab2a3719f3fe1/types_retry-0.9.9.20260408-py3-none-any.whl (7.6 kB)
+#11 46.05 Collecting types-python-dateutil<3.0.0,>=2.8.19
+#11 46.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/5e/3715867caea2f4cea56ccb04c851cde23ed063449c3b004c7a047f20dd48/types_python_dateutil-2.9.0.20260807-py3-none-any.whl (18 kB)
+#11 46.23 Collecting lark<0.12.0,>=0.11.1
+#11 46.23   Using cached lark-0.11.3-py2.py3-none-any.whl
+#11 46.38 Collecting qcs-api-client<0.22.0,>=0.21.0
+#11 46.45   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/72/16/19e988c8d36c9a3eb5c68b0aa2fa3c289e2e92895747bff7f48a64b4d9d1/qcs_api_client-0.21.6-py3-none-any.whl (151 kB)
+#11 46.98 Collecting qiskit-terra==0.24.2
+#11 47.05   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4d/d6/8510f3bf4d739604e5e66a0c46e80f88e0f08566cd4f22c0a125441fa7b8/qiskit_terra-0.24.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (6.0 MB)
+#11 47.44      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.0/6.0 MB 15.5 MB/s eta 0:00:00
+#11 47.93 Collecting qiskit-aer==0.12.2
+#11 48.20   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/20/71/04e7d2a4265445d107b4bd17d6602b241a18b912c9d7f5697e3a7dc6d6f0/qiskit_aer-0.12.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.8 MB)
+#11 48.49 Collecting qiskit-ibmq-provider==0.20.2
+#11 48.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/ad/f0af9c18c198f8c6e29657bfa7b24c6cd0a8cd75b79ba2ba7d2a97585380/qiskit_ibmq_provider-0.20.2-py3-none-any.whl (241 kB)
+#11 48.90 Collecting requests>=2.19
+#11 48.98   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl (73 kB)
+#11 49.06 Collecting requests-ntlm<=1.1.0
+#11 49.14   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/03/4b/8b9a1afde8072c4d5710d9fa91433d504325821b038e00237dc8d6d833dc/requests_ntlm-1.1.0-py2.py3-none-any.whl (5.7 kB)
+#11 49.31 Collecting websocket-client>=1.5.1
+#11 49.37   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d5/d2/cc4dc1271e464942db7ee278baae2daa99ee77cb2af744025c04da585a3e/websocket_client-1.9.2-py3-none-any.whl (95 kB)
+#11 50.10 Collecting websockets>=10.0
+#11 50.25   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/18/a17e2f0cde02dc10154c808deed7e1d8528afff93612f70d3f0a5b19b011/websockets-16.1.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (186 kB)
+#11 50.98 Collecting urllib3>=1.21.1
+#11 51.06   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl (135 kB)
+#11 51.14 Collecting numpy>=1.22.3
+#11 51.51   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e4/f3/679b3a042a127de0d7c84874913c3e23bb84646eb3bc6ecab3f8c872edc9/numpy-1.23.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.1 MB)
+#11 51.95 Collecting rustworkx>=0.12.0
+#11 52.08   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/ec/80ffcc38ffd28798a31563485a7c35d7d7ccebad83d388717442731e7477/rustworkx-0.18.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.4 MB)
+#11 52.22 Collecting dill>=0.3
+#11 52.29   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1e/77/dc8c558f7593132cf8fefec57c4f60c83b16941c574ac5f619abb3ae7933/dill-0.4.1-py3-none-any.whl (120 kB)
+#11 52.37 Collecting ply>=3.10
+#11 52.44   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl (49 kB)
+#11 52.65 Collecting symengine<0.10,>=0.9
+#11 53.48   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/92/51/81cc0ee766b32661b16831df8205def2b84e06f3041ef6d2e30144955786/symengine-0.9.2-cp310-cp310-manylinux2010_x86_64.whl (37.5 MB)
+#11 54.06 Collecting psutil>=5
+#11 54.13   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+#11 54.31 Collecting stevedore>=3.0.0
+#11 54.40   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f5/ac/19f9941c74add59d17694930ec8105d5eddeee4ce56dd8632b765ca16d6c/stevedore-5.8.0-py3-none-any.whl (54 kB)
+#11 54.59 Collecting mpmath<1.4,>=1.1.0
+#11 54.67   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl (536 kB)
+#11 57.80 Collecting aiohttp<4.0,>=3.7.0
+#11 57.92   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bd/ff/cb36724e8c8d17f90ada567a9ff3efe1d6e9b549fba697a242aece180f21/aiohttp-3.14.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+#11 58.14      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 8.4 MB/s eta 0:00:00
+#11 58.34 Collecting azure-core<2.0.0,>=1.26.2
+#11 58.42   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5b/db/325c6d7312d2200251c52323878281045aaffcb5586612296484e4280eaa/azure_core-1.41.0-py3-none-any.whl (220 kB)
+#11 58.58 Collecting Markdown>=3.4.1
+#11 58.66   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/64/69/4a5af2bc115a9a33fefe51709749de8262be3f9ba063d1753a837cdbc49c/markdown-3.10.3-py3-none-any.whl (110 kB)
+#11 58.70      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 110.8/110.8 kB 6.5 MB/s eta 0:00:00
+#11 58.81 Collecting python-markdown-math>=0.8
+#11 58.96   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/68/ecf3535c40845de2efd8ac2d092dd5fca0868219fa3684d9e58ef7abeece/python_markdown_math-0.9-py3-none-any.whl (6.0 kB)
+#11 59.26 Collecting msrest<1.0,>=0.7.1
+#11 59.38   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/15/cf/f2966a2638144491f8696c27320d5219f48a072715075d168b31d3237720/msrest-0.7.1-py3-none-any.whl (85 kB)
+#11 59.63 Collecting azure-storage-blob<13.0.0,>=12.14.1
+#11 59.73   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ff/20/6530bbc13fea536a1f2c0194034ae3f6880fbc0c1e7c229e3569450f7aef/azure_storage_blob-12.30.3-py3-none-any.whl (438 kB)
+#11 59.92 Collecting aiofile<4.0,>=3.7.2
+#11 60.01   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/50/25/da1f0b4dd970e52bf5a36c204c107e11a0c6d3ed195eba0bfbc664c312b2/aiofile-3.9.0-py3-none-any.whl (19 kB)
+#11 60.27 Collecting azure-identity<2.0.0,>=1.12.0
+#11 60.35   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/49/9a/417b3a533e01953a7c618884df2cb05a71e7b68bdbce4fbdb62349d2a2e8/azure_identity-1.25.3-py3-none-any.whl (192 kB)
+#11 60.93 Collecting retry>=0.9.0
+#11 61.01   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4b/0d/53aea75710af4528a25ed6837d71d117602b01946b307a3912cb3cfcbcba/retry-0.9.2-py2.py3-none-any.whl (8.0 kB)
+#11 61.13 Collecting decorator>=5.1.0
+#11 61.25   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/05/7f/798705f5296a58ca505d600456748d1be48078eac8a7050d8a98bc9edb89/decorator-5.3.1-py3-none-any.whl (10 kB)
+#11 61.47 Collecting importlib-metadata>=4.11.4
+#11 61.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b3/55/ecca97ae19075f1fac62def77731e7f535e6c1fb8f92ff08160c5e6dade8/importlib_metadata-9.0.1-py3-none-any.whl (27 kB)
+#11 61.69 Collecting pyqir==0.8.0
+#11 61.76   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ba/f3/82ab07344cc03d522ce2db342e21dc50641b2752609a14c86ad606599cf2/pyqir-0.8.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.5 MB)
+#11 61.90      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.5/2.5 MB 19.5 MB/s eta 0:00:00
+#11 62.09 Collecting varname
+#11 62.16   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a4/39/3a0ae5b0edb66e61bb0e8bc53a503495cba5892297ae21faf6ba0525e681/varname-1.0.0-py3-none-any.whl (25 kB)
+#11 62.27 Collecting jupyter-jsmol
+#11 62.34   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/94/6e/eb11b21d4a09420681f452d79b29f2854cbe68f3bb022dbc065ddeba54f5/jupyter_jsmol-2022.1.0-py2.py3-none-any.whl (7.4 MB)
+#11 62.89      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.4/7.4 MB 13.4 MB/s eta 0:00:00
+#11 63.71 Collecting ruamel-yaml
+#11 63.81   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b8/0c/51f6841f1d84f404f92463fc2b1ba0da357ca1e3db6b7fbda26956c3b82a/ruamel_yaml-0.19.1-py3-none-any.whl (118 kB)
+#11 64.05 Collecting ipython>=5.11.0
+#11 64.13   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c0/56/4cc7fc9e9e3f38fd324f24f8afe0ad8bb5fa41283f37f1aaf9de0612c968/ipython-8.39.0-py3-none-any.whl (831 kB)
+#11 64.18      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 831.8/831.8 kB 17.6 MB/s eta 0:00:00
+#11 64.34 Collecting ipywidgets==8.0.4
+#11 64.41   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f3/fc/bd076538811d63babf8ceea0ff3d8d024171569a47f5dba7757c5fd0462c/ipywidgets-8.0.4-py3-none-any.whl (137 kB)
+#11 64.44      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.8/137.8 kB 5.0 MB/s eta 0:00:00
+#11 64.88 Collecting qsharp
+#11 64.97   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d2/98/94ea86973f41da1f24a4c8048349a91df16e83f8ef3588184559ffbc3b9f/qsharp-1.31.0-py3-none-any.whl (15 kB)
+#11 65.07 Collecting basis-set-exchange
+#11 65.15   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9a/64/6e8f5d1bd239ea91c0e8658b77183249cfe5106c97142711d168dbd04376/basis_set_exchange-0.12-py3-none-any.whl (40.1 MB)
+#11 68.77      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.1/40.1 MB 7.4 MB/s eta 0:00:00
+#11 69.23 Collecting jupyter-nbextensions-configurator
+#11 69.32   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/05/fe/cffb14a4fbb43cf276aa3047e42c3f9ecfda851ba3c466295401f6b1e085/jupyter_nbextensions_configurator-0.6.4-py2.py3-none-any.whl (466 kB)
+#11 69.36      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 466.9/466.9 kB 14.8 MB/s eta 0:00:00
+#11 69.58 Collecting widgetsnbextension~=4.0
+#11 69.68   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/34/95/40e17e20046b7bc820d29d09ae84ec157ec8dd6e6f6cd722626292c31b2e/widgetsnbextension-4.0.16-py3-none-any.whl (2.2 MB)
+#11 69.80      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 19.5 MB/s eta 0:00:00
+#11 70.01 Collecting jupyterlab-widgets~=3.0
+#11 70.09   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/33/ef/6d27fc118f58cb24886da413545a7efb0853d405fddbfd8b2d9ac09fbed4/jupyterlab_widgets-3.0.17-py3-none-any.whl (217 kB)
+#11 70.11      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 217.3/217.3 kB 12.3 MB/s eta 0:00:00
+#11 70.27 Collecting traitlets>=4.3.1
+#11 70.36   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ad/66/0d785f0bc5e4315a96c989bb476d0fc07ea4f85132550c7b156ca2035d52/traitlets-5.16.1-py3-none-any.whl (86 kB)
+#11 70.62 Collecting ipykernel>=4.5.1
+#11 70.71   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3d/02/77b271f5dc58bfbc0b577c877b2365d1ffea2afe66a80c13f2312820348c/ipykernel-7.3.0-py3-none-any.whl (120 kB)
+#11 70.76      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 120.6/120.6 kB 3.9 MB/s eta 0:00:00
+#11 70.85 Collecting qiskit-ibm-provider
+#11 70.96   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fa/e7/7910f29c8e39a32d30f9722038e1d186b8abb8944cfe3daa86430b973d5c/qiskit_ibm_provider-0.8.0-py3-none-any.whl (245 kB)
+#11 71.13   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6d/c0/5713b33ccd39add399d045132d3b2f4c3e515f5b4a98d0264d040b14666f/qiskit_ibm_provider-0.7.3-py3-none-any.whl (243 kB)
+#11 71.37   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6e/b1/f8bff4f9000b460fa66721c71f7633a84197d6a8f965173a940bdea0adea/qiskit_ibm_provider-0.7.2-py3-none-any.whl (243 kB)
+#11 71.49   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/95/fc0a506288305270fc99f8795c4fcd872962a24123df043ca086ed220ab0/qiskit_ibm_provider-0.7.1-py3-none-any.whl (242 kB)
+#11 71.59   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3a/7b/42ff08ff51969f032e8a508bcb9e295ef28ba03710cd0013af4e19eca6db/qiskit_ibm_provider-0.7.0-py3-none-any.whl (242 kB)
+#11 71.72   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c0/18/cacae80a8962c838efc6e432e1e2a8b26d853beb704b9d9974bc768859e4/qiskit_ibm_provider-0.6.3-py3-none-any.whl (239 kB)
+#11 71.88   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cc/cf/917bfe02163c30d34ba95b1b4def7d882d393f93bf19fb629921b61e980a/qiskit_ibm_provider-0.6.2-py3-none-any.whl (235 kB)
+#11 71.91      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 235.2/235.2 kB 15.6 MB/s eta 0:00:00
+#11 72.30 Collecting caio<0.10.0,>=0.9.0
+#11 72.36   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/88/95/dd55757bb671eb4c376e006c04e83beb413486821f517792ea603ef216e9/caio-0.9.25-cp310-cp310-manylinux_2_34_x86_64.whl (77 kB)
+#11 72.38      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 77.7/77.7 kB 7.9 MB/s eta 0:00:00
+#11 72.57 Collecting aiohappyeyeballs>=2.5.0
+#11 72.64   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/71/43/1947f06babed6b3f1d7f38b0c767f52df66bfb2bc10b468c4a7de9eceff2/aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+#11 73.97 Collecting multidict<7.0,>=4.5
+#11 74.05   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bd/53/f65ed68b96eea2b4f6fa4f9031bdfccd8f3097c429e3d371c545d1c40ca4/multidict-6.9.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (303 kB)
+#11 74.10      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 303.7/303.7 kB 8.0 MB/s eta 0:00:00
+#11 76.19 Collecting yarl<2.0,>=1.17.0
+#11 76.28   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/28/b9/7818ac6dec7fbcd16be2d19495807c01e2c38834e57d41c63356a75e786b/yarl-1.25.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (118 kB)
+#11 76.30      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 118.1/118.1 kB 8.3 MB/s eta 0:00:00
+#11 76.89 Collecting frozenlist>=1.1.1
+#11 76.96   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5d/ed/c7895fd2fde7f3ee70d248175f9b6cdf792fb741ab92dc59cd9ef3bd241b/frozenlist-1.8.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (219 kB)
+#11 76.97      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 219.5/219.5 kB 22.8 MB/s eta 0:00:00
+#11 77.10 Collecting attrs>=17.3.0
+#11 77.20   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl (67 kB)
+#11 77.33 Collecting aiosignal>=1.4.0
+#11 77.40   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+#11 77.74 Collecting propcache>=0.2.0
+#11 77.80   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f0/51/5adee15e12a7e314cece4543fbf295b0fe1b504dc78b32dff4c8eb1e29b0/propcache-0.5.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (224 kB)
+#11 77.81      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 224.3/224.3 kB 35.2 MB/s eta 0:00:00
+#11 77.94 Collecting async-timeout<6.0,>=4.0
+#11 78.01   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fe/ba/e2081de779ca30d473f21f5b30e0e737c438205440784c7dfc81efc2b029/async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+#11 78.70 Collecting pydantic<2.0,>=1.9
+#11 78.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ba/7d/fdb961e7adc2c31f394feba6f560ef2c74c446f0285e2c2eb87d2b7206c7/pydantic-1.10.26-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.9 MB)
+#11 78.94 Collecting antlr4-python3-runtime==4.9.2
+#11 79.03   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/9c/d5ef93dc1e5a862cae004a64d15425c2a1ae8ba967a08f03dfb11aedf7bf/antlr4-python3-runtime-4.9.2.tar.gz (117 kB)
+#11 79.05   Preparing metadata (setup.py): started
+#11 79.98   Preparing metadata (setup.py): finished with status 'done'
+#11 80.07 Collecting opt-einsum
+#11 80.14   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+#11 80.41 Collecting msal-extensions>=1.2.0
+#11 80.50   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/5e/75/bd9b7bb966668920f06b200e84454c8f3566b102183bc55c5473d96cb2b9/msal_extensions-1.3.1-py3-none-any.whl (20 kB)
+#11 82.07 Collecting cryptography>=2.5
+#11 82.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8c/eb/5d7124083e8d8cda8f5b348f544b71ad6f707ad63193758ef4d8e569da02/cryptography-50.0.1-cp39-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+#11 82.45 Collecting msal>=1.35.1
+#11 82.53   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a4/32/178457385925ce301c7b3232bd85665d4df57da39568b62dcfc74031873f/msal-1.39.0-py3-none-any.whl (131 kB)
+#11 82.67 Collecting isodate>=0.6.1
+#11 82.75   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/15/aa/0aca39a37d3c7eb941ba736ede56d689e7be91cab5d9ca846bde3999eba6/isodate-0.7.2-py3-none-any.whl (22 kB)
+#11 83.28 Collecting botocore<1.44.0,>=1.43.105
+#11 83.64   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f3/94/50923cd46840e4d2b56cad1dcf5008fb20c099b04b2d93d32231f2d0bfaa/botocore-1.43.105-py3-none-any.whl (16.0 MB)
+#11 83.93 Collecting jmespath<2.0.0,>=0.7.1
+#11 84.01   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl (20 kB)
+#11 84.15 Collecting s3transfer<0.20.0,>=0.19.0
+#11 84.23   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bc/e7/5c595c75e9f41a44f30e526eda465ea0b4eec93470e074e4a111b253f13a/s3transfer-0.19.2-py3-none-any.whl (90 kB)
+#11 86.03 Collecting wrapt<3,>=1.10
+#11 86.15   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c3/e1/6f46c822f6657a69c8fef5d0824e0b5287d27b76d3769b501770b917fbb8/wrapt-2.5.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+#11 86.47 Collecting zipp>=3.20
+#11 86.58   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3a/13/547360d81e6d88d58492968ffda9f9542854f11310ee556fef14260cc886/zipp-4.1.0-py3-none-any.whl (10 kB)
+#11 86.95 Collecting pexpect>4.3
+#11 87.18   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+#11 87.33 Collecting matplotlib-inline
+#11 87.42   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/41/09/5b161152e2d90f7b87f781c2e1267494aef9c32498df793f73ad0a0a494a/matplotlib_inline-0.2.2-py3-none-any.whl (9.5 kB)
+#11 87.65 Collecting prompt_toolkit<3.1.0,>=3.0.41
+#11 87.79   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/54/6f/84908cad2d6aa5144abcf7b42709fe4fdb459bc640ec7ac5786e7693dabc/prompt_toolkit-3.0.53-py3-none-any.whl (392 kB)
+#11 88.05 Collecting jedi>=0.16
+#11 88.27   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9a/93/242e2eab5fe682ffcb8b0084bde703a41d51e17ee0f3a31ff0d9d813620a/jedi-0.20.0-py2.py3-none-any.whl (4.9 MB)
+#11 88.62 Collecting stack_data
+#11 88.73   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl (24 kB)
+#11 89.69 Collecting certifi>=2017.4.17
+#11 89.78   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl (136 kB)
+#11 89.98 Collecting requests-oauthlib>=0.5.0
+#11 90.09   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+#11 90.32 Collecting openpulse
+#11 90.41   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/10/ae/c183853d895ce511647351eb52ea985590fc70071ce01c7def15767cbc49/openpulse-0.4.2-py3-none-any.whl (377 kB)
+#11 90.94 Collecting mypy-extensions>=0.2.0
+#11 91.05   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+#11 91.11 Collecting openqasm3[parser]==0.4.0
+#11 91.20   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9f/1a/fd6743118f18c69763bbd4b9c5f7b62a34e26ace770fb0e7deaa970004a0/openqasm3-0.4.0-py3-none-any.whl (385 kB)
+#11 91.57 Collecting httpx<0.24.0,>=0.23.0
+#11 91.66   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ac/a2/0260c0f5d73bdf06e8d3fc1013a82b9f0633dc21750c9e3f3cb1dba7bb8c/httpx-0.23.3-py3-none-any.whl (71 kB)
+#11 91.75 Collecting retrying<2.0.0,>=1.3.3
+#11 91.83   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/67/f3/6cd296376653270ac1b423bb30bd70942d9916b6978c6f40472d6ac038e7/retrying-1.4.2-py3-none-any.whl (10 kB)
+#11 91.93 Collecting rfc3339<7.0,>=6.2
+#11 92.00   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/2e/48d6cf57dec789c90a7b1cb59a21c3cad509f0ec1284632152f33bb1d88d/rfc3339-6.2-py3-none-any.whl (5.5 kB)
+#11 92.23 Collecting toml<0.11.0,>=0.10.2
+#11 92.34   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl (16 kB)
+#11 92.47 Collecting PyJWT<3.0.0,>=2.4.0
+#11 92.55   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/50/ca/44de4e75f8aadc457f0634be3b542815078ded46dca30efb960edeecad6e/pyjwt-2.15.1-py3-none-any.whl (33 kB)
+#11 92.57 Collecting attrs>=17.3.0
+#11 92.66   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/be/be/7abce643bfdf8ca01c48afa2ddf8308c2308b0c3b239a44e57d020afa0ef/attrs-21.4.0-py2.py3-none-any.whl (60 kB)
+#11 92.80 Collecting iso8601<2.0.0,>=1.0.2
+#11 92.88   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/65/6c/9d72435c72adfa6e4ed1824b6df7fffbeaaf15c653881e9b041a318ba572/iso8601-1.1.0-py3-none-any.whl (9.9 kB)
+#11 94.03 Collecting charset_normalizer<4,>=2
+#11 94.12   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c4/9f/9f52d2886d52645987d603425482c63c5045a3005db1354a7097e5ed1ae9/charset_normalizer-3.5.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (271 kB)
+#11 94.23 Collecting idna<4,>=2.5
+#11 94.30   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl (69 kB)
+#11 94.59 Collecting ntlm-auth>=1.0.2
+#11 94.66   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ff/84/97c550164b54942b0e908c31ef09d9469f3ba4cd7332a671e2125732f63b/ntlm_auth-1.5.0-py2.py3-none-any.whl (29 kB)
+#11 94.78 Collecting py<2.0.0,>=1.4.26
+#11 94.85   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f6/f0/10642828a8dfb741e5f3fbaac830550a518a775c7fff6f04a007259b0548/py-1.11.0-py2.py3-none-any.whl (98 kB)
+#11 96.32 Collecting pyzmq>=17
+#11 96.47   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3b/fd/aee8c87f4854a012e232a6557b1167b6cd207506f59f378954b2d8bb6ed1/pyzmq-27.2.0-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (888 kB)
+#11 97.16 Collecting python-rapidjson
+#11 97.28   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/4e/2e/21f9d9926f7100555402a6fbc2631e813181d48e75fd26af9b9ee62bd4cd/python_rapidjson-1.25-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+#11 97.97 Collecting msgpack<2.0,>=0.6
+#11 98.05   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2b/21/ea60a8fd0d9e0897fce823e9fd9bf6742567784b35c7eee8f4a18a56eb19/msgpack-1.2.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (459 kB)
+#11 98.40 Collecting unidecode
+#11 98.47   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/8f/b7/559f59d57d18b44c6d1250d2eeaa676e028b9c527431f5d0736478a73ba1/Unidecode-1.4.0-py3-none-any.whl (235 kB)
+#11 98.50      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 235.8/235.8 kB 11.0 MB/s eta 0:00:00
+#11 101.2 Collecting regex
+#11 101.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ec/99/eae371ca63f7ea1f1eac025021527adb57ce3a4b67ff608b896fd31ea447/regex-2026.9.29-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (797 kB)
+#11 101.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 797.6/797.6 kB 23.4 MB/s eta 0:00:00
+#11 101.5 Collecting argcomplete
+#11 101.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/46/bd/551ee6af426af84ca33e02622be722925c196608e9127d731ef17c47f06e/argcomplete-3.7.2-py3-none-any.whl (43 kB)
+#11 101.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 5.6 MB/s eta 0:00:00
+#11 101.7 Collecting jsonschema
+#11 101.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#11 102.3 Collecting jupyter-server
+#11 102.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1d/39/91bc08650cc8e3efeb7a83c25e20ebddcc9b70d28b4eb6f51a4fb55da7a4/jupyter_server-2.21.1-py3-none-any.whl (394 kB)
+#11 102.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 394.6/394.6 kB 3.3 MB/s eta 0:00:00
+#11 102.8 Collecting notebook>=6.0
+#11 102.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a1/f7/907b98438cf00bdc4e296570058f29a347214bb42338a48e3b7eae58ae2a/notebook-7.6.3-py3-none-any.whl (5.5 MB)
+#11 103.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 16.2 MB/s eta 0:00:00
+#11 103.5 Collecting tornado
+#11 103.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/60/33/df6d7d04854a58619f8349a51e3edb138324130a7562b0bb21f115bb940f/tornado-6.5.10-cp39-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (467 kB)
+#11 103.7 Collecting jupyter-core
+#11 103.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e7/e7/80988e32bf6f73919a113473a604f5a8f09094de312b9d52b79c2df7612b/jupyter_core-5.9.1-py3-none-any.whl (29 kB)
+#11 104.0 Collecting pyyaml
+#11 104.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7a/1e/7acc4f0e74c4b3d9531e24739e0ab832a5edf40e64fbae1a9c01941cabd7/pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (770 kB)
+#11 104.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 770.3/770.3 kB 23.1 MB/s eta 0:00:00
+#11 104.2 Collecting jupyter-contrib-core>=0.3.3
+#11 104.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/50/94/0d37e5b49ea1c8bf204c46f9b0257c1f3319a4ab88acbd401da2cab25e55/jupyter_contrib_core-0.4.2.tar.gz (17 kB)
+#11 104.4   Preparing metadata (setup.py): started
+#11 104.9   Preparing metadata (setup.py): finished with status 'done'
+#11 105.0 Collecting qsharp
+#11 105.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7e/c8/33b553e518a8a14bf5e1d1eef327a1c4dfb8737c1555ef4de783422aec9f/qsharp-1.30.0-py3-none-any.whl (15 kB)
+#11 105.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c7/fa/2a6974b9226cf3065db3c03b3e69f13e1f6279fb144cae0e3aa7f44f4f98/qsharp-1.29.1-py3-none-any.whl (14 kB)
+#11 105.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4e/13/bf165a2230b6dea4fbe60cc53f206c3e80342be84e5014c0006e8df2ec0c/qsharp-1.28.0-cp310-abi3-manylinux_2_35_x86_64.whl (6.2 MB)
+#11 105.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 26.6 MB/s eta 0:00:00
+#11 105.7 Collecting executing>=2.1
+#11 105.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl (28 kB)
+#11 107.7 Collecting cffi>=2.0.0
+#11 107.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/75/77/60bebf6f818bec84210ac5b6979ce4eeadce6fbbaabc9c7ab23e506d1ce5/cffi-2.1.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (218 kB)
+#11 108.1 Collecting sniffio
+#11 108.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl (10 kB)
+#11 108.3 Collecting httpcore<0.17.0,>=0.15.0
+#11 108.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/04/7e/ef97af4623024e8159993b3114ce208de4f677098ae058ec5882a1bf7605/httpcore-0.16.3-py3-none-any.whl (69 kB)
+#11 108.5 Collecting rfc3986[idna2008]<2,>=1.3
+#11 108.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c4/e5/63ca2c4edf4e00657584608bee1001302bbf8c5f569340b78304f2f446cb/rfc3986-1.5.0-py2.py3-none-any.whl (31 kB)
+#11 108.7 Collecting jupyter-client>=8.9.0
+#11 108.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/88/7c548de1f6c2ade7c931a3282da73f9274fa6a1531091be682f89c85efb9/jupyter_client-8.10.0-py3-none-any.whl (110 kB)
+#11 109.0 Collecting comm>=0.1.1
+#11 109.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/60/97/891a0971e1e4a8c5d2b20bbe0e524dc04548d2307fee33cdeba148fd4fc7/comm-0.2.3-py3-none-any.whl (7.3 kB)
+#11 109.2 Collecting nest-asyncio2>=1.7.0
+#11 109.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/29/dd/a8bebc78975a7466932077a0973cbab4361a32368b1d28d40683ec19333c/nest_asyncio2-1.7.3-py3-none-any.whl (8.4 kB)
+#11 109.9 Collecting debugpy>=1.6.5
+#11 110.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4f/97/5c8e839a7f73e92cd4a733408bb85bb764e829e52a9fb097f99d6e2cbbc0/debugpy-1.8.22-cp310-cp310-manylinux_2_34_x86_64.whl (3.0 MB)
+#11 110.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 10.9 MB/s eta 0:00:00
+#11 110.7 Collecting parso<0.9.0,>=0.8.6
+#11 110.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/99/5d/8268b644392ee874ee82a635cd0df1773de230bde356c38de28e298392cc/parso-0.8.7-py2.py3-none-any.whl (107 kB)
+#11 111.2 Collecting platformdirs>=2.5
+#11 111.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d0/89/446044f33aba0348d35e433f56d12206d010a5281a1df54054d4cfb82388/platformdirs-4.12.2-py3-none-any.whl (32 kB)
+#11 112.0 Collecting jupyterlab-server<3,>=2.28.0
+#11 112.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/23/d3/996332fe24f3c2458b9c353b998570dfa2631763e9a8674ba3f94c0877d0/jupyterlab_server-2.28.1-py3-none-any.whl (60 kB)
+#11 112.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.2/60.2 kB 2.3 MB/s eta 0:00:00
+#11 112.2 Collecting notebook-shim<0.3,>=0.2
+#11 112.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f9/33/bd5b9137445ea4b680023eb0469b2bb969d61303dedb2aac6560ff3d14a1/notebook_shim-0.2.4-py3-none-any.whl (13 kB)
+#11 112.5 Collecting jupyter-builder<2,>=1.0.2
+#11 112.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/84/aa/be79e87c50698673f196d0633fc1664607da2289f9688d1de7a1c9db9e71/jupyter_builder-1.2.3-py3-none-any.whl (947 kB)
+#11 112.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 947.5/947.5 kB 12.6 MB/s eta 0:00:00
+#11 113.2 Collecting jupyterlab<4.7,>=4.6.4
+#11 113.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3b/e4/072bc0d3c6d45d414062a06af7ee81c02a2c12d769c358ec9919f9995ffd/jupyterlab-4.6.4-py3-none-any.whl (17.2 MB)
+#11 114.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.2/17.2 MB 15.2 MB/s eta 0:00:00
+#11 114.6 Collecting jupyter-server-terminals>=0.4.4
+#11 114.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d1/2d/6674563f71c6320841fc300911a55143925112a72a883e2ca71fba4c618d/jupyter_server_terminals-0.5.4-py3-none-any.whl (13 kB)
+#11 114.8 Collecting nbformat>=5.3.0
+#11 114.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1a/69/ee613f74085ca7103f79cd08d579c4f3177d1d26e5d3d9528d2d6536a707/nbformat-5.11.1-py3-none-any.whl (79 kB)
+#11 115.0 Collecting argon2-cffi>=21.1
+#11 115.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4f/d3/a8b22fa575b297cd6e3e3b0155c7e25db170edf1c74783d6a31a2490b8d9/argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+#11 115.3 Collecting anyio>=3.1.0
+#11 115.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/12/b8/4bd346e22b28902df4d651910f5242c28d84e4a5c2435ca5c3f797ed7e2e/anyio-4.15.1-py3-none-any.whl (132 kB)
+#11 115.4 Collecting terminado>=0.8.3
+#11 115.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6a/9e/2064975477fdc887e47ad42157e214526dcad8f317a948dee17e1659a62f/terminado-0.18.1-py3-none-any.whl (14 kB)
+#11 115.7 Collecting jupyter-events>=0.11.0
+#11 115.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/6c/6fcde0c8f616ed360ffd3587f7db9e225a7e62b583a04494d2f069cf64ea/jupyter_events-0.12.1-py3-none-any.whl (19 kB)
+#11 115.9 Collecting nbconvert>=6.4.4
+#11 116.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/67/f8/bb0a9d5f46819c821dc1f004aa2cc29b1d91453297dbf5ff20470f00f193/nbconvert-7.17.1-py3-none-any.whl (261 kB)
+#11 116.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.9/261.9 kB 22.8 MB/s eta 0:00:00
+#11 116.3 Collecting prometheus-client>=0.9
+#11 116.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/a3/b69efbf4143b5b9859b977770bbbabcc2796b702fa69dc40271e45cd5a56/prometheus_client-0.26.0-py3-none-any.whl (64 kB)
+#11 116.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.5/64.5 kB 1.4 MB/s eta 0:00:00
+#11 116.6 Collecting send2trash>=1.8.2
+#11 116.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1c/78/504fdd027da3b84ff1aecd9f6957e65f35134534ccc6da8628eb71e76d3f/send2trash-2.1.0-py3-none-any.whl (17 kB)
+#11 116.8 Collecting jinja2>=3.0.3
+#11 116.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl (134 kB)
+#11 117.1 Collecting overrides>=5.0
+#11 117.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2c/ab/fc8290c6a4c722e5514d80f62b2dc4c4df1a68a41d1364e625c35990fcf3/overrides-7.7.0-py3-none-any.whl (17 kB)
+#11 117.3 Collecting ptyprocess>=0.5
+#11 117.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+#11 117.7 Collecting wcwidth>=0.1.4
+#11 117.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e2/a0/834886b30e3b885a5a96e8358f1b3917bc0bac43ae4178d77f0c210d079b/wcwidth-0.9.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (768 kB)
+#11 118.1 Collecting oauthlib>=3.0.0
+#11 118.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d9/f4/78229a1066068ca14fc60fb26cf7381cabe4382261392b90e5f9552722d4/oauthlib-4.0.0-py3-none-any.whl (159 kB)
+#11 118.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 159.7/159.7 kB 9.3 MB/s eta 0:00:00
+#11 120.6 Collecting rpds-py>=0.25.0
+#11 120.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/61/b5/707f6cf0066a6412aacc11d17920ea2e19e5b2f04081c64526eb35b5c6e7/rpds_py-0.30.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (390 kB)
+#11 120.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 390.5/390.5 kB 31.4 MB/s eta 0:00:00
+#11 120.8 Collecting jsonschema-specifications>=2023.03.6
+#11 120.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#11 120.9 Collecting jsonschema
+#11 121.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/bf/9c/8c95d856233c1f82500c2450b8c68576b4cf1c871db3afac5c34ff84e6fd/jsonschema-4.25.1-py3-none-any.whl (90 kB)
+#11 121.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/fe/54/c86cd8e011fe98803d7e382fd67c0df5ceab8d2b7ad8c5a81524f791551c/jsonschema-4.25.0-py3-none-any.whl (89 kB)
+#11 121.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/85/7f/ea48ffb58f9791f9d97ccb35e42fea1ebc81c67ce36dc4b8b2eee60e8661/jsonschema-4.24.1-py3-none-any.whl (89 kB)
+#11 121.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a2/3d/023389198f69c722d039351050738d6755376c8fd343e91dc493ea485905/jsonschema-4.24.0-py3-none-any.whl (88 kB)
+#11 121.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl (88 kB)
+#11 121.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c8/2f/324fab4be6fe37fb7b521546e8a557e6cf08c1c1b3d0b4839a00f589d9ef/jsonschema-4.22.0-py3-none-any.whl (88 kB)
+#11 121.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/39/9d/b035d024c62c85f2e2d4806a59ca7b8520307f34e0932fbc8cc75fe7b2d9/jsonschema-4.21.1-py3-none-any.whl (85 kB)
+#11 121.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/76/f4/41e31ff45e30a9ed80f3e399b23481ac3db1cb796d315bc8813716ed8d5f/jsonschema-4.21.0-py3-none-any.whl (85 kB)
+#11 122.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/ed/0058234d8dd2b1fc6beeea8eab945191a05e9d391a63202f49fe23327586/jsonschema-4.20.0-py3-none-any.whl (84 kB)
+#11 122.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ce/aa/d1bd0b5ec568a903cc3ebcb6b096ab65c1d971c8a01ca3bf3cf788c3c646/jsonschema-4.19.2-py3-none-any.whl (83 kB)
+#11 122.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0f/bf/a84bc75f069f4f156e1c0d9892fb7325945106c6ecaad9f29d24360872af/jsonschema-4.19.1-py3-none-any.whl (83 kB)
+#11 122.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/2b/ff/af59fd34bc4d7ac3e6e0cd1f3c10317d329b6c1aee179e8b24ad9a79fbac/jsonschema-4.19.0-py3-none-any.whl (83 kB)
+#11 122.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b5/5c/ae834dd4160bbe9a4feb6e1f3e6189ab7772408823e294bd12eb6b4b4f44/jsonschema-4.18.6-py3-none-any.whl (83 kB)
+#11 122.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d3/a4/54273ac37a667c3fcf93916fda59b36f0ad79950e4e56ad839ef2e3e1159/jsonschema-4.18.5-py3-none-any.whl (82 kB)
+#11 123.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/a1/ba/28ce987450c6afa8336373761193ddaadc1ba2004fbf23a6407db036f558/jsonschema-4.18.4-py3-none-any.whl (80 kB)
+#11 123.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/3a/34/ea34f7979d4f9ed1fa3b5c66000bc4e445c570f642ad478796f5ebaae45a/jsonschema-4.18.3-py3-none-any.whl (80 kB)
+#11 123.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/03/83/9a89e40dba1498ce9777865fa0bec0bfc3c1831679cdee814ec8dd223904/jsonschema-4.18.2-py3-none-any.whl (80 kB)
+#11 123.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/1d/85/984ef667a097ce4e671c6a5d8251a2b4a80845922a3937c6e77c8e6954f7/jsonschema-4.18.1-py3-none-any.whl (80 kB)
+#11 123.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/8a/38/2c55180702a637be0fbb8aa95358213a750d25cad3e59869726a54309996/jsonschema-4.18.0-py3-none-any.whl (81 kB)
+#11 123.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c1/97/c698bd9350f307daad79dd740806e1a59becd693bd11443a0f531e3229b3/jsonschema-4.17.3-py3-none-any.whl (90 kB)
+#11 123.8 Collecting pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0
+#11 123.8   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d7/b7/64a125c488243965b7c5118352e47c6f89df95b4ac306d31cee409153d57/pyrsistent-0.20.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (117 kB)
+#11 124.2 Collecting asttokens>=2.1.0
+#11 124.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d4/2b/04b8a15f3a1c77bc79ddf5c73875327f34b4fa75982df2b76e45e402d364/asttokens-3.0.2-py3-none-any.whl (28 kB)
+#11 124.3 Collecting pure-eval
+#11 124.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6d/18/83376915176eb058cb86470eb7396388a13350b09a8f233a79303bbcbc5b/pure_eval-0.2.4-py3-none-any.whl (11 kB)
+#11 124.6 Collecting argon2-cffi-bindings
+#11 124.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6f/86/5363df11b86d02cf3662208e7406496327649cc90eb365bf6f4e8a54a41f/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+#11 124.8 Collecting pycparser
+#11 124.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl (48 kB)
+#11 125.0 Collecting h11<0.15,>=0.13
+#11 125.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl (58 kB)
+#11 125.4 Collecting MarkupSafe>=2.0
+#11 125.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/af/cd/ce6e848bbf2c32314c9b237839119c5a564a59725b53157c856e90937b7a/markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+#11 125.9 Collecting python-json-logger>=2.0.4
+#11 126.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/dc/55/6467fde553886cb293e41538f3a8b4e4fd4688c6df242cf982162d8367fb/python_json_logger-4.2.0-py3-none-any.whl (14 kB)
+#11 126.1 Collecting referencing
+#11 126.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl (26 kB)
+#11 126.4 Collecting rfc3339-validator
+#11 126.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7b/44/4e421b96b67b2daff264473f7465db72fbdf36a07e05494f50300cc7b0c6/rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)
+#11 126.6 Collecting rfc3986-validator>=0.1.1
+#11 126.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9e/51/17023c0f8f1869d8806b979a2bffa3f861f26a3f1a66b094288323fba52f/rfc3986_validator-0.1.1-py2.py3-none-any.whl (4.2 kB)
+#11 126.9 INFO: pip is looking at multiple versions of jupyter-server-terminals to determine which version is compatible with other requirements. This could take a while.
+#11 126.9 Collecting jupyter-server-terminals>=0.4.4
+#11 127.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/07/2d/2b32cdbe8d2a602f697a649798554e4f072115438e92249624e532e8aca6/jupyter_server_terminals-0.5.3-py3-none-any.whl (13 kB)
+#11 127.0 INFO: pip is looking at multiple versions of jupyter-events to determine which version is compatible with other requirements. This could take a while.
+#11 127.0 Collecting jupyter-events>=0.11.0
+#11 127.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e2/48/577993f1f99c552f18a0428731a755e06171f9902fa118c379eb7c04ea22/jupyter_events-0.12.0-py3-none-any.whl (19 kB)
+#11 127.2 INFO: pip is looking at multiple versions of jupyter-client to determine which version is compatible with other requirements. This could take a while.
+#11 127.2 Collecting jupyter-client>=8.9.0
+#11 127.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3f/6f/56d39bf385c5c27988aebaf0c18a2a17e960575740100973511018bd904e/jupyter_client-8.9.1-py3-none-any.whl (109 kB)
+#11 127.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.8/109.8 kB 850.2 kB/s eta 0:00:00
+#11 127.4 INFO: pip is looking at multiple versions of jupyter-builder to determine which version is compatible with other requirements. This could take a while.
+#11 127.4 Collecting jupyter-builder<2,>=1.0.2
+#11 127.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c4/3b/920bc7f3c2ad25abc0071ae7ae55789f4b85ecf3e4467f0602a88dc668cb/jupyter_builder-1.2.2-py3-none-any.whl (915 kB)
+#11 127.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 915.3/915.3 kB 10.5 MB/s eta 0:00:00
+#11 127.6 INFO: pip is looking at multiple versions of jinja2 to determine which version is compatible with other requirements. This could take a while.
+#11 127.6 Collecting jinja2>=3.0.3
+#11 127.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bd/0f/2ba5fbcd631e3e88689309dbe978c5769e883e4b84ebfe7da30b43275c5a/jinja2-3.1.5-py3-none-any.whl (134 kB)
+#11 127.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.6/134.6 kB 15.0 MB/s eta 0:00:00
+#11 127.8 INFO: pip is looking at multiple versions of sniffio to determine which version is compatible with other requirements. This could take a while.
+#11 127.8 Collecting sniffio
+#11 127.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c3/a0/5dba8ed157b0136607c7f2151db695885606968d1fae123dc3391e0cfdbf/sniffio-1.3.0-py3-none-any.whl (10 kB)
+#11 128.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/52/b0/7b2e028b63d092804b6794595871f936aafa5e9322dcaaad50ebf67445b3/sniffio-1.2.0-py3-none-any.whl (10 kB)
+#11 128.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b3/82/4bd4b7d9c0d1dc0fbfbc2a1e00138e7f3ab85bc239358fe9b78aa2ab586d/sniffio-1.1.0-py3-none-any.whl (4.5 kB)
+#11 128.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ca/08/58f3b857b8bba832983e8c5dce5e3f8c677a5527e41cf61ff45effc78cae/sniffio-1.0.0-py3-none-any.whl (4.4 kB)
+#11 128.3 INFO: pip is looking at multiple versions of httpcore to determine which version is compatible with other requirements. This could take a while.
+#11 128.3 Collecting httpcore<0.17.0,>=0.15.0
+#11 128.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/91/52/93f22e5441539256c0d113faf17e45284aee16eebdd95089e3ca6f480b18/httpcore-0.16.2-py3-none-any.whl (68 kB)
+#11 128.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.0/69.0 kB 5.9 MB/s eta 0:00:00
+#11 128.4 INFO: pip is looking at multiple versions of debugpy to determine which version is compatible with other requirements. This could take a while.
+#11 128.5 Collecting debugpy>=1.6.5
+#11 128.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1c/f2/17c3bf91cebc173bfbf5734cd2669723d0a35c0cf9d2fd2124546efeae83/debugpy-1.8.21-cp310-cp310-manylinux_2_34_x86_64.whl (3.0 MB)
+#11 128.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 20.6 MB/s eta 0:00:00
+#11 128.7 INFO: pip is looking at multiple versions of comm to determine which version is compatible with other requirements. This could take a while.
+#11 128.7 Collecting comm>=0.1.1
+#11 128.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e6/75/49e5bfe642f71f272236b5b2d2691cf915a7283cc0ceda56357b61daa538/comm-0.2.2-py3-none-any.whl (7.2 kB)
+#11 128.8 INFO: pip is looking at multiple versions of cffi to determine which version is compatible with other requirements. This could take a while.
+#11 128.8 Collecting cffi>=2.0.0
+#11 128.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/38/66/04781a77b411f0bb5b234d62c1814754ab75ebe455ccff1b08e8d7aae98f/cffi-2.1.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (218 kB)
+#11 128.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 218.8/218.8 kB 10.9 MB/s eta 0:00:00
+#11 128.9 INFO: pip is looking at multiple versions of asttokens to determine which version is compatible with other requirements. This could take a while.
+#11 128.9 Collecting asttokens>=2.1.0
+#11 129.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d2/39/e7eaf1799466a4aef85b6a4fe7bd175ad2b1c6345066aa33f1f58d4b18d0/asttokens-3.0.1-py3-none-any.whl (27 kB)
+#11 129.0 INFO: pip is looking at multiple versions of argon2-cffi to determine which version is compatible with other requirements. This could take a while.
+#11 129.0 Collecting argon2-cffi>=21.1
+#11 129.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a4/6a/e8a041599e78b6b3752da48000b14c8d1e8a04ded09c88c714ba047f34f5/argon2_cffi-23.1.0-py3-none-any.whl (15 kB)
+#11 129.1 INFO: pip is looking at multiple versions of anyio to determine which version is compatible with other requirements. This could take a while.
+#11 129.2 Collecting anyio>=3.1.0
+#11 129.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/21/a6/2b21ce5ebe4d8938a247c9b0dbb7271566ae559b01795c83ea4bb2660ed7/anyio-4.15.0-py3-none-any.whl (131 kB)
+#11 129.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.9/131.9 kB 8.3 MB/s eta 0:00:00
+#11 129.3 INFO: pip is looking at multiple versions of unidecode to determine which version is compatible with other requirements. This could take a while.
+#11 129.3 Collecting unidecode
+#11 129.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/84/b7/6ec57841fb67c98f52fc8e4a2d96df60059637cba077edc569a302a8ffc7/Unidecode-1.3.8-py3-none-any.whl (235 kB)
+#11 129.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 235.5/235.5 kB 13.0 MB/s eta 0:00:00
+#11 129.4 INFO: pip is looking at multiple versions of stack-data to determine which version is compatible with other requirements. This could take a while.
+#11 129.4 Collecting stack_data
+#11 129.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6a/81/aa96c25c27f78cdc444fec27d80f4c05194c591465e491a1358d8a035bc1/stack_data-0.6.2-py3-none-any.whl (24 kB)
+#11 129.5 INFO: pip is looking at multiple versions of regex to determine which version is compatible with other requirements. This could take a while.
+#11 129.5 Collecting regex
+#11 129.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/49/b2/be9fafe5e05888296fdd35d82ba9cbb67b0d352e9911fad3c458beb3a34a/regex-2026.9.10-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (796 kB)
+#11 129.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 796.3/796.3 kB 13.9 MB/s eta 0:00:00
+#11 129.7 INFO: pip is looking at multiple versions of pyyaml to determine which version is compatible with other requirements. This could take a while.
+#11 129.7 Collecting pyyaml
+#11 129.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6b/4e/1523cb902fd98355e2e9ea5e5eb237cbc5f3ad5f3075fa65087aa0ecb669/PyYAML-6.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (751 kB)
+#11 129.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 751.2/751.2 kB 13.6 MB/s eta 0:00:00
+#11 129.8 INFO: pip is looking at multiple versions of python-rapidjson to determine which version is compatible with other requirements. This could take a while.
+#11 129.8 Collecting python-rapidjson
+#11 129.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5e/f3/87fb25da840ba08c08ca39755a3c2ef3cec74969436fb2e216f937e98a21/python_rapidjson-1.23-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+#11 130.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 14.7 MB/s eta 0:00:00
+#11 130.1 INFO: pip is looking at multiple versions of opt-einsum to determine which version is compatible with other requirements. This could take a while.
+#11 130.1 Collecting opt-einsum
+#11 130.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bc/19/404708a7e54ad2798907210462fd950c3442ea51acc8790f3da48d2bee8b/opt_einsum-3.3.0-py3-none-any.whl (65 kB)
+#11 130.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.5/65.5 kB 8.8 MB/s eta 0:00:00
+#11 130.2 INFO: pip is looking at multiple versions of jsonschema to determine which version is compatible with other requirements. This could take a while.
+#11 130.2 INFO: pip is looking at multiple versions of argcomplete to determine which version is compatible with other requirements. This could take a while.
+#11 130.2 Collecting argcomplete
+#11 130.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/12/f6/5b8ec087cd9cfa9449491ec83f76fb6b7006b4dff57d2ba8aaab330fe8e4/argcomplete-3.7.0-py3-none-any.whl (42 kB)
+#11 130.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.6/42.6 kB 6.5 MB/s eta 0:00:00
+#11 130.3 INFO: pip is looking at multiple versions of zipp to determine which version is compatible with other requirements. This could take a while.
+#11 130.3 Collecting zipp>=3.20
+#11 130.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/08/8a/0861bec20485572fbddf3dfba2910e38fe249796cb73ecdeb74e07eeb8d3/zipp-3.23.1-py3-none-any.whl (10 kB)
+#11 130.4 INFO: pip is looking at multiple versions of yarl to determine which version is compatible with other requirements. This could take a while.
+#11 130.4 Collecting yarl<2.0,>=1.17.0
+#11 130.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9e/bc/a6653249f6ee59ec85dcfec008d9cbc16586dad613963bb17a91b2b993a5/yarl-1.24.5-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (110 kB)
+#11 130.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 110.8/110.8 kB 5.2 MB/s eta 0:00:00
+#11 130.5 INFO: pip is looking at multiple versions of wrapt to determine which version is compatible with other requirements. This could take a while.
+#11 130.5 Collecting wrapt<3,>=1.10
+#11 130.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3c/e9/2c1a482052cfabd6906887096993099afa2db738e7597c30e4f2b9922718/wrapt-2.4.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (217 kB)
+#11 130.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 217.0/217.0 kB 6.0 MB/s eta 0:00:00
+#11 130.7 INFO: pip is looking at multiple versions of widgetsnbextension to determine which version is compatible with other requirements. This could take a while.
+#11 130.7 Collecting widgetsnbextension~=4.0
+#11 130.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3f/0e/fa3b193432cfc60c93b42f3be03365f5f909d2b3ea410295cf36df739e31/widgetsnbextension-4.0.15-py3-none-any.whl (2.2 MB)
+#11 131.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 3.4 MB/s eta 0:00:00
+#11 131.5 INFO: pip is looking at multiple versions of traitlets to determine which version is compatible with other requirements. This could take a while.
+#11 131.6 Collecting traitlets>=4.3.1
+#11 131.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/01/bd/f8607e908605262e4926cbfd2560094bc5d04ef7f8aff1340e7fff503016/traitlets-5.16.0-py3-none-any.whl (86 kB)
+#11 131.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.1/86.1 kB 4.4 MB/s eta 0:00:00
+#11 131.7 INFO: pip is looking at multiple versions of tornado to determine which version is compatible with other requirements. This could take a while.
+#11 131.7 Collecting tornado
+#11 131.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9e/0f/38f8d16011de3b1ce2babb4c3bcefb126d2dc47d04878ae3ad5c39a00caa/tornado-6.5.9-cp39-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (465 kB)
+#11 131.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 465.5/465.5 kB 28.0 MB/s eta 0:00:00
+#11 131.8 INFO: pip is looking at multiple versions of toml to determine which version is compatible with other requirements. This could take a while.
+#11 131.8 INFO: pip is looking at multiple versions of symengine to determine which version is compatible with other requirements. This could take a while.
+#11 131.9 Collecting symengine<0.10,>=0.9
+#11 131.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fa/47/4344d35fc59b68b62b70f6020e99d4e8502a441f60b805798ffe701af35b/symengine-0.9.0-cp310-cp310-manylinux2010_x86_64.whl (37.5 MB)
+#11 133.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 37.5/37.5 MB 12.8 MB/s eta 0:00:00
+#11 134.1 INFO: pip is looking at multiple versions of stevedore to determine which version is compatible with other requirements. This could take a while.
+#11 134.1 Collecting stevedore>=3.0.0
+#11 134.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/69/06/36d260a695f383345ab5bbc3fd447249594ae2fa8dfd19c533d5ae23f46b/stevedore-5.7.0-py3-none-any.whl (54 kB)
+#11 134.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54.5/54.5 kB 3.7 MB/s eta 0:00:00
+#11 134.3 INFO: pip is looking at multiple versions of s3transfer to determine which version is compatible with other requirements. This could take a while.
+#11 134.3 Collecting s3transfer<0.20.0,>=0.19.0
+#11 134.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/24/23/e84c64ad0e8bc59cd1b2ef98def848deff0ef3456c542afe74d51e9e8c85/s3transfer-0.19.1-py3-none-any.whl (90 kB)
+#11 134.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.1/90.1 kB 5.6 MB/s eta 0:00:00
+#11 134.5 INFO: pip is looking at multiple versions of rustworkx to determine which version is compatible with other requirements. This could take a while.
+#11 134.5 Collecting rustworkx>=0.12.0
+#11 134.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/22/68/69198f41f7f9c39fb5b2e561bf41d4cbd117fa5dfdf4631d8ba28e5ff69b/rustworkx-0.18.0-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.4 MB)
+#11 134.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 MB 24.4 MB/s eta 0:00:00
+#11 134.7 INFO: pip is looking at multiple versions of rfc3339 to determine which version is compatible with other requirements. This could take a while.
+#11 134.7 INFO: pip is looking at multiple versions of retrying to determine which version is compatible with other requirements. This could take a while.
+#11 134.7 Collecting retrying<2.0.0,>=1.3.3
+#11 134.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7f/25/f3b628e123699139b959551ed922f35af97fa1505e195ae3e6537a14fbc3/retrying-1.4.1-py3-none-any.whl (12 kB)
+#11 134.8 INFO: pip is looking at multiple versions of requests-oauthlib to determine which version is compatible with other requirements. This could take a while.
+#11 134.8 Collecting requests-oauthlib>=0.5.0
+#11 134.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6f/bb/5deac77a9af870143c684ab46a7934038a53eb4aa975bc0687ed6ca2c610/requests_oauthlib-1.3.1-py2.py3-none-any.whl (23 kB)
+#11 134.9 INFO: pip is looking at multiple versions of pyzmq to determine which version is compatible with other requirements. This could take a while.
+#11 134.9 Collecting pyzmq>=17
+#11 135.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/30/76/8f099f9d6482450428b17c4d6b241281af7ce6a9de8149ca8c1c649f6792/pyzmq-27.1.0-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (854 kB)
+#11 135.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 854.1/854.1 kB 7.2 MB/s eta 0:00:00
+#11 135.1 INFO: pip is looking at multiple versions of pyjwt to determine which version is compatible with other requirements. This could take a while.
+#11 135.1 Collecting PyJWT<3.0.0,>=2.4.0
+#11 135.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e8/55/40e45bf052ee8ee12a4dfd785519660f8effa7b065442b91646ec6828619/pyjwt-2.15.0-py3-none-any.whl (33 kB)
+#11 136.0 INFO: pip is looking at multiple versions of pydantic to determine which version is compatible with other requirements. This could take a while.
+#11 136.0 Collecting pydantic<2.0,>=1.9
+#11 136.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/88/40/1bd350b7a77821fc0e1dd72e01dba8187d1d1e0c4286fc1d5e3578383ff3/pydantic-1.10.25-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.9 MB)
+#11 138.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 1.6 MB/s eta 0:00:00
+#11 138.2 INFO: pip is looking at multiple versions of py to determine which version is compatible with other requirements. This could take a while.
+#11 138.2 Collecting py<2.0.0,>=1.4.26
+#11 138.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/67/32/6fe01cfc3d1a27c92fdbcdfc3f67856da8cbadf0dd9f2e18055202b2dc62/py-1.10.0-py2.py3-none-any.whl (97 kB)
+#11 138.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 97.6/97.6 kB 6.3 MB/s eta 0:00:00
+#11 138.3 INFO: pip is looking at multiple versions of psutil to determine which version is compatible with other requirements. This could take a while.
+#11 138.3 Collecting psutil>=5
+#11 138.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/29/f8/40e01c350ad9a2b3cb4e6adbcc8a83b17ee50dd5792102b6142385937db5/psutil-7.2.1-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (154 kB)
+#11 138.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154.7/154.7 kB 5.1 MB/s eta 0:00:00
+#11 138.4 INFO: pip is looking at multiple versions of propcache to determine which version is compatible with other requirements. This could take a while.
+#11 138.4 Collecting propcache>=0.2.0
+#11 138.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a9/74/c94d53224f485d4caffc76b0c4d72cf536e8c3ae54ff05fd981870fca20b/propcache-0.5.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (68 kB)
+#11 138.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.7/68.7 kB 8.4 MB/s eta 0:00:00
+#11 138.5 INFO: pip is looking at multiple versions of prompt-toolkit to determine which version is compatible with other requirements. This could take a while.
+#11 138.5 Collecting prompt_toolkit<3.1.0,>=3.0.41
+#11 138.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl (391 kB)
+#11 138.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 391.4/391.4 kB 5.8 MB/s eta 0:00:00
+#11 138.7 INFO: pip is looking at multiple versions of ply to determine which version is compatible with other requirements. This could take a while.
+#11 138.7 Collecting ply>=3.10
+#11 138.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ce/3d/1f9ca69192025046f02a02ffc61bfbac2731aab06325a218370fd93e18df/ply-3.10.tar.gz (150 kB)
+#11 138.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 150.9/150.9 kB 6.0 MB/s eta 0:00:00
+#11 138.8   Preparing metadata (setup.py): started
+#11 139.3   Preparing metadata (setup.py): finished with status 'done'
+#11 139.3 INFO: pip is looking at multiple versions of pexpect to determine which version is compatible with other requirements. This could take a while.
+#11 139.3 Collecting pexpect>4.3
+#11 139.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl (59 kB)
+#11 139.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.0/59.0 kB 3.6 MB/s eta 0:00:00
+#11 139.4 INFO: pip is looking at multiple versions of ntlm-auth to determine which version is compatible with other requirements. This could take a while.
+#11 139.4 Collecting ntlm-auth>=1.0.2
+#11 139.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/50/09/5e397eb18685b14fd8b209e26cdb4fa6451c82c1bcc651fef05fa73e7b27/ntlm_auth-1.4.0-py2.py3-none-any.whl (29 kB)
+#11 139.5 INFO: pip is looking at multiple versions of jupyter-server to determine which version is compatible with other requirements. This could take a while.
+#11 139.5 Collecting jupyter-server
+#11 139.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cb/8a/cb97c2b353cb46cced413be8f742fa8fcd3cb1659524f27314494aa94968/jupyter_server-2.21.0-py3-none-any.whl (393 kB)
+#11 139.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 394.0/394.0 kB 5.7 MB/s eta 0:00:00
+#11 139.7 INFO: pip is looking at multiple versions of notebook to determine which version is compatible with other requirements. This could take a while.
+#11 139.7 Collecting notebook>=6.0
+#11 139.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5c/fd/3e552ff5b24dd305c6e9a10e8645e29c03091c317429f326ae10dbae1ac6/notebook-7.6.2-py3-none-any.whl (5.5 MB)
+#11 140.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 6.4 MB/s eta 0:00:00
+#11 140.8 Collecting jupyterlab<4.7,>=4.6.3
+#11 140.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e9/47/242f46de028074651c9bd6d8000fc340ed0d3cdd1a0eae4387826123413a/jupyterlab-4.6.3-py3-none-any.whl (17.2 MB)
+#11 145.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.2/17.2 MB 3.2 MB/s eta 0:00:00
+#11 145.2 Collecting notebook>=6.0
+#11 145.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3c/19/003ac39eae3a88b80631f93eb954b61d0f1fc1dce4c84602eb0bf4802466/notebook-7.6.1-py3-none-any.whl (5.5 MB)
+#11 145.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 10.5 MB/s eta 0:00:00
+#11 146.0 Collecting jupyterlab<4.7,>=4.6.2
+#11 146.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/63/1f/e39b248c76bb3736bc05a9491a6aa1315414c32dea12f548ecc1b24c758e/jupyterlab-4.6.2-py3-none-any.whl (17.2 MB)
+#11 149.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.2/17.2 MB 5.5 MB/s eta 0:00:00
+#11 149.2 Collecting notebook>=6.0
+#11 149.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/93/d1/e617c40db57ff40e75f43a7d4d1c305e3a54c053ab5cb0534a6c314664f9/notebook-7.6.0-py3-none-any.whl (5.5 MB)
+#11 149.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 9.1 MB/s eta 0:00:00
+#11 150.1 Collecting jupyterlab<4.7,>=4.6.0
+#11 150.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5a/81/90ac6cc31d248e83a0d1eab343a5e6e68bc783d3f74fbe61640f42a61da4/jupyterlab-4.6.1-py3-none-any.whl (17.2 MB)
+#11 152.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.2/17.2 MB 5.7 MB/s eta 0:00:00
+#11 152.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0a/eb/aa48075d0aa3d0188db34ba2704f53791757743c0bb02e18c4eef989b6de/jupyterlab-4.6.0-py3-none-any.whl (17.1 MB)
+#11 155.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.1/17.1 MB 6.8 MB/s eta 0:00:00
+#11 155.7 Collecting notebook>=6.0
+#11 155.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e1/4d/b3347f7073a377273531efe4ffc738fc910e93718fd2838c7ebf6736c6af/notebook-7.5.7-py3-none-any.whl (14.6 MB)
+#11 158.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 6.1 MB/s eta 0:00:00
+#11 158.5 Collecting jupyterlab<4.6,>=4.5.8
+#11 158.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0f/f2/a2f50a928fed0b8529dd80c4eb7d3aebe92f9658bfb3b63dce77fb5f1b95/jupyterlab-4.5.11-py3-none-any.whl (12.5 MB)
+#11 160.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.5/12.5 MB 6.0 MB/s eta 0:00:00
+#11 161.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9f/c9/940f95f17ee4e413ad252bf8d4f2ee9a341f18cfeda87775fef3d7847321/jupyterlab-4.5.10-py3-none-any.whl (12.5 MB)
+#11 163.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.5/12.5 MB 6.0 MB/s eta 0:00:00
+#11 163.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c6/bb/2f9b425062416fba58f580c9b89c3b07277ccdf0a292501fedbca8ea00ea/jupyterlab-4.5.9-py3-none-any.whl (12.4 MB)
+#11 165.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 6.3 MB/s eta 0:00:00
+#11 165.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c9/d1/56a400100559cbf154a23cd29989261941ae5c9f743898fc10e8a5508b7c/jupyterlab-4.5.8-py3-none-any.whl (12.4 MB)
+#11 167.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 10.1 MB/s eta 0:00:00
+#11 167.2 Collecting notebook>=6.0
+#11 167.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e9/d6/1fd0646b9bbd9efbb0b8ae21b2325fbef515769a5621c03e31d8eb8da587/notebook-7.5.6-py3-none-any.whl (14.6 MB)
+#11 168.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 11.6 MB/s eta 0:00:00
+#11 169.0 Collecting jupyterlab<4.6,>=4.5.7
+#11 169.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3d/aa/537b8f7d80e799af19af35fb3ddfc970b951088a13c57dd9387dcfbb7f61/jupyterlab-4.5.7-py3-none-any.whl (12.5 MB)
+#11 169.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.5/12.5 MB 18.0 MB/s eta 0:00:00
+#11 169.9 Collecting notebook>=6.0
+#11 170.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f8/aa/cbd1deb9f07446241e88f8d5fecccd95b249bca0b4e5482214a4d1714c49/notebook-7.5.5-py3-none-any.whl (14.6 MB)
+#11 170.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 21.9 MB/s eta 0:00:00
+#11 170.9 Collecting jupyterlab<4.6,>=4.5.6
+#11 170.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e1/1b/dad6fdcc658ed7af26fdf3841e7394072c9549a8b896c381ab49dd11e2d9/jupyterlab-4.5.6-py3-none-any.whl (12.4 MB)
+#11 171.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 26.4 MB/s eta 0:00:00
+#11 171.6 Collecting notebook>=6.0
+#11 171.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/59/01/05e5387b53e0f549212d5eff58845886f3827617b5c9409c966ddc07cb6d/notebook-7.5.4-py3-none-any.whl (14.6 MB)
+#11 172.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 25.9 MB/s eta 0:00:00
+#11 172.9 Collecting jupyterlab<4.6,>=4.5.5
+#11 173.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b9/52/372d3494766d690dfdd286871bf5f7fb9a6c61f7566ccaa7153a163dd1df/jupyterlab-4.5.5-py3-none-any.whl (12.4 MB)
+#11 173.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 22.2 MB/s eta 0:00:00
+#11 173.6 INFO: pip is looking at multiple versions of notebook to determine which version is compatible with other requirements. This could take a while.
+#11 173.7 Collecting notebook>=6.0
+#11 173.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/96/98/9286e7f35e5584ebb79f997f2fb0cb66745c86f6c5fccf15ba32aac5e908/notebook-7.5.3-py3-none-any.whl (14.5 MB)
+#11 174.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 26.0 MB/s eta 0:00:00
+#11 174.5 Collecting jupyterlab<4.6,>=4.5.3
+#11 174.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f5/9f/a70972ece62ead2d81acc6223188f6d18a92f665ccce17796a0cdea4fcf5/jupyterlab-4.5.4-py3-none-any.whl (12.4 MB)
+#11 175.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 21.6 MB/s eta 0:00:00
+#11 175.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/9e/9a/0bf9a7a45f0006d7ff4fdc4fc313de4255acab02bf4db1887c65f0472c01/jupyterlab-4.5.3-py3-none-any.whl (12.4 MB)
+#11 175.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 26.5 MB/s eta 0:00:00
+#11 175.9 Collecting notebook>=6.0
+#11 175.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/32/55/b754cd51c6011d90ef03e3f06136f1ebd44658b9529dbcf0c15fc0d6a0b7/notebook-7.5.2-py3-none-any.whl (14.5 MB)
+#11 176.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 26.5 MB/s eta 0:00:00
+#11 176.7 Collecting jupyterlab<4.6,>=4.5.2
+#11 176.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a4/78/7e455920f104ef2aa94a4c0d2b40e5b44334ee7057eae1aa1fb97b9631ad/jupyterlab-4.5.2-py3-none-any.whl (12.4 MB)
+#11 177.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 28.7 MB/s eta 0:00:00
+#11 177.5 Collecting notebook>=6.0
+#11 177.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d1/86/ca516cb58ad2cb2064124d31cf0fd8b012fca64bebeb26da2d2ddf03fc79/notebook-7.5.1-py3-none-any.whl (14.5 MB)
+#11 178.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 24.9 MB/s eta 0:00:00
+#11 178.4 Collecting jupyterlab<4.6,>=4.5.1
+#11 178.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/af/c3/acced767eecc11a70c65c45295db5396c4f0c1937874937d5a76d7b177b6/jupyterlab-4.5.1-py3-none-any.whl (12.4 MB)
+#11 179.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 21.8 MB/s eta 0:00:00
+#11 179.2 Collecting notebook>=6.0
+#11 179.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/73/96/00df2a4760f10f5af0f45c4955573cae6189931f9a30265a35865f8c1031/notebook-7.5.0-py3-none-any.whl (14.5 MB)
+#11 179.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 25.4 MB/s eta 0:00:00
+#11 180.2 Collecting jupyterlab<4.6,>=4.5.0rc0
+#11 180.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6c/1e/5a4d5498eba382fee667ed797cf64ae5d1b13b04356df62f067f48bb0f61/jupyterlab-4.5.0-py3-none-any.whl (12.4 MB)
+#11 180.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 26.1 MB/s eta 0:00:00
+#11 180.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/52/35/1c52bb22da759640648b7952f74a3747953e4f4c398a4fb2fc1f19adc941/jupyterlab-4.5.0rc1-py3-none-any.whl (12.4 MB)
+#11 181.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 21.5 MB/s eta 0:00:00
+#11 181.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1a/81/d5b27d91a8fbb709b6623806037f6de6b7c2543d7f03543aa5a6de9812e6/jupyterlab-4.5.0rc0-py3-none-any.whl (12.4 MB)
+#11 182.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 25.2 MB/s eta 0:00:00
+#11 182.2 Collecting notebook>=6.0
+#11 182.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6c/d7/06d13087e20388926e7423d2489e728d2e59f2453039cdb0574a7c070e76/notebook-7.4.7-py3-none-any.whl (14.3 MB)
+#11 183.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 12.7 MB/s eta 0:00:00
+#11 183.5 Collecting jupyterlab<4.5,>=4.4.9
+#11 183.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f7/46/1eaa5db8d54a594bdade67afbcae42e9a2da676628be3eb39f36dcff6390/jupyterlab-4.4.10-py3-none-any.whl (12.3 MB)
+#11 184.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 27.6 MB/s eta 0:00:00
+#11 184.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1f/fd/ac0979ebd1b1975c266c99b96930b0a66609c3f6e5d76979ca6eb3073896/jupyterlab-4.4.9-py3-none-any.whl (12.3 MB)
+#11 184.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 27.8 MB/s eta 0:00:00
+#11 185.0 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 185.0 Collecting notebook>=6.0
+#11 185.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/dd/33/8cfe8678444c52173b4f490e2f72b8eca30d99ddc1e0dcc6e1aea63d48c4/notebook-7.4.6-py3-none-any.whl (14.3 MB)
+#11 185.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 20.5 MB/s eta 0:00:00
+#11 186.0 Collecting jupyterlab<4.5,>=4.4.8
+#11 186.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d1/3b/82d8c000648e77a112b2ae38e49722ffea808933377ea4a4867694384774/jupyterlab-4.4.8-py3-none-any.whl (12.3 MB)
+#11 186.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 25.4 MB/s eta 0:00:00
+#11 186.7 Collecting notebook>=6.0
+#11 186.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fe/c7/207fd1138bd82435d13b6d8640a240be4d855b8ddb41f6bf31aca5be64df/notebook-7.4.5-py3-none-any.whl (14.3 MB)
+#11 187.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 20.5 MB/s eta 0:00:00
+#11 187.7 Collecting jupyterlab<4.5,>=4.4.5
+#11 187.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7e/01/44f35124896dd5c73b26705c25bb8af2089895b32f057a1e4a3488847333/jupyterlab-4.4.7-py3-none-any.whl (12.3 MB)
+#11 188.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 21.9 MB/s eta 0:00:00
+#11 188.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/53/38/6182d63f39428821e705e86fba61704fc69769a24ca5a9578c2c04986c9a/jupyterlab-4.4.6-py3-none-any.whl (12.3 MB)
+#11 189.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 15.7 MB/s eta 0:00:00
+#11 189.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/47/74/e144ce85b34414e44b14c1f6bf2e3bfe17964c8e5670ebdc7629f2e53672/jupyterlab-4.4.5-py3-none-any.whl (12.3 MB)
+#11 190.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 29.0 MB/s eta 0:00:00
+#11 190.2 Collecting notebook>=6.0
+#11 190.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b3/c0/e64d2047fd752249b0b69f6aee2a7049eb94e7273e5baabc8b8ad05cc068/notebook-7.4.4-py3-none-any.whl (14.3 MB)
+#11 190.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 20.9 MB/s eta 0:00:00
+#11 191.1 Collecting jupyterlab<4.5,>=4.4.4
+#11 191.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f8/82/66910ce0995dbfdb33609f41c99fe32ce483b9624a3e7d672af14ff63b9f/jupyterlab-4.4.4-py3-none-any.whl (12.3 MB)
+#11 191.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 24.8 MB/s eta 0:00:00
+#11 191.8 Collecting notebook>=6.0
+#11 191.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/76/1b/16c809d799e3ddd7a97c8b43734f79624b74ddef9707e7d92275a13777bc/notebook-7.4.3-py3-none-any.whl (14.3 MB)
+#11 192.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 26.9 MB/s eta 0:00:00
+#11 192.6 Collecting jupyterlab<4.5,>=4.4.3
+#11 192.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c6/4d/7dd5c2ffbb960930452a031dc8410746183c924580f2ab4e68ceb5b3043f/jupyterlab-4.4.3-py3-none-any.whl (12.3 MB)
+#11 193.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 19.6 MB/s eta 0:00:00
+#11 193.6 Collecting notebook>=6.0
+#11 193.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1e/16/d3c36a0b1f6dfcf218add8eaf803bf0473ff50681ac4d51acb7ba02bce34/notebook-7.4.2-py3-none-any.whl (14.3 MB)
+#11 194.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 22.3 MB/s eta 0:00:00
+#11 194.6 Collecting jupyterlab<4.5,>=4.4.0
+#11 194.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f6/ae/fbb93f4990b7648849b19112d8b3e7427bbfc9c5cc8fdc6bf14c0e86d104/jupyterlab-4.4.2-py3-none-any.whl (12.3 MB)
+#11 195.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 27.0 MB/s eta 0:00:00
+#11 195.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/29/82/c8784597c5a03426c1ef20c48aff37e8cfe050ab5ca87f0d51069f02b362/jupyterlab-4.4.1-py3-none-any.whl (12.3 MB)
+#11 195.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 19.8 MB/s eta 0:00:00
+#11 196.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a2/64/1a559e1b945c3d424c1ac9f333bfd6f595d5819efde3a6d8b036e6b0585f/jupyterlab-4.4.0-py3-none-any.whl (12.3 MB)
+#11 196.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 20.5 MB/s eta 0:00:00
+#11 196.8 Collecting notebook>=6.0
+#11 196.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/41/c5/47248ed90d263e4c16f9f6b06f094105ce33f384cf135eab5a6452230d46/notebook-7.4.1-py3-none-any.whl (14.3 MB)
+#11 197.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 20.7 MB/s eta 0:00:00
+#11 197.9 Collecting jupyterlab<4.5,>=4.4.0rc0
+#11 197.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e9/4d/82a1d8f6a536a3696ae481c91e32e4838711f1ffe43804f58b57b951fa1c/jupyterlab-4.4.0rc1-py3-none-any.whl (12.3 MB)
+#11 199.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 5.4 MB/s eta 0:00:00
+#11 200.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/39/66/3f0c8f052a68d9293454eb0159d3736e41dd668ef2a81f7f2f5df15d8238/jupyterlab-4.4.0rc0-py3-none-any.whl (12.3 MB)
+#11 200.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 18.7 MB/s eta 0:00:00
+#11 201.0 Collecting notebook>=6.0
+#11 201.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/13/d1/a8897aa74ac54409c4679e96e6d8b31d7187b2ce31596ae3ee95bee20e87/notebook-7.4.0-py3-none-any.whl (14.3 MB)
+#11 201.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.3/14.3 MB 24.8 MB/s eta 0:00:00
+#11 202.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f2/bf/5e5fcf79c559600b738d7577c8360bfd4cfa705400af06f23b3a049e44b6/notebook-7.3.3-py3-none-any.whl (13.1 MB)
+#11 202.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.1/13.1 MB 26.6 MB/s eta 0:00:00
+#11 202.7 Collecting jupyterlab<4.4,>=4.3.6
+#11 202.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e6/15/ef346ab227f161cba2dcffe3ffeb8b4e4d2630600408f8276945d49fc868/jupyterlab-4.3.8-py3-none-any.whl (11.7 MB)
+#11 203.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 20.6 MB/s eta 0:00:00
+#11 203.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/8d/f5/13ec322810a7d69dd613dff6d5b52cecc98f33bf4d34d5bfe88d4f9f52b0/jupyterlab-4.3.7-py3-none-any.whl (11.7 MB)
+#11 204.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 22.5 MB/s eta 0:00:00
+#11 204.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d7/be/422f69447dbd77ddd58251b0945382099fd740e99918a147142f1e852a9d/jupyterlab-4.3.6-py3-none-any.whl (11.7 MB)
+#11 205.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 9.4 MB/s eta 0:00:00
+#11 205.7 Collecting notebook>=6.0
+#11 205.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/22/9b/76e50ee18f183ea5fe1784a9eeaa50f2c71802e4740d6e959592b0993298/notebook-7.3.2-py3-none-any.whl (13.2 MB)
+#11 206.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.2/13.2 MB 17.1 MB/s eta 0:00:00
+#11 207.0 Collecting jupyterlab<4.4,>=4.3.4
+#11 207.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/73/6f/94d4c879b3e2b7b9bca1913ea6fbbef180f8b1ed065b46ade40d651ec54d/jupyterlab-4.3.5-py3-none-any.whl (11.7 MB)
+#11 208.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 11.4 MB/s eta 0:00:00
+#11 208.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/61/48/af57263e53cfc220e522de047aa0993f53bab734fe812af1e03e33ac6d7c/jupyterlab-4.3.4-py3-none-any.whl (11.7 MB)
+#11 209.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 8.9 MB/s eta 0:00:00
+#11 209.8 Collecting notebook>=6.0
+#11 209.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3c/c4/764078234460706fdd2da68f1715ee42359cb24ee18b70db051cfac38455/notebook-7.3.1-py3-none-any.whl (13.2 MB)
+#11 211.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.2/13.2 MB 12.0 MB/s eta 0:00:00
+#11 211.4 Collecting jupyterlab<4.4,>=4.3.2
+#11 211.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c1/ce/6731e54aacbe91daa439ae895763fe9d91952ce96cd0e3f94d8d13229717/jupyterlab-4.3.3-py3-none-any.whl (11.7 MB)
+#11 212.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 8.5 MB/s eta 0:00:00
+#11 213.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/12/fc/f12dbf6e3f44d8f95645c9142e40e7e7de1e7af284b286f35acf88df5b87/jupyterlab-4.3.2-py3-none-any.whl (11.7 MB)
+#11 213.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 14.7 MB/s eta 0:00:00
+#11 214.0 Collecting notebook>=6.0
+#11 214.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f2/77/5b2bf6b30d8c1476183e32244b64b992172e76c429d035ba8521855cc291/notebook-7.3.0-py3-none-any.whl (12.9 MB)
+#11 215.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.9/12.9 MB 13.6 MB/s eta 0:00:00
+#11 215.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d0/5f/80555b68f6544afb7ee1d3352a07d76f200fded1467db48927fb3bdaab4f/notebook-7.2.3-py3-none-any.whl (5.1 MB)
+#11 215.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 12.2 MB/s eta 0:00:00
+#11 216.1 Collecting jupyterlab<4.3,>=4.2.0
+#11 216.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/71/0d/8b1e890d317b5beb9a727d7326e59921f1a4bd1f8c4f4bdf40a60ca9ab20/jupyterlab-4.2.7-py3-none-any.whl (11.6 MB)
+#11 216.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 20.2 MB/s eta 0:00:00
+#11 216.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f0/04/853abc46fef36afd4e5f9a4fd1fbc1b477f910a29bb71711b6653098b703/jupyterlab-4.2.6-py3-none-any.whl (11.6 MB)
+#11 217.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 26.6 MB/s eta 0:00:00
+#11 217.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/fd/3f/24a0f0ce60959cfd9756a3291cd3a5581e51cbd6f7b4aa121f5bba5320e3/jupyterlab-4.2.5-py3-none-any.whl (11.6 MB)
+#11 218.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 28.9 MB/s eta 0:00:00
+#11 218.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f6/b2/ba6fba3f52f785ba9740a7954e0d4477828f7395ee9f2f4707db5835a833/jupyterlab-4.2.4-py3-none-any.whl (11.6 MB)
+#11 218.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 22.4 MB/s eta 0:00:00
+#11 218.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2d/d1/69edb0a70473089057afc1e10936a743d985f5f80774da982f47b84c4d55/jupyterlab-4.2.3-py3-none-any.whl (11.6 MB)
+#11 219.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 20.6 MB/s eta 0:00:00
+#11 219.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1e/13/a3939b7771895c0a7f461c310a905a1c8bdb20169afd3c891241f3c44b95/jupyterlab-4.2.2-py3-none-any.whl (11.6 MB)
+#11 220.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 11.8 MB/s eta 0:00:00
+#11 220.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b2/6c/49339cfcda05c7fcd5ba49b23373259366b508715b356674c79d26633152/jupyterlab-4.2.1-py3-none-any.whl (11.6 MB)
+#11 221.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 17.8 MB/s eta 0:00:00
+#11 221.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/72/c3/532326adbb2b76f709e3e582aeefd0a85bd7454599ff450d90dd9540f5ed/jupyterlab-4.2.0-py3-none-any.whl (11.6 MB)
+#11 222.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 26.5 MB/s eta 0:00:00
+#11 222.5 Collecting notebook>=6.0
+#11 222.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/46/77/53732fbf48196af9e51c2a61833471021c1d77d335d57b96ee3588c0c53d/notebook-7.2.2-py3-none-any.whl (5.0 MB)
+#11 222.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 20.9 MB/s eta 0:00:00
+#11 223.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/32/b4/b0cdaf52c35a3a40633136bee5152d6670acb555c698d23a3458dca65781/notebook-7.2.1-py3-none-any.whl (5.0 MB)
+#11 223.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 27.0 MB/s eta 0:00:00
+#11 223.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/64/76/4437268f47f452fb4cd5cf73fa831241ea8130ae0ab9c64d5c4ffca9f121/notebook-7.2.0-py3-none-any.whl (5.0 MB)
+#11 223.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 24.5 MB/s eta 0:00:00
+#11 223.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/08/e6/e032f6a4d3da85c4bd38b6ff96de51347bfb0d932ea1d2ccfd89c6374c8a/notebook-7.1.3-py3-none-any.whl (5.0 MB)
+#11 224.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 19.1 MB/s eta 0:00:00
+#11 224.2 Collecting jupyterlab<4.2,>=4.1.1
+#11 224.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ba/a8/2d26d134f8c8c475712ce5ab87baebf2fdae070a760a1e502bfdcfdd0556/jupyterlab-4.1.8-py3-none-any.whl (11.4 MB)
+#11 224.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 24.4 MB/s eta 0:00:00
+#11 224.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d5/26/d90a940dc032b78f0ad3f178e5bc5970d48d95b2c8904e921b5921c9c8cf/jupyterlab-4.1.7-py3-none-any.whl (11.4 MB)
+#11 225.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 25.5 MB/s eta 0:00:00
+#11 225.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/4c/5a/e084a40e593329859926c5824cd47b32b2700732a179ca94b2c533c4dddf/jupyterlab-4.1.6-py3-none-any.whl (11.4 MB)
+#11 226.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 14.6 MB/s eta 0:00:00
+#11 226.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b4/bb/1f9f7ddf04cfe26b21aab739ec905bbafa401642614ac9c9d26cf13cb7a3/jupyterlab-4.1.5-py3-none-any.whl (11.4 MB)
+#11 227.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 17.2 MB/s eta 0:00:00
+#11 227.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0a/16/8477e15aeca6bd93ff0ae15570bf829605952c71fdd252b9975229d0913d/jupyterlab-4.1.4-py3-none-any.whl (11.4 MB)
+#11 228.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 12.1 MB/s eta 0:00:00
+#11 228.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2e/23/66990c58d0f205841fa1b76c2f80cb564fc4d0347ada63980bcd4a9b3471/jupyterlab-4.1.3-py3-none-any.whl (11.4 MB)
+#11 229.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 14.3 MB/s eta 0:00:00
+#11 229.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/73/85/00afa8fcb102f8480790861277d58d624f46968baad4f43fb4e15e696772/jupyterlab-4.1.2-py3-none-any.whl (11.4 MB)
+#11 230.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 16.5 MB/s eta 0:00:00
+#11 230.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/61/9b/8b974903425893806b15413fc899fefa78b0ed53e1699bcb8838c01a0ab2/jupyterlab-4.1.1-py3-none-any.whl (11.4 MB)
+#11 231.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 11.1 MB/s eta 0:00:00
+#11 231.4 Collecting notebook>=6.0
+#11 231.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/61/06/b4f53cf193765140f0b27094683dfae1b656d9f7264831ace7699420c1c7/notebook-7.1.2-py3-none-any.whl (5.0 MB)
+#11 231.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 20.7 MB/s eta 0:00:00
+#11 231.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/09/ab/332eaee7872d3883cf3a2cc6a2b2b1e36a566f16fa432c89204a5bd486e6/notebook-7.1.1-py3-none-any.whl (5.0 MB)
+#11 232.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 20.0 MB/s eta 0:00:00
+#11 232.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/5f/38/f5a11c1e68bf3dbd54c7c98f301bf9495e8735803b42ee2f740c5b7c1ca5/notebook-7.1.0-py3-none-any.whl (5.0 MB)
+#11 232.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 20.9 MB/s eta 0:00:00
+#11 232.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3b/4d/92ac6c0ae6501edd277b8d7bb00bdcb1527a35c2d8467ecfd5cc1405ae93/notebook-7.0.8-py3-none-any.whl (4.0 MB)
+#11 232.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 17.9 MB/s eta 0:00:00
+#11 233.0 Collecting jupyterlab<4.1,>=4.0.2
+#11 233.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7b/af/4e8fffc503dc70d3c73328b0421181e3d238f76831769578c4f245130ae9/jupyterlab-4.0.13-py3-none-any.whl (9.2 MB)
+#11 233.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 18.8 MB/s eta 0:00:00
+#11 233.8 Collecting async-lru>=1.0.0
+#11 233.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e5/e2/c2e3abf398f80732e58b03be77bde9022550d221dd8781bf586bd4d97cc1/async_lru-2.3.0-py3-none-any.whl (8.4 kB)
+#11 233.9 Collecting jupyter-lsp>=2.0.0
+#11 234.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/23/e8/9d61dcbd1dce8ef418f06befd4ac084b4720429c26b0b1222bc218685eff/jupyter_lsp-2.3.1-py3-none-any.whl (77 kB)
+#11 234.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 77.5/77.5 kB 11.7 MB/s eta 0:00:00
+#11 235.3 Collecting babel>=2.10
+#11 235.5   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/77/f5/21d2de20e8b8b0408f0681956ca2c69f1320a3848ac50e6e7f39c6159675/babel-2.18.0-py3-none-any.whl (10.2 MB)
+#11 235.6 Collecting json5>=0.9.0
+#11 235.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/be/59527c99478aade6bb33a68d72e6e18dd4e6ff6eacfc7d01bdb15bc76912/json5-0.15.0-py3-none-any.whl (36 kB)
+#11 235.8 INFO: pip is looking at multiple versions of jupyterlab-server to determine which version is compatible with other requirements. This could take a while.
+#11 235.8 Collecting jupyterlab-server<3,>=2.22.1
+#11 235.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e0/07/a000fe835f76b7e1143242ab1122e6362ef1c03f23f83a045c38859c2ae0/jupyterlab_server-2.28.0-py3-none-any.whl (59 kB)
+#11 235.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.8/59.8 kB 6.9 MB/s eta 0:00:00
+#11 236.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/54/09/2032e7d15c544a0e3cd831c51d77a8ca57f7555b2e1b2922142eddb02a84/jupyterlab_server-2.27.3-py3-none-any.whl (59 kB)
+#11 236.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.7/59.7 kB 10.5 MB/s eta 0:00:00
+#11 236.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cb/46/d5ffd7c0f63db4e9f0982c3d58efeea10fc5f47e79fb328431df78843772/jupyterlab_server-2.27.2-py3-none-any.whl (59 kB)
+#11 236.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.4/59.4 kB 10.7 MB/s eta 0:00:00
+#11 236.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2f/b9/ed4ecad7cf1863a64920dc4c19b0376628b5d6bd28d2ec1e00cbac4ba2fb/jupyterlab_server-2.27.1-py3-none-any.whl (59 kB)
+#11 236.3      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.3/59.3 kB 10.6 MB/s eta 0:00:00
+#11 236.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/09/e3/32d9dff7870d7236de690106e8da62a861893558edd592c9cc55732541e3/jupyterlab_server-2.27.0-py3-none-any.whl (59 kB)
+#11 236.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.2/59.2 kB 5.8 MB/s eta 0:00:00
+#11 236.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6a/c9/b270a875916b18f137bb30ecd05031a2f05c95d47a8e8fbd3f805a72f593/jupyterlab_server-2.26.0-py3-none-any.whl (59 kB)
+#11 236.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.1/59.1 kB 9.2 MB/s eta 0:00:00
+#11 236.8   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/6a/2c/ea4fdd7d4bb72106419fff1fcda7c111bd905b00afed3d8efc1a6d6e4538/jupyterlab_server-2.25.4-py3-none-any.whl (58 kB)
+#11 236.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.0/59.0 kB 7.9 MB/s eta 0:00:00
+#11 236.8 INFO: pip is looking at multiple versions of jupyterlab-server to determine which version is compatible with other requirements. This could take a while.
+#11 236.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ab/ac/a19c579bb8ab2a2aefcf47cd3787683e6e136378d7ab2602be3b8e628030/jupyterlab_server-2.25.3-py3-none-any.whl (58 kB)
+#11 236.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.0/59.0 kB 11.0 MB/s eta 0:00:00
+#11 237.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a2/97/abbbe35fc67b6f9423309988f2e411f7cb117b08321866d3d8b720f4c0d4/jupyterlab_server-2.25.2-py3-none-any.whl (58 kB)
+#11 237.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.9/58.9 kB 10.4 MB/s eta 0:00:00
+#11 237.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/de/86/9484f35ea09efc3f8b90e58398e9b9783b9e7e9ee5b24fbb41f5e465d7a2/jupyterlab_server-2.25.1-py3-none-any.whl (58 kB)
+#11 237.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.0/59.0 kB 6.1 MB/s eta 0:00:00
+#11 237.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/96/cd/cdabe44549d60e0967904f0bdd9e3756b521112317612a3997eb2fda9181/jupyterlab_server-2.25.0-py3-none-any.whl (57 kB)
+#11 237.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.2/57.2 kB 8.9 MB/s eta 0:00:00
+#11 237.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/a7/0d/6d4eab0391bd4df1c43f308368d5e177b0fa8ac632267222a23b71317091/jupyterlab_server-2.24.0-py3-none-any.whl (57 kB)
+#11 237.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.3/57.3 kB 5.9 MB/s eta 0:00:00
+#11 237.9 Collecting bleach[css]!=5.0.0
+#11 237.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/58/9d/40b6267367182187139a4000b82a3b287d84d745bccd808e75d916920e9d/bleach-6.4.0-py3-none-any.whl (165 kB)
+#11 238.1 Collecting mistune<4,>=2.0.3
+#11 238.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/77/e4/288365afae98953bc01de09f686f40d8ee84578135aa7767d5d4e60b5278/mistune-3.3.4-py3-none-any.whl (66 kB)
+#11 238.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.9/66.9 kB 3.7 MB/s eta 0:00:00
+#11 238.3 Collecting pandocfilters>=1.4.1
+#11 238.3   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ef/af/4fbc8cab944db5d21b7e2a5b8e9211a03a79852b1157e2c102fcc61ac440/pandocfilters-1.5.1-py2.py3-none-any.whl (8.7 kB)
+#11 238.5 Collecting jupyterlab-pygments
+#11 238.6   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/b1/dd/ead9d8ea85bf202d90cc513b533f9c363121c7792674f78e0d8a854b63b4/jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)
+#11 238.7 Collecting defusedxml
+#11 238.7   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+#11 238.9 Collecting nbclient>=0.5.0
+#11 238.9   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/36/c9/94d73e5a01c5b926c3fa2496e97d7a8dc28ed5a77c0b2ed712f1a62e6694/nbclient-0.11.0-py3-none-any.whl (25 kB)
+#11 239.1 Collecting beautifulsoup4
+#11 239.1   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/88/c6/92fcd42f1ba33e1184263f25bfabf3d27c383410470f169e4b8163bf9c17/beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+#11 239.3 Collecting fastjsonschema>=2.15
+#11 239.4   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/49/82/2755c7c982086f00d4dab85bc120ec35045a9fc2191893a6ce79afe94443/fastjsonschema-2.22.2-py3-none-any.whl (27 kB)
+#11 240.0 Collecting webencodings
+#11 240.0   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/77/c6/040cbc72480d789a5f40d63fb484d3106554c4dfa2d2b70ad5022057750f/webencodings-0.6.1-py3-none-any.whl (8.7 kB)
+#11 240.1 Collecting tinycss2>=1.1.0
+#11 240.2   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/60/45/c7b5c3168458db837e8ceab06dc77824e18202679d0463f0e8f002143a97/tinycss2-1.5.1-py3-none-any.whl (28 kB)
+#11 240.3 INFO: pip is looking at multiple versions of json5 to determine which version is compatible with other requirements. This could take a while.
+#11 240.3 Collecting json5>=0.9.0
+#11 240.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b8/42/cf027b4ac873b076189d935b135397675dac80cb29acb13e1ab86ad6c631/json5-0.14.0-py3-none-any.whl (36 kB)
+#11 240.4 INFO: pip is looking at multiple versions of h11 to determine which version is compatible with other requirements. This could take a while.
+#11 240.4 Collecting h11<0.15,>=0.13
+#11 240.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/19/d2/32a15a4955be1b8114a1c570999eefd31279c7f9aa2d2a43d492a79b53c5/h11-0.13.0-py3-none-any.whl (58 kB)
+#11 240.5      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.2/58.2 kB 11.7 MB/s eta 0:00:00
+#11 240.5 INFO: pip is looking at multiple versions of fastjsonschema to determine which version is compatible with other requirements. This could take a while.
+#11 240.5 Collecting fastjsonschema>=2.15
+#11 240.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/17/e1/62cc96341f01bdff2ba967441939178fcd1900d11ce7e6554d9954a5d7ec/fastjsonschema-2.22.1-py3-none-any.whl (26 kB)
+#11 240.6 INFO: pip is looking at multiple versions of bleach[css] to determine which version is compatible with other requirements. This could take a while.
+#11 240.6 Collecting bleach[css]!=5.0.0
+#11 240.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cd/3a/577b549de0cc09d95f11087ee63c739bba856cd3952697eec4c4bb91350a/bleach-6.3.0-py3-none-any.whl (164 kB)
+#11 240.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164.4/164.4 kB 2.0 MB/s eta 0:00:00
+#11 240.8 INFO: pip is looking at multiple versions of babel to determine which version is compatible with other requirements. This could take a while.
+#11 240.9 Collecting babel>=2.10
+#11 240.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b7/b8/3fe70c75fe32afc4bb507f75563d39bc5642255d1d94f1f23604725780bf/babel-2.17.0-py3-none-any.whl (10.2 MB)
+#11 242.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 7.1 MB/s eta 0:00:00
+#11 242.5 INFO: pip is looking at multiple versions of async-lru to determine which version is compatible with other requirements. This could take a while.
+#11 242.5 Collecting async-lru>=1.0.0
+#11 242.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/13/5c/af990f019b8dd11c5492a6371fe74a5b0276357370030b67254a87329944/async_lru-2.2.0-py3-none-any.whl (7.9 kB)
+#11 242.6 INFO: pip is looking at multiple versions of pure-eval to determine which version is compatible with other requirements. This could take a while.
+#11 242.6 Collecting pure-eval
+#11 242.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl (11 kB)
+#11 242.7 INFO: pip is looking at multiple versions of wcwidth to determine which version is compatible with other requirements. This could take a while.
+#11 242.7 Collecting wcwidth>=0.1.4
+#11 242.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7f/8d/e293019bfd94b1373421aedcb7be55089c19b5bd5a0a0fb3476d5a4e336e/wcwidth-0.9.0-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (755 kB)
+#11 242.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 755.5/755.5 kB 4.6 MB/s eta 0:00:00
+#11 243.0 INFO: pip is looking at multiple versions of terminado to determine which version is compatible with other requirements. This could take a while.
+#11 243.1 Collecting terminado>=0.8.3
+#11 243.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/69/df/deebc9fb14a49062a3330f673e80b100e665b54d998163b3f62620b6240c/terminado-0.18.0-py3-none-any.whl (14 kB)
+#11 243.2 INFO: pip is looking at multiple versions of send2trash to determine which version is compatible with other requirements. This could take a while.
+#11 243.2 Collecting send2trash>=1.8.2
+#11 243.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/1b/5a/f2f2e5eda25579f754acd83399c522ee03d6acbe001dfe53c8a1ec928b44/send2trash-2.0.0-py3-none-any.whl (17 kB)
+#11 243.4 INFO: pip is looking at multiple versions of rfc3986[idna2008] to determine which version is compatible with other requirements. This could take a while.
+#11 243.4 Collecting rfc3986[idna2008]<2,>=1.3
+#11 243.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/78/be/7b8b99fd74ff5684225f50dd0e865393d2265656ef3b4ba9eaaaffe622b8/rfc3986-1.4.0-py2.py3-none-any.whl (31 kB)
+#11 243.5 INFO: pip is looking at multiple versions of pyrsistent to determine which version is compatible with other requirements. This could take a while.
+#11 243.5 Collecting pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0
+#11 243.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/64/de/375aa14daaee107f987da76ca32f7a907fea00fa8b8afb67dc09bec0de91/pyrsistent-0.19.3-py3-none-any.whl (57 kB)
+#11 243.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.5/57.5 kB 8.9 MB/s eta 0:00:00
+#11 243.6 INFO: pip is looking at multiple versions of pyjwt[crypto] to determine which version is compatible with other requirements. This could take a while.
+#11 243.7 INFO: pip is looking at multiple versions of ptyprocess to determine which version is compatible with other requirements. This could take a while.
+#11 243.7 Collecting ptyprocess>=0.5
+#11 243.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl (39 kB)
+#11 243.8 INFO: pip is looking at multiple versions of prometheus-client to determine which version is compatible with other requirements. This could take a while.
+#11 243.8 Collecting prometheus-client>=0.9
+#11 243.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/8d/9b/d4b1e644385499c8346fa9b622a3f030dce14cd6ef8a1871c221a17a67e7/prometheus_client-0.25.0-py3-none-any.whl (64 kB)
+#11 243.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.2/64.2 kB 8.7 MB/s eta 0:00:00
+#11 243.9 INFO: pip is looking at multiple versions of platformdirs to determine which version is compatible with other requirements. This could take a while.
+#11 243.9 Collecting platformdirs>=2.5
+#11 244.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/40/31/1521c38d175108ac395941adbcb9f11e085340bed81ad166e8ad8c21c17b/platformdirs-4.12.1-py3-none-any.whl (33 kB)
+#11 244.0 INFO: pip is looking at multiple versions of parso to determine which version is compatible with other requirements. This could take a while.
+#11 244.0 Collecting parso<0.9.0,>=0.8.6
+#11 244.1   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b6/61/fae042894f4296ec49e3f193aff5d7c18440da9e48102c3315e1bc4519a7/parso-0.8.6-py2.py3-none-any.whl (106 kB)
+#11 244.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 106.9/106.9 kB 5.7 MB/s eta 0:00:00
+#11 244.2 INFO: pip is looking at multiple versions of overrides to determine which version is compatible with other requirements. This could take a while.
+#11 244.2 Collecting overrides>=5.0
+#11 244.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ad/c3/f5f590a982ca2cbe29b570de61d6f387a41e7020a8340309901d769066e0/overrides-7.6.0-py3-none-any.whl (17 kB)
+#11 244.3 INFO: pip is looking at multiple versions of oauthlib to determine which version is compatible with other requirements. This could take a while.
+#11 244.3 Collecting oauthlib>=3.0.0
+#11 244.4   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl (160 kB)
+#11 244.4      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 160.1/160.1 kB 5.9 MB/s eta 0:00:00
+#11 244.4 INFO: pip is looking at multiple versions of notebook-shim to determine which version is compatible with other requirements. This could take a while.
+#11 244.4 Collecting notebook-shim<0.3,>=0.2
+#11 244.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f4/79/73250372e5bbab63018b41b02d5cc6b395655ec6c1254e477ef7c913aada/notebook_shim-0.2.3-py3-none-any.whl (13 kB)
+#11 244.5 INFO: pip is looking at multiple versions of nest-asyncio2 to determine which version is compatible with other requirements. This could take a while.
+#11 244.5 Collecting nest-asyncio2>=1.7.0
+#11 244.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/c5/3c/3179b85b0e1c3659f0369940200cd6d0fa900e6cefcc7ea0bc6dd0e29ffb/nest_asyncio2-1.7.2-py3-none-any.whl (7.8 kB)
+#11 244.7 INFO: pip is looking at multiple versions of nbformat to determine which version is compatible with other requirements. This could take a while.
+#11 244.7 Collecting nbformat>=5.3.0
+#11 244.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/be/4a/0eece9dad5e73230ca972f7bc29456ce7d74772f123d401fcf67379008f7/nbformat-5.11.0-py3-none-any.whl (79 kB)
+#11 244.8      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.8/79.8 kB 1.9 MB/s eta 0:00:00
+#11 244.8 INFO: pip is looking at multiple versions of nbconvert to determine which version is compatible with other requirements. This could take a while.
+#11 244.8 Collecting nbconvert>=6.4.4
+#11 244.9   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0d/4b/8d5f796a792f8a25f6925a96032f098789f448571eb92011df1ae59e8ea8/nbconvert-7.17.0-py3-none-any.whl (261 kB)
+#11 244.9      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.5/261.5 kB 10.4 MB/s eta 0:00:00
+#11 245.0 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 245.0 Collecting jupyterlab-server<3,>=2.22.1
+#11 245.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cb/14/8f1c4b9b80db855d48a762e248efd41649d102841b6bfadbd26b8c25e054/jupyterlab_server-2.23.0-py3-none-any.whl (57 kB)
+#11 245.1      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.3/57.3 kB 6.3 MB/s eta 0:00:00
+#11 245.3 Collecting jupyter-events>=0.11.0
+#11 245.3   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/3f/8c/9b65cb2cd4ea32d885993d5542244641590530836802a2e8c7449a4c61c9/jupyter_events-0.11.0-py3-none-any.whl (19 kB)
+#11 245.9 Collecting jupyter-client>=8.9.0
+#11 246.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ef/ce/93ccaca54d41327491b1f6d7341d0eef49f71e8929f875b53c45446335ca/jupyter_client-8.9.0-py3-none-any.whl (109 kB)
+#11 246.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.7/109.7 kB 4.9 MB/s eta 0:00:00
+#11 246.1 INFO: pip is looking at multiple versions of jupyter-events to determine which version is compatible with other requirements. This could take a while.
+#11 246.5 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 247.1 Collecting jinja2>=3.0.3
+#11 247.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl (133 kB)
+#11 247.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.3/133.3 kB 7.3 MB/s eta 0:00:00
+#11 247.5 INFO: pip is looking at multiple versions of jupyter-client to determine which version is compatible with other requirements. This could take a while.
+#11 248.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/30/6d/6de6be2d02603ab56e72997708809e8a5b0fbfee080735109b40a3564843/Jinja2-3.1.3-py3-none-any.whl (133 kB)
+#11 248.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.2/133.2 kB 6.1 MB/s eta 0:00:00
+#11 248.6 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 248.7   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl (133 kB)
+#11 248.7      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.1/133.1 kB 6.3 MB/s eta 0:00:00
+#11 249.6   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/76/02/af4045156cde8feeefa30cb1c051e10321d4960c418bd52346a497feb302/Jinja2-3.1.1-py3-none-any.whl (132 kB)
+#11 249.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.6/132.6 kB 9.0 MB/s eta 0:00:00
+#11 250.2   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/7b/82/743248f82f147e54a404163c7e12969f4c2436bdfe7c39bf6b5c7a273f3f/Jinja2-3.1.0-py3-none-any.whl (132 kB)
+#11 250.2      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.6/132.6 kB 6.3 MB/s eta 0:00:00
+#11 250.9 INFO: pip is looking at multiple versions of jinja2 to determine which version is compatible with other requirements. This could take a while.
+#11 251.0   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/20/9a/e5d9ec41927401e41aea8af6d16e78b5e612bca4699d417f646a9610a076/Jinja2-3.0.3-py3-none-any.whl (133 kB)
+#11 251.0      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.6/133.6 kB 2.4 MB/s eta 0:00:00
+#11 254.0 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 262.3 INFO: pip is looking at multiple versions of sniffio to determine which version is compatible with other requirements. This could take a while.
+#11 294.9 INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+#11 307.5 Collecting httpcore<0.17.0,>=0.15.0
+#11 307.5   Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b1/fa/6e6ebe637cef87401ee82e7d76313d9eb014524fc6de45eb3b13cedd4c14/httpcore-0.16.1-py3-none-any.whl (68 kB)
+#11 307.6      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.7/68.7 kB 6.0 MB/s eta 0:00:00
+#11 CANCELED
+ERROR: failed to solve: Canceled: context canceled

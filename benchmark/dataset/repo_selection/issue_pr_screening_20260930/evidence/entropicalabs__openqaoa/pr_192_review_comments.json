@@ -1,0 +1,977 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119498988",
+    "pull_request_review_id": 1316694727,
+    "id": 1119498988,
+    "node_id": "PRRC_kwDOHMYLyM5CujLs",
+    "diff_hunk": "@@ -1100,6 +1103,137 @@ def test_qaoa_from_dict_and_load(self):\n             error = True\n         assert error, \"RQAOA.from_dict should raise an error when using a QAOA dictionary\"\n \n+    def test_qaoa_evaluate_circuit(self):\n+        \"\"\"\n+        test the evaluate_circuit method\n+        \"\"\"\n+\n+        # problem\n+        maxcut_qubo = MinimumVertexCover.random_instance(n_nodes=6, edge_probability=0.9, seed=42).qubo\n+\n+        # run qaoa with different param_type, and save the objcets in a list  \n+        qaoas = []\n+        for param_type in PARAMS_CLASSES_MAPPER.keys():\n+            q = QAOA()\n+            q.set_circuit_properties(p=3, param_type=param_type, init_type='rand')\n+            q.compile(maxcut_qubo) \n+            qaoas.append(q)\n+\n+        # for each qaoa object, test the evaluate_circuit method\n+        for q in qaoas:\n+\n+            # evaluate the circuit with random dict of params\n+            params = {k: np.random.rand(*v.shape) for k, v in q.variate_params.asdict().items()}\n+            result = q.evaluate_circuit(params)\n+            assert abs(result['cost']) > 0, f\"param_type={q.circuit_properties.param_type}. `evaluate_circuit` should return a cost, here cost is {result['cost']}\"",
+    "path": "tests/test_workflows.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "dc36fe6bd976bdd2d6369155fc4aef609817d4dd",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The cost can also be negative, no? Maybe you can let the maxcut problem to be a random problem, so we catch edge cases?",
+    "created_at": "2023-02-28T02:00:30Z",
+    "updated_at": "2023-02-28T02:03:13Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119498988",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119498988"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119498988"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119498988/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 1128,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 45,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119506911",
+    "pull_request_review_id": 1316706239,
+    "id": 1119506911,
+    "node_id": "PRRC_kwDOHMYLyM5CulHf",
+    "diff_hunk": "@@ -1100,6 +1103,137 @@ def test_qaoa_from_dict_and_load(self):\n             error = True\n         assert error, \"RQAOA.from_dict should raise an error when using a QAOA dictionary\"\n \n+    def test_qaoa_evaluate_circuit(self):\n+        \"\"\"\n+        test the evaluate_circuit method\n+        \"\"\"\n+\n+        # problem\n+        maxcut_qubo = MinimumVertexCover.random_instance(n_nodes=6, edge_probability=0.9, seed=42).qubo\n+\n+        # run qaoa with different param_type, and save the objcets in a list  \n+        qaoas = []\n+        for param_type in PARAMS_CLASSES_MAPPER.keys():\n+            q = QAOA()\n+            q.set_circuit_properties(p=3, param_type=param_type, init_type='rand')\n+            q.compile(maxcut_qubo) \n+            qaoas.append(q)\n+\n+        # for each qaoa object, test the evaluate_circuit method\n+        for q in qaoas:\n+\n+            # evaluate the circuit with random dict of params\n+            params = {k: np.random.rand(*v.shape) for k, v in q.variate_params.asdict().items()}\n+            result = q.evaluate_circuit(params)\n+            assert abs(result['cost']) > 0, f\"param_type={q.circuit_properties.param_type}. `evaluate_circuit` should return a cost, here cost is {result['cost']}\"",
+    "path": "tests/test_workflows.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "dc36fe6bd976bdd2d6369155fc4aef609817d4dd",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "yes I put `abs(cost)`, it could be also 0 but very unlikely",
+    "created_at": "2023-02-28T02:17:52Z",
+    "updated_at": "2023-02-28T02:17:53Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119506911",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119506911"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119506911"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119506911/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 1128,
+    "side": "RIGHT",
+    "in_reply_to_id": 1119498988,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 45,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119507091",
+    "pull_request_review_id": 1316706484,
+    "id": 1119507091,
+    "node_id": "PRRC_kwDOHMYLyM5CulKT",
+    "diff_hunk": "@@ -1100,6 +1103,137 @@ def test_qaoa_from_dict_and_load(self):\n             error = True\n         assert error, \"RQAOA.from_dict should raise an error when using a QAOA dictionary\"\n \n+    def test_qaoa_evaluate_circuit(self):\n+        \"\"\"\n+        test the evaluate_circuit method\n+        \"\"\"\n+\n+        # problem\n+        maxcut_qubo = MinimumVertexCover.random_instance(n_nodes=6, edge_probability=0.9, seed=42).qubo\n+\n+        # run qaoa with different param_type, and save the objcets in a list  \n+        qaoas = []\n+        for param_type in PARAMS_CLASSES_MAPPER.keys():\n+            q = QAOA()\n+            q.set_circuit_properties(p=3, param_type=param_type, init_type='rand')\n+            q.compile(maxcut_qubo) \n+            qaoas.append(q)\n+\n+        # for each qaoa object, test the evaluate_circuit method\n+        for q in qaoas:\n+\n+            # evaluate the circuit with random dict of params\n+            params = {k: np.random.rand(*v.shape) for k, v in q.variate_params.asdict().items()}\n+            result = q.evaluate_circuit(params)\n+            assert abs(result['cost']) > 0, f\"param_type={q.circuit_properties.param_type}. `evaluate_circuit` should return a cost, here cost is {result['cost']}\"",
+    "path": "tests/test_workflows.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "dc36fe6bd976bdd2d6369155fc4aef609817d4dd",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I changed it to >= and random qubo",
+    "created_at": "2023-02-28T02:18:15Z",
+    "updated_at": "2023-02-28T02:18:15Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119507091",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119507091"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1119507091"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1119507091/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 1128,
+    "side": "RIGHT",
+    "in_reply_to_id": 1119498988,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 45,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122069396",
+    "pull_request_review_id": 1320279727,
+    "id": 1122069396,
+    "node_id": "PRRC_kwDOHMYLyM5C4WuU",
+    "diff_hunk": "@@ -303,6 +307,74 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], None] = None\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if no parameters are passed, we use the optimized parameters of the QAOA object\n+        if params is None:\n+            assert self.result != None, \"No parameters have been passed and the QAOA object has not been optimized yet\"",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "daf0e728951876132f91f87a8b8b8a529d50251b",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We are not performing optimization here, so shouldn't we change the error message?",
+    "created_at": "2023-03-01T17:08:14Z",
+    "updated_at": "2023-03-01T17:08:14Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122069396",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122069396"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122069396"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122069396/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 341,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 52,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122076100",
+    "pull_request_review_id": 1320289908,
+    "id": 1122076100,
+    "node_id": "PRRC_kwDOHMYLyM5C4YXE",
+    "diff_hunk": "@@ -303,6 +307,74 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], None] = None\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if no parameters are passed, we use the optimized parameters of the QAOA object\n+        if params is None:\n+            assert self.result != None, \"No parameters have been passed and the QAOA object has not been optimized yet\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(self.result.optimized['angles'])\n+\n+        # if the parameters are passed as a dictionary we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, dict):\n+            params_obj = deepcopy(self.variate_params)\n+            # we check that the dictionary contains all the parameters of the QAOA object that are not empty\n+            for key, value in params_obj.asdict().items():\n+                if value.size > 0: \n+                    assert key in params.keys(), f\"The parameter `{key}` is missing from the input dictionary\"\n+            params_obj.update_from_dict(params)\n+\n+        # if the parameters are passed as a list we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, list) or isinstance(params, np.ndarray):\n+            assert len(params) == len(self.variate_params), \"The number of parameters does not match the number of parameters in the QAOA circuit\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(params)\n+\n+        # if the parameters are passed in a different format, we raise an error\n+        else:\n+            raise TypeError(\"`params` must be a list, a dictionary or None\")",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "daf0e728951876132f91f87a8b8b8a529d50251b",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "do we need the `` around params?",
+    "created_at": "2023-03-01T17:14:24Z",
+    "updated_at": "2023-03-01T17:14:24Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122076100",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122076100"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122076100"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122076100/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 362,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 73,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122547179",
+    "pull_request_review_id": 1320962133,
+    "id": 1122547179,
+    "node_id": "PRRC_kwDOHMYLyM5C6LXr",
+    "diff_hunk": "@@ -303,6 +307,74 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], None] = None\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if no parameters are passed, we use the optimized parameters of the QAOA object\n+        if params is None:\n+            assert self.result != None, \"No parameters have been passed and the QAOA object has not been optimized yet\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(self.result.optimized['angles'])\n+\n+        # if the parameters are passed as a dictionary we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, dict):\n+            params_obj = deepcopy(self.variate_params)\n+            # we check that the dictionary contains all the parameters of the QAOA object that are not empty\n+            for key, value in params_obj.asdict().items():\n+                if value.size > 0: \n+                    assert key in params.keys(), f\"The parameter `{key}` is missing from the input dictionary\"\n+            params_obj.update_from_dict(params)\n+\n+        # if the parameters are passed as a list we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, list) or isinstance(params, np.ndarray):\n+            assert len(params) == len(self.variate_params), \"The number of parameters does not match the number of parameters in the QAOA circuit\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(params)\n+\n+        # if the parameters are passed in a different format, we raise an error\n+        else:\n+            raise TypeError(\"`params` must be a list, a dictionary or None\")",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "daf0e728951876132f91f87a8b8b8a529d50251b",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think that for a `TypeError` it also makes sense to return what type you passed \r\n\r\n`raise TypeError(f\"`params` must be a list, a dictionary or None\". Instead, received {var})`",
+    "created_at": "2023-03-02T02:53:01Z",
+    "updated_at": "2023-03-02T02:53:02Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122547179",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122547179"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1122547179"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1122547179/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 362,
+    "side": "RIGHT",
+    "in_reply_to_id": 1122076100,
+    "author_association": "MEMBER",
+    "original_position": 73,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123986955",
+    "pull_request_review_id": 1323043742,
+    "id": 1123986955,
+    "node_id": "PRRC_kwDOHMYLyM5C_q4L",
+    "diff_hunk": "@@ -303,6 +307,74 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], None] = None\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if no parameters are passed, we use the optimized parameters of the QAOA object\n+        if params is None:\n+            assert self.result != None, \"No parameters have been passed and the QAOA object has not been optimized yet\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(self.result.optimized['angles'])\n+\n+        # if the parameters are passed as a dictionary we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, dict):\n+            params_obj = deepcopy(self.variate_params)\n+            # we check that the dictionary contains all the parameters of the QAOA object that are not empty\n+            for key, value in params_obj.asdict().items():\n+                if value.size > 0: \n+                    assert key in params.keys(), f\"The parameter `{key}` is missing from the input dictionary\"\n+            params_obj.update_from_dict(params)\n+\n+        # if the parameters are passed as a list we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, list) or isinstance(params, np.ndarray):\n+            assert len(params) == len(self.variate_params), \"The number of parameters does not match the number of parameters in the QAOA circuit\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(params)\n+\n+        # if the parameters are passed in a different format, we raise an error\n+        else:\n+            raise TypeError(\"`params` must be a list, a dictionary or None\")",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "daf0e728951876132f91f87a8b8b8a529d50251b",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "done",
+    "created_at": "2023-03-03T03:16:33Z",
+    "updated_at": "2023-03-03T03:16:33Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1123986955",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123986955"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1123986955"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123986955/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 362,
+    "side": "RIGHT",
+    "in_reply_to_id": 1122076100,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 73,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123987873",
+    "pull_request_review_id": 1323044924,
+    "id": 1123987873,
+    "node_id": "PRRC_kwDOHMYLyM5C_rGh",
+    "diff_hunk": "@@ -303,6 +307,74 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], None] = None\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if no parameters are passed, we use the optimized parameters of the QAOA object\n+        if params is None:\n+            assert self.result != None, \"No parameters have been passed and the QAOA object has not been optimized yet\"",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "daf0e728951876132f91f87a8b8b8a529d50251b",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "changed, now the input must be list or dict",
+    "created_at": "2023-03-03T03:18:51Z",
+    "updated_at": "2023-03-03T03:18:51Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1123987873",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123987873"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1123987873"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1123987873/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 341,
+    "side": "RIGHT",
+    "in_reply_to_id": 1122069396,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 52,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1131899794",
+    "pull_request_review_id": 1334098871,
+    "id": 1131899794,
+    "node_id": "PRRC_kwDOHMYLyM5Dd2uS",
+    "diff_hunk": "@@ -303,6 +308,82 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]]]",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "ec54f47d37edbdacdfb3e229780719136959e092",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Question: Should you be able to pass a QAOAVariationalBaseParams object too?",
+    "created_at": "2023-03-10T02:57:34Z",
+    "updated_at": "2023-03-10T02:57:35Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1131899794",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1131899794"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1131899794"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1131899794/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133235175",
+    "pull_request_review_id": 1336006161,
+    "id": 1133235175,
+    "node_id": "PRRC_kwDOHMYLyM5Di8vn",
+    "diff_hunk": "@@ -303,6 +308,82 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]]]",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "ec54f47d37edbdacdfb3e229780719136959e092",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think it should be, yes.",
+    "created_at": "2023-03-12T11:18:04Z",
+    "updated_at": "2023-03-12T11:18:04Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133235175",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133235175"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133235175"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133235175/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "in_reply_to_id": 1131899794,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133413595",
+    "pull_request_review_id": 1336204217,
+    "id": 1133413595,
+    "node_id": "PRRC_kwDOHMYLyM5DjoTb",
+    "diff_hunk": "@@ -303,6 +308,82 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]]]",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "ec54f47d37edbdacdfb3e229780719136959e092",
+    "user": {
+      "login": "raulconchello",
+      "id": 22713376,
+      "node_id": "MDQ6VXNlcjIyNzEzMzc2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22713376?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/raulconchello",
+      "html_url": "https://github.com/raulconchello",
+      "followers_url": "https://api.github.com/users/raulconchello/followers",
+      "following_url": "https://api.github.com/users/raulconchello/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raulconchello/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raulconchello/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raulconchello/subscriptions",
+      "organizations_url": "https://api.github.com/users/raulconchello/orgs",
+      "repos_url": "https://api.github.com/users/raulconchello/repos",
+      "events_url": "https://api.github.com/users/raulconchello/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raulconchello/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I have updated that, but the problem that I see is that you could pass an object with different properties than the QAOA object compiled. For example:\r\n```\r\nq = QAOA()\r\nq.compile(problem)\r\n\r\nparams_obj = (create a params obj with p>1)\r\nq.evaluate_circuit(params_obj)\r\n```",
+    "created_at": "2023-03-13T03:32:48Z",
+    "updated_at": "2023-03-13T03:32:48Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133413595",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133413595"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133413595"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133413595/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "in_reply_to_id": 1131899794,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133420600",
+    "pull_request_review_id": 1336213469,
+    "id": 1133420600,
+    "node_id": "PRRC_kwDOHMYLyM5DjqA4",
+    "diff_hunk": "@@ -303,6 +309,92 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]], QAOAVariationalBaseParams]\n+    ):\n+        \"\"\"\n+        A method to evaluate the QAOA circuit at a given set of parameters\n+\n+        Parameters\n+        ----------\n+        params: list or dict or None\n+            List of parameters or dictionary of parameters. Which will be used to evaluate the QAOA circuit.\n+            If None, the variational parameters of the QAOA object will be used.\n+\n+        Returns\n+        -------\n+        result: dict\n+            A dictionary containing the results of the evaluation:\n+            - \"expectation\": the expectation value of the cost Hamiltonian\n+            - \"uncertainty\": the uncertainty of the expectation value of the cost Hamiltonian\n+            - \"state\": the state of the QAOA circuit output (if the QAOA circuit is evaluated on a state simulator)\n+            - \"counts\": the counts of the QAOA circuit output (if the QAOA circuit is evaluated on a QPU or shot-based simulator)\n+        \"\"\"\n+\n+        # before evaluating the circuit we check that the QAOA object has been compiled\n+        if self.compiled == False: raise ValueError(\"Please compile the QAOA before optimizing it!\")\n+\n+        \n+        ## Check the type of the input parameters and save them as a QAOAVariationalBaseParams object at the variable `params_obj`\n+\n+        # if the parameters are passed as a dictionary we copy and update the variational parameters of the QAOA object\n+        if isinstance(params, dict):\n+            params_obj = deepcopy(self.variate_params)\n+            # we check that the dictionary contains all the parameters of the QAOA object that are not empty\n+            for key, value in params_obj.asdict().items():\n+                if value.size > 0: \n+                    assert key in params.keys(), f\"The parameter `{key}` is missing from the input dictionary\"\n+            params_obj.update_from_dict(params)\n+\n+        # if the parameters are passed as a list we copy and update the variational parameters of the QAOA object\n+        elif isinstance(params, list) or isinstance(params, np.ndarray):\n+            assert len(params) == len(self.variate_params), \"The number of parameters does not match the number of parameters in the QAOA circuit\"\n+            params_obj = deepcopy(self.variate_params)\n+            params_obj.update_from_raw(params)\n+\n+        # if the parameters are passed as a QAOAVariationalBaseParams object we just take it as it is\n+        elif isinstance(params, QAOAVariationalBaseParams):\n+            params_obj = params\n+\n+        # if the parameters are passed in a different format, we raise an error\n+        else:\n+            raise TypeError(f'The input params must be a list or a dictionary. Instead, received {type(params)}')\n+        \n+        \n+        ## Evaluate the QAOA circuit and return the results\n+\n+        # if the backend is the analytical simulator, we just return the expectation value of the cost Hamiltonian\n+        if isinstance(self.backend, QAOABackendAnalyticalSimulator):\n+            return {'cost': self.backend.expectation(params_obj)[0]}\n+\n+        # if the backend is a statevector simulator, we return the expectation value and the uncertainty of the cost Hamiltonian and the statevector\n+        if isinstance(self.backend, QAOABaseBackendStatevector):\n+            state = self.backend.wavefunction(params_obj)\n+            cost, uncertainty = self.backend.expectation_w_uncertainty(params_obj)\n+            return {\n+                'cost': cost,\n+                'uncertainty': uncertainty,\n+                'state': state\n+            }\n+\n+        # if the backend is a QPU or a shot-based simulator, we return the expectation value and the uncertainty of the cost Hamiltonian and the counts",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "805ff3e1a3c12bf71e7ab1d1e439b84ecff91d51",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "@raulconchello why don't we use `expectation_w_uncertainty` method for non-statevector backends too?",
+    "created_at": "2023-03-13T03:54:30Z",
+    "updated_at": "2023-03-13T03:54:42Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133420600",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133420600"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1133420600"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1133420600/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 381,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 99,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141320445",
+    "pull_request_review_id": 1347414481,
+    "id": 1141320445,
+    "node_id": "PRRC_kwDOHMYLyM5EByr9",
+    "diff_hunk": "@@ -303,6 +308,82 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]]]",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "ec54f47d37edbdacdfb3e229780719136959e092",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess we can just raise an error for this case.",
+    "created_at": "2023-03-19T09:56:46Z",
+    "updated_at": "2023-03-19T09:56:46Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1141320445",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141320445"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1141320445"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141320445/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "in_reply_to_id": 1131899794,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141867271",
+    "pull_request_review_id": 1348156567,
+    "id": 1141867271,
+    "node_id": "PRRC_kwDOHMYLyM5ED4MH",
+    "diff_hunk": "@@ -303,6 +308,82 @@ def optimize(self, verbose=False):\n         if verbose:\n             print(f\"optimization completed.\")\n         return\n+    \n+    def evaluate_circuit(\n+        self, params: Union[List[float], Dict[str, List[float]]]",
+    "path": "src/openqaoa-core/algorithms/qaoa/qaoa_workflow.py",
+    "commit_id": "932d1cd97d00c784a3052f090af4ff8aa5e6b980",
+    "original_commit_id": "ec54f47d37edbdacdfb3e229780719136959e092",
+    "user": {
+      "login": "vishal-ph",
+      "id": 35625965,
+      "node_id": "MDQ6VXNlcjM1NjI1OTY1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35625965?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/vishal-ph",
+      "html_url": "https://github.com/vishal-ph",
+      "followers_url": "https://api.github.com/users/vishal-ph/followers",
+      "following_url": "https://api.github.com/users/vishal-ph/following{/other_user}",
+      "gists_url": "https://api.github.com/users/vishal-ph/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/vishal-ph/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/vishal-ph/subscriptions",
+      "organizations_url": "https://api.github.com/users/vishal-ph/orgs",
+      "repos_url": "https://api.github.com/users/vishal-ph/repos",
+      "events_url": "https://api.github.com/users/vishal-ph/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/vishal-ph/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I have added some checks for this",
+    "created_at": "2023-03-20T09:53:37Z",
+    "updated_at": "2023-03-20T09:53:38Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1141867271",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141867271"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/192#discussion_r1141867271"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/192"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1141867271/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "in_reply_to_id": 1131899794,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

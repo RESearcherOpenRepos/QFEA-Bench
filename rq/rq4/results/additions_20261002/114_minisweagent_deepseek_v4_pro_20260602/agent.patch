@@ -1,0 +1,236 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..6317f6f
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,173 @@
++"""Cross-Entropy Loss for QNNs."""
++
++from typing import Union
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    r"""Cross-entropy loss for classification with probability-valued outputs.
++
++    This loss function computes the cross-entropy between the model outputs and the
++    ground truth labels. It supports both binary and multiple-output classification.
++
++    The loss is computed as:
++
++    .. math::
++        L = -\sum_i \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
++
++    for binary classification, and for multi-class:
++
++    .. math::
++        L = -\sum_i \sum_c y_{i,c} \log(\hat{y}_{i,c})
++
++    where :math:`\hat{y}` are the model outputs (probabilities) and :math:`y` are the
++    ground truth labels.
++
++    Args:
++        eps (float): Small value for numerical clipping of probabilities (default: 1e-8).
++    """
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self._eps = eps
++
++    @property
++    def loss_variance_available(self) -> bool:
++        """Returns False since cross-entropy loss does not have a variance function."""
++        return False
++
++    @property
++    def loss_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss calculation."""
++        return ("f",)
++
++    @property
++    def variance_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss variance calculation."""
++        return tuple()
++
++    @property
++    def gradient_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss gradient calculation."""
++        if self._opt_param_op:
++            return ("f", "dfdp", "dfdop")
++        return ("f", "dfdp")
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        r"""Calculates the cross-entropy loss.
++
++        This function calculates the cross-entropy loss between the model outputs
++        and the ground truth labels.
++
++        Args:
++            value_dict (dict): Contains calculated values of the model.
++                Must contain key ``"f"`` with the model outputs.
++            ground_truth (np.ndarray): The true labels.
++            weights (np.ndarray, optional): Weight for each data point.
++                If None, all data points count the same.
++
++        Returns:
++            Loss value (float).
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = kwargs["ground_truth"]
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = kwargs["weights"]
++        else:
++            weights = np.ones_like(ground_truth)
++
++        f = value_dict["f"]
++
++        # Clip probabilities to avoid log(0)
++        f_clipped = np.clip(f, self._eps, 1.0 - self._eps)
++
++        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
++            # Binary cross-entropy
++            gt = ground_truth.ravel()
++            f_clipped = f_clipped.ravel()
++            w = weights.ravel()
++            loss = -np.sum(
++                w * (gt * np.log(f_clipped) + (1.0 - gt) * np.log(1.0 - f_clipped))
++            )
++        else:
++            # Multiple-output cross-entropy
++            loss = -np.sum(
++                weights * ground_truth * np.log(f_clipped)
++            )
++
++        return float(loss)
++
++    def gradient(
++        self, value_dict: dict, **kwargs
++    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
++        r"""Returns the gradient of the cross-entropy loss.
++
++        This function calculates the gradient of the cross-entropy loss with respect
++        to the model parameters.
++
++        Args:
++            value_dict (dict): Contains calculated values of the model.
++                Must contain keys ``"f"``, ``"dfdp"``, and optionally ``"dfdop"``.
++            ground_truth (np.ndarray): The true labels.
++            weights (np.ndarray, optional): Weight for each data point.
++                If None, all data points count the same.
++            multiple_output (bool): True if the QNN has multiple outputs.
++
++        Returns:
++            Gradient values as a single array or tuple of arrays.
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = kwargs["ground_truth"]
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = kwargs["weights"]
++        else:
++            weights = np.ones_like(ground_truth)
++
++        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
++
++        f = value_dict["f"]
++        f_clipped = np.clip(f, self._eps, 1.0 - self._eps)
++
++        if ground_truth.ndim == 1 or ground_truth.shape[1] == 1:
++            # Binary cross-entropy gradient
++            gt = ground_truth.ravel()
++            f_clipped = f_clipped.ravel()
++            w = weights.ravel()
++
++            # dL/df = -(gt/f - (1-gt)/(1-f))
++            dL_df = -(gt / f_clipped - (1.0 - gt) / (1.0 - f_clipped))
++            dL_df = dL_df * w
++        else:
++            # Multiple-output cross-entropy gradient
++            # dL/df_c = -gt_c / f_c
++            dL_df = -weights * ground_truth / f_clipped
++
++        # Compute gradient with respect to circuit parameters
++        if value_dict["dfdp"].shape[0] == 0:
++            d_p = np.array([])
++        else:
++            if multiple_output:
++                d_p = np.einsum("ij,ijk->k", dL_df, value_dict["dfdp"])
++            else:
++                d_p = np.einsum("j,jk->k", dL_df, value_dict["dfdp"])
++
++        # Extra code for the cost operator derivatives
++        if not self._opt_param_op:
++            return d_p
++
++        if value_dict["dfdop"].shape[0] == 0:
++            d_op = np.array([])
++        else:
++            if multiple_output:
++                d_op = np.einsum("ij,ijk->k", dL_df, value_dict["dfdop"])
++            else:
++                d_op = np.einsum("j,jk->k", dL_df, value_dict["dfdop"])
++
++        return d_p, d_op
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 9f173c0..462fa78 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -216,7 +216,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             y = np.hstack([1 - y, y])
+ 
+         if y.shape[1] == 1:
+-            y = self._label_binarizer.transform(y).ravel()
++            y = y.ravel()
+ 
+         loss = self.loss
+         if self.variance is not None:

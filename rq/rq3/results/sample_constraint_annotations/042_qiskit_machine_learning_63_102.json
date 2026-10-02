@@ -1,0 +1,101 @@
+{
+  "id": 42,
+  "sample_id": "qiskit_machine_learning_63_102",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "20ee69a5df54548d04558e817d8f35b342168a28",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "general_semantics/batched_loss_gradient": 2,
+      "general_semantics/model_training_performance": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_2___5_____5_____l1__",
+      "label": "general_semantics/batched_loss_gradient",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Batched L1 loss retains per-sample shape and agrees with Torch loss/gradient."
+        }
+      ],
+      "rationale": "The selected (5,)/(5,) L1 configuration checks ordinary numeric loss arithmetic."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_5___5_____5_____l2__",
+      "label": "general_semantics/batched_loss_gradient",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Batched L2 loss retains per-sample shape and agrees with Torch loss/gradient."
+        }
+      ],
+      "rationale": "The selected (5,)/(5,) L2 configuration independently checks numeric loss arithmetic."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_1___cobyla____l1____statevector__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "COBYLA OpflowQNN classifier with L1 loss scores above 0.5."
+        }
+      ],
+      "rationale": "The retained statevector classifier case asserts predictive score."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_3___cobyla____l2____statevector__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "COBYLA OpflowQNN classifier with L2 loss scores above 0.5."
+        }
+      ],
+      "rationale": "The L2 variant independently asserts classifier score."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_1___cobyla____statevector__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "COBYLA OpflowQNN regressor scores above 0.5."
+        }
+      ],
+      "rationale": "The retained statevector regressor case measures prediction quality."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_3___bfgs____statevector__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "BFGS OpflowQNN regressor scores above 0.5."
+        }
+      ],
+      "rationale": "This separate optimizer variant also measures prediction quality."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/20ee69a5df54548d04558e817d8f35b342168a28/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/20ee69a5df54548d04558e817d8f35b342168a28/test/algorithms/regressors/test_neural_network_regressor.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/20ee69a5df54548d04558e817d8f35b342168a28/test/utils/loss_functions/test_loss_functions.py"
+  ],
+  "rationale": "Inspected both batched-loss configurations and all four retained model-score selectors individually."
+}

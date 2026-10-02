@@ -1,0 +1,69 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________________ TestQNNClassifier.test_serialization[qiskit] _________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe1eb0160>
+request = <FixtureRequest for <Function test_serialization[qiskit]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'qiskit'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+E       AttributeError: 'QNNClassifier' object has no attribute 'dump'
+
+tests/qnn/test_qnnc.py:226: AttributeError
+----------------------------- Captured stdout call -----------------------------
+fit:   0%|          | 0/2 [00:00<?, ?it/s]fit:  50%|█████     | 1/2 [00:00<00:00,  2.52it/s]fit: 100%|██████████| 2/2 [00:00<00:00,  3.66it/s]fit: 100%|██████████| 2/2 [00:00<00:00,  3.43it/s]
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:1600 Executor runs estimator with job: d0ad45af-7b78-499b-b0d9-4c554a4f75e2
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 1a8b6841-54c3-40cc-baf8-7f630fbdce2a
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 77d3418c-5438-4f2b-ae90-4a6f9c60bc47
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 6f9d4704-3915-4558-beff-835f843b379a
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: 4203f172-f1da-4e35-9a3f-d1235494c7c9
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: bb83b59c-c6ec-4624-8537-46ebed8d38c2
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+INFO     executor:executor.py:1600 Executor runs estimator with job: ee776253-cfb0-4ad3-8aa3-23b60f2bd647
+INFO     executor:executor.py:1650 Job status: JobStatus.RUNNING
+INFO     executor:executor.py:1650 Job status: JobStatus.DONE
+=========================== short test summary info ============================
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qiskit]
+1 failed, 6 warnings in 4.80s

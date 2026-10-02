@@ -1,0 +1,134 @@
+{
+  "instance": {
+    "id": 63,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_477_481",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/477",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/481",
+    "base_commit": "57438121a0b3ba88304d5aed0231a50eae88a217",
+    "patch": "4a0ab6bdd0314dd0848ea3903df085da90b93010"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task stores and exposes molecule coordinate units without changing electronic-structure or quantum semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/drivers/molecule.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Molecule currently assumes geometry coordinates are provided in Angstrom and does not let users declare the unit system used when constructing a molecule. This can make Bohr-coordinate inputs ambiguous and causes the molecule description to omit the unit context. Users need Molecule to accept an explicit coordinate unit and preserve that choice for later inspection and string rendering.",
+    "requirements": [
+      "Molecule construction must accept an optional coordinate unit argument.",
+      "When no unit is provided, Molecule must continue to default to Angstrom units.",
+      "When UnitsType.ANGSTROM is provided explicitly, Molecule must preserve Angstrom as its unit without changing the supplied geometry.",
+      "When UnitsType.BOHR is provided, Molecule must preserve Bohr as its unit without changing the supplied geometry.",
+      "The units property must report the unit used for construction.",
+      "Existing Molecule construction, geometry, charge, multiplicity, stretching, bending, and perturbation behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "Molecule",
+        "Path": "qiskit_nature/drivers/molecule.py",
+        "Input": "constructor: geometry, multiplicity=1, charge=0, units=UnitsType.ANGSTROM, degrees_of_freedom=None, masses=None",
+        "Output": "",
+        "Description": "Constructs a driver-independent molecule while preserving the coordinate unit used for the supplied geometry."
+      },
+      {
+        "Type": "Method",
+        "Name": "Molecule.units",
+        "Path": "qiskit_nature/drivers/molecule.py",
+        "Input": "self",
+        "Output": "UnitsType",
+        "Description": "Returns the coordinate unit stored on the molecule."
+      },
+      {
+        "Type": "Class",
+        "Name": "UnitsType",
+        "Path": "qiskit_nature/drivers/units_type.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Provides the Angstrom and Bohr unit values accepted by Molecule construction and returned by Molecule.units."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_477_481",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:ff637c353967d97468e13c0aec7f8b8cbcd10fb1a1285b6ec725dea59fb3a221",
+      "image_size": "1081918019"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_construct"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 1.21s",
+        "duration_seconds": 4.16
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_charge",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_multiplicity",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_stretch",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_bend",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_perturbations"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 1.32s",
+        "duration_seconds": 4.74
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_construct"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 1.36s; TypeError: __init__() got an unexpected keyword argument 'units'",
+        "duration_seconds": 6.31
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_charge",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_multiplicity",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_stretch",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_bend",
+          "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_perturbations"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 1.56s",
+        "duration_seconds": 6.85
+      }
+    }
+  }
+}

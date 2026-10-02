@@ -1,0 +1,75 @@
+{
+  "id": 106,
+  "sample_id": "tangelo_387_390",
+  "repo": "sandbox-quantum/Tangelo",
+  "patch_commit": "651c28ec97ed2da097254e39f171191870105799",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/backend_circuit_translation": 1,
+      "quantum_semantics/circuit_translation_equivalence": 1,
+      "interface/circuit_serialization": 1,
+      "interface/unsupported_gate_contract": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit_multi_control",
+      "label": "interface/backend_circuit_translation",
+      "assertions": [
+        {
+          "line": 200,
+          "expected": "Multi-controlled rotation gates translate into the matching native Qiskit gate sequence."
+        }
+      ],
+      "rationale": "Multi-controlled rotation gates translate into the matching native Qiskit gate sequence."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_qiskit",
+      "label": "quantum_semantics/circuit_translation_equivalence",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Translated Qiskit circuit yields the same state vector as the abstract circuit."
+        }
+      ],
+      "rationale": "Translated Qiskit circuit yields the same state vector as the abstract circuit."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_openqasm2abs",
+      "label": "interface/circuit_serialization",
+      "assertions": [
+        {
+          "line": 394,
+          "expected": "OpenQASM conversion preserves the abstract circuit string."
+        }
+      ],
+      "rationale": "OpenQASM conversion preserves the abstract circuit string."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tangelo/linq/tests/test_translator_circuit.py::TranslateCircuitTest::test_unsupported_gate",
+      "label": "interface/unsupported_gate_contract",
+      "assertions": [
+        {
+          "line": 501,
+          "expected": "Translator raises ValueError for a gate unsupported by Qiskit."
+        }
+      ],
+      "rationale": "Translator raises ValueError for a gate unsupported by Qiskit."
+    }
+  ],
+  "source_files": [
+    "https://github.com/sandbox-quantum/Tangelo/blob/651c28ec97ed2da097254e39f171191870105799/tangelo/linq/tests/test_translator_circuit.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

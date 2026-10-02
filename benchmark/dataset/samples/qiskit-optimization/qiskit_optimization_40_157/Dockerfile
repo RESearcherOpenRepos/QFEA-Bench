@@ -1,0 +1,19 @@
+FROM benchmark-base:qiskit_optimization_40_157
+
+ENV SAMPLE_ID=qiskit_optimization_40_157
+ENV REPOSITORY=qiskit-community/qiskit-optimization
+ENV REPOSITORY_URL=https://github.com/qiskit-community/qiskit-optimization.git
+ENV ISSUE_URL=https://github.com/qiskit-community/qiskit-optimization/issues/40
+ENV PR_URL=https://github.com/qiskit-community/qiskit-optimization/pull/157
+ENV BASE_COMMIT=6fd93e90d081e8722bec77e0a84fdcf6821282f8
+ENV PATCHED_COMMIT=2364e6ba3e7d5845591e713b0a53308f7605773a
+ENV PR_HEAD_COMMIT=2364e6ba3e7d5845591e713b0a53308f7605773a
+ENV DEFAULT_TARGET=patched
+ENV FAIL_PASS_TEST_PATHS="test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_inequality_to_penalty_auto_define_penalty test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty1 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty2 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty3 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty4 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty6 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty7 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty8 test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_quadratic_program_to_qubo_inequality_to_penalty"
+ENV PASS_PASS_TEST_PATHS="test/converters/test_converters.py::TestConverters::test_0var_range_inequality test/converters/test_converters.py::TestConverters::test_auto_penalty test/converters/test_converters.py::TestConverters::test_auto_penalty_warning test/converters/test_converters.py::TestConverters::test_inequality_binary test/converters/test_converters.py::TestConverters::test_inequality_integer test/converters/test_converters.py::TestConverters::test_inequality_mode_auto test/converters/test_converters.py::TestConverters::test_inequality_mode_continuous test/converters/test_converters.py::TestConverters::test_inequality_mode_integer test/converters/test_converters.py::TestConverters::test_penalize_binary test/converters/test_converters.py::TestConverters::test_penalize_integer test/converters/test_converters.py::TestConverters::test_penalize_sense test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing2 test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_maximize_to_minimize test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_minimize_to_maximize"
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]

@@ -1,0 +1,119 @@
+{
+  "instance": {
+    "id": 108,
+    "repo": "tequilahub/tequila",
+    "instance_id": "tequila_403_407",
+    "status": "completed",
+    "issue_url": "https://github.com/tequilahub/tequila/issues/403",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/tequilahub/tequila/pull/407",
+    "base_commit": "2d0f1b862d842ab83bea3c53c676a1b9bbea999c",
+    "patch": "1406d26db32f7f5f0152adc246f6ded1ec3fb077"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "Adds circuit-to-unitary conversion using Quimb with variable binding and qubit-order mapping. New tests compare explicit three-qubit matrix and parameterized Pauli exponential to analytic matrices."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/tequila/circuit/circuit.py",
+      "src/tequila/circuit/_gates_impl.py",
+      "src/tequila/circuit/compiler.py",
+      "src/tequila/simulators/simulator_base.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Users need to obtain the unitary matrix represented by a Tequila circuit, including circuits containing symbolic rotation parameters, so that circuit behavior can be compared directly with matrix representations.",
+    "requirements": [
+      "Return the dense unitary matrix for a circuit containing Hadamard and controlled-X operations in the repository qubit-order convention.",
+      "Resolve supplied variable values when producing the unitary matrix of a parameterized Pauli rotation.",
+      "Preserve existing circuit construction, variable mapping, and moment behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "QCircuit.to_matrix",
+        "Path": "src/tequila/circuit/circuit.py",
+        "Input": "self, variables=None",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the circuit unitary; variables maps symbolic parameters to numerical values."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-tequila_403_407:latest",
+      "image_id": "sha256:3323ec50b518bcd98f56fceb1507c5a6f2e910d930d7954c1bc3dd99779ad632",
+      "image_size": "1398386416",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+          "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params"
+        ],
+        "summary": "2 failed in 7.16s",
+        "duration_seconds": 10.728
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_circuits.py::test_qubit_map",
+          "tests/test_circuits.py::test_conventions",
+          "tests/test_circuits.py::test_basic_gates",
+          "tests/test_circuits.py::test_canonical_moments",
+          "tests/test_circuits.py::test_variable_map"
+        ],
+        "summary": "5 passed in 7.42s",
+        "duration_seconds": 11.949
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+          "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params"
+        ],
+        "summary": "2 passed in 33.83s",
+        "duration_seconds": 38.305
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/test_circuits.py::test_qubit_map",
+          "tests/test_circuits.py::test_conventions",
+          "tests/test_circuits.py::test_basic_gates",
+          "tests/test_circuits.py::test_canonical_moments",
+          "tests/test_circuits.py::test_variable_map"
+        ],
+        "summary": "5 passed in 6.78s",
+        "duration_seconds": 10.155
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/tequila_403_407",
+    "selector_exclusions": {}
+  }
+}

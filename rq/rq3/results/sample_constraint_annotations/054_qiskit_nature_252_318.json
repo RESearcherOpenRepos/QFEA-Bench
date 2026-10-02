@@ -1,0 +1,155 @@
+{
+  "id": 54,
+  "sample_id": "qiskit_nature_252_318",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "0266d2baffcf7f1f8b710659adcfea509f732602",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "quantum_semantics/protein_folding_qubit_hamiltonian": 2,
+      "quantum_semantics/protein_folding_qubit_fixing": 5,
+      "interface/peptide_constructor_configuration": 1,
+      "interface/input_validation": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem_2_second_bead_side_chain",
+      "label": "quantum_semantics/protein_folding_qubit_hamiltonian",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Peptide with second-bead side chain yields the specified PauliSumOp."
+        }
+      ],
+      "rationale": "The assertion compares the encoded protein-folding qubit Hamiltonian."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large_fifth_qubit_allowed",
+      "label": "quantum_semantics/protein_folding_qubit_fixing",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "With a second-bead side chain, fifth qubit is retained in the fixed Pauli operator."
+        }
+      ],
+      "rationale": "The expected Pauli term differs from old qubit-fixing behavior because this encoded variable is physical."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem",
+      "label": "quantum_semantics/protein_folding_qubit_hamiltonian",
+      "assertions": [
+        {
+          "line": 52,
+          "expected": "Peptide without second-bead side chain retains its reference qubit Hamiltonian."
+        }
+      ],
+      "rationale": "This P2P regression compares Pauli coefficients and labels."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small",
+      "label": "quantum_semantics/protein_folding_qubit_fixing",
+      "assertions": [
+        {
+          "line": 26,
+          "expected": "Small four-qubit operator fixes to the expected zero PauliSumOp."
+        }
+      ],
+      "rationale": "The exact Pauli output tests the encoding reduction rule."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small_2",
+      "label": "quantum_semantics/protein_folding_qubit_fixing",
+      "assertions": [
+        {
+          "line": 33,
+          "expected": "Small two-qubit operator fixes to the expected zero PauliSumOp."
+        }
+      ],
+      "rationale": "The second small configuration checks a different register size."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large",
+      "label": "quantum_semantics/protein_folding_qubit_fixing",
+      "assertions": [
+        {
+          "line": 40,
+          "expected": "Large Pauli operator fixes specified qubits and preserves the expected remaining term."
+        }
+      ],
+      "rationale": "The expected seven-qubit Pauli expression checks the established reduction rule."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_pauli_op",
+      "label": "quantum_semantics/protein_folding_qubit_fixing",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "PauliOp input fixes to the expected Z-containing operator."
+        }
+      ],
+      "rationale": "The separate PauliOp form tests the same physical qubit substitution."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_constructor",
+      "label": "interface/peptide_constructor_configuration",
+      "assertions": [
+        {
+          "line": 29,
+          "expected": "MainChain exposes four beads and the side chain only on the allowed interior bead."
+        }
+      ],
+      "rationale": "The selected constructor test inspects the exposed bead/side-chain structure."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_first",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 39,
+          "expected": "A side chain on the first main bead raises InvalidSideChainException."
+        }
+      ],
+      "rationale": "The test explicitly checks invalid peptide constructor input."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_last",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 49,
+          "expected": "A side chain on the last main bead raises InvalidSideChainException."
+        }
+      ],
+      "rationale": "This separate boundary case checks the last-bead input restriction."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/0266d2baffcf7f1f8b710659adcfea509f732602/test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/0266d2baffcf7f1f8b710659adcfea509f732602/test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/0266d2baffcf7f1f8b710659adcfea509f732602/test/problems/sampling/protein_folding/test_protein_folding_problem.py"
+  ],
+  "rationale": "Reviewed the second-bead Pauli regression, each retained qubit-fixing size/input case, and the three main-chain construction/validation cases."
+}

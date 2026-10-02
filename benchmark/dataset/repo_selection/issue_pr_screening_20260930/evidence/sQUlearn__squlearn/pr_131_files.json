@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "de1f1e17a4ead1ba8a43e210e5b8864018e18b8f",
+    "filename": "tests/qnn/test_qnnc.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 5,
+    "changes": 10,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/a33d662211d4bb2a7b728ae58e369bc1af7ad7b7/tests%2Fqnn%2Ftest_qnnc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/a33d662211d4bb2a7b728ae58e369bc1af7ad7b7/tests%2Fqnn%2Ftest_qnnc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fqnn%2Ftest_qnnc.py?ref=a33d662211d4bb2a7b728ae58e369bc1af7ad7b7",
+    "patch": "@@ -6,7 +6,7 @@\n from sklearn.preprocessing import LabelBinarizer, MinMaxScaler\n \n from squlearn import Executor\n-from squlearn.expectation_operator import IsingHamiltonian\n+from squlearn.expectation_operator import SummedPaulis\n from squlearn.feature_map import ChebPQC\n from squlearn.optimizers import SLSQP, Adam\n from squlearn.qnn import QNNClassifier, SquaredLoss\n@@ -29,8 +29,8 @@ def qnn_classifier(self) -> QNNClassifier:\n         \"\"\"QNNClassifier module.\"\"\"\n         np.random.seed(42)\n         executor = Executor(\"statevector_simulator\")\n-        pqc = ChebPQC(num_qubits=4, num_features=2, num_layers=2)\n-        operator = IsingHamiltonian(num_qubits=4, I=\"S\", Z=\"S\", ZZ=\"S\")\n+        pqc = ChebPQC(num_qubits=2, num_features=2, num_layers=1)\n+        operator = SummedPaulis(num_qubits=2)\n         loss = SquaredLoss()\n         optimizer = SLSQP(options={\"maxiter\": 2})\n         param_ini = np.random.rand(pqc.num_parameters)\n@@ -111,8 +111,8 @@ def test_predict(self, qnn_classifier, data):\n             - whether the prediction output is correct\n         \"\"\"\n         X, y = data\n-        qnn_classifier._param = np.arange(0.1, 2.45, 0.1)\n-        qnn_classifier._param_op = np.arange(0.1, 0.35, 0.1)\n+        qnn_classifier._param = np.linspace(0.1, 0.7, 7)\n+        qnn_classifier._param_op = np.linspace(0.1, 0.3, 3)\n         qnn_classifier._label_binarizer = LabelBinarizer()\n         qnn_classifier._label_binarizer.fit(y)\n         qnn_classifier._is_fitted = True"
+  },
+  {
+    "sha": "111a11158efea902381657f4ce3f6b434a6dc4cc",
+    "filename": "tests/qnn/test_qnnr.py",
+    "status": "modified",
+    "additions": 7,
+    "deletions": 7,
+    "changes": 14,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/a33d662211d4bb2a7b728ae58e369bc1af7ad7b7/tests%2Fqnn%2Ftest_qnnr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/a33d662211d4bb2a7b728ae58e369bc1af7ad7b7/tests%2Fqnn%2Ftest_qnnr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fqnn%2Ftest_qnnr.py?ref=a33d662211d4bb2a7b728ae58e369bc1af7ad7b7",
+    "patch": "@@ -6,8 +6,8 @@\n from sklearn.preprocessing import MinMaxScaler\n \n from squlearn import Executor\n-from squlearn.expectation_operator import IsingHamiltonian\n-from squlearn.feature_map import ChebPQC\n+from squlearn.expectation_operator import SummedPaulis\n+from squlearn.feature_map import ChebRx\n from squlearn.optimizers import SLSQP, Adam\n from squlearn.qnn import QNNRegressor, SquaredLoss\n \n@@ -29,8 +29,8 @@ def qnn_regressor(self) -> QNNRegressor:\n         \"\"\"QNNRegressor module.\"\"\"\n         np.random.seed(42)\n         executor = Executor(\"statevector_simulator\")\n-        pqc = ChebPQC(num_qubits=4, num_features=1, num_layers=2)\n-        operator = IsingHamiltonian(num_qubits=4, I=\"S\", Z=\"S\", ZZ=\"S\")\n+        pqc = ChebRx(num_qubits=2, num_features=1, num_layers=1)\n+        operator = SummedPaulis(num_qubits=2)\n         loss = SquaredLoss()\n         optimizer = SLSQP(options={\"maxiter\": 2})\n         param_ini = np.random.rand(pqc.num_parameters)\n@@ -114,16 +114,16 @@ def test_predict(self, qnn_regressor, data):\n             - whether the prediction output is correct\n         \"\"\"\n         X, y = data\n-        qnn_regressor._param = np.arange(0.1, 2.45, 0.1)\n-        qnn_regressor._param_op = np.arange(0.1, 0.35, 0.1)\n+        qnn_regressor._param = np.linspace(0.1, 0.4, 4)\n+        qnn_regressor._param_op = np.linspace(0.1, 0.3, 3)\n         qnn_regressor._is_fitted = True\n         y_pred = qnn_regressor.predict(X)\n \n         assert isinstance(y_pred, np.ndarray)\n         assert y_pred.shape == y.shape\n         assert np.allclose(\n             y_pred,\n-            np.array([0.57240016, 1.20027015, 0.39182531, 1.24520867, -0.1851392, 1.24521491]),\n+            np.array([0.50619332, 0.4905991, 0.51004432, 0.48826691, 0.5372742, 0.48826651]),\n         )\n \n     def test_set_params_and_fit(self, qnn_regressor, data):"
+  }
+]

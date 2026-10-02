@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "c9c5852c296f898cc5b232d51cd8aff84fb171e3",
+    "filename": ".github/workflows/ci_backends.yml",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 1,
+    "changes": 2,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/e738afcff48adb49c56cfe1b547edd492f98ced2/.github%2Fworkflows%2Fci_backends.yml",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/e738afcff48adb49c56cfe1b547edd492f98ced2/.github%2Fworkflows%2Fci_backends.yml",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/.github%2Fworkflows%2Fci_backends.yml?ref=e738afcff48adb49c56cfe1b547edd492f98ced2",
+    "patch": "@@ -32,7 +32,7 @@ jobs:\n             # myqlm does not work in python3.7\n             pip install \"cirq\" \"qiskit>=0.30\" \"qulacs\" \"qibo==0.1.1\"\n         elif [ $ver -eq 8 ]; then\n-            pip install \"cirq\" \"qiskit>=0.30\" \"qulacs\" \"qibo==0.1.1\" \"myqlm\"\n+            pip install \"cirq\" \"qiskit>=0.30\" \"qulacs\" \"qibo==0.1.1\" \"myqlm\" \"cirq-google\"\n         fi\n         pip install -e .\n     - name: Lint with flake8"
+  },
+  {
+    "sha": "6f9ae97533188c8ea388ecfc543fbc425b8399bc",
+    "filename": "requirements.txt",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/e738afcff48adb49c56cfe1b547edd492f98ced2/requirements.txt",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/e738afcff48adb49c56cfe1b547edd492f98ced2/requirements.txt",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/requirements.txt?ref=e738afcff48adb49c56cfe1b547edd492f98ced2",
+    "patch": "@@ -13,6 +13,7 @@ qulacs # default simulator (best integration), remove if the installation gives\n \n #optional quantum backends\n #cirq >= 0.9.2 #\n+#cirq_google\n #qiskit>=0.30\n #pyquil<3.0 # you also need to install the forest-sdk\n #qulacs-gpu # you can't have qulacs and qulacs-gpu at the same time"
+  },
+  {
+    "sha": "5115f90f645ae1275f0f0a7b60832e83ffac89b7",
+    "filename": "src/tequila/simulators/simulator_cirq.py",
+    "status": "modified",
+    "additions": 15,
+    "deletions": 25,
+    "changes": 40,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/e738afcff48adb49c56cfe1b547edd492f98ced2/src%2Ftequila%2Fsimulators%2Fsimulator_cirq.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/e738afcff48adb49c56cfe1b547edd492f98ced2/src%2Ftequila%2Fsimulators%2Fsimulator_cirq.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fsimulators%2Fsimulator_cirq.py?ref=e738afcff48adb49c56cfe1b547edd492f98ced2",
+    "patch": "@@ -5,10 +5,12 @@\n import sympy\n from tequila.utils import to_float\n \n+import importlib\n import numpy as np\n import typing, numbers\n \n import cirq\n+import cirq_google\n \n map_1 = lambda x: {'exponent': x}\n map_2 = lambda x: {'exponent': x / np.pi, 'global_shift': -0.5}\n@@ -356,35 +358,23 @@ def build_device_circuit(self, ignore_failures=False):\n         line = None\n         circuit = None\n         if isinstance(device, cirq.Device):\n-            if isinstance(device, cirq.google.devices.XmonDevice) or isinstance(device,\n-                                                                                cirq.google.devices.serializable_device.SerializableDevice):\n-                options = ['xmon', 'xmon_partial_cz', 'sqrt_iswap', 'sycamore']\n-                if device in [cirq.google.Sycamore, cirq.google.Sycamore23]:\n-                    options = ['sycamore', 'sqrt_iswap', 'xmon', 'xmon_partial_cz']\n-                for option in options:\n-                    try:\n-                        line = cirq.google.line_on_device(device, length=len(self.abstract_circuit.qubits))\n-\n-                        circuit = cirq.google.optimized_for_sycamore(circuit=c, new_device=device,\n-                                                                     optimizer_type=option,\n-                                                                     qubit_map=lambda q: line[q.x])\n-                    except:\n-                        line = None\n-                        pass\n-                if circuit is None:\n-                    raise TequilaCirqException('could not optimize for device={}'.format(device))\n-\n+            HAS_GOOGLE = importlib.util.find_spec('cirq_google')\n+            assert HAS_GOOGLE, TequilaCirqException(' cirq_google package is not installed.')\n+            \n+            if device in [cirq_google.Sycamore, cirq_google.Sycamore23]:\n+                try:\n+                    circuit = cirq.optimize_for_target_gateset(circuit=c, gateset=cirq_google.SycamoreTargetGateset())\n+                except ValueError as E:\n+                    original_message = str(E)\n+                    raise TequilaCirqException('original message:\\n{}\\n\\ncould not optimize for device={}'.format(original_message,device))\n             else:\n                 ### under construction (potentially on other branches)\n-                raise TequilaException('Only known and Xmon devices currently functional. Sorry!')\n+                raise TequilaException('Only Sycamore and Sycamore23 devices currently functional. Sorry!')\n+\n         else:\n             raise TequilaException(\n                 'build_device_circuit demands a cirq.Device object; received {}, of type {}'.format(str(device),\n                                                                                                     type(device)))\n-\n-        if line is not None:\n-            for k in self.qubit_map.keys():\n-                self.qubit_map[k].instance = line[self.qubit_map[k].instance.x]\n         return circuit\n \n     def build_noisy_circuit(self, noise):\n@@ -447,7 +437,7 @@ def retrieve_device(self, device):\n             the device on which to execute cirq circuits.\n         \"\"\"\n         if isinstance(device, str):\n-            return getattr(cirq.google, device)\n+            return getattr(cirq_google, device)\n         else:\n             if device is None:\n                 return device\n@@ -474,7 +464,7 @@ def check_device(self, device):\n             return\n         else:\n             assert isinstance(device, str)\n-            if device.lower() in ['foxtail', 'sycamore', 'sycamore23', 'bristlecone']:\n+            if device.lower() in ['sycamore', 'sycamore23']:\n                 pass\n             else:\n                 raise TequilaException('requested device {} could not be found!'.format(device))"
+  },
+  {
+    "sha": "4c22976f905e75c6abef0afaa13256c683d77d35",
+    "filename": "tests/test_simulator_backends.py",
+    "status": "modified",
+    "additions": 15,
+    "deletions": 0,
+    "changes": 15,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/e738afcff48adb49c56cfe1b547edd492f98ced2/tests%2Ftest_simulator_backends.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/e738afcff48adb49c56cfe1b547edd492f98ced2/tests%2Ftest_simulator_backends.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/tests%2Ftest_simulator_backends.py?ref=e738afcff48adb49c56cfe1b547edd492f98ced2",
+    "patch": "@@ -2,6 +2,7 @@\n All Backends need to be installed for full testing\n \"\"\"\n \n+import importlib\n import numpy\n import pytest\n import random\n@@ -16,6 +17,20 @@\n import os, glob\n \n \n+HAS_GOOGLE = importlib.util.find_spec('cirq_google')\n+@pytest.mark.skipif(condition=HAS_GOOGLE, reason=\"cirq_google not installed\")\n+def test_cirq_google_devices():\n+    import cirq_google\n+    \n+    U = tq.paulis.X(0)\n+    U += tq.gates.Givens(0, 1, angle=numpy.pi/4)    # Givens rotation with angle = pi/4 gives 1/sqrt(2)|01> + 1/sqrt(2)|10> (up to a phase factor).\n+    wfn = tq.simulate(U, device=\"Sycamore\", backend=\"cirq\")\n+    wfnx0 = tq.simulate(tq.paulis.X(0))\n+    assert numpy.isclose(numpy.abs(wfn.inner(wfnx0))**2, 0.5)\n+    wfnx1 = tq.simulate(tq.paulis.X(1))\n+    assert numpy.isclose(numpy.abs(wfn.inner(wfnx1))**2, 0.5)\n+\n+\n def teardown_function(function):\n     [os.remove(x) for x in glob.glob(\"*.npy\")]\n     [os.remove(x) for x in glob.glob(\"qvm.log\")]"
+  }
+]

@@ -1,0 +1,103 @@
+{
+  "id": 104,
+  "sample_id": "qiskit_optimization_8_18",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "fb58e1c9da67bcb3fa81ee68422acb2daebf5abd",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "quantum_semantics/warm_start_qaoa_result": 3,
+      "interface/converter_list_contract": 1,
+      "general_semantics/optimization_result_interpretation": 1,
+      "general_semantics/optimization_solution": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_max_cut",
+      "label": "quantum_semantics/warm_start_qaoa_result",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Warm-start QAOA returns max-cut objective four with the expected bit string."
+        }
+      ],
+      "rationale": "Warm-start QAOA returns max-cut objective four with the expected bit string."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_constrained_binary",
+      "label": "quantum_semantics/warm_start_qaoa_result",
+      "assertions": [
+        {
+          "line": 87,
+          "expected": "Warm-start QAOA solves constrained binary problem at objective two."
+        }
+      ],
+      "rationale": "Warm-start QAOA solves constrained binary problem at objective two."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo",
+      "label": "quantum_semantics/warm_start_qaoa_result",
+      "assertions": [
+        {
+          "line": 110,
+          "expected": "Warm-start QAOA solves simple QUBO at objective one."
+        }
+      ],
+      "rationale": "Warm-start QAOA solves simple QUBO at objective one."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+      "label": "interface/converter_list_contract",
+      "assertions": [
+        {
+          "line": 158,
+          "expected": "MinimumEigenOptimizer rejects an invalid converter type."
+        }
+      ],
+      "rationale": "MinimumEigenOptimizer rejects an invalid converter type."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Existing eigenoptimizer sample probabilities and objective remain correct."
+        }
+      ],
+      "rationale": "Existing eigenoptimizer sample probabilities and objective remain correct."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "SLSQP control optimizer returns objective 5.875."
+        }
+      ],
+      "rationale": "SLSQP control optimizer returns objective 5.875."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/fb58e1c9da67bcb3fa81ee68422acb2daebf5abd/test/test_min_eigen_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/fb58e1c9da67bcb3fa81ee68422acb2daebf5abd/test/test_slsqp.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/fb58e1c9da67bcb3fa81ee68422acb2daebf5abd/test/test_warm_start_qaoa.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

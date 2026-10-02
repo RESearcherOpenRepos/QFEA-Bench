@@ -1,0 +1,128 @@
+{
+  "instance": {
+    "id": 62,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_465_472",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/465",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/472",
+    "base_commit": "3c86e4d2b38947b40aca29bf88882055761c208a",
+    "patch": "95167df7f543b5bfda357127e8d56492801c30b0"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds generic networkx graph input conversion for Lattice rather than quantum model semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/problems/second_quantization/lattice/lattices/lattice.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Lattice currently accepts retworkx graph objects, but many users already build graph structures with networkx because it provides a broader set of graph generators and utilities. Users need to be able to construct a Lattice directly from a networkx.Graph without manually converting it first, while keeping the existing retworkx-based behavior intact.",
+    "requirements": [
+      "Lattice construction must accept a networkx.Graph instance as input.",
+      "When a networkx.Graph is provided, the lattice must internally convert it into the graph representation used by existing Lattice behavior.",
+      "Unweighted networkx edges must be represented with the default unit edge weight after conversion.",
+      "The converted lattice graph must preserve the input graph's node and edge connectivity.",
+      "Existing Lattice construction and accessors for retworkx.PyGraph inputs must remain compatible.",
+      "Existing validation for invalid Lattice graph inputs, including nonnumeric edge weights, must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "Lattice",
+        "Path": "qiskit_nature/problems/second_quantization/lattice/lattices/lattice.py",
+        "Input": "constructor: graph",
+        "Output": "",
+        "Description": "Constructs a lattice from either a retworkx.PyGraph or a networkx.Graph while preserving node and edge connectivity."
+      },
+      {
+        "Type": "Method",
+        "Name": "Lattice.graph",
+        "Path": "qiskit_nature/problems/second_quantization/lattice/lattices/lattice.py",
+        "Input": "self",
+        "Output": "retworkx.PyGraph",
+        "Description": "Returns a copy of the lattice graph after construction."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_465_472",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:66080550d8a6b4ff88916c28fae313071daa9c6cd4e13d04b5d5d1a770203507",
+      "image_size": "1082237705"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_networkx"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 1.48s",
+        "duration_seconds": 4.66
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_init",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_edges_removed"
+        ],
+        "result": "passed",
+        "summary": "6 passed in 1.57s",
+        "duration_seconds": 4.77
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_networkx"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 1.58s; AttributeError: 'Graph' object has no attribute 'multigraph'",
+        "duration_seconds": 6.46
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_init",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_edges_removed"
+        ],
+        "result": "passed",
+        "summary": "6 passed in 1.37s",
+        "duration_seconds": 6.4
+      }
+    }
+  }
+}

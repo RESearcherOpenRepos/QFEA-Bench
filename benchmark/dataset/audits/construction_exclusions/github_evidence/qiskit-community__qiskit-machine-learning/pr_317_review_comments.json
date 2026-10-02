@@ -1,0 +1,699 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806761010",
+    "pull_request_review_id": 882886790,
+    "id": 806761010,
+    "node_id": "PRRC_kwDOFHAELs4wFjIy",
+    "diff_hunk": "@@ -294,6 +294,61 @@ def test_warm_start(self, config):\n         score = classifier.score(X, y)\n         self.assertGreater(score, 0.5)\n \n+    @data(\n+        # optimizer, quantum instance\n+        (\"cobyla\", \"statevector\"),\n+        (\"cobyla\", \"qasm\"),\n+        (\"bfgs\", \"statevector\"),\n+        (\"bfgs\", \"qasm\"),\n+        (None, \"statevector\"),\n+        (None, \"qasm\"),\n+    )\n+    def test_batches_with_incomplete_labels(self, config):\n+        \"\"\"Test VQC when some batches do not include all possible labels.\"\"\"\n+        opt, q_i = config\n+\n+        if q_i == \"statevector\":\n+            quantum_instance = self.sv_quantum_instance\n+        else:\n+            quantum_instance = self.qasm_quantum_instance",
+    "path": "test/algorithms/classifiers/test_vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We might want to make this `if` explicit in case someone adds other backends to the test input in the future.",
+    "created_at": "2022-02-15T12:06:41Z",
+    "updated_at": "2022-02-15T12:08:33Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806761010",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806761010"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806761010"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806761010/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 312,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "author_association": "NONE",
+    "original_position": 20,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806762533",
+    "pull_request_review_id": 882886790,
+    "id": 806762533,
+    "node_id": "PRRC_kwDOFHAELs4wFjgl",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Shall we add some input validation?",
+    "created_at": "2022-02-15T12:08:27Z",
+    "updated_at": "2022-02-15T12:08:33Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806762533",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806762533"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806762533"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806762533/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "author_association": "NONE",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806775175",
+    "pull_request_review_id": 882905629,
+    "id": 806775175,
+    "node_id": "PRRC_kwDOFHAELs4wFmmH",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "declanmillar",
+      "id": 14238050,
+      "node_id": "MDQ6VXNlcjE0MjM4MDUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14238050?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/declanmillar",
+      "html_url": "https://github.com/declanmillar",
+      "followers_url": "https://api.github.com/users/declanmillar/followers",
+      "following_url": "https://api.github.com/users/declanmillar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/declanmillar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/declanmillar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/declanmillar/subscriptions",
+      "organizations_url": "https://api.github.com/users/declanmillar/orgs",
+      "repos_url": "https://api.github.com/users/declanmillar/repos",
+      "events_url": "https://api.github.com/users/declanmillar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/declanmillar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I was thinking to open a new PR for input validation, but am happy to include it in this one!",
+    "created_at": "2022-02-15T12:24:08Z",
+    "updated_at": "2022-02-15T12:24:08Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806775175",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806775175"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806775175"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806775175/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "in_reply_to_id": 806762533,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806780572",
+    "pull_request_review_id": 882913304,
+    "id": 806780572,
+    "node_id": "PRRC_kwDOFHAELs4wFn6c",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "declanmillar",
+      "id": 14238050,
+      "node_id": "MDQ6VXNlcjE0MjM4MDUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14238050?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/declanmillar",
+      "html_url": "https://github.com/declanmillar",
+      "followers_url": "https://api.github.com/users/declanmillar/followers",
+      "following_url": "https://api.github.com/users/declanmillar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/declanmillar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/declanmillar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/declanmillar/subscriptions",
+      "organizations_url": "https://api.github.com/users/declanmillar/orgs",
+      "repos_url": "https://api.github.com/users/declanmillar/repos",
+      "events_url": "https://api.github.com/users/declanmillar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/declanmillar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I see that the parent class NeuralNetworkClassifier does allow for different label encodings, so I was also considering investigating opening up VQC; I'm not sure if there is a natural reason to limit VQC to one-hot encoding or not. Nevertheless, in the meantime, I can add input validation.",
+    "created_at": "2022-02-15T12:30:46Z",
+    "updated_at": "2022-02-15T12:30:46Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806780572",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806780572"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806780572"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806780572/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "in_reply_to_id": 806762533,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806786484",
+    "pull_request_review_id": 882921346,
+    "id": 806786484,
+    "node_id": "PRRC_kwDOFHAELs4wFpW0",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Given this is a bug fix, and will be backported, we try to keep the code to what is needed to correct the critical bug for users in order to minimize code change and potentially destabilize code in the stable branch via other function such as new features. I think I might count validating the input - presumably checking all the labels as a new feature/improvement. If somehow you consider it vital its with this - otherwise I would consider it preferable on a separate PR that is not backported and would be part of next main release.",
+    "created_at": "2022-02-15T12:37:54Z",
+    "updated_at": "2022-02-15T12:37:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806786484",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806786484"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806786484"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806786484/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "in_reply_to_id": 806762533,
+    "author_association": "MEMBER",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806789894",
+    "pull_request_review_id": 882925866,
+    "id": 806789894,
+    "node_id": "PRRC_kwDOFHAELs4wFqMG",
+    "diff_hunk": "@@ -294,6 +294,61 @@ def test_warm_start(self, config):\n         score = classifier.score(X, y)\n         self.assertGreater(score, 0.5)\n \n+    @data(\n+        # optimizer, quantum instance\n+        (\"cobyla\", \"statevector\"),\n+        (\"cobyla\", \"qasm\"),\n+        (\"bfgs\", \"statevector\"),\n+        (\"bfgs\", \"qasm\"),\n+        (None, \"statevector\"),\n+        (None, \"qasm\"),\n+    )\n+    def test_batches_with_incomplete_labels(self, config):\n+        \"\"\"Test VQC when some batches do not include all possible labels.\"\"\"\n+        opt, q_i = config\n+\n+        if q_i == \"statevector\":\n+            quantum_instance = self.sv_quantum_instance\n+        else:\n+            quantum_instance = self.qasm_quantum_instance\n+\n+        if opt == \"bfgs\":\n+            optimizer = L_BFGS_B(maxiter=5)\n+        elif opt == \"cobyla\":\n+            optimizer = COBYLA(maxiter=25)\n+        else:\n+            optimizer = None\n+\n+        num_inputs = 2\n+        feature_map = ZZFeatureMap(num_inputs)\n+        ansatz = RealAmplitudes(num_inputs, reps=1)\n+\n+        # Construct the data.\n+        features = algorithm_globals.random.random((15, num_inputs))\n+        target = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2])\n+\n+        # One-hot encode the target.\n+        target_onehot = np.zeros((target.size, int(target.max() + 1)))\n+        target_onehot[np.arange(target.size), target.astype(int)] = 1\n+\n+        # Initialize the VQC.\n+        classifier = VQC(\n+            feature_map=feature_map,\n+            ansatz=ansatz,\n+            optimizer=optimizer,\n+            warm_start=True,\n+            quantum_instance=quantum_instance,\n+        )\n+\n+        # Fit the VQC to the first third of the data.\n+        classifier.fit(features[:5, :], target_onehot[:5])\n+\n+        # Fit the VQC to the second third of the data with a warm start.\n+        classifier.fit(features[5:10, :], target_onehot[5:10])\n+\n+        # Fit the VQC to the third third of the data with a warm start.\n+        classifier.fit(features[10:, :], target_onehot[10:])",
+    "path": "test/algorithms/classifiers/test_vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is there anything we can assert here to test the outcome is as expected.? I imagine this test gets to the end and completes now rather than fails as it would have before the fix - so in that regard the outcome is implicitly tested. But it would be nice if something could be asserted expllicitly to better assess correctness.",
+    "created_at": "2022-02-15T12:41:56Z",
+    "updated_at": "2022-02-15T12:41:56Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806789894",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806789894"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806789894"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806789894/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 375,
+    "original_line": 350,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 57,
+    "position": 127,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806791403",
+    "pull_request_review_id": 882927952,
+    "id": 806791403,
+    "node_id": "PRRC_kwDOFHAELs4wFqjr",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "adekusar-drl",
+      "id": 62334182,
+      "node_id": "MDQ6VXNlcjYyMzM0MTgy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62334182?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/adekusar-drl",
+      "html_url": "https://github.com/adekusar-drl",
+      "followers_url": "https://api.github.com/users/adekusar-drl/followers",
+      "following_url": "https://api.github.com/users/adekusar-drl/following{/other_user}",
+      "gists_url": "https://api.github.com/users/adekusar-drl/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/adekusar-drl/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/adekusar-drl/subscriptions",
+      "organizations_url": "https://api.github.com/users/adekusar-drl/orgs",
+      "repos_url": "https://api.github.com/users/adekusar-drl/repos",
+      "events_url": "https://api.github.com/users/adekusar-drl/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/adekusar-drl/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I agree to introduce new input checks in a separate PR.",
+    "created_at": "2022-02-15T12:43:42Z",
+    "updated_at": "2022-02-15T12:43:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806791403",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806791403"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806791403"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806791403/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "in_reply_to_id": 806762533,
+    "author_association": "COLLABORATOR",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806809460",
+    "pull_request_review_id": 882953240,
+    "id": 806809460,
+    "node_id": "PRRC_kwDOFHAELs4wFu90",
+    "diff_hunk": "@@ -294,6 +294,61 @@ def test_warm_start(self, config):\n         score = classifier.score(X, y)\n         self.assertGreater(score, 0.5)\n \n+    @data(\n+        # optimizer, quantum instance\n+        (\"cobyla\", \"statevector\"),\n+        (\"cobyla\", \"qasm\"),\n+        (\"bfgs\", \"statevector\"),\n+        (\"bfgs\", \"qasm\"),\n+        (None, \"statevector\"),\n+        (None, \"qasm\"),\n+    )\n+    def test_batches_with_incomplete_labels(self, config):\n+        \"\"\"Test VQC when some batches do not include all possible labels.\"\"\"\n+        opt, q_i = config\n+\n+        if q_i == \"statevector\":\n+            quantum_instance = self.sv_quantum_instance\n+        else:\n+            quantum_instance = self.qasm_quantum_instance",
+    "path": "test/algorithms/classifiers/test_vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "declanmillar",
+      "id": 14238050,
+      "node_id": "MDQ6VXNlcjE0MjM4MDUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14238050?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/declanmillar",
+      "html_url": "https://github.com/declanmillar",
+      "followers_url": "https://api.github.com/users/declanmillar/followers",
+      "following_url": "https://api.github.com/users/declanmillar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/declanmillar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/declanmillar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/declanmillar/subscriptions",
+      "organizations_url": "https://api.github.com/users/declanmillar/orgs",
+      "repos_url": "https://api.github.com/users/declanmillar/repos",
+      "events_url": "https://api.github.com/users/declanmillar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/declanmillar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yep, seems sensible. Done.",
+    "created_at": "2022-02-15T13:05:01Z",
+    "updated_at": "2022-02-15T13:05:02Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806809460",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806809460"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806809460"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806809460/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 312,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 313,
+    "side": "RIGHT",
+    "in_reply_to_id": 806761010,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 20,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806814524",
+    "pull_request_review_id": 882960345,
+    "id": 806814524,
+    "node_id": "PRRC_kwDOFHAELs4wFwM8",
+    "diff_hunk": "@@ -294,6 +294,61 @@ def test_warm_start(self, config):\n         score = classifier.score(X, y)\n         self.assertGreater(score, 0.5)\n \n+    @data(\n+        # optimizer, quantum instance\n+        (\"cobyla\", \"statevector\"),\n+        (\"cobyla\", \"qasm\"),\n+        (\"bfgs\", \"statevector\"),\n+        (\"bfgs\", \"qasm\"),\n+        (None, \"statevector\"),\n+        (None, \"qasm\"),\n+    )\n+    def test_batches_with_incomplete_labels(self, config):\n+        \"\"\"Test VQC when some batches do not include all possible labels.\"\"\"\n+        opt, q_i = config\n+\n+        if q_i == \"statevector\":\n+            quantum_instance = self.sv_quantum_instance\n+        else:\n+            quantum_instance = self.qasm_quantum_instance\n+\n+        if opt == \"bfgs\":\n+            optimizer = L_BFGS_B(maxiter=5)\n+        elif opt == \"cobyla\":\n+            optimizer = COBYLA(maxiter=25)\n+        else:\n+            optimizer = None\n+\n+        num_inputs = 2\n+        feature_map = ZZFeatureMap(num_inputs)\n+        ansatz = RealAmplitudes(num_inputs, reps=1)\n+\n+        # Construct the data.\n+        features = algorithm_globals.random.random((15, num_inputs))\n+        target = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2])\n+\n+        # One-hot encode the target.\n+        target_onehot = np.zeros((target.size, int(target.max() + 1)))\n+        target_onehot[np.arange(target.size), target.astype(int)] = 1\n+\n+        # Initialize the VQC.\n+        classifier = VQC(\n+            feature_map=feature_map,\n+            ansatz=ansatz,\n+            optimizer=optimizer,\n+            warm_start=True,\n+            quantum_instance=quantum_instance,\n+        )\n+\n+        # Fit the VQC to the first third of the data.\n+        classifier.fit(features[:5, :], target_onehot[:5])\n+\n+        # Fit the VQC to the second third of the data with a warm start.\n+        classifier.fit(features[5:10, :], target_onehot[5:10])\n+\n+        # Fit the VQC to the third third of the data with a warm start.\n+        classifier.fit(features[10:, :], target_onehot[10:])",
+    "path": "test/algorithms/classifiers/test_vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "declanmillar",
+      "id": 14238050,
+      "node_id": "MDQ6VXNlcjE0MjM4MDUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14238050?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/declanmillar",
+      "html_url": "https://github.com/declanmillar",
+      "followers_url": "https://api.github.com/users/declanmillar/followers",
+      "following_url": "https://api.github.com/users/declanmillar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/declanmillar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/declanmillar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/declanmillar/subscriptions",
+      "organizations_url": "https://api.github.com/users/declanmillar/orgs",
+      "repos_url": "https://api.github.com/users/declanmillar/repos",
+      "events_url": "https://api.github.com/users/declanmillar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/declanmillar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes, good point. I will add an assertion that the number of classes assumed by VQC is the same for each batch. ",
+    "created_at": "2022-02-15T13:10:57Z",
+    "updated_at": "2022-02-15T13:10:57Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806814524",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806814524"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806814524"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806814524/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 375,
+    "original_line": 350,
+    "side": "RIGHT",
+    "in_reply_to_id": 806789894,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 57,
+    "position": 127,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806821013",
+    "pull_request_review_id": 882969599,
+    "id": 806821013,
+    "node_id": "PRRC_kwDOFHAELs4wFxyV",
+    "diff_hunk": "@@ -155,12 +165,12 @@ def fit(self, X: np.ndarray, y: np.ndarray):  # pylint: disable=invalid-name\n \n         Args:\n             X: The input data.\n-            y: The target values.\n+            y: The target values. Required to be one-hot encoded.",
+    "path": "qiskit_machine_learning/algorithms/classifiers/vqc.py",
+    "commit_id": "6bde1df4f536e01828270d13368131dd85f9a1c6",
+    "original_commit_id": "c7513b14d3c9b49113a690f6c7160940f0a572d1",
+    "user": {
+      "login": "declanmillar",
+      "id": 14238050,
+      "node_id": "MDQ6VXNlcjE0MjM4MDUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14238050?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/declanmillar",
+      "html_url": "https://github.com/declanmillar",
+      "followers_url": "https://api.github.com/users/declanmillar/followers",
+      "following_url": "https://api.github.com/users/declanmillar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/declanmillar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/declanmillar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/declanmillar/subscriptions",
+      "organizations_url": "https://api.github.com/users/declanmillar/orgs",
+      "repos_url": "https://api.github.com/users/declanmillar/repos",
+      "events_url": "https://api.github.com/users/declanmillar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/declanmillar/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok. I'll open a separate issue and PR for input validation.",
+    "created_at": "2022-02-15T13:18:29Z",
+    "updated_at": "2022-02-15T13:18:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806821013",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806821013"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-machine-learning/pull/317#discussion_r806821013"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/317"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/pulls/comments/806821013/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 168,
+    "original_line": 168,
+    "side": "RIGHT",
+    "in_reply_to_id": 806762533,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 33,
+    "position": 33,
+    "subject_type": "line"
+  }
+]

@@ -1,0 +1,233 @@
+{
+  "instance": {
+    "id": 72,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_669_731",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/669",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/731",
+    "base_commit": "30a6852ee0082805399f05077014701be9645c4b",
+    "patch": "a4ea55a2bfee90260eb97fbd5eb60673350f6a90"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a shared sparse-label operator base, with validation focused on storage, arithmetic, equality, and copy semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/sparse_label_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Second-quantized operator classes store sparse label-to-coefficient data and need a common base abstraction for behavior that is not specific to fermionic, vibrational, or spin semantics. Users need this shared sparse-label operator foundation to provide consistent storage, register-length handling, arithmetic, adjoint behavior, equality checks, mapping access, and copy semantics for concrete second-quantized operator implementations.",
+    "requirements": [
+      "The second_q operator package must expose a SparseLabelOp base class for sparse second-quantized operators.",
+      "SparseLabelOp instances must store string labels mapped to numeric coefficients and retain a register length supplied at construction.",
+      "Construction must copy input data by default and must be able to keep the original mapping by reference when copy is disabled.",
+      "SparseLabelOp subclasses must support addition with other sparse-label operators by combining matching coefficients, preserving unique labels, and using the larger register length.",
+      "SparseLabelOp subclasses must support scalar multiplication by numeric values and reject unsupported scalar types with TypeError.",
+      "SparseLabelOp subclasses must support conjugation and adjoint behavior, with adjoint using the subclass transpose implementation followed by complex conjugation.",
+      "SparseLabelOp instances must support exact equality and tolerance-based equivalence checks over register length, labels, and coefficients.",
+      "SparseLabelOp instances must behave like a read-only mapping for key lookup, iteration over labels, and length."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SparseLabelOp",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "constructor: data, register_length, copy=True",
+        "Output": "",
+        "Description": "Abstract base class for sparse second-quantized operators backed by a mapping from string labels to numeric coefficients, exposing register length and read-only mapping behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.register_length",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "int",
+        "Description": "Returns the register length stored on the operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp._add",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, other, qargs=None",
+        "Output": "SparseLabelOp",
+        "Description": "Combines two SparseLabelOp-compatible operands by adding coefficients for shared labels, preserving labels unique to the right operand, and returning a new instance with the maximum register length."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp._multiply",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, other",
+        "Output": "SparseLabelOp",
+        "Description": "Returns a new operator whose coefficients are multiplied by a numeric scalar and raises TypeError for unsupported scalar types."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.conjugate",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "SparseLabelOp",
+        "Description": "Returns a new operator with each coefficient complex-conjugated while preserving register length."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.transpose",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "SparseLabelOp",
+        "Description": "Abstract method implemented by subclasses to return the transposed sparse-label operator."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.equiv",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, other",
+        "Output": "bool",
+        "Description": "Checks whether another SparseLabelOp has the same register length and labels with coefficient values equal within the operator tolerances."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.__eq__",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, other",
+        "Output": "bool",
+        "Description": "Checks exact SparseLabelOp equality over type compatibility, register length, labels, and coefficient values."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.__getitem__",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self, key",
+        "Output": "complex",
+        "Description": "Returns the coefficient stored for a string label."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.__iter__",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "Iterator[str]",
+        "Description": "Iterates over the operator labels."
+      },
+      {
+        "Type": "Method",
+        "Name": "SparseLabelOp.__len__",
+        "Path": "qiskit_nature/second_q/operators/sparse_label_op.py",
+        "Input": "self",
+        "Output": "int",
+        "Description": "Returns the number of labels stored in the operator."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_669_731",
+      "image_id": "sha256:d442cdad1ad93908fcd5b1b308266e893db5ea38b636c3d447440b3078678e7c",
+      "image_size": "1023560401"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_register_length",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy"
+        ],
+        "summary": "11 passed in 1.84s",
+        "duration_seconds": 5.9
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv"
+        ],
+        "summary": "12 passed in 1.83s",
+        "duration_seconds": 5.53
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_register_length",
+          "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy"
+        ],
+        "summary": "11 collection errors with ImportError: cannot import name 'SparseLabelOp' from 'qiskit_nature.second_q.operators' in 1.71s",
+        "duration_seconds": 7.29
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv"
+        ],
+        "summary": "12 passed in 1.40s",
+        "duration_seconds": 7.09
+      }
+    }
+  }
+}

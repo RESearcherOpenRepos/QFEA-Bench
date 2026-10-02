@@ -1,0 +1,131 @@
+Sample: qiskit_nature_47_77
+Repository: qiskit-community/qiskit-nature
+Issue: https://github.com/qiskit-community/qiskit-nature/issues/47
+PR: https://github.com/qiskit-community/qiskit-nature/pull/77
+Target mode: base
+Target commit: 8b91da7a52d5b7881a096c52cf59fb07d7a5eefc
+Repository URL: https://github.com/qiskit-community/qiskit-nature.git
+Fail-pass test paths: test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1 test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals
+Pass-pass test paths: test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2
+Fail-pass resource paths: test/transformers/BeH_sto3g.hdf5 test/transformers/BeH_sto3g_reduced.hdf5 test/transformers/LiH_sto3g.hdf5 test/transformers/LiH_sto3g_reduced.hdf5
+Test suite: fail-pass
+Previous HEAD position was f6ae3a23 Fix style
+HEAD is now at 8b91da7a Vibrational problem (#79)
+Patch applied: true
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+______________ TestFreezeCoreTransformer.test_full_active_space_1 ______________
+
+self = <test.transformers.test_freeze_core_transformer.TestFreezeCoreTransformer testMethod=test_full_active_space_1>
+kwargs = {'freeze_core': True}
+
+    @idata([
+        {'freeze_core': True},
+    ])
+    def test_full_active_space(self, kwargs):
+        """Test that transformer has no effect when all orbitals are active."""
+        driver = HDF5Driver(hdf5_input=self.get_resource_path('H2_sto3g.hdf5', 'transformers'))
+        q_molecule = driver.run()
+    
+        # The references which we compare too were produced by the `ActiveSpaceTransformer` and,
+        # thus, the key here needs to stay the same as in that test case.
+        q_molecule.energy_shift['ActiveSpaceTransformer'] = 0.0
+>       q_molecule.x_dip_energy_shift['ActiveSpaceTransformer'] = 0.0
+E       AttributeError: 'QMolecule' object has no attribute 'x_dip_energy_shift'
+
+test/transformers/test_freeze_core_transformer.py:40: AttributeError
+__________________ TestFreezeCoreTransformer.test_freeze_core __________________
+
+self = <test.transformers.test_freeze_core_transformer.TestFreezeCoreTransformer testMethod=test_freeze_core>
+
+    def test_freeze_core(self):
+        """Test the `freeze_core` convenience argument."""
+        driver = HDF5Driver(hdf5_input=self.get_resource_path('LiH_sto3g.hdf5', 'transformers'))
+        q_molecule = driver.run()
+    
+        trafo = FreezeCoreTransformer(freeze_core=True)
+        q_molecule_reduced = trafo.transform(q_molecule)
+    
+        expected = HDF5Driver(hdf5_input=self.get_resource_path('LiH_sto3g_reduced.hdf5',
+                                                                'transformers')).run()
+    
+>       self.assertQMolecule(q_molecule_reduced, expected, dict_key='FreezeCoreTransformer')
+
+test/transformers/test_freeze_core_transformer.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test.transformers.test_freeze_core_transformer.TestFreezeCoreTransformer testMethod=test_freeze_core>
+q_molecule = <qiskit_nature.drivers.qmolecule.QMolecule object at 0x7fffe19e3490>
+expected = <qiskit_nature.drivers.qmolecule.QMolecule object at 0x7fffe19e3580>
+dict_key = 'FreezeCoreTransformer'
+
+    def assertQMolecule(self, q_molecule, expected, dict_key='ActiveSpaceTransformer'):
+        """Asserts that the two `QMolecule object's relevant fields are equivalent."""
+        with self.subTest('MO 1-electron integrals'):
+            np.testing.assert_array_almost_equal(q_molecule.mo_onee_ints, expected.mo_onee_ints)
+        with self.subTest('MO 2-electron integrals'):
+            np.testing.assert_array_almost_equal(q_molecule.mo_eri_ints, expected.mo_eri_ints)
+        with self.subTest('Inactive energy'):
+            self.assertAlmostEqual(q_molecule.energy_shift[dict_key],
+>                                  expected.energy_shift['ActiveSpaceTransformer'])
+E           KeyError: 'ActiveSpaceTransformer'
+
+test/transformers/test_active_space_transformer.py:39: KeyError
+_______ TestFreezeCoreTransformer.test_freeze_core_with_remove_orbitals ________
+
+self = <test.transformers.test_freeze_core_transformer.TestFreezeCoreTransformer testMethod=test_freeze_core_with_remove_orbitals>
+
+    def test_freeze_core_with_remove_orbitals(self):
+        """Test the `freeze_core` convenience argument in combination with `remove_orbitals`."""
+        driver = HDF5Driver(hdf5_input=self.get_resource_path('BeH_sto3g.hdf5', 'transformers'))
+        q_molecule = driver.run()
+    
+        trafo = FreezeCoreTransformer(freeze_core=True, remove_orbitals=[4, 5])
+        q_molecule_reduced = trafo.transform(q_molecule)
+    
+        expected = HDF5Driver(hdf5_input=self.get_resource_path('BeH_sto3g_reduced.hdf5',
+                                                                'transformers')).run()
+    
+>       self.assertQMolecule(q_molecule_reduced, expected, dict_key='FreezeCoreTransformer')
+
+test/transformers/test_freeze_core_transformer.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test.transformers.test_freeze_core_transformer.TestFreezeCoreTransformer testMethod=test_freeze_core_with_remove_orbitals>
+q_molecule = <qiskit_nature.drivers.qmolecule.QMolecule object at 0x7fffe19d3a60>
+expected = <qiskit_nature.drivers.qmolecule.QMolecule object at 0x7fffe19d3d30>
+dict_key = 'FreezeCoreTransformer'
+
+    def assertQMolecule(self, q_molecule, expected, dict_key='ActiveSpaceTransformer'):
+        """Asserts that the two `QMolecule object's relevant fields are equivalent."""
+        with self.subTest('MO 1-electron integrals'):
+            np.testing.assert_array_almost_equal(q_molecule.mo_onee_ints, expected.mo_onee_ints)
+        with self.subTest('MO 2-electron integrals'):
+            np.testing.assert_array_almost_equal(q_molecule.mo_eri_ints, expected.mo_eri_ints)
+        with self.subTest('Inactive energy'):
+            self.assertAlmostEqual(q_molecule.energy_shift[dict_key],
+>                                  expected.energy_shift['ActiveSpaceTransformer'])
+E           KeyError: 'ActiveSpaceTransformer'
+
+test/transformers/test_active_space_transformer.py:39: KeyError
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18
+  /usr/local/lib/python3.9/site-packages/qiskit/circuit/equivalence.py:18: DeprecationWarning: The retworkx package is deprecated and has been renamed to rustworkx. Rustworkx is a drop-in replacement and can be used by replacing `import retworkx` with import `rustworkx`. 
+    import retworkx as rx
+
+../../usr/local/lib/python3.9/site-packages/qiskit/version.py:20
+  /usr/local/lib/python3.9/site-packages/qiskit/version.py:20: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1
+test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core
+test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals
+  /workspace/repo/qiskit_nature/drivers/qmolecule.py:209: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    version = int(data) if data.dtype.num != 0 else version
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1
+FAILED test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core
+FAILED test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals
+3 failed, 5 warnings in 2.14s

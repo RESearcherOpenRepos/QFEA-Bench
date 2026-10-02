@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1.7
+ARG PYTHON_VERSION=3.9
+FROM python:${PYTHON_VERSION}-slim
+
+WORKDIR /workspace
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+ENV PIP_DEFAULT_TIMEOUT=120
+ENV REPO_DIR=/workspace/repo
+ARG REPOSITORY_URL=https://github.com/qiskit-community/qiskit-nature.git
+ARG DEPENDENCY_COMMIT=1d0d3d3579a06463e3a2f35ffa31f4746354c438
+
+RUN set -eux; \
+    if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
+        sed -i "s|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g; s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|https://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g; s|https://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g" /etc/apt/sources.list.d/debian.sources; \
+    fi; \
+    apt-get -o Acquire::Retries=5 update \
+    && apt-get install -y --no-install-recommends build-essential git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip \
+    for attempt in 1 2 3; do \
+        git clone --filter=blob:none "${REPOSITORY_URL}" "${REPO_DIR}" && break; \
+        if [ "$attempt" = "3" ]; then exit 1; fi; \
+        rm -rf "${REPO_DIR}"; \
+        sleep 3; \
+    done \
+    && cd "${REPO_DIR}" \
+    && git fetch origin pull/96/head:refs/remotes/origin/pr/96 \
+    && git checkout --force "${DEPENDENCY_COMMIT}" \
+    && python -m pip install --upgrade "pip<24.1" "setuptools<70" wheel \
+    && python -m pip install "numpy<2" "scipy==1.10.1" "qiskit-terra==0.18.3" retworkx "h5py<3.3" psutil typing_extensions "pytest==7.3.1" ddt "networkx<2.6" scikit-learn \
+    && python -m pip install --no-deps -e .

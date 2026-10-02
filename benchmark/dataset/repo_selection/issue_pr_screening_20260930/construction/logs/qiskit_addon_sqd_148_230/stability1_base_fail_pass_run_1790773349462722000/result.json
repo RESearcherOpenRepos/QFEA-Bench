@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.664362334999964,
+  "items": [
+    "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim"
+  ],
+  "reports": [
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0005260409999436888,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.7458403750000571,
+      "wasxfail": null,
+      "longrepr": "self = <test.test_fermion.TestFermion testMethod=test_diagonalize_fermionic_hamiltonian_max_dim>\n\n    def test_diagonalize_fermionic_hamiltonian_max_dim(self):\n        \"\"\"Test diagonalize_fermionic_hamiltonian with maximum dimension.\"\"\"\n        # Build N2 molecule\n        mol = pyscf.gto.Mole()\n        mol.build(\n            atom=[[\"N\", (0, 0, 0)], [\"N\", (1.0, 0, 0)]],\n            basis=\"sto-6g\",\n            symmetry=\"Dooh\",\n        )\n    \n        # Define active space\n        n_frozen = 2\n        active_space = range(n_frozen, mol.nao_nr())\n    \n        # Get molecular integrals\n        scf = pyscf.scf.RHF(mol).run()\n        norb = len(active_space)\n        n_electrons = int(sum(scf.mo_occ[active_space]))\n        n_alpha = (n_electrons + mol.spin) // 2\n        n_beta = (n_electrons - mol.spin) // 2\n        nelec = (n_alpha, n_beta)\n        cas = pyscf.mcscf.CASCI(scf, norb, nelec)\n        mo = cas.sort_mo(active_space, base=0)\n        hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\n        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), norb)\n        dim_a = math.comb(norb, n_alpha)\n        dim_b = math.comb(norb, n_beta)\n        fci_dim = dim_a * dim_b\n    \n        # Compute exact energy\n        _, _, fci_vec, _, _ = cas.kernel()\n    \n        # Generate samples from ground state\n        fci_vec = fci_vec.reshape(-1)\n        probs = np.abs(fci_vec) ** 2\n        addresses = self.rng.choice(fci_dim, size=10_000, p=probs)\n        indices_a, indices_b = np.divmod(addresses, dim_b)\n        strings_a = [int(s) for s in cistring.addrs2str(norb=norb, nelec=n_alpha, addrs=indices_a)]\n        strings_b = [int(s) for s in cistring.addrs2str(norb=norb, nelec=n_beta, addrs=indices_b)]\n        strings = [(sb << norb) + sa for sa, sb in zip(strings_a, strings_b)]\n        bit_array_ground_state = BitArray.from_samples(strings, num_bits=2 * norb)\n    \n        # Generate random bitstrings\n        bit_array_random = generate_bit_array_uniform(2_000, 2 * norb, rand_seed=self.rng)\n    \n        # Merge bitstrings\n        bit_array = BitArray.concatenate_shots([bit_array_ground_state, bit_array_random])\n    \n        # Diagonalize\n>       result = diagonalize_fermionic_hamiltonian(\n            hcore,\n            eri,\n            bit_array,\n            samples_per_batch=10,\n            norb=norb,\n            nelec=nelec,\n            max_iterations=5,\n            symmetrize_spin=True,\n            max_dim=10,\n            seed=self.rng,\n        )\nE       TypeError: diagonalize_fermionic_hamiltonian() got an unexpected keyword argument 'max_dim'\n\ntest/test_fermion.py:171: TypeError"
+    },
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.001401125000029424,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

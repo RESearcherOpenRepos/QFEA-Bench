@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "54568139ad1bc8c04a68aa59e8e4cdb59eb6bbd0",
+    "filename": "src/tequila/quantumchemistry/qc_base.py",
+    "status": "modified",
+    "additions": 9,
+    "deletions": 2,
+    "changes": 11,
+    "blob_url": "https://github.com/tequilahub/tequila/blob/957f5a2dd713d0b5d265adc2752b3dd4d69a3ad7/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py",
+    "raw_url": "https://github.com/tequilahub/tequila/raw/957f5a2dd713d0b5d265adc2752b3dd4d69a3ad7/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py",
+    "contents_url": "https://api.github.com/repos/tequilahub/tequila/contents/src%2Ftequila%2Fquantumchemistry%2Fqc_base.py?ref=957f5a2dd713d0b5d265adc2752b3dd4d69a3ad7",
+    "patch": "@@ -143,9 +143,16 @@ def convert_to_list(geometry):\n \n         \"\"\"\n         result = []\n-        for line in geometry.split('\\n'):\n+        # Remove blank lines\n+        lines = [l for l in geometry.split(\"\\n\") if l]\n+\n+        for line in lines:\n             words = line.split()\n-            if len(words) != 4:  break\n+            \n+            # Pad coordinates\n+            if len(words) < 4:\n+                words += [0.0] * (4 - len(words))\n+\n             try:\n                 tmp = (ParametersQC.format_element_name(words[0]),\n                        (float(words[1]), float(words[2]), float(words[3])))"
+  }
+]

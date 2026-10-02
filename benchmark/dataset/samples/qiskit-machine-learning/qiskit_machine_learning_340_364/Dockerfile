@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=benchmark-base:qiskit_machine_learning_340_364
+FROM ${BASE_IMAGE}
+
+ENV SAMPLE_ID=qiskit_machine_learning_340_364
+ENV REPOSITORY=qiskit-community/qiskit-machine-learning
+ENV REPOSITORY_URL=https://github.com/qiskit-community/qiskit-machine-learning.git
+ENV ISSUE_URL=https://github.com/qiskit-community/qiskit-machine-learning/issues/340
+ENV PR_URL=https://github.com/qiskit-community/qiskit-machine-learning/pull/364
+ENV BASE_COMMIT=e971f8e2de14c69751b21ec83818303f463a395d
+ENV PATCHED_COMMIT=0672248906b280e780c838d1c684a747172d16d5
+ENV PR_HEAD_COMMIT=0672248906b280e780c838d1c684a747172d16d5
+ENV FAIL_PASS_TEST_PATHS="test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_1___circuit1___10__10__4_51202148_ test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_2___circuit1___1__1__1_39529449_ test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_3___circuit1___10__1__3_97371533_ test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_4___circuit2___10__10__5_90859124_ test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_qnn_type test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_multiple_data test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs_shapes test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_local_ed_params test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_callback"
+ENV PASS_PASS_TEST_PATHS="test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_ test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_ test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_1___qi___True_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_ test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

@@ -1,0 +1,132 @@
+{
+  "instance": {
+    "id": 65,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_493_506",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/493",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/506",
+    "base_commit": "508b81f45f996d300a2a6b2051d1678334b9ed82",
+    "patch": "18bcd28a17cb4765a48cfd6af2926f62c8c7cc18"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task accepts structured FermionicOp labels, but correctness is mainly input normalization to existing fermionic operator content."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/second_quantization/fermionic_op.py",
+      "qiskit_nature/operators/second_quantization/second_quantized_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "FermionicOp currently accepts string-based labels, which works for hand-written operators but is awkward for code that generates fermionic operators programmatically. Users need to be able to construct FermionicOp terms from structured action/index label data without first formatting those labels as strings, while preserving the existing string-label behavior.",
+    "requirements": [
+      "FermionicOp construction must accept terms whose labels are lists of action/index tuples.",
+      "Each tuple-based label element must use an action string such as + or - together with an integer fermionic mode index.",
+      "Tuple-based labels must produce the same dense and sparse operator content as equivalent string-based labels.",
+      "Register length must continue to be respected when tuple-based labels are supplied.",
+      "Existing FermionicOp initialization from dense labels, sparse string labels, multiple terms, scalar coefficients, and register length inference must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "FermionicOp",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "constructor: data, register_length=None, display_format=None",
+        "Output": "",
+        "Description": "Constructs a fermionic second-quantized operator from string labels or from list-of-tuple labels paired with coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.to_list",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "self, display_format=None",
+        "Output": "list[tuple[str, complex]]",
+        "Description": "Returns the operator contents using the requested display format after any supported label input form has been normalized."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.register_length",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "self",
+        "Output": "int",
+        "Description": "Returns the register length used for dense conversion and operator storage."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_493_506",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:46baca0c2c57f818f8446ba433aed04a0599901af5a53efae2a58786b36517ff",
+      "image_size": "1081962368"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 1.30s",
+        "duration_seconds": 4.75
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+        ],
+        "result": "passed",
+        "summary": "4 passed in 1.46s",
+        "duration_seconds": 4.86
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 1.28s; AttributeError: 'tuple' object has no attribute 'is_creation'",
+        "duration_seconds": 6.46
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+        ],
+        "result": "passed",
+        "summary": "4 passed in 1.19s",
+        "duration_seconds": 6.27
+      }
+    }
+  }
+}

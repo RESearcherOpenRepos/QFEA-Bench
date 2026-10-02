@@ -1,0 +1,154 @@
+{
+  "instance": {
+    "id": 29,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_340_364",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/340",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/364",
+    "base_commit": "e971f8e2de14c69751b21ec83818303f463a395d",
+    "patch": "0672248906b280e780c838d1c684a747172d16d5"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements effective-dimension estimators for quantum neural networks, including sampled-gradient model-capacity semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/__init__.py",
+      "qiskit_machine_learning/neural_networks/__init__.py",
+      "qiskit_machine_learning/neural_networks/effective_dimension.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The neural-network module does not provide a built-in way to estimate the effective dimension of quantum neural networks. Users who want to compare model capacity globally or around a fixed parameter point must implement the effective-dimension workflow themselves. The repository should provide reusable effective-dimension utilities that work with the existing neural-network abstractions.",
+    "requirements": [
+      "The implementation must provide global and local effective-dimension estimators for existing neural networks.",
+      "The estimators must accept either sample counts or explicit input and weight sample arrays, and validate that explicit arrays match the neural network's input and weight dimensions.",
+      "The global estimator must compute effective dimensions for a single dataset size or for an array of dataset sizes.",
+      "The local estimator must restrict weight samples to a single parameter point and reject multiple local weight points.",
+      "The estimators must support callback reporting while evaluating sampled gradients."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "EffectiveDimension",
+        "Path": "qiskit_machine_learning/neural_networks/effective_dimension.py",
+        "Input": "constructor: qnn, weight_samples, input_samples, callback=None",
+        "Output": "",
+        "Description": "Global effective-dimension estimator for a neural network, using generated or explicit input and weight samples."
+      },
+      {
+        "Type": "Class",
+        "Name": "LocalEffectiveDimension",
+        "Path": "qiskit_machine_learning/neural_networks/effective_dimension.py",
+        "Input": "constructor: qnn, weight_samples, input_samples, callback=None",
+        "Output": "",
+        "Description": "Local effective-dimension estimator that accepts exactly one weight sample point."
+      },
+      {
+        "Type": "Method",
+        "Name": "EffectiveDimension.get_effective_dimension",
+        "Path": "qiskit_machine_learning/neural_networks/effective_dimension.py",
+        "Input": "self, dataset_size",
+        "Output": "effective dimension value or array",
+        "Description": "Computes effective dimension for one dataset size or for multiple dataset sizes."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_340_364",
+      "image_id": "sha256:85e826a1fe1ad4f1edfa5ceea7955f10e0019fd4d2292c18e93b15e4576b4691",
+      "image_size": "1415359380"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.23.3",
+        "qiskit-aer==0.11.2",
+        "scikit-learn<1.2"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_1___circuit1___10__10__4_51202148_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_2___circuit1___1__1__1_39529449_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_3___circuit1___10__1__3_97371533_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_4___circuit2___10__10__5_90859124_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_qnn_type",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_multiple_data",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs_shapes",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_local_ed_params",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_callback"
+        ],
+        "summary": "10 passed in 52.88s",
+        "duration_seconds": 58
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_1___qi___True_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_"
+        ],
+        "summary": "10 passed in 3.61s",
+        "duration_seconds": 7.06
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_1___circuit1___10__10__4_51202148_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_2___circuit1___1__1__1_39529449_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_3___circuit1___10__1__3_97371533_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_4___circuit2___10__10__5_90859124_",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_qnn_type",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_multiple_data",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs_shapes",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_local_ed_params",
+          "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_callback"
+        ],
+        "summary": "Failed during collection because the base version cannot import EffectiveDimension from qiskit_machine_learning.neural_networks; 1 error in 5.91s",
+        "duration_seconds": 14
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_1___qi___True_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_"
+        ],
+        "summary": "10 passed in 3.22s",
+        "duration_seconds": 8.38
+      }
+    }
+  }
+}

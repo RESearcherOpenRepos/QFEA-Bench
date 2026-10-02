@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "275ff161b453d6f836d8d76685477b069ad5128b",
+    "filename": "src/squlearn/kernel/matrix/fidelity_kernel.py",
+    "status": "modified",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel.py?ref=e8bc4554515e55a8c5a81c4f78c763c2be647e26",
+    "patch": "@@ -15,6 +15,7 @@\n from .kernel_matrix_base import KernelMatrixBase\n from ...encoding_circuit.encoding_circuit_base import EncodingCircuitBase\n from ...util.executor import Executor\n+from ...util.data_preprocessing import convert_to_float64\n \n from .fidelity_kernel_pennylane import FidelityKernelPennyLane\n \n@@ -242,6 +243,9 @@ def evaluate(self, x: np.ndarray, y: Union[np.ndarray, None] = None) -> np.ndarr\n         if y is None:\n             y = x\n \n+        x = convert_to_float64(x)\n+        y = convert_to_float64(y)\n+\n         if self._parameter_vector is not None:\n             if self._parameters is None:\n                 raise ValueError("
+  },
+  {
+    "sha": "3e99cdec24f9d01a15845e495f605c455baa135e",
+    "filename": "src/squlearn/kernel/matrix/fidelity_kernel_pennylane.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel_pennylane.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel_pennylane.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fmatrix%2Ffidelity_kernel_pennylane.py?ref=e8bc4554515e55a8c5a81c4f78c763c2be647e26",
+    "patch": "@@ -131,6 +131,7 @@ def evaluate(self, x: np.ndarray, y: Union[np.ndarray, None] = None) -> np.ndarr\n \n         if y is None:\n             y = x\n+\n         kernel_matrix = np.ones((x.shape[0], y.shape[0]))\n \n         if self._executor.is_statevector:"
+  },
+  {
+    "sha": "7e034b2e1ae2c39b8bea6cf4065899c8ea0db184",
+    "filename": "src/squlearn/util/data_preprocessing.py",
+    "status": "modified",
+    "additions": 23,
+    "deletions": 1,
+    "changes": 24,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Futil%2Fdata_preprocessing.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Futil%2Fdata_preprocessing.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fdata_preprocessing.py?ref=e8bc4554515e55a8c5a81c4f78c763c2be647e26",
+    "patch": "@@ -84,7 +84,29 @@ def _adjust_input(\n     if error:\n         raise ValueError(\"Wrong format of an input variable.\")\n \n-    return xx, multiple_inputs\n+    return convert_to_float64(xx), multiple_inputs\n+\n+\n+def convert_to_float64(x: Union[float, np.ndarray, list]) -> np.ndarray:\n+    \"\"\"Convert to float64 format, raise Error for complex values\n+\n+    Args:\n+        x (Union[float, np.ndarray]): Data that is converted\n+\n+    Returns:\n+        Converted numpy float64 array\n+    \"\"\"\n+    if not isinstance(x, np.ndarray):\n+        x = np.array(x)\n+    if x.dtype != np.float64:\n+        x = np.real_if_close(x)\n+        if np.iscomplexobj(x):\n+            raise ValueError(\n+                \"Only real values for parameters and features are supported in sQUlearn!\"\n+            )\n+        x = np.array(x, dtype=np.float64)\n+\n+    return x\n \n \n def to_tuple(x: Union[float, np.ndarray, list, tuple], flatten: bool = True) -> Tuple:"
+  },
+  {
+    "sha": "d492ef2cd97d19f46ad6091bec84fbb5a8b09eea",
+    "filename": "src/squlearn/util/pennylane/pennylane_circuit.py",
+    "status": "modified",
+    "additions": 12,
+    "deletions": 6,
+    "changes": 18,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/e8bc4554515e55a8c5a81c4f78c763c2be647e26/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py?ref=e8bc4554515e55a8c5a81c4f78c763c2be647e26",
+    "patch": "@@ -574,11 +574,14 @@ def pennylane_circuit(*args):\n                             expval_list.append(qml.expval(qml.Hamiltonian(coeff_list, obs)))\n                         else:\n                             # In case no parameters are present in the observable\n-                            # Calculate the expectation value of the single observables\n+                            # Calculate the expectation value of sum of the observables\n                             # since this is more compatible with hardware backends\n-                            expval_list.append(\n-                                pnp.sum([qml.expval(obs) for obs in self._pennylane_words[i]])\n-                            )\n+                            if len(self._pennylane_words[i]) == 0:\n+                                expval_list.append(0.0)\n+                            else:\n+                                expval_list.append(\n+                                    qml.expval(sum([obs for obs in self._pennylane_words[i]]))\n+                                )\n                     return pnp.stack(tuple(expval_list))\n                 else:\n                     if len(obs_param_list) > 0:\n@@ -592,9 +595,12 @@ def pennylane_circuit(*args):\n                         return qml.expval(qml.Hamiltonian(coeff_list, self._pennylane_words))\n                     else:\n                         # In case no parameters are present in the observable\n-                        # Calculate the expectation value of the single observables\n+                        # Calculate the expectation value of sum of the observables\n                         # since this is more compatible with hardware backends\n-                        return pnp.sum([qml.expval(obs) for obs in self._pennylane_words])\n+                        if len(self._pennylane_words) == 0:\n+                            return 0.0\n+                        else:\n+                            return qml.expval(sum([obs for obs in self._pennylane_words]))\n             else:\n                 if isinstance(self._qiskit_observable, list):\n                     return pnp.stack(tuple([qml.expval(obs) for obs in self._qiskit_observable]))"
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 3.966607334999935,
+  "items": [
+    "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.007698665999896548,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.1929730419999487,
+      "wasxfail": null,
+      "longrepr": "self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe19d98d0>\nrequest = <FixtureRequest for <Function test_serialization[qulacs]>>\ndata = (array([[0.43274505],\n       [0.14365581],\n       [0.50147978],\n       [0.10000747],\n       [0.9       ],\n       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,\n       -1.36004738]))\nframework = 'qulacs'\n\n    @pytest.mark.parametrize(\"framework\", [\"qiskit\", \"pennylane\", \"qulacs\"])\n    def test_serialization(self, request, data, framework):\n        \"\"\"Tests concerning the serialization of the QNNRegressor.\"\"\"\n    \n        X, y = data\n        qnn_regressor = self.get_qnn_regressor(framework)\n        qnn_regressor.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       qnn_regressor.dump(buffer)\nE       AttributeError: 'QNNRegressor' object has no attribute 'dump'\n\ntests/qnn/test_qnnr.py:227: AttributeError"
+    },
+    {
+      "nodeid": "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0006002920001719758,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

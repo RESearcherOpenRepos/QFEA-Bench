@@ -1,0 +1,114 @@
+{
+  "id": 95,
+  "sample_id": "qiskit_optimization_133_139",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "00fd67e029ded6b76e1a9f73eb17ccc628a4f776",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "general_semantics/optimization_failure_result": 1,
+      "general_semantics/optimization_solution": 6
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_no_solution_1___op_ip1_lp____0__2___6_",
+      "label": "general_semantics/optimization_failure_result",
+      "assertions": [
+        {
+          "line": 74,
+          "expected": "CPLEX time limit returns a structured FAILURE result with zero variables."
+        }
+      ],
+      "rationale": "CPLEX time limit returns a structured FAILURE result with zero variables."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_1___op_ip1_lp____0__2___6_",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Integer program op_ip1 solves with objective six."
+        }
+      ],
+      "rationale": "Integer program op_ip1 solves with objective six."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_2___op_mip1_lp____1__1__0___6_",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 52,
+          "expected": "Mixed integer program op_mip1 solves at the expected variables."
+        }
+      ],
+      "rationale": "Mixed integer program op_mip1 solves at the expected variables."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/test_cplex_optimizer.py::TestCplexOptimizer::test_cplex_optimizer_3___op_lp1_lp____0_25__1_75___5_875_",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Linear program op_lp1 solves with objective 5.875."
+        }
+      ],
+      "rationale": "Linear program op_lp1 solves with objective 5.875."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/test_cobyla_optimizer.py::TestCobylaOptimizer::test_cobyla_optimizer",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 43,
+          "expected": "COBYLA solution retains objective 5.875."
+        }
+      ],
+      "rationale": "COBYLA solution retains objective 5.875."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_optimizer",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "SLSQP solution retains objective 5.875."
+        }
+      ],
+      "rationale": "SLSQP solution retains objective 5.875."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/test_slsqp.py::TestSlsqpOptimizer::test_slsqp_bounded",
+      "label": "general_semantics/optimization_solution",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Bounded SLSQP solution has objective 0.75."
+        }
+      ],
+      "rationale": "Bounded SLSQP solution has objective 0.75."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/00fd67e029ded6b76e1a9f73eb17ccc628a4f776/test/algorithms/test_cobyla_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/00fd67e029ded6b76e1a9f73eb17ccc628a4f776/test/algorithms/test_cplex_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/00fd67e029ded6b76e1a9f73eb17ccc628a4f776/test/algorithms/test_slsqp.py"
+  ],
+  "rationale": "Every selected test was inspected individually against the task and test assertion."
+}

@@ -1,0 +1,88 @@
+{
+  "id": 105,
+  "sample_id": "tangelo_384_398",
+  "repo": "sandbox-quantum/Tangelo",
+  "patch_commit": "9e286675b2d2d33d0cf0da0ee7cf910a41143eb8",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/ansatz_reference_contract": 1,
+      "quantum_semantics/ansatz_energy": 2,
+      "interface/variational_parameter_assignment": 1,
+      "interface/input_validation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_variational_reference_state",
+      "label": "interface/ansatz_reference_contract",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Reference circuit gates remain a fixed prefix with no variational flags."
+        }
+      ],
+      "rationale": "Reference circuit gates remain a fixed prefix with no variational flags."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_circuit_reference_state_H2",
+      "label": "quantum_semantics/ansatz_energy",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "HEA with custom reference circuit gives the expected H2 energy."
+        }
+      ],
+      "rationale": "HEA with custom reference circuit gives the expected H2 energy."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_set_var_params",
+      "label": "interface/variational_parameter_assignment",
+      "assertions": [
+        {
+          "line": 51,
+          "expected": "HEA variational parameters can be reset to a zero vector."
+        }
+      ],
+      "rationale": "HEA variational parameters can be reset to a zero vector."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_incorrect_number_var_params",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "HEA rejects an incorrect number of variational parameters."
+        }
+      ],
+      "rationale": "HEA rejects an incorrect number of variational parameters."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tangelo/toolboxes/ansatz_generator/tests/test_hea.py::HEATest::test_hea_H2",
+      "label": "quantum_semantics/ansatz_energy",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Standard HEA construction retains the expected H2 energy."
+        }
+      ],
+      "rationale": "Standard HEA construction retains the expected H2 energy."
+    }
+  ],
+  "source_files": [
+    "https://github.com/sandbox-quantum/Tangelo/blob/9e286675b2d2d33d0cf0da0ee7cf910a41143eb8/tangelo/toolboxes/ansatz_generator/tests/test_hea.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

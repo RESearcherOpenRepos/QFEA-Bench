@@ -1,0 +1,53 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________________ TestQRCRegressor.test_serialization[kernel] __________________
+
+self = <tests.qrc.test_qrc_regressor.TestQRCRegressor object at 0x7fffe20f23e0>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+ml_model = 'kernel'
+
+    @pytest.mark.parametrize(
+        "ml_model",
+        [
+            "linear",
+            "mlp",
+            "kernel",
+        ],
+    )
+    def test_serialization(self, data, ml_model):
+        """Tests concerning the serialization of the QRCRegressor."""
+        X, y = data
+        qrc_regressor = self.qrc_regressor(ml_model)
+        qrc_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qrc_regressor.dump(buffer)
+E       AttributeError: 'QRCRegressor' object has no attribute 'dump'
+
+tests/qrc/test_qrc_regressor.py:80: AttributeError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+=========================== short test summary info ============================
+FAILED tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[kernel]
+1 failed, 3 warnings in 3.86s

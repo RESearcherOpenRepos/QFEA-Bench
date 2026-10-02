@@ -1,0 +1,389 @@
+diff --git a/.github/workflows/ci_backends.yml b/.github/workflows/ci_backends.yml
+index c2cdf7a..936775d 100644
+--- a/.github/workflows/ci_backends.yml
++++ b/.github/workflows/ci_backends.yml
+@@ -56,4 +56,5 @@ jobs:
+         pytest -m "not dependencies" tests/test_scipy.py --slow
+         pytest -m "not dependencies" tests/test_gd_optimizer.py --slow
+         pytest -m "not dependencies" tests/test_mappings.py --slow
+-
++        pip install "quimb"
++        pytest -m "not dependencies" tests/test_circuit_unitary.py --slow
+diff --git a/requirements.txt b/requirements.txt
+index 57bb895..778a790 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -18,6 +18,7 @@ qulacs # default simulator (best integration), remove if the installation gives
+ #pyquil<3.0 # you also need to install the forest-sdk
+ #qulacs-gpu # you can't have qulacs and qulacs-gpu at the same time
+ #qibo <= 0.1.1 # can not be installed in the same environment as gpyopt
++#quimb
+ 
+ #optional optimizers
+ #gpyopt # not in combination with qibo as quantum backend
+diff --git a/src/tequila/circuit/_gates_impl.py b/src/tequila/circuit/_gates_impl.py
+index 1702ac7..93a49ef 100644
+--- a/src/tequila/circuit/_gates_impl.py
++++ b/src/tequila/circuit/_gates_impl.py
+@@ -47,12 +47,12 @@ class QGateImpl:
+         return self.compute_max_qubit()
+ 
+     def extract_variables(self):
+-        if self.is_parametrized() and hasattr(self.parameter, "extract_variables"):
++        if self.is_parameterized() and hasattr(self.parameter, "extract_variables"):
+             return self.parameter.extract_variables()
+         else:
+             return []
+ 
+-    def is_parametrized(self) -> bool:
++    def is_parameterized(self) -> bool:
+         return hasattr(self, "parameter")
+ 
+     def make_generator(self, include_controls=False):
+@@ -63,7 +63,7 @@ class QGateImpl:
+ 
+     def map_variables(self, variables):
+ 
+-        if self.is_parametrized():
++        if self.is_parameterized():
+             self.parameter=self.parameter.map_variables(variables)
+ 
+         return self
+diff --git a/src/tequila/circuit/circuit.py b/src/tequila/circuit/circuit.py
+index 57bd3d9..38d0d70 100644
+--- a/src/tequila/circuit/circuit.py
++++ b/src/tequila/circuit/circuit.py
+@@ -5,6 +5,7 @@ from tequila.utils.bitstrings import BitNumbering
+ import typing
+ import copy
+ from collections import defaultdict
++import numpy as np
+ import warnings
+ 
+ from .qpic import export_to
+@@ -92,7 +93,7 @@ class QCircuit():
+         for g in self.gates:
+             p = 0
+             qus = g.qubits
+-            if g.is_parametrized():
++            if g.is_parameterized():
+                 if hasattr(g.parameter, 'extract_variables'):
+                     p = 1
+ 
+@@ -210,7 +211,7 @@ class QCircuit():
+         """
+         parameter_map = defaultdict(list)
+         for idx, gate in enumerate(self.gates):
+-            if gate.is_parametrized():
++            if gate.is_parameterized():
+                 variables = gate.extract_variables()
+                 for variable in variables:
+                     parameter_map[variable] += [(idx, gate)]
+@@ -347,7 +348,7 @@ class QCircuit():
+             whether or not all gates in the circuit are paremtrized
+         """
+         for gate in self.gates:
+-            if not gate.is_parametrized():
++            if not gate.is_parameterized():
+                 return False
+             else:
+                 if hasattr(gate, 'parameter'):
+@@ -367,7 +368,7 @@ class QCircuit():
+             whether or not all gates in the circuit are unparametrized
+         """
+         for gate in self.gates:
+-            if not gate.is_parametrized():
++            if not gate.is_parameterized():
+                 continue
+             else:
+                 if hasattr(gate, 'parameter'):
+@@ -441,6 +442,80 @@ class QCircuit():
+         else:
+             return QCircuit(gates=[gate])
+ 
++    def to_matrix(self, variables=None):
++        """
++        take the circuit and return the unitary matrix corresponding to it.
++        Parameters
++        ----------
++        variables: dict:
++            (Default value = None)
++            a dictionary mapping variable names to values. If None, the circuit must not contain any variables.
++            If the circuit contains variables, they must be provided here.
++
++        Returns
++        -------
++        np.ndarray:
++            the unitary matrix corresponding to the circuit.
++        """
++        import quimb.gates
++        import quimb.tensor as qtn
++        from tequila import compile_circuit
++
++        num_variables = len(self.extract_variables())
++
++        if num_variables == 0:
++            variables = {}
++        elif variables is None:
++            raise TequilaException(
++                f"QCircuit.to_matrix(): no variables provided, but the circuit has {num_variables} variables"
++            )
++
++        compiled_circuit = compile_circuit(self, )
++        compiled_circuit = compiled_circuit.map_variables(variables)
++
++        gate_mapping = {
++            'Rx': 'RX',
++            'Ry': 'RY',
++            'Rz': 'RZ',
++            'H': 'H',
++            'X': 'X'
++        }
++
++        quimb_circuit = qtn.Circuit(self.n_qubits)
++
++        # quimb uses MSB convention, so we need to modify the qubit indices
++        # to LSB
++        for g in compiled_circuit.gates:
++            if g.name not in gate_mapping:
++                raise TequilaException(
++                    f"Gate {g.name} is not supported for conversion to matrix. "
++                    f"Supported gates: {list(gate_mapping.keys())}"
++                )
++
++            if g.is_parameterized():
++                quimb_circuit.apply_gate(
++                    gate_mapping[g.name],
++                    params=[float(g.parameter())],
++                    qubits=[abs(t - self.n_qubits + 1) for t in list(g.target)],
++                    parameterize=True
++                )
++            elif g.is_controlled():
++                quimb_circuit.apply_gate(
++                    gate_mapping[g.name],
++                    qubits=[abs(t - self.n_qubits + 1) for t in list(g.target)],
++                    controls=[abs(c - self.n_qubits + 1) for c in list(g.control)],
++                )
++            else:
++                quimb_circuit.apply_gate(
++                    gate_mapping[g.name],
++                    qubits=[abs(t - self.n_qubits + 1) for t in list(g.target)],
++                )
++
++        uni = quimb_circuit.get_uni()
++        unitary = np.array(uni.to_dense())
++
++        return unitary
++
+     def to_networkx(self):
+         """
+         Turn a given quantum circuit from tequila into graph form via NetworkX
+@@ -688,7 +763,7 @@ class Moment(QCircuit):
+         mu = []
+         mp = []
+         for gate in self.gates:
+-            if not gate.is_parametrized():
++            if not gate.is_parameterized():
+                 mu.append(gate)
+             else:
+                 if hasattr(gate, 'parameter'):
+@@ -869,7 +944,7 @@ class Moment(QCircuit):
+             whether or not EVERY gate in self.gates is parameterized.
+         """
+         for gate in self.gates:
+-            if not gate.is_parametrized():
++            if not gate.is_parameterized():
+                 return False
+             else:
+                 if hasattr(gate, 'parameter'):
+@@ -975,22 +1050,22 @@ class Moment(QCircuit):
+ 
+ def find_unused_qubit(U0: QCircuit = None, U1: QCircuit = None)->int:
+     '''
+-    Function that checks which are the active qubits of two circuits and 
++    Function that checks which are the active qubits of two circuits and
+     provides an unused qubit that is not among them. If all qubits are used
+     it adds a new one.
+ 
+     Parameters
+     ----------
+     U0 : QCircuit, corresponding to the first state.
+-        
++
+     U1 : QCircuit, corresponding to the second state.
+ 
+     Returns
+     -------
+     control_qubit : int
+-        
++
+     '''
+-    
++
+     active_qubits = list(set(U0.qubits+U1.qubits))
+     # default
+     free_qubit = max(active_qubits) + 1
+@@ -1000,5 +1075,5 @@ def find_unused_qubit(U0: QCircuit = None, U1: QCircuit = None)->int:
+             free_qubit = n
+             break
+     assert free_qubit not in active_qubits
+-    
++
+     return free_qubit
+diff --git a/src/tequila/circuit/compiler.py b/src/tequila/circuit/compiler.py
+index 827de86..b86eca2 100644
+--- a/src/tequila/circuit/compiler.py
++++ b/src/tequila/circuit/compiler.py
+@@ -1002,7 +1002,7 @@ def compile_y(gate) -> QCircuit:
+     if gate.name.lower() == "y":
+ 
+         return Rz(target=gate.target, control=None, angle=-numpy.pi / 2) \
+-               + X(target=gate.target, control=gate.control, power=gate.power if gate.is_parametrized() else None) \
++               + X(target=gate.target, control=gate.control, power=gate.power if gate.is_parameterized() else None) \
+                + Rz(target=gate.target, control=None, angle=numpy.pi / 2)
+ 
+     else:
+@@ -1026,7 +1026,7 @@ def compile_ch(gate: QGateImpl) -> QCircuit:
+     if gate.name.lower() == "h" and gate.is_controlled():
+ 
+         return Ry(target=gate.target, control=None, angle=-numpy.pi / 4) \
+-               + Z(target=gate.target, control=gate.control, power=gate.power if gate.is_parametrized() else None) \
++               + Z(target=gate.target, control=gate.control, power=gate.power if gate.is_parameterized() else None) \
+                + Ry(target=gate.target, control=None, angle=numpy.pi / 4)
+     else:
+         return QCircuit.wrap_gate(gate)
+diff --git a/src/tequila/simulators/simulator_base.py b/src/tequila/simulators/simulator_base.py
+index 5271e9f..61c770a 100755
+--- a/src/tequila/simulators/simulator_base.py
++++ b/src/tequila/simulators/simulator_base.py
+@@ -269,7 +269,7 @@ class BackendCircuit():
+             result = self.initialize_circuit(*args, **kwargs)
+ 
+         for g in abstract_circuit.gates:
+-            if g.is_parametrized():
++            if g.is_parameterized():
+                 self.add_parametrized_gate(g, result, *args, **kwargs)
+             else:
+                 self.add_basic_gate(g, result, *args, **kwargs)
+diff --git a/src/tequila/tools/qng.py b/src/tequila/tools/qng.py
+index e103385..8f6d2f3 100644
+--- a/src/tequila/tools/qng.py
++++ b/src/tequila/tools/qng.py
+@@ -272,7 +272,7 @@ def qng_circuit_grad(E: ExpectationValueImpl) -> typing.List[Objective]:
+     # fast return if possible
+     out=[]
+     for i, g in enumerate(unitary.gates):
+-        if g.is_parametrized():
++        if g.is_parameterized():
+             if g.is_controlled():
+                 raise TequilaException("controlled gate in qng circuit gradient: Compiler was not called")
+             if hasattr(g, "eigenvalues_magnitude"):
+@@ -386,7 +386,7 @@ def get_self_pars(U) -> typing.List:
+ 
+     out=[]
+     for g in U.gates:
+-        if g.is_parametrized():
++        if g.is_parameterized():
+             if hasattr(g._parameter,'extract_variables'):
+                 out.append(g._parameter)
+     return out
+diff --git a/tests/data/circuit_3qubit_to_matrix_test.npy b/tests/data/circuit_3qubit_to_matrix_test.npy
+new file mode 100644
+index 0000000..67ea3cf
+Binary files /dev/null and b/tests/data/circuit_3qubit_to_matrix_test.npy differ
+diff --git a/tests/test_circuit_unitary.py b/tests/test_circuit_unitary.py
+new file mode 100644
+index 0000000..52a5642
+--- /dev/null
++++ b/tests/test_circuit_unitary.py
+@@ -0,0 +1,89 @@
++import importlib.util
++import numpy as np
++from numpy.testing import assert_almost_equal
++import tequila as tq
++import pytest
++import importlib
++
++
++test_case = np.array(
++    [
++        [
++            0.70710678 + 0.0j, 0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, -0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, 0.70710678 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, -0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, 0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, -0.70710678 + 0.0j,
++        ],
++        [
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.70710678 + 0.0j, 0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++        [
++            0.70710678 + 0.0j, -0.70710678 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++            0.0 + 0.0j, 0.0 + 0.0j,
++        ],
++    ]
++)
++
++# Check if quimb is installed
++HAS_QUIMB = importlib.util.find_spec("quimb") is not None
++
++
++@pytest.mark.skipif(condition=not HAS_QUIMB, reason="quimb not installed")
++def test_circuit_to_matrix():
++    """
++    Test the conversion of a 3-qubit circuit to a unitary matrix.
++    """
++    circuit = tq.gates.H(target=0) + tq.gates.CNOT(target=1,control=0) + tq.gates.CNOT(target=2,control=1)
++
++    # Convert the circuit to a unitary matrix
++    unitary_matrix = circuit.to_matrix()
++
++    # Compare with the expected result
++    assert_almost_equal(unitary_matrix, test_case, decimal=8)
++
++@pytest.mark.skipif(condition=not HAS_QUIMB, reason="quimb not installed")
++def test_circuit_to_matrix_with_params():
++    PM = np.kron(tq.paulis.Y(0).to_matrix(), tq.paulis.X(0).to_matrix())
++    U = tq.gates.ExpPauli(paulistring="X(0)Y(1)", angle="a")
++
++    N = 2**2
++
++    for a in [1.0, 2.0, -1.0]:
++        UM1 = U.to_matrix({"a":a})
++        UM2 = np.cos(-a/2) * np.eye(N) + 1.0j * np.sin(-a/2) * PM
++        assert_almost_equal(UM1, UM2)
+\ No newline at end of file

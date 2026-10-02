@@ -1,0 +1,166 @@
+{
+  "instance": {
+    "id": 3,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_246_306",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/246",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/306",
+    "base_commit": "46acb076bf34a0bc267a9e1b3f57b8d167cbc6d1",
+    "patch": "78c379106b0626a9212d2ac3483a44df4f01187f"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task requires electronic-structure Hamiltonian semantics and equivalent fermion-to-qubit and sparse-operator conversions."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/__init__.py",
+      "src/openfermion/ops/_diagonal_coulomb_hamiltonian.py",
+      "src/openfermion/transforms/__init__.py",
+      "src/openfermion/transforms/_conversion.py",
+      "src/openfermion/transforms/_jordan_wigner.py",
+      "src/openfermion/utils/_operator_utils.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion needs a specialized Hamiltonian representation for electronic-structure models with a diagonal Coulomb term so that these operators can be stored more compactly and transformed more directly than a generic FermionOperator. Users need a DiagonalCoulombHamiltonian representation together with conversion routines back to FermionOperator form, support for Jordan-Wigner mapping, sparse-operator conversion, and the same qubit-count and validity checks expected by the surrounding transform utilities.",
+    "requirements": [
+      "Provide a DiagonalCoulombHamiltonian representation for Hamiltonians with Hermitian one-body terms, real symmetric diagonal Coulomb terms, and an optional constant term.",
+      "Allow valid diagonal-Coulomb FermionOperator instances to be converted into DiagonalCoulombHamiltonian form and converted back without changing the represented Hamiltonian.",
+      "Reject non-FermionOperator inputs with TypeError, and raise ValueError for non-diagonal or unsupported FermionOperator terms, non-real diagonal-Coulomb coefficients, or too-small requested qubit counts.",
+      "Allow jordan_wigner to accept a DiagonalCoulombHamiltonian and produce the same QubitOperator as applying Jordan-Wigner to the equivalent FermionOperator for supported diagonal-Coulomb inputs.",
+      "Allow get_sparse_operator to accept a DiagonalCoulombHamiltonian and return the same sparse operator as the Jordan-Wigner image of the equivalent FermionOperator.",
+      "Keep the existing FermionOperator, InteractionOperator, QuadraticHamiltonian, and QubitOperator conversion behavior working."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "DiagonalCoulombHamiltonian",
+        "Path": "src/openfermion/ops/_diagonal_coulomb_hamiltonian.py",
+        "Input": "constructor: one_body, two_body, constant=0.",
+        "Output": "",
+        "Description": "Stores Hamiltonians with a Hermitian one-body matrix, a real symmetric diagonal Coulomb matrix, and a constant term."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_diagonal_coulomb_hamiltonian",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "fermion_operator: FermionOperator, n_qubits=None",
+        "Output": "DiagonalCoulombHamiltonian",
+        "Description": "Converts a valid diagonal-Coulomb FermionOperator into DiagonalCoulombHamiltonian form, rejecting non-FermionOperator inputs with TypeError and invalid representation or qubit-count cases with ValueError."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_fermion_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "operator: PolynomialTensor | DiagonalCoulombHamiltonian",
+        "Output": "FermionOperator",
+        "Description": "Converts supported structured operator representations into FermionOperator form."
+      },
+      {
+        "Type": "Function",
+        "Name": "jordan_wigner",
+        "Path": "src/openfermion/transforms/_jordan_wigner.py",
+        "Input": "operator: FermionOperator | InteractionOperator | DiagonalCoulombHamiltonian",
+        "Output": "QubitOperator",
+        "Description": "Maps supported fermionic operator representations into the Jordan-Wigner qubit representation."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_sparse_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "operator, n_qubits=None",
+        "Output": "scipy.sparse matrix",
+        "Description": "Converts supported operators into sparse-matrix form, using the Jordan-Wigner image for non-QubitOperator inputs."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_246_306",
+      "image_id": "sha256:e257a042a4187a58c6882f6fd11accd71ec2d1a35e5a673b78c8f062e4bf3ae0",
+      "image_size": "463256112"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+          "src/openfermion/transforms/_conversion_test.py::GetSparseOperatorDiagonalCoulombHamiltonianTest::test_diagonal_coulomb_hamiltonian",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_random_quadratic"
+        ],
+        "summary": "6 passed, 52 warnings in 1.59s",
+        "duration_seconds": 5.3
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian_bad_term",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_not_hermitian",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_bad_input",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_too_few_qubits",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body_twoterm",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body_distinct"
+        ],
+        "summary": "9 passed, 52 warnings in 1.34s",
+        "duration_seconds": 5.16
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+          "src/openfermion/transforms/_conversion_test.py::GetSparseOperatorDiagonalCoulombHamiltonianTest::test_diagonal_coulomb_hamiltonian",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_random_quadratic"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerDiagonalCoulombHamiltonianTest::test_random_quadratic",
+        "duration_seconds": 5.17
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_hermitian_bad_term",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_not_hermitian",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_bad_input",
+          "src/openfermion/transforms/_conversion_test.py::GetQuadraticHamiltonianTest::test_get_quadratic_hamiltonian_too_few_qubits",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_one_body_twoterm",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body",
+          "src/openfermion/transforms/_jordan_wigner_test.py::GetInteractionOperatorTest::test_get_interaction_operator_two_body_distinct"
+        ],
+        "summary": "9 passed, 51 warnings in 1.30s",
+        "duration_seconds": 5.14
+      }
+    }
+  }
+}

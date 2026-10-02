@@ -1,0 +1,194 @@
+{
+  "instance": {
+    "id": 119,
+    "repo": "sQUlearn/squlearn",
+    "instance_id": "squlearn_275_339",
+    "status": "completed",
+    "issue_url": "https://github.com/sQUlearn/squlearn/issues/275",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/sQUlearn/squlearn/pull/339",
+    "base_commit": "3672c9e97cac7307ebaed16a5cfdd15aa836f5d2",
+    "patch": "e52584adc105f8fa211a135cd8343218f7ea4377"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "Adds model persistence requiring reconstruction of Qulacs circuit/observable instructions and symbolic SparsePauliOp coefficients, plus executor reinjection. New round-trip tests preserve QNN numerical predictions and trainable circuit/observable parameters across backends; exceeds generic file I/O and directly targets core quantum-model behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/squlearn/encoding_circuit/encoding_circuit_base.py",
+      "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py",
+      "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py",
+      "src/squlearn/kernel/lowlevel_kernel/kernel_util.py",
+      "src/squlearn/kernel/qgpc.py",
+      "src/squlearn/kernel/qgpr.py",
+      "src/squlearn/kernel/qkrr.py",
+      "src/squlearn/kernel/qsvc.py",
+      "src/squlearn/kernel/qsvr.py",
+      "src/squlearn/qnn/base_qnn.py",
+      "src/squlearn/qrc/base_qrc.py",
+      "src/squlearn/util/executor.py",
+      "src/squlearn/util/qulacs/qulacs_circuit.py",
+      "src/squlearn/util/serialization/__init__.py",
+      "src/squlearn/util/serialization/model_pickler.py",
+      "src/squlearn/util/serialization/serializable_model_mixin.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Trained quantum-learning models need to be saved and restored without serializing their live execution environment. Reloading a model with a supplied executor should preserve its learned parameters, quantum circuit and observable representations, and predictions.",
+    "requirements": [
+      "Save and restore quantum neural networks, kernel models, and reservoir-computing models through file paths or binary streams.",
+      "Preserve predictions after a serialization round trip for the supported quantum execution backends.",
+      "Exclude executor instances from the serialized payload and reinsert the supplied executor on loading, including repeated or nested references.",
+      "Reject unsupported input and output object types."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SerializableModelMixin",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Supplies serialization to the supported model classes."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.dump",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "self, target",
+        "Output": "None",
+        "Description": "Writes to a string file path or binary IOBase stream and removes executor references from the payload."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.load",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "cls, source, executor",
+        "Output": "model instance",
+        "Description": "Class method restoring the model and all executor references from a string file path or binary stream."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-squlearn_275_339:latest",
+      "image_id": "sha256:024537b41ca2f0ed77059b509c33634401ea7d36725f0c86da710cf0f30436cc",
+      "image_size": "1259673922",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qiskit]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[pennylane]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qiskit]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[pennylane]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_pqk]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[linear]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[mlp]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[kernel]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[linear]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[kernel]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_fidelity]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_pqk]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_fidelity]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_pqk]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_fidelity]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+          "tests/util/serialization/test_model_pickler.py::test_executor_removed_by_pickler",
+          "tests/util/serialization/test_model_pickler.py::test_executor_reinjected_by_unpickler",
+          "tests/util/serialization/test_model_pickler.py::test_multiple_executor_references",
+          "tests/util/serialization/test_model_pickler.py::test_invalid_path_or_buf"
+        ],
+        "summary": "26 selected selectors blocked by target-feature import failure (2.92s); each independently confirmed in three stability trials",
+        "duration_seconds": 4.229
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit_2out",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_partial_fit",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]"
+        ],
+        "summary": "4 passed in 3.32s",
+        "duration_seconds": 4.476
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qiskit]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[pennylane]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qiskit]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[pennylane]",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_pqk]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[linear]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[mlp]",
+          "tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[kernel]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[linear]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[mlp]",
+          "tests/qrc/test_qrc_regressor.py::TestQRCRegressor::test_serialization[kernel]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_fidelity]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_pqk]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_fidelity]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_pqk]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_pqk]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_fidelity]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]",
+          "tests/util/serialization/test_model_pickler.py::test_executor_removed_by_pickler",
+          "tests/util/serialization/test_model_pickler.py::test_executor_reinjected_by_unpickler",
+          "tests/util/serialization/test_model_pickler.py::test_multiple_executor_references",
+          "tests/util/serialization/test_model_pickler.py::test_invalid_path_or_buf"
+        ],
+        "summary": "26 passed in 17.14s",
+        "duration_seconds": 18.616
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit_2out",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_partial_fit",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]"
+        ],
+        "summary": "4 passed in 3.82s",
+        "duration_seconds": 5.125
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/squlearn_275_339",
+    "selector_exclusions": {}
+  }
+}

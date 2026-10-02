@@ -1,0 +1,176 @@
+{
+  "instance": {
+    "id": 27,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_326_360",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/326",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/360",
+    "base_commit": "fd8e4e0933d33d88a833091b7cb187246ca8d792",
+    "patch": "c81306a30435cdc5ab511552aba85b569f17d2a5"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds generic save and load serialization for trained models rather than quantum modeling or algorithm semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/__init__.py",
+      "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+      "qiskit_machine_learning/algorithms/classifiers/qsvc.py",
+      "qiskit_machine_learning/algorithms/regressors/qsvr.py",
+      "qiskit_machine_learning/algorithms/serializable_model.py",
+      "qiskit_machine_learning/algorithms/trainable_model.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Machine Learning users can train classifier and regressor models, but there is no native way to persist those trained models and restore them later. Users have to rely on ad hoc serialization or private internal state, which is unreliable for models that contain quantum-network or kernel objects. The model APIs should provide built-in save and load support so a trained model can be stored and then loaded for inference with the same behavior.",
+    "requirements": [
+      "Trainable neural-network classifiers and regressors must be saveable to a user-provided file path and loadable from that file.",
+      "Kernel-based classifiers and regressors, including QSVC, QSVR, and PegasosQSVC, must be saveable to a user-provided file path and loadable from that file.",
+      "A loaded model must preserve fitted model state well enough that predictions on the same input match the predictions from the model before it was saved.",
+      "Loading through a model class must verify that the serialized object is an instance of that class.",
+      "Loading a serialized model through an incompatible model class must raise TypeError."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SerializableModelMixin",
+        "Path": "qiskit_machine_learning/algorithms/serializable_model.py",
+        "Input": "",
+        "Output": "",
+        "Description": "Mixin for machine-learning models that provides save and load methods using dill serialization."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.save",
+        "Path": "qiskit_machine_learning/algorithms/serializable_model.py",
+        "Input": "self, file_name: str",
+        "Output": "None",
+        "Description": "Serializes the model instance to the specified file path."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.load",
+        "Path": "qiskit_machine_learning/algorithms/serializable_model.py",
+        "Input": "cls, file_name: str",
+        "Output": "A model instance of cls",
+        "Description": "Loads a model from the specified file path and raises TypeError if the loaded object is not an instance of the class used to load it."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkClassifier",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/neural_network_classifier.py",
+        "Input": "constructor: neural_network, loss='squared_error', one_hot: bool = False, optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Trainable classifier that supports saving and loading fitted model state."
+      },
+      {
+        "Type": "Class",
+        "Name": "NeuralNetworkRegressor",
+        "Path": "qiskit_machine_learning/algorithms/regressors/neural_network_regressor.py",
+        "Input": "constructor: neural_network, loss='squared_error', optimizer=None, warm_start: bool = False, initial_point=None, callback=None",
+        "Output": "",
+        "Description": "Trainable regressor that supports saving and loading fitted model state."
+      },
+      {
+        "Type": "Class",
+        "Name": "QSVC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/qsvc.py",
+        "Input": "constructor: quantum_kernel=None, **kwargs",
+        "Output": "",
+        "Description": "Quantum support vector classifier that supports saving and loading fitted model state."
+      },
+      {
+        "Type": "Class",
+        "Name": "QSVR",
+        "Path": "qiskit_machine_learning/algorithms/regressors/qsvr.py",
+        "Input": "constructor: quantum_kernel=None, **kwargs",
+        "Output": "",
+        "Description": "Quantum support vector regressor that supports saving and loading fitted model state."
+      },
+      {
+        "Type": "Class",
+        "Name": "PegasosQSVC",
+        "Path": "qiskit_machine_learning/algorithms/classifiers/pegasos_qsvc.py",
+        "Input": "constructor: quantum_kernel=None, C=1.0, num_steps=1000, precomputed=False, seed=None",
+        "Output": "",
+        "Description": "Pegasos quantum support vector classifier that supports saving and loading fitted model state."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_326_360",
+      "image_id": "sha256:1eb64d7831afb0c2820288927a0fcf5a47c0f4ea7b269ac5d3dc711dbc3cb285",
+      "image_size": "1470477216"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "qiskit-terra==0.20.2",
+        "qiskit-aer==0.10.4",
+        "scikit-learn<1.2",
+        "pytest"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_1_opflow",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_2_circuit_qnn",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_save_load",
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_save_load",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_save_load",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_save_load"
+        ],
+        "summary": "6 passed in 19.15s.",
+        "duration_seconds": 23.83
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr"
+        ],
+        "summary": "3 passed in 7.99s.",
+        "duration_seconds": 13.03
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_1_opflow",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_save_load_2_circuit_qnn",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_save_load",
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_save_load",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_save_load",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_save_load"
+        ],
+        "summary": "Collection failed because the base package cannot import SerializableModelMixin from qiskit_machine_learning.algorithms; 5 errors in 2.12s.",
+        "duration_seconds": 7.62
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+          "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+          "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr"
+        ],
+        "summary": "3 passed in 10.75s.",
+        "duration_seconds": 17.3
+      }
+    }
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "id": 40,
+  "sample_id": "qiskit_machine_learning_62_143",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "1bdab32b05a6f979ae6c2978605799e03345da84",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "general_semantics/model_training_performance": 17
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_1__True___absolute_error__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Categorical one-hot classifier with absolute-error loss scores above 0.5."
+        }
+      ],
+      "rationale": "String labels and one_hot=True are setup; the assertion measures fitted prediction quality."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Categorical one-hot classifier with squared-error loss scores above 0.5."
+        }
+      ],
+      "rationale": "This selected loss variant has its own score assertion."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_3__True___cross_entropy__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Categorical one-hot classifier with cross-entropy loss scores above 0.5."
+        }
+      ],
+      "rationale": "The cross-entropy variant explicitly measures classification performance."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_4__False___absolute_error__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Categorical integer-encoded classifier with absolute-error loss scores above 0.5."
+        }
+      ],
+      "rationale": "one_hot=False changes label encoding, while the asserted contract remains score."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_5__False___squared_error__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Categorical integer-encoded classifier with squared-error loss scores above 0.5."
+        }
+      ],
+      "rationale": "This separate loss/encoding combination also asserts score."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_01___cobyla____absolute_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "COBYLA/statevector/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "Retained numeric-label P2P run; callback disabled."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_02___cobyla____absolute_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "COBYLA/qasm/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "Backend changes to qasm; the assertion remains score."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_03___cobyla____squared_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "COBYLA/statevector/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "Loss changes to squared error; the assertion remains score."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_04___cobyla____squared_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "COBYLA/qasm/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "This selected qasm/loss combination asserts score."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_05___bfgs____absolute_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "BFGS/statevector/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The selected optimizer differs; assertion is predictive quality."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_06___bfgs____absolute_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "BFGS/qasm/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "This separate optimizer/backend combination asserts score."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_07___bfgs____squared_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "BFGS/statevector/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The selected loss/optimizer combination asserts score."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_08___bfgs____squared_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "BFGS/qasm/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "This distinct qasm configuration asserts score."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_09__None___absolute_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "Default optimizer/statevector/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The None optimizer variant still checks fitted score."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_10__None___absolute_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "Default optimizer/qasm/absolute-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The qasm default-optimizer variant checks score."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_11__None___squared_error____statevector___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "Default optimizer/statevector/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The statevector squared-error variant checks score."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_12__None___squared_error____qasm___False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "Default optimizer/qasm/squared-error classifier scores above 0.5."
+        }
+      ],
+      "rationale": "The final numeric-label variant checks score."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/1bdab32b05a6f979ae6c2978605799e03345da84/test/algorithms/classifiers/test_neural_network_classifier.py"
+  ],
+  "rationale": "Reviewed all five categorical-label loss/encoding selectors and all twelve numeric-label optimizer, backend and loss combinations individually. The explicit asserted outcome in each is classifier score."
+}

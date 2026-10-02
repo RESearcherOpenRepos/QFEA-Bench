@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=benchmark-base:qiskit_finance_54_57
+FROM ${BASE_IMAGE}
+
+ENV SAMPLE_ID=qiskit_finance_54_57
+ENV REPOSITORY=qiskit-community/qiskit-finance
+ENV REPOSITORY_URL=https://github.com/qiskit-community/qiskit-finance.git
+ENV ISSUE_URL=https://github.com/qiskit-community/qiskit-finance/issues/54
+ENV PR_URL=https://github.com/qiskit-community/qiskit-finance/pull/57
+ENV BASE_COMMIT=f3123c89fe3352f2e66cfc38965c99956561f233
+ENV PATCHED_COMMIT=027401b87718aa8ad76263aa26afd3544b1885f3
+ENV PR_HEAD_COMMIT=027401b87718aa8ad76263aa26afd3544b1885f3
+ENV FAIL_PASS_TEST_PATHS="test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_to_quadratic_program test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_1___1_____1____1____0_5__2__None_ test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_2___1_____1__1____0_5__2__None_ test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_3___1__2_____1__2____3__4____0_5__2____0__2____3__1___ test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_4___1__2_____1__2____3__4____0_5__2____0__2____0__2____0__2___ test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_bounds"
+ENV PASS_PASS_TEST_PATHS="test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_interpret test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_expected_value test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_variance test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_risk_factor test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_budget"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

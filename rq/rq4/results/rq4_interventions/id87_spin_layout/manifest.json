@@ -1,0 +1,27 @@
+{
+  "id": 87,
+  "sample_id": "qiskit_nature_919_920",
+  "variant": "spin_layout",
+  "changes": [
+    {
+      "before": "+        rdm2_ba = np.einsum(\"ij,kl->kijl\", rdm1_a, rdm1_b)",
+      "after": "+        rdm2_ba = np.einsum(\"ij,kl->ijkl\", rdm1_a, rdm1_b)"
+    },
+    {
+      "before": "+                (register_length, 0, 0, register_length),",
+      "after": "+                (0, register_length, register_length, 0),"
+    },
+    {
+      "before": "+                    mo_i >= n_spatial\n+                    and mo_j < n_spatial\n+                    and mo_k < n_spatial\n+                    and mo_l >= n_spatial",
+      "after": "+                    mo_i < n_spatial\n+                    and mo_j >= n_spatial\n+                    and mo_k >= n_spatial\n+                    and mo_l < n_spatial"
+    },
+    {
+      "before": "+                    rdm2_ba[mo_i - n_spatial, mo_j, mo_k, mo_l - n_spatial] = aux_value.real",
+      "after": "+                    rdm2_ba[mo_i, mo_j - n_spatial, mo_k - n_spatial, mo_l] = aux_value.real"
+    }
+  ],
+  "image": "benchmark-evaluation:qiskit_nature_919_920",
+  "image_id": "sha256:9abe01fb697864b974bb532b43d21d10c3a46261a496b7f72cabf5b64ecc47b7",
+  "patch_sha256": "ec2f2bd8ab8e725203c3314df77c012b99f6eed03bab0434fe85c5e3a678a075",
+  "scope": "diagnostic replay; no changes to benchmark definition or official outcome"
+}

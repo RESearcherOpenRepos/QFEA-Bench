@@ -1,0 +1,156 @@
+{
+  "instance": {
+    "id": 118,
+    "repo": "sQUlearn/squlearn",
+    "instance_id": "squlearn_62_99",
+    "status": "completed",
+    "issue_url": "https://github.com/sQUlearn/squlearn/issues/62",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/sQUlearn/squlearn/pull/99",
+    "base_commit": "a744a781ef9720cc817b8eecfae778495d5064e1",
+    "patch": "6a41d14c9668fcf736b791ce216e26abc11e8b07"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "Implements a coherent QNN portion of Issue62: high-level hyperparameter changes propagate qubit counts/layers/observable settings and reinitialize training parameter arrays. Added tests check single/multiple observable qubit consistency and successful fitting after changing circuit depth. Other PRs address kernel classes; this PR's QNN scope is attributable to the issue."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/squlearn/optimizers/adam.py",
+      "src/squlearn/optimizers/optimizer_base.py",
+      "src/squlearn/qnn/base_qnn.py",
+      "src/squlearn/qnn/qnnc.py",
+      "src/squlearn/qnn/qnnr.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Changing the hyperparameters of a quantum neural network should consistently update its encoding circuit, observables, and trainable parameter arrays. Users need to refit models after changing qubit counts, circuit depth, or observables through the estimator parameter interface.",
+    "requirements": [
+      "Propagate qubit-count changes to the encoding circuit and single or multiple observables.",
+      "Allow replacement of the circuit or observable specification and reinitialize the associated parameter arrays consistently.",
+      "Allow classifier and regressor fitting after circuit-depth hyperparameter changes.",
+      "Preserve ordinary fitting and unfitted prediction behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "BaseQNN.set_params",
+        "Path": "src/squlearn/qnn/base_qnn.py",
+        "Input": "self, **params",
+        "Output": "BaseQNN",
+        "Description": "Updates nested quantum-model hyperparameters and derived parameter initialization."
+      },
+      {
+        "Type": "Method",
+        "Name": "BaseQNN.get_params",
+        "Path": "src/squlearn/qnn/base_qnn.py",
+        "Input": "self, deep=True",
+        "Output": "dict",
+        "Description": "Exposes model and nested circuit/observable hyperparameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.fit",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X, y",
+        "Output": "QNNClassifier",
+        "Description": "Fits the model after updating its encoding-circuit hyperparameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNRegressor.fit",
+        "Path": "src/squlearn/qnn/qnnr.py",
+        "Input": "self, X, y",
+        "Output": "QNNRegressor",
+        "Description": "Fits the model after updating its encoding-circuit hyperparameters."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-squlearn_62_99:latest",
+      "image_id": "sha256:27b3f8662830dbca8b31d2ec62f52a038c1522fd19615559cd69e0c568a5b3da",
+      "image_size": "1131567924",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_feature_map",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_single_operator",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_multi_operator",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit"
+        ],
+        "summary": "7 failed in 5.39s",
+        "duration_seconds": 7.508
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit"
+        ],
+        "summary": "4 passed in 35.88s",
+        "duration_seconds": 37.817
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_feature_map",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_single_operator",
+          "tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_multi_operator",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit"
+        ],
+        "summary": "7 passed in 90.72s",
+        "duration_seconds": 93.725
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit",
+          "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit"
+        ],
+        "summary": "4 passed in 45.13s",
+        "duration_seconds": 47.26
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/squlearn_62_99",
+    "selector_exclusions": {
+      "test_set_params_seed": "Passes on base; not F2P",
+      "test_set_params_invalid_param": "Passes on base; not F2P"
+    }
+  }
+}

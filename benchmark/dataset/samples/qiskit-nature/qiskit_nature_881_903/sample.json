@@ -1,0 +1,165 @@
+{
+  "instance": {
+    "id": 85,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_881_903",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/881",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/903",
+    "base_commit": "417d7792470c36ebfef5444c9895fe5985b558fc",
+    "patch": "729723bd4be61d1eb1b952613dbea04bfbce77d7"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task makes Hartree-Fock and VSCF initial states configurable blueprint circuits while preserving prepared-state behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/circuit/library/initial_states/hartree_fock.py",
+      "qiskit_nature/second_q/circuit/library/initial_states/vscf.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized Hartree-Fock and VSCF initial-state circuits are built eagerly, so they cannot be instantiated first and configured later like other Qiskit blueprint circuits. Users need these initial states to support lazy construction and attribute-based configuration while preserving the same prepared states as the existing eager constructors.",
+    "requirements": [
+      "HartreeFock must behave as a BlueprintCircuit-compatible initial state that can be constructed without all configuration values and completed later through attributes.",
+      "VSCF must behave as a BlueprintCircuit-compatible initial state that can be constructed without all configuration values and completed later through attributes.",
+      "Setting HartreeFock configuration attributes must invalidate and rebuild the circuit so the final state matches the eager constructor for the same orbitals, particles, and qubit converter.",
+      "Setting VSCF configuration attributes must invalidate and rebuild the circuit so the final state matches the eager constructor for the same modals and qubit converter.",
+      "HartreeFock must report an unsupported Bravyi-Kitaev Super Fast mapper through NotImplementedError when the circuit is built.",
+      "Existing Hartree-Fock and VSCF bitstring helper behavior must remain compatible with the prepared-state circuits."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HartreeFock",
+        "Path": "qiskit_nature/second_q/circuit/library/initial_states/hartree_fock.py",
+        "Input": "constructor: num_spatial_orbitals=None, num_particles=None, qubit_converter=None",
+        "Output": "",
+        "Description": "Blueprint-compatible initial-state circuit whose num_spatial_orbitals, num_particles, and qubit_converter configuration can be supplied at construction time or later through attributes."
+      },
+      {
+        "Type": "Class",
+        "Name": "VSCF",
+        "Path": "qiskit_nature/second_q/circuit/library/initial_states/vscf.py",
+        "Input": "constructor: num_modals=None, qubit_converter=None",
+        "Output": "",
+        "Description": "Blueprint-compatible vibrational initial-state circuit whose num_modals and qubit_converter configuration can be supplied at construction time or later through attributes."
+      },
+      {
+        "Type": "Function",
+        "Name": "hartree_fock_bitstring",
+        "Path": "qiskit_nature/second_q/circuit/library/initial_states/hartree_fock.py",
+        "Input": "num_spatial_orbitals, num_particles",
+        "Output": "list[bool]",
+        "Description": "Returns the Hartree-Fock occupation bitstring for the requested spatial orbitals and particles."
+      },
+      {
+        "Type": "Function",
+        "Name": "hartree_fock_bitstring_mapped",
+        "Path": "qiskit_nature/second_q/circuit/library/initial_states/hartree_fock.py",
+        "Input": "num_spatial_orbitals, num_particles, qubit_converter, match_convert=True",
+        "Output": "list[bool]",
+        "Description": "Returns the mapped Hartree-Fock occupation bitstring using the supplied qubit converter."
+      },
+      {
+        "Type": "Function",
+        "Name": "vscf_bitstring",
+        "Path": "qiskit_nature/second_q/circuit/library/initial_states/vscf.py",
+        "Input": "num_modals",
+        "Output": "list[bool]",
+        "Description": "Returns the VSCF occupation bitstring for the requested modal structure."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_881_903",
+      "image_id": "sha256:5af7f04b9573d57be23cc81c82f569b938c86d45919c057e5d716d0f3d066013",
+      "image_size": "1023853784"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2_lazy_attribute_setting",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_raises_on_unsupported_mapper",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_6_lazy_attribute_setting"
+        ],
+        "summary": "3 passed in 2.55s",
+        "duration_seconds": 8.97
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring_invalid_input",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_hf_bitstring_mapped",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_2_py_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_bk_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_py_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_6_py_lih",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_bitstring",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_4",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_5"
+        ],
+        "summary": "11 passed in 1.56s",
+        "duration_seconds": 6.52
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2_lazy_attribute_setting",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_raises_on_unsupported_mapper",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_6_lazy_attribute_setting"
+        ],
+        "summary": "3 failed in 3.36s. Failures cover missing no-argument lazy constructors for HartreeFock and VSCF, plus HartreeFock raising TypeError instead of NotImplementedError for an unsupported mapper.",
+        "duration_seconds": 13.31
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring_invalid_input",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_hf_bitstring_mapped",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_2_py_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_bk_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_py_h2",
+          "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_6_py_lih",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_bitstring",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_4",
+          "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_5"
+        ],
+        "summary": "11 passed in 1.45s",
+        "duration_seconds": 8.1
+      }
+    }
+  }
+}

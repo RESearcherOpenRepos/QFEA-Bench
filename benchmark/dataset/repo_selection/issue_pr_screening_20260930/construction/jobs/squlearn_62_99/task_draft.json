@@ -1,0 +1,52 @@
+{
+  "oracle_files": [
+    "src/squlearn/optimizers/adam.py",
+    "src/squlearn/optimizers/optimizer_base.py",
+    "src/squlearn/qnn/base_qnn.py",
+    "src/squlearn/qnn/qnnc.py",
+    "src/squlearn/qnn/qnnr.py"
+  ],
+  "task": {
+    "problem_statement": "Changing the hyperparameters of a quantum neural network should consistently update its encoding circuit, observables, and trainable parameter arrays. Users need to refit models after changing qubit counts, circuit depth, or observables through the estimator parameter interface.",
+    "requirements": [
+      "Propagate qubit-count changes to the encoding circuit and single or multiple observables.",
+      "Allow replacement of the circuit or observable specification and reinitialize the associated parameter arrays consistently.",
+      "Allow classifier and regressor fitting after circuit-depth hyperparameter changes.",
+      "Preserve ordinary fitting and unfitted prediction behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "BaseQNN.set_params",
+        "Path": "src/squlearn/qnn/base_qnn.py",
+        "Input": "self, **params",
+        "Output": "BaseQNN",
+        "Description": "Updates nested quantum-model hyperparameters and derived parameter initialization."
+      },
+      {
+        "Type": "Method",
+        "Name": "BaseQNN.get_params",
+        "Path": "src/squlearn/qnn/base_qnn.py",
+        "Input": "self, deep=True",
+        "Output": "dict",
+        "Description": "Exposes model and nested circuit/observable hyperparameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNClassifier.fit",
+        "Path": "src/squlearn/qnn/qnnc.py",
+        "Input": "self, X, y",
+        "Output": "QNNClassifier",
+        "Description": "Fits the model after updating its encoding-circuit hyperparameters."
+      },
+      {
+        "Type": "Method",
+        "Name": "QNNRegressor.fit",
+        "Path": "src/squlearn/qnn/qnnr.py",
+        "Input": "self, X, y",
+        "Output": "QNNRegressor",
+        "Description": "Fits the model after updating its encoding-circuit hyperparameters."
+      }
+    ]
+  }
+}

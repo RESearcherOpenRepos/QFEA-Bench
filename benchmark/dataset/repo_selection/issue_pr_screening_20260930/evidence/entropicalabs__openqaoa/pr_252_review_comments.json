@@ -1,0 +1,280 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228122037",
+    "pull_request_review_id": 1477161502,
+    "id": 1228122037,
+    "node_id": "PRRC_kwDOHMYLyM5JM6e1",
+    "diff_hunk": "@@ -629,3 +629,56 @@ def lowest_cost_bitstrings(self, n_bitstrings: int = 1) -> dict:\n             ],\n         }\n         return best_results\n+    \n+    def calculate_statistics(self, include_intermediate=False) -> dict:\n+        \"\"\"\n+        A function to calculate statistics of measurement outcomes associated with a QAOA workflow\n+\n+        Parameters\n+        ----------\n+        include_intermediate: `bool`\n+            Whether it is necessary to calculate statistics for intermediate results. Defaults to False.\n+        \"\"\"\n+        if len(self.intermediate[\"measurement_outcomes\"]) == 0 and include_intermediate == True:\n+            raise ValueError(\n+                \"Please specify saving intermediate measurements during optimization.\"",
+    "path": "src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_result.py",
+    "commit_id": "7529ad6c1d99f7adb4d41ca4c73ff8bb0a6187c1",
+    "original_commit_id": "5381202eac762af7a22bc8387b53eff44f55bce3",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Maybe we can be more explicit. How about:\r\n \r\n\"_The underlying QAOA object does not seem to have any intermediate measurement result. Please, consider saving intermediate measurements during optimization by setting `optimization_progress=True` in your workflow._\"\r\n\r\nOr a less verbose version of it: the important thing (I think) is to give the end user a pointer to what they need to do in order to use this feature :) ",
+    "created_at": "2023-06-13T13:20:06Z",
+    "updated_at": "2023-06-13T13:53:01Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228122037",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228122037"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228122037"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228122037/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 644,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 16,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228171105",
+    "pull_request_review_id": 1477161502,
+    "id": 1228171105,
+    "node_id": "PRRC_kwDOHMYLyM5JNGdh",
+    "diff_hunk": "@@ -629,3 +629,56 @@ def lowest_cost_bitstrings(self, n_bitstrings: int = 1) -> dict:\n             ],\n         }\n         return best_results\n+    \n+    def calculate_statistics(self, include_intermediate=False) -> dict:\n+        \"\"\"\n+        A function to calculate statistics of measurement outcomes associated with a QAOA workflow\n+\n+        Parameters\n+        ----------\n+        include_intermediate: `bool`\n+            Whether it is necessary to calculate statistics for intermediate results. Defaults to False.\n+        \"\"\"\n+        if len(self.intermediate[\"measurement_outcomes\"]) == 0 and include_intermediate == True:\n+            raise ValueError(\n+                \"Please specify saving intermediate measurements during optimization.\"\n+            )\n+\n+        if isinstance(self.optimized[\"measurement_outcomes\"], dict):\n+            optimized_measurement_outcomes = self.optimized[\"measurement_outcomes\"]\n+        elif isinstance(self.optimized[\"measurement_outcomes\"], np.ndarray):\n+            optimized_measurement_outcomes = self.get_counts(\n+                self.optimized[\"measurement_outcomes\"]\n+            )\n+        else:\n+            raise TypeError(\n+                f\"The measurement outcome {type(self.optimized['measurement_outcomes'])} is not valid.\"\n+            )\n+\n+        if isinstance(self.intermediate[\"measurement_outcomes\"], list):\n+            if len(self.intermediate[\"measurement_outcomes\"]) > 0:\n+                if isinstance(self.intermediate[\"measurement_outcomes\"][0], dict):\n+                    intermediate_measurement_outcomes = self.intermediate[\"measurement_outcomes\"]\n+                elif isinstance(self.intermediate[\"measurement_outcomes\"][0], np.ndarray):\n+                    intermediate_measurement_outcomes = [self.get_counts(i) for i in self.intermediate[\"measurement_outcomes\"]]\n+                else:\n+                    raise TypeError(\n+                        f\"The measurement outcome {type(self.intermediate['measurement_outcomes'][0])} is not valid.\"\n+                    )\n+        else:\n+            raise TypeError(\n+                f\"The measurement outcome {type(self.intermediate['measurement_outcomes'])} is not valid.\"\n+            )\n+\n+        def sorted_mean_std_deviation(counts: dict):\n+            values = list(counts.values())\n+            return {\n+                'sorted': dict(sorted(counts.items(), key=lambda x: x[1], reverse=True)),",
+    "path": "src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_result.py",
+    "commit_id": "7529ad6c1d99f7adb4d41ca4c73ff8bb0a6187c1",
+    "original_commit_id": "5381202eac762af7a22bc8387b53eff44f55bce3",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am having second thoughts about this, perhaps we can remove it?\r\n\r\nI am thinking it may not be very informative after all, and the user can always compute it if they so wish.\r\n\r\nOn the other hand, maybe we could return also mean and std for some percentiles? What do you think?",
+    "created_at": "2023-06-13T13:52:56Z",
+    "updated_at": "2023-06-13T13:53:01Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228171105",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228171105"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228171105"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228171105/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 677,
+    "original_line": 676,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 48,
+    "position": 49,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228415612",
+    "pull_request_review_id": 1477633934,
+    "id": 1228415612,
+    "node_id": "PRRC_kwDOHMYLyM5JOCJ8",
+    "diff_hunk": "@@ -629,3 +629,56 @@ def lowest_cost_bitstrings(self, n_bitstrings: int = 1) -> dict:\n             ],\n         }\n         return best_results\n+    \n+    def calculate_statistics(self, include_intermediate=False) -> dict:\n+        \"\"\"\n+        A function to calculate statistics of measurement outcomes associated with a QAOA workflow\n+\n+        Parameters\n+        ----------\n+        include_intermediate: `bool`\n+            Whether it is necessary to calculate statistics for intermediate results. Defaults to False.\n+        \"\"\"\n+        if len(self.intermediate[\"measurement_outcomes\"]) == 0 and include_intermediate == True:\n+            raise ValueError(\n+                \"Please specify saving intermediate measurements during optimization.\"\n+            )\n+\n+        if isinstance(self.optimized[\"measurement_outcomes\"], dict):\n+            optimized_measurement_outcomes = self.optimized[\"measurement_outcomes\"]\n+        elif isinstance(self.optimized[\"measurement_outcomes\"], np.ndarray):\n+            optimized_measurement_outcomes = self.get_counts(\n+                self.optimized[\"measurement_outcomes\"]\n+            )\n+        else:\n+            raise TypeError(\n+                f\"The measurement outcome {type(self.optimized['measurement_outcomes'])} is not valid.\"\n+            )\n+\n+        if isinstance(self.intermediate[\"measurement_outcomes\"], list):\n+            if len(self.intermediate[\"measurement_outcomes\"]) > 0:\n+                if isinstance(self.intermediate[\"measurement_outcomes\"][0], dict):\n+                    intermediate_measurement_outcomes = self.intermediate[\"measurement_outcomes\"]\n+                elif isinstance(self.intermediate[\"measurement_outcomes\"][0], np.ndarray):\n+                    intermediate_measurement_outcomes = [self.get_counts(i) for i in self.intermediate[\"measurement_outcomes\"]]\n+                else:\n+                    raise TypeError(\n+                        f\"The measurement outcome {type(self.intermediate['measurement_outcomes'][0])} is not valid.\"\n+                    )\n+        else:\n+            raise TypeError(\n+                f\"The measurement outcome {type(self.intermediate['measurement_outcomes'])} is not valid.\"\n+            )\n+\n+        def sorted_mean_std_deviation(counts: dict):\n+            values = list(counts.values())\n+            return {\n+                'sorted': dict(sorted(counts.items(), key=lambda x: x[1], reverse=True)),",
+    "path": "src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_result.py",
+    "commit_id": "7529ad6c1d99f7adb4d41ca4c73ff8bb0a6187c1",
+    "original_commit_id": "5381202eac762af7a22bc8387b53eff44f55bce3",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Actually, no need to implement this now. I think it is fine the way it is :) ",
+    "created_at": "2023-06-13T16:35:18Z",
+    "updated_at": "2023-06-13T16:35:18Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228415612",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228415612"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228415612"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228415612/reactions",
+      "total_count": 1,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 1,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 677,
+    "original_line": 676,
+    "side": "RIGHT",
+    "in_reply_to_id": 1228171105,
+    "author_association": "MEMBER",
+    "original_position": 48,
+    "position": 49,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228439470",
+    "pull_request_review_id": 1477669527,
+    "id": 1228439470,
+    "node_id": "PRRC_kwDOHMYLyM5JOH-u",
+    "diff_hunk": "@@ -629,3 +629,56 @@ def lowest_cost_bitstrings(self, n_bitstrings: int = 1) -> dict:\n             ],\n         }\n         return best_results\n+    \n+    def calculate_statistics(self, include_intermediate=False) -> dict:\n+        \"\"\"\n+        A function to calculate statistics of measurement outcomes associated with a QAOA workflow\n+\n+        Parameters\n+        ----------\n+        include_intermediate: `bool`\n+            Whether it is necessary to calculate statistics for intermediate results. Defaults to False.\n+        \"\"\"\n+        if len(self.intermediate[\"measurement_outcomes\"]) == 0 and include_intermediate == True:\n+            raise ValueError(\n+                \"Please specify saving intermediate measurements during optimization.\"",
+    "path": "src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_result.py",
+    "commit_id": "7529ad6c1d99f7adb4d41ca4c73ff8bb0a6187c1",
+    "original_commit_id": "5381202eac762af7a22bc8387b53eff44f55bce3",
+    "user": {
+      "login": "TerraVenil",
+      "id": 6068068,
+      "node_id": "MDQ6VXNlcjYwNjgwNjg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6068068?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/TerraVenil",
+      "html_url": "https://github.com/TerraVenil",
+      "followers_url": "https://api.github.com/users/TerraVenil/followers",
+      "following_url": "https://api.github.com/users/TerraVenil/following{/other_user}",
+      "gists_url": "https://api.github.com/users/TerraVenil/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/TerraVenil/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/TerraVenil/subscriptions",
+      "organizations_url": "https://api.github.com/users/TerraVenil/orgs",
+      "repos_url": "https://api.github.com/users/TerraVenil/repos",
+      "events_url": "https://api.github.com/users/TerraVenil/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/TerraVenil/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Fixed.",
+    "created_at": "2023-06-13T16:57:42Z",
+    "updated_at": "2023-06-13T16:57:43Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228439470",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228439470"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/252#discussion_r1228439470"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/252"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1228439470/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 644,
+    "side": "RIGHT",
+    "in_reply_to_id": 1228122037,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 16,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

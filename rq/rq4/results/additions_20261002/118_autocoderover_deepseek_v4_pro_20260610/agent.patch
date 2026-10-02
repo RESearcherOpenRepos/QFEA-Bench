@@ -1,0 +1,132 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..2c88077 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,119 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Get parameters of the BaseQNN and its nested objects.
++
++        Args:
++            deep: If True, will return the parameters of nested objects as well.
++
++        Returns:
++            Dictionary of parameters.
++        """
++        params = super().get_params(deep=False)
++
++        if deep:
++            pqc_params = self.pqc.get_params(deep=True)
++            for key, val in pqc_params.items():
++                params["pqc__" + key] = val
++
++            if isinstance(self.operator, list):
++                for i, op in enumerate(self.operator):
++                    op_params = op.get_params(deep=True)
++                    for key, val in op_params.items():
++                        params[f"op{i}__" + key] = val
++            else:
++                op_params = self.operator.get_params(deep=True)
++                for key, val in op_params.items():
++                    params["operator__" + key] = val
++
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set parameters of the BaseQNN and its nested objects.
++
++        Args:
++            **params: Parameter names and values.
++
++        Returns:
++            self
++        """
++        if not params:
++            return self
++
++        # Separate nested parameters from own parameters
++        own_params = {}
++        pqc_params = {}
++        operator_params = {}  # for single operator
++        list_operator_params = {}  # for list of operators, keyed by index
++
++        for key, val in params.items():
++            if key.startswith("pqc__"):
++                pqc_params[key[5:]] = val
++            elif key.startswith("operator__"):
++                operator_params[key[10:]] = val
++            elif key.startswith("op") and "__" in key:
++                # Extract index from opN__key
++                prefix, rest = key.split("__", 1)
++                try:
++                    idx = int(prefix[2:])
++                except ValueError:
++                    own_params[key] = val
++                    continue
++                if idx not in list_operator_params:
++                    list_operator_params[idx] = {}
++                list_operator_params[idx][rest] = val
++            else:
++                own_params[key] = val
++
++        # Apply own parameters
++        for key, val in own_params.items():
++            setattr(self, key, val)
++
++        # Track if nested objects were modified
++        nested_modified = False
++
++        # Apply pqc parameters
++        if pqc_params:
++            self.pqc.set_params(**pqc_params)
++            nested_modified = True
++
++        # Apply operator parameters
++        if operator_params:
++            if isinstance(self.operator, list):
++                for op in self.operator:
++                    op.set_params(**operator_params)
++            else:
++                self.operator.set_params(**operator_params)
++            nested_modified = True
++
++        # Apply list operator parameters
++        if list_operator_params:
++            if isinstance(self.operator, list):
++                for idx, op_params in list_operator_params.items():
++                    if idx < len(self.operator):
++                        self.operator[idx].set_params(**op_params)
++            nested_modified = True
++
++        # If nested objects were modified, rebuild internal state
++        if nested_modified:
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [op.generate_initial_parameters(seed=self.parameter_seed)
++                     for op in self.operator]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            self.param = self.param_ini.copy()
++            self.param_op = self.param_op_ini.copy()
++            self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 
+@@ -108,6 +221,7 @@ class BaseQNN(BaseEstimator, ABC):
+             y: Labels
+             weights: Weights for each data point
+         """
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
+         self.param = self.param_ini.copy()
+         self.param_op = self.param_op_ini.copy()
+         self._is_fitted = False

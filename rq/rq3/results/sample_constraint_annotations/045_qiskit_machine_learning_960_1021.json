@@ -1,0 +1,100 @@
+{
+  "id": 45,
+  "sample_id": "qiskit_machine_learning_960_1021",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "ef567f6e12906d7a4c7f3e6dbafb8ec546f98749",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 2,
+    "subtype_test_counts": {
+      "general_semantics/model_training_performance": 4,
+      "general_semantics/cross_entropy_loss": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_1_SVRLoss",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "SVRLoss-trained kernel binds parameters and yields a finite QSVR score."
+        }
+      ],
+      "rationale": "The regression loss type is SVRLoss; the explicit checks are successful fit and finite score."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_2_MSRLoss",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "MSRLoss-trained kernel binds parameters and yields a finite QSVR score."
+        }
+      ],
+      "rationale": "The second loss variant uses mean-squared regression, with the same end-to-end numeric checks."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_3_MARLoss",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "MARLoss-trained kernel binds parameters and yields a finite QSVR score."
+        }
+      ],
+      "rationale": "The third variant uses mean-absolute regression and checks finite performance."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/utils/loss_functions/test_regression_kernel_loss.py::TestRegressionKernelLoss::test_regression_loss_fit_4_HuberLoss",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "HuberLoss-trained kernel binds parameters and yields a finite QSVR score."
+        }
+      ],
+      "rationale": "The fourth variant uses Huber regression and checks finite performance."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_1",
+      "label": "general_semantics/cross_entropy_loss",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "First cross-entropy configuration matches its numeric expected loss."
+        }
+      ],
+      "rationale": "The assertion compares scalar numeric loss values."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_cross_entropy_loss_2",
+      "label": "general_semantics/cross_entropy_loss",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "Second cross-entropy configuration matches its numeric expected loss."
+        }
+      ],
+      "rationale": "This separate target/prediction configuration checks the same formula."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ef567f6e12906d7a4c7f3e6dbafb8ec546f98749/test/utils/loss_functions/test_loss_functions.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/ef567f6e12906d7a4c7f3e6dbafb8ec546f98749/test/utils/loss_functions/test_regression_kernel_loss.py"
+  ],
+  "rationale": "Checked each of four regression loss families and both cross-entropy numeric-reference cases separately."
+}

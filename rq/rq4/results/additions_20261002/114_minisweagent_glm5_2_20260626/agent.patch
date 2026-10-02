@@ -1,0 +1,209 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..f6e58ce
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,159 @@
++"""Cross-Entropy Loss for QNNs."""
++
++from typing import Union
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    r"""Cross-entropy loss for classification.
++
++    This loss function assumes that the model output :math:`f` is already
++    probability-valued (i.e. in the range :math:`[0, 1]`). For binary
++    classification (single output) the binary cross-entropy
++
++    .. math::
++        -\sum_i w_i \left[ y_i \log(f_i) + (1-y_i) \log(1-f_i) \right]
++
++    is used. For multiple outputs the categorical cross-entropy
++
++    .. math::
++        -\sum_i \sum_k w_i \, y_{i,k} \log(f_{i,k})
++
++    is used. The probabilities are clipped to :math:`[\varepsilon, 1-\varepsilon]`
++    to avoid numerical instabilities.
++
++    Args:
++        eps (float, default=1e-8): Small value used for clipping the
++            probabilities to avoid ``log(0)``.
++    """
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self._eps = eps
++
++    @property
++    def loss_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss calculation."""
++        return ("f",)
++
++    @property
++    def gradient_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss gradient calculation."""
++        if self._opt_param_op:
++            return ("f", "dfdp", "dfdop")
++        return ("f", "dfdp")
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        r"""Calculates the cross-entropy loss.
++
++        Args:
++            value_dict (dict): Contains calculated values of the model
++            ground_truth (np.ndarray): The true labels
++            weights (np.ndarray): Weight for each data point, if None all data points
++                count the same
++            multiple_output (bool): True if the QNN has multiple outputs
++
++        Returns:
++            Loss value
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++        ground_truth = kwargs["ground_truth"]
++        f = value_dict["f"]
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = kwargs["weights"]
++        else:
++            weights = np.ones_like(ground_truth)
++        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
++
++        eps = self._eps
++        f_clipped = np.clip(f, eps, 1.0 - eps)
++
++        if multiple_output:
++            # categorical cross-entropy: -sum_k y_k log(f_k)
++            loss = -np.sum(
++                np.multiply(ground_truth, np.log(f_clipped)) * weights
++            )
++        else:
++            # binary cross-entropy
++            loss = -np.sum(
++                (
++                    np.multiply(ground_truth, np.log(f_clipped))
++                    + np.multiply(1.0 - ground_truth, np.log(1.0 - f_clipped))
++                )
++                * weights
++            )
++        return float(loss)
++
++    def gradient(
++        self, value_dict: dict, **kwargs
++    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
++        r"""Returns the gradient of the cross-entropy loss.
++
++        For binary classification the gradient is
++
++        .. math::
++            \sum_i w_i \left(\frac{f_i - y_i}{f_i (1-f_i)}\right)
++            \frac{\partial f(x_i)}{\partial p_j}
++
++        For multiple outputs the gradient is
++
++        .. math::
++            -\sum_i \sum_k w_i \frac{y_{i,k}}{f_{i,k}}
++            \frac{\partial f_{i,k}}{\partial p_j}
++
++        Args:
++            value_dict (dict): Contains calculated values of the model
++            ground_truth (np.ndarray): The true labels
++            weights (np.ndarray): Weight for each data point, if None all data points
++                count the same
++            multiple_output (bool): True if the QNN has multiple outputs
++
++        Returns:
++            Gradient values
++        """
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++        ground_truth = kwargs["ground_truth"]
++        f = value_dict["f"]
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = kwargs["weights"]
++        else:
++            weights = np.ones_like(ground_truth)
++        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
++
++        eps = self._eps
++        f_clipped = np.clip(f, eps, 1.0 - eps)
++
++        if multiple_output:
++            # dL/df = -y / f  (shape: (n_samples, n_outputs))
++            dL_df = -np.divide(ground_truth, f_clipped) * weights
++            if value_dict["dfdp"].shape[0] == 0:
++                d_p = np.array([])
++            else:
++                d_p = np.einsum("ij,ijk->k", dL_df, value_dict["dfdp"])
++            if not self._opt_param_op:
++                return d_p
++            if value_dict["dfdop"].shape[0] == 0:
++                d_op = np.array([])
++            else:
++                d_op = np.einsum("ij,ijk->k", dL_df, value_dict["dfdop"])
++            return d_p, d_op
++        else:
++            # dL/df = (f - y) / (f * (1 - f))  (shape: (n_samples,))
++            dL_df = np.divide(f_clipped - ground_truth, np.multiply(f_clipped, 1.0 - f_clipped))
++            dL_df = dL_df * weights
++            if value_dict["dfdp"].shape[0] == 0:
++                d_p = np.array([])
++            else:
++                d_p = np.einsum("j,jk->k", dL_df, value_dict["dfdp"])
++            if not self._opt_param_op:
++                return d_p
++            if value_dict["dfdop"].shape[0] == 0:
++                d_op = np.array([])
++            else:
++                d_op = np.einsum("j,jk->k", dL_df, value_dict["dfdop"])
++            return d_p, d_op

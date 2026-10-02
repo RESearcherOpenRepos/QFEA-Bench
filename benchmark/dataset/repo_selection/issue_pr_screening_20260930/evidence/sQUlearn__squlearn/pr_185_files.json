@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "b3aae43972459986aa8653131a0411498655c8ae",
+    "filename": "src/squlearn/kernel/ml/qsvc.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 1,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py?ref=96a68129cd83e77f3dc82f1c32e60b9f6ed27438",
+    "patch": "@@ -71,7 +71,6 @@ class QSVC(SVC):\n \n     def __init__(\n         self,\n-        *,\n         quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,\n         **kwargs,\n     ) -> None:"
+  },
+  {
+    "sha": "eea0eda5649babf693fd82992febfb53080b8a7f",
+    "filename": "src/squlearn/kernel/ml/qsvr.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 1,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py?ref=96a68129cd83e77f3dc82f1c32e60b9f6ed27438",
+    "patch": "@@ -70,7 +70,6 @@ class QSVR(SVR):\n \n     def __init__(\n         self,\n-        *,\n         quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,\n         **kwargs,\n     ) -> None:"
+  },
+  {
+    "sha": "42bc2626de4be1c9f3a600680924cb5695b6272f",
+    "filename": "tests/kernel/ml/test_qsvc.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 3,
+    "changes": 6,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/tests%2Fkernel%2Fml%2Ftest_qsvc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/tests%2Fkernel%2Fml%2Ftest_qsvc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fkernel%2Fml%2Ftest_qsvc.py?ref=96a68129cd83e77f3dc82f1c32e60b9f6ed27438",
+    "patch": "@@ -37,7 +37,7 @@ def qsvc_fidelity(self) -> QSVC:\n             regularization=\"thresholding\",\n             mit_depol_noise=\"msplit\",\n         )\n-        return QSVC(quantum_kernel=kernel)\n+        return QSVC(kernel)\n \n     @pytest.fixture(scope=\"module\")\n     def qsvc_pqk(self) -> QSVC:\n@@ -48,11 +48,11 @@ def qsvc_pqk(self) -> QSVC:\n         kernel = ProjectedQuantumKernel(\n             encoding_circuit, executor=executor, regularization=\"thresholding\"\n         )\n-        return QSVC(quantum_kernel=kernel)\n+        return QSVC(kernel)\n \n     def test_that_qsvc_params_are_present(self):\n         \"\"\"Asserts that all classical parameters are present in the QSVC.\"\"\"\n-        qsvc_instance = QSVC(quantum_kernel=MagicMock())\n+        qsvc_instance = QSVC(MagicMock())\n         assert list(qsvc_instance.get_params(deep=False).keys()) == [\n             \"C\",\n             \"break_ties\","
+  },
+  {
+    "sha": "0db3e3bd454f46339ddcfd2e7ff00b5d6890087e",
+    "filename": "tests/kernel/ml/test_qsvr.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 3,
+    "changes": 6,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/tests%2Fkernel%2Fml%2Ftest_qsvr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/96a68129cd83e77f3dc82f1c32e60b9f6ed27438/tests%2Fkernel%2Fml%2Ftest_qsvr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/tests%2Fkernel%2Fml%2Ftest_qsvr.py?ref=96a68129cd83e77f3dc82f1c32e60b9f6ed27438",
+    "patch": "@@ -37,7 +37,7 @@ def qsvr_fidelity(self) -> QSVR:\n             regularization=\"thresholding\",\n             mit_depol_noise=\"msplit\",\n         )\n-        return QSVR(quantum_kernel=kernel, C=1, epsilon=0.1)\n+        return QSVR(kernel, C=1, epsilon=0.1)\n \n     @pytest.fixture(scope=\"module\")\n     def qsvr_pqk(self) -> QSVR:\n@@ -48,11 +48,11 @@ def qsvr_pqk(self) -> QSVR:\n         kernel = ProjectedQuantumKernel(\n             encoding_circuit, executor=executor, regularization=\"thresholding\"\n         )\n-        return QSVR(quantum_kernel=kernel, C=1, epsilon=0.1)\n+        return QSVR(kernel, C=1, epsilon=0.1)\n \n     def test_that_qsvr_params_are_present(self):\n         \"\"\"Asserts that all classical parameters are present in the QSVR.\"\"\"\n-        qsvr_instance = QSVR(quantum_kernel=MagicMock())\n+        qsvr_instance = QSVR(MagicMock())\n         assert list(qsvr_instance.get_params(deep=False).keys()) == [\n             \"C\",\n             \"cache_size\","
+  }
+]

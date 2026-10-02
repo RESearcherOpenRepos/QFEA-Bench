@@ -1,0 +1,158 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..45589f8
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,86 @@
++"""Cross-entropy loss for QNN classifiers."""
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for probability-valued QNN outputs.
++
++    Args:
++        eps (float): Clipping value used to avoid ``log(0)`` and division by zero.
++    """
++
++    def __init__(self, eps=1e-8):
++        super().__init__()
++        self.eps = eps
++
++    def value(self, value_dict, **kwargs) -> float:
++        """Compute the cross-entropy loss.
++
++        Args:
++            value_dict: Dictionary containing the model output under ``"f"``.
++            **kwargs: Must contain ``ground_truth``.
++
++        Returns:
++            float: Mean cross-entropy loss.
++        """
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        f = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++
++        if f.ndim == 1 or ground_truth.ndim == 1:
++            ground_truth = np.ravel(ground_truth)
++            f = np.ravel(f)
++            return float(
++                -np.mean(ground_truth * np.log(f) + (1.0 - ground_truth) * np.log(1.0 - f))
++            )
++
++        return float(-np.mean(np.sum(ground_truth * np.log(f), axis=1)))
++
++    def gradient(self, value_dict, **kwargs) -> np.ndarray:
++        """Compute the parameter gradient of the cross-entropy loss.
++
++        Args:
++            value_dict: Dictionary containing ``"f"`` and model-output derivatives.
++            **kwargs: Must contain ``ground_truth``. The optional ``multiple_output``
++                argument can be used to indicate multiple-output training.
++
++        Returns:
++            np.ndarray: Gradient with respect to the optimized parameters.
++        """
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        multiple_output = kwargs.get("multiple_output", False)
++
++        f = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++        if f.ndim == 1 or ground_truth.ndim == 1 or not multiple_output:
++            prefactor = (f - ground_truth) / (f * (1.0 - f))
++            prefactor = np.ravel(prefactor)
++        else:
++            prefactor = -ground_truth / f
++
++        gradients = []
++
++        if "dfdp" in value_dict:
++            dfdp = np.asarray(value_dict["dfdp"])
++            gradients.append(self._contract_derivative(prefactor, dfdp))
++
++        if self.opt_param_op and "dfdop" in value_dict:
++            dfdop = np.asarray(value_dict["dfdop"])
++            gradients.append(self._contract_derivative(prefactor, dfdop))
++
++        if not gradients:
++            return np.array([])
++
++        return np.concatenate([np.ravel(grad) for grad in gradients])
++
++    @staticmethod
++    def _contract_derivative(prefactor, derivative):
++        """Contract output derivatives with the cross-entropy output gradient."""
++        prefactor = np.asarray(prefactor)
++        derivative = np.asarray(derivative)
++
++        if prefactor.ndim == 1:
++            return np.mean(derivative * prefactor[:, np.newaxis], axis=0)
++
++        return np.mean(np.sum(derivative * prefactor[..., np.newaxis], axis=1), axis=0)
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 9f173c0..6c5bbb2 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -169,6 +169,8 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             np.ndarray : The predicted values.
+         """
+         pred = self._predict(X)
++        if pred.ndim == 1:
++            pred = pred.reshape(-1, 1)
+         return self._label_binarizer.inverse_transform(pred)
+ 
+     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+@@ -180,7 +182,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         Returns:
+             np.ndarray : The probabilities
+         """
+-        pred = self._predict(X)
++        pred = np.clip(self._predict(X), 0.0, 1.0)
+         if pred.ndim == 1:
+             return np.vstack([1 - pred, pred]).T
+ 

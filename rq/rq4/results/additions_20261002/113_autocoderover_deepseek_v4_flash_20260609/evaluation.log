@@ -1,0 +1,686 @@
+Patch applied: true
+Running fail-pass tests...
+
+==================================== ERRORS ====================================
+________ ERROR collecting tests/kernel/matrix/test_kernel_optimizer.py _________
+ImportError while importing test module '/workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/kernel/matrix/test_kernel_optimizer.py:8: in <module>
+    from squlearn.kernel import FidelityKernel, ProjectedQuantumKernel, KernelOptimizer
+E   ImportError: cannot import name 'KernelOptimizer' from 'squlearn.kernel' (/workspace/repo/src/squlearn/kernel/__init__.py)
+=============================== warnings summary ===============================
+src/squlearn/util/executor.py:1602
+  /workspace/repo/src/squlearn/util/executor.py:1602: DeprecationWarning: invalid escape sequence '\ '
+    """Parameters of the quantum circuits.
+
+src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182
+  /workspace/repo/src/squlearn/encoding_circuit/pruned_encoding_circuit.py:182: DeprecationWarning: invalid escape sequence '\p'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+src/squlearn/kernel/matrix/projected_quantum_kernel.py:869
+  /workspace/repo/src/squlearn/kernel/matrix/projected_quantum_kernel.py:869: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/ml/qkrr.py:14
+  /workspace/repo/src/squlearn/kernel/ml/qkrr.py:14: DeprecationWarning: invalid escape sequence '\_'
+    """
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/kernel/matrix/test_kernel_optimizer.py
+6 warnings, 1 error in 4.38s
+
+
+Running pass-pass tests...
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_____________________ TestQKRR.test_predict[qkrr_fidelity] _____________________
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263cd30>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_predict[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_predict(self, qkrr, request, data):
+        """Tests concerning the predict function of the QKRR.
+    
+        Tests include
+            - whether the output is of the same shape as the reference
+            - whether the type of the output is np.ndarray
+        """
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        X, y = data
+>       qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.fidelity_kernel.FidelityKernel object at 0x7ffffe1a6050>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:1190 Set shots to None
+INFO     executor:executor.py:440 Executor initialized with pennylane
+INFO     executor:executor.py:453 Executor intial shots: None
+_______________________ TestQKRR.test_predict[qkrr_pqk] ________________________
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263fe50>
+qkrr = 'qkrr_pqk'
+request = <FixtureRequest for <Function test_predict[qkrr_pqk]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_predict(self, qkrr, request, data):
+        """Tests concerning the predict function of the QKRR.
+    
+        Tests include
+            - whether the output is of the same shape as the reference
+            - whether the type of the output is np.ndarray
+        """
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        X, y = data
+>       qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.projected_quantum_kernel.ProjectedQuantumKernel object at 0x7fffe23433a0>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:1190 Set shots to None
+INFO     executor:executor.py:440 Executor initialized with pennylane
+INFO     executor:executor.py:453 Executor intial shots: None
+_ TestQKRR.test_kernel_params_can_be_changed_after_initialization[qkrr_fidelity] _
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263df00>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_kernel_params_can_be_changed_after_initialization[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_kernel_params_can_be_changed_after_initialization(self, qkrr, request, data):
+        """Tests concerning the kernel parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        qkrr_params = qkrr_instance.get_params()
+        assert qkrr_params["num_qubits"] == 3
+        assert qkrr_params["regularization"] == "thresholding"
+        qkrr_instance.set_params(num_qubits=4, regularization="tikhonov")
+    
+        qkrr_params_updated = qkrr_instance.get_params()
+        assert qkrr_params_updated["num_qubits"] == 4
+        assert qkrr_params_updated["regularization"] == "tikhonov"
+    
+        # check if fit is still possible
+        X, y = data
+        try:
+>           qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.fidelity_kernel.FidelityKernel object at 0x7ffffe1a6050>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263df00>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_kernel_params_can_be_changed_after_initialization[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_kernel_params_can_be_changed_after_initialization(self, qkrr, request, data):
+        """Tests concerning the kernel parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        qkrr_params = qkrr_instance.get_params()
+        assert qkrr_params["num_qubits"] == 3
+        assert qkrr_params["regularization"] == "thresholding"
+        qkrr_instance.set_params(num_qubits=4, regularization="tikhonov")
+    
+        qkrr_params_updated = qkrr_instance.get_params()
+        assert qkrr_params_updated["num_qubits"] == 4
+        assert qkrr_params_updated["regularization"] == "tikhonov"
+    
+        # check if fit is still possible
+        X, y = data
+        try:
+            qkrr_instance.fit(X, y)
+        except:
+>           assert False, f"fitting not possible after changes to quantum kernel parameters"
+E           AssertionError: fitting not possible after changes to quantum kernel parameters
+E           assert False
+
+tests/kernel/ml/test_qkrr.py:116: AssertionError
+__ TestQKRR.test_kernel_params_can_be_changed_after_initialization[qkrr_pqk] ___
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263ece0>
+qkrr = 'qkrr_pqk'
+request = <FixtureRequest for <Function test_kernel_params_can_be_changed_after_initialization[qkrr_pqk]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_kernel_params_can_be_changed_after_initialization(self, qkrr, request, data):
+        """Tests concerning the kernel parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        qkrr_params = qkrr_instance.get_params()
+        assert qkrr_params["num_qubits"] == 3
+        assert qkrr_params["regularization"] == "thresholding"
+        qkrr_instance.set_params(num_qubits=4, regularization="tikhonov")
+    
+        qkrr_params_updated = qkrr_instance.get_params()
+        assert qkrr_params_updated["num_qubits"] == 4
+        assert qkrr_params_updated["regularization"] == "tikhonov"
+    
+        # check if fit is still possible
+        X, y = data
+        try:
+>           qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.projected_quantum_kernel.ProjectedQuantumKernel object at 0x7fffe23433a0>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263ece0>
+qkrr = 'qkrr_pqk'
+request = <FixtureRequest for <Function test_kernel_params_can_be_changed_after_initialization[qkrr_pqk]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_kernel_params_can_be_changed_after_initialization(self, qkrr, request, data):
+        """Tests concerning the kernel parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+    
+        qkrr_params = qkrr_instance.get_params()
+        assert qkrr_params["num_qubits"] == 3
+        assert qkrr_params["regularization"] == "thresholding"
+        qkrr_instance.set_params(num_qubits=4, regularization="tikhonov")
+    
+        qkrr_params_updated = qkrr_instance.get_params()
+        assert qkrr_params_updated["num_qubits"] == 4
+        assert qkrr_params_updated["regularization"] == "tikhonov"
+    
+        # check if fit is still possible
+        X, y = data
+        try:
+            qkrr_instance.fit(X, y)
+        except:
+>           assert False, f"fitting not possible after changes to quantum kernel parameters"
+E           AssertionError: fitting not possible after changes to quantum kernel parameters
+E           assert False
+
+tests/kernel/ml/test_qkrr.py:116: AssertionError
+_ TestQKRR.test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_fidelity] _
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263fd90>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_encoding_circuit_params_can_be_changed_after_initialization(
+        self, qkrr, request, data
+    ):
+        """Tests concerning the encoding circuit parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+        assert qkrr_instance.get_params()["num_layers"] == 2
+        qkrr_instance.set_params(num_layers=4)
+        assert qkrr_instance.get_params()["num_layers"] == 4
+    
+        # Check if fit is still possible
+        X, y = data
+        try:
+>           qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.fidelity_kernel.FidelityKernel object at 0x7ffffe1a6050>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263fd90>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_encoding_circuit_params_can_be_changed_after_initialization(
+        self, qkrr, request, data
+    ):
+        """Tests concerning the encoding circuit parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+        assert qkrr_instance.get_params()["num_layers"] == 2
+        qkrr_instance.set_params(num_layers=4)
+        assert qkrr_instance.get_params()["num_layers"] == 4
+    
+        # Check if fit is still possible
+        X, y = data
+        try:
+            qkrr_instance.fit(X, y)
+        except:
+>           assert False, f"fitting not possible after changes to encoding circuit paramaeters"
+E           AssertionError: fitting not possible after changes to encoding circuit paramaeters
+E           assert False
+
+tests/kernel/ml/test_qkrr.py:133: AssertionError
+_ TestQKRR.test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_pqk] _
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263fbb0>
+qkrr = 'qkrr_pqk'
+request = <FixtureRequest for <Function test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_pqk]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_encoding_circuit_params_can_be_changed_after_initialization(
+        self, qkrr, request, data
+    ):
+        """Tests concerning the encoding circuit parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+        assert qkrr_instance.get_params()["num_layers"] == 2
+        qkrr_instance.set_params(num_layers=4)
+        assert qkrr_instance.get_params()["num_layers"] == 4
+    
+        # Check if fit is still possible
+        X, y = data
+        try:
+>           qkrr_instance.fit(X, y)
+
+tests/kernel/ml/test_qkrr.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QKRR(quantum_kernel=<squlearn.kernel.matrix.projected_quantum_kernel.ProjectedQuantumKernel object at 0x7fffe23433a0>)
+X = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591])
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        Fit the Quantum Kernel Ridge regression model.
+    
+        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
+        accordingly prior to the actual fitting step is performed. The respective solution of the
+        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
+        for providing numerical stability.
+    
+        Args:
+            X (np.ndarray) : Training data of shape (n_samples, n_features). If
+                quantum_kernel == "precomputed" this is instead a precomputed training kernel
+                matrix of shape (n_samples, n_samples).
+            y (np.ndarray) : Target values or labels of shape (n_samples,)
+    
+        Returns:
+            self :
+                Returns the instance itself.
+        """
+        X, y = self._validate_data(
+            X, y, accept_sparse=("csr", "csc"), multi_output=True, y_numeric=True
+        )
+    
+        self.X_train = X
+    
+        # Handle KernelOptimizer wrapper
+>       if isinstance(self._quantum_kernel, KernelOptimizer):
+E       NameError: name 'KernelOptimizer' is not defined
+
+src/squlearn/kernel/ml/qkrr.py:132: NameError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe263fbb0>
+qkrr = 'qkrr_pqk'
+request = <FixtureRequest for <Function test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_pqk]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_encoding_circuit_params_can_be_changed_after_initialization(
+        self, qkrr, request, data
+    ):
+        """Tests concerning the encoding circuit parameter changes."""
+        qkrr_instance = request.getfixturevalue(qkrr)
+        assert qkrr_instance.get_params()["num_layers"] == 2
+        qkrr_instance.set_params(num_layers=4)
+        assert qkrr_instance.get_params()["num_layers"] == 4
+    
+        # Check if fit is still possible
+        X, y = data
+        try:
+            qkrr_instance.fit(X, y)
+        except:
+>           assert False, f"fitting not possible after changes to encoding circuit paramaeters"
+E           AssertionError: fitting not possible after changes to encoding circuit paramaeters
+E           assert False
+
+tests/kernel/ml/test_qkrr.py:133: AssertionError
+=========================== short test summary info ============================
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity] - ...
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk] - NameE...
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_kernel_params_can_be_changed_after_initialization[qkrr_fidelity]
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_kernel_params_can_be_changed_after_initialization[qkrr_pqk]
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_fidelity]
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_encoding_circuit_params_can_be_changed_after_initialization[qkrr_pqk]
+6 failed in 2.49s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  7b6c981 Adaption of kernel optimizer (#279)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 7b6c981
+
+HEAD is now at 0127e85 Add derivatives for PQK (#277)
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_optimizer_for_regressor_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+
+ERROR: found no collectors for /workspace/repo/tests/kernel/matrix/test_kernel_optimizer.py::test_kernel_opimizer_for_classification_classes
+

@@ -1,0 +1,154 @@
+{
+  "instance": {
+    "id": 100,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_433_467",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/433",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/467",
+    "base_commit": "07b75acc7ce16a95354ecb2985c2df704e76802f",
+    "patch": "e360343dbbd25790a294d6bee980244d7238f903"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task translates QuadraticProgram instances to and from Ising SparsePauliOp representations while preserving Pauli-Z encoding semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/problems/quadratic_program.py",
+      "qiskit_optimization/translators/ising.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Optimization's Ising translators still depended on the legacy opflow operator stack. Users needed the package to translate binary QuadraticProgram instances to modern SparsePauliOp operators and to rebuild quadratic programs from SparsePauliOp, Pauli, and related quantum_info operators while keeping the old opflow behavior available during migration.",
+    "requirements": [
+      "Allow to_ising to return either legacy opflow operators or quantum_info operators, with SparsePauliOp support available through an explicit option.",
+      "Allow from_ising to accept SparsePauliOp and Pauli-style quantum_info operators as well as existing opflow operators.",
+      "Preserve the numeric operator coefficients, offsets, objective constants, linear terms, and quadratic terms for minimization and maximization conversions.",
+      "Reject invalid SparsePauliOp inputs containing X or Y terms, terms with more than two Z operators, or imaginary coefficients with the existing QiskitOptimizationError behavior.",
+      "Support constant-only and empty QuadraticProgram instances when converting to Ising form.",
+      "Keep opflow compatibility available and emit migration warnings when callers rely on default or legacy opflow behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "to_ising",
+        "Path": "qiskit_optimization/translators/ising.py",
+        "Input": "quad_prog: QuadraticProgram, opflow: bool | None = None",
+        "Output": "tuple[OperatorBase | BaseOperator, float]",
+        "Description": "Converts a binary QuadraticProgram to an Ising operator and offset, returning SparsePauliOp-compatible quantum_info operators when opflow is false and legacy opflow operators when opflow is true or defaulted; defaulted or legacy opflow paths must emit UserWarning migration warnings."
+      },
+      {
+        "Type": "Function",
+        "Name": "from_ising",
+        "Path": "qiskit_optimization/translators/ising.py",
+        "Input": "qubit_op: OperatorBase | BaseOperator, offset: float = 0.0, linear: bool = False",
+        "Output": "QuadraticProgram",
+        "Description": "Builds a QuadraticProgram from supported opflow or quantum_info Ising operators while preserving linear/quadratic interpretation and validation errors."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticProgram.to_ising",
+        "Path": "qiskit_optimization/problems/quadratic_program.py",
+        "Input": "opflow: bool | None = None",
+        "Output": "tuple[OperatorBase | BaseOperator, float]",
+        "Description": "Delegates to the translator and exposes the same opflow selection behavior from QuadraticProgram instances, including UserWarning migration warnings for defaulted or legacy opflow paths."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticProgram.from_ising",
+        "Path": "qiskit_optimization/problems/quadratic_program.py",
+        "Input": "qubit_op: OperatorBase | BaseOperator, offset: float = 0.0, linear: bool = False",
+        "Output": "None",
+        "Description": "Populates the current QuadraticProgram from supported opflow or quantum_info Ising operators."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_433_467",
+      "image_id": "sha256:210d4d766ced9891f54d52780f8092b1378b912a0856682e7304d9363b8d536d",
+      "image_size": "1069665594"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.14",
+        "qiskit==0.44.3",
+        "qiskit-algorithms==0.2.2",
+        "qiskit-aer==0.12.2",
+        "docplex>=2.21.207,!=2.24.231",
+        "networkx>=2.6.3",
+        "pytest",
+        "ddt",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising2_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_pauli_with_invalid_paulis_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_pauli_I_Z_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising2_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_wo_variable_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_warning"
+        ],
+        "summary": "8 passed in 1.17s",
+        "duration_seconds": 4.7
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_empty_problem",
+          "test/converters/test_converters.py::TestConverters::test_valid_variable_type",
+          "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+          "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_linear",
+          "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_quadratic"
+        ],
+        "summary": "5 passed in 1.54s",
+        "duration_seconds": 4.85
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising2_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_from_ising_pauli_with_invalid_paulis_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_pauli_I_Z_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising2_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_to_ising_wo_variable_2_False",
+          "test/translators/test_ising.py::TestIsingTranslator::test_warning"
+        ],
+        "summary": "8 failed in 1.53s",
+        "duration_seconds": 8.83
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_empty_problem",
+          "test/converters/test_converters.py::TestConverters::test_valid_variable_type",
+          "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+          "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_linear",
+          "test/converters/test_converters.py::TestConverters::test_ising_to_quadraticprogram_quadratic"
+        ],
+        "summary": "5 passed in 1.41s",
+        "duration_seconds": 6.97
+      }
+    }
+  }
+}

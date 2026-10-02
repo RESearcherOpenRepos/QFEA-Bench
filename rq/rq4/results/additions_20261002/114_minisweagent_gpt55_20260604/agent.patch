@@ -1,0 +1,142 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..7540925 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -3,11 +3,13 @@
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
++from .cross_entropy_loss import CrossEntropyLoss
+ from .squared_loss import SquaredLoss
+ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..ddbd5f3
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,93 @@
++"""Cross-entropy loss for QNN classifiers."""
++
++from typing import Union
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for probability-valued QNN classifier outputs.
++
++    The loss supports binary outputs with shape ``(n_samples,)`` and multiple-output
++    targets with shape ``(n_samples, n_outputs)``. Model probabilities are clipped to
++    ``[eps, 1 - eps]`` for numerical stability.
++    """
++
++    def __init__(self, eps: float = 1e-8) -> None:
++        super().__init__()
++        self.eps = eps
++
++    @property
++    def loss_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss calculation."""
++        return ("f",)
++
++    @property
++    def gradient_args_tuple(self) -> tuple:
++        """Returns evaluation tuple for the cross-entropy loss gradient calculation."""
++        if self._opt_param_op:
++            return ("f", "dfdp", "dfdop")
++        return ("f", "dfdp")
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        """Calculates the binary or multiple-output cross-entropy loss."""
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        probabilities = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = np.asarray(kwargs["weights"])
++        else:
++            weights = np.ones_like(ground_truth, dtype=float)
++
++        return float(
++            -np.sum(
++                weights
++                * (
++                    ground_truth * np.log(probabilities)
++                    + (1.0 - ground_truth) * np.log(1.0 - probabilities)
++                )
++            )
++        )
++
++    def gradient(
++        self, value_dict: dict, **kwargs
++    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
++        """Returns gradients from supplied QNN output derivatives."""
++        if "ground_truth" not in kwargs:
++            raise AttributeError("CrossEntropyLoss requires ground_truth.")
++
++        ground_truth = np.asarray(kwargs["ground_truth"])
++        probabilities = np.clip(np.asarray(value_dict["f"]), self.eps, 1.0 - self.eps)
++        if "weights" in kwargs and kwargs["weights"] is not None:
++            weights = np.asarray(kwargs["weights"])
++        else:
++            weights = np.ones_like(ground_truth, dtype=float)
++        multiple_output = "multiple_output" in kwargs and kwargs["multiple_output"]
++
++        prefactor = weights * (probabilities - ground_truth) / (
++            probabilities * (1.0 - probabilities)
++        )
++
++        if value_dict["dfdp"].shape[0] == 0:
++            d_p = np.array([])
++        else:
++            if multiple_output:
++                d_p = np.einsum("ij,ijk->k", prefactor, value_dict["dfdp"])
++            else:
++                d_p = np.einsum("j,jk->k", prefactor, value_dict["dfdp"])
++
++        if not self._opt_param_op:
++            return d_p
++
++        if value_dict["dfdop"].shape[0] == 0:
++            d_op = np.array([])
++        else:
++            if multiple_output:
++                d_op = np.einsum("ij,ijk->k", prefactor, value_dict["dfdop"])
++            else:
++                d_op = np.einsum("j,jk->k", prefactor, value_dict["dfdop"])
++        return d_p, d_op

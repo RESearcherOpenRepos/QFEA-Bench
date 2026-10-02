@@ -1,0 +1,23 @@
+ .github/workflows/tests.yaml                       |   4 +
+ docs/modules/classes.rst                           |   1 +
+ examples/qnn/classification_example.ipynb          |  91 +++---
+ examples/qnn/multiclass_classification.ipynb       | 316 +++++++++++++++++++++
+ install_lowest_dependencies.py                     |  22 +-
+ pyproject.toml                                     |   1 +
+ src/squlearn/qnn/__init__.py                       |  10 +-
+ src/squlearn/qnn/base_qnn.py                       |   1 +
+ src/squlearn/qnn/loss/__init__.py                  |   2 +
+ src/squlearn/qnn/loss/cross_entropy_loss.py        | 145 ++++++++++
+ src/squlearn/qnn/loss/squared_loss.py              |  20 +-
+ src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py      |  29 +-
+ src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py |  50 +++-
+ .../qnn/lowlevel_qnn/lowlevel_qnn_pennylane.py     |  10 +-
+ .../qnn/lowlevel_qnn/lowlevel_qnn_qiskit.py        |   9 +-
+ .../qnn/lowlevel_qnn/lowlevel_qnn_qulacs.py        |   9 +-
+ src/squlearn/qnn/qnnc.py                           |  57 ++++
+ src/squlearn/qnn/qnnr.py                           |   1 +
+ tests/qnn/test_base_qnn.py                         |   2 +
+ tests/qnn/test_loss.py                             |  72 +++++
+ tests/qnn/test_qnnc.py                             |  12 +-
+ tests/qnn/test_training.py                         |   4 +-
+ 22 files changed, 776 insertions(+), 92 deletions(-)

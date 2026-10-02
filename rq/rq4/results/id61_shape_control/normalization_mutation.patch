@@ -1,0 +1,11 @@
+--- a/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py
++++ b/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py
+@@ -277,7 +277,7 @@
+         constant -= 0.5 * np.sum(orbital_energies)
+ 
+         eye = np.eye(self._num_modes, dtype=complex)
+-        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]]) / np.sqrt(2)
++        majorana_basis = np.block([[eye, eye], [1j * eye, -1j * eye]])
+         diagonalizing_unitary = majorana_basis.T.conj() @ basis_change @ majorana_basis
+ 
+         return diagonalizing_unitary[: self._num_modes], orbital_energies, constant

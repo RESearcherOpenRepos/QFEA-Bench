@@ -1,0 +1,345 @@
+Patch applied: true
+Running fail-pass tests...
+FFFFFFEEE                                                                [100%]
+==================================== ERRORS ====================================
+_________________ ERROR at setup of TestQNNClassifier.test_fit _________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7ffffe2a75b0>
+
+    @pytest.fixture(scope="module")
+    def qnn_classifier(self) -> QNNClassifier:
+        """QNNClassifier module."""
+        random_device = np.random.default_rng(seed=30)
+        executor = Executor()
+        pqc = ChebyshevPQC(num_qubits=2, num_features=2, num_layers=1)
+        operator = SummedPaulis(num_qubits=2)
+>       loss = CrossEntropyLoss()
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_qnnc.py:35: TypeError
+------------------------------ Captured log setup ------------------------------
+______________ ERROR at setup of TestQNNClassifier.test_fit_2out _______________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7ffffe2a75b0>
+
+    @pytest.fixture(scope="module")
+    def qnn_classifier_2out(self) -> QNNClassifier:
+        """QNNClassifier module."""
+        random_device = np.random.default_rng(seed=30)
+        executor = Executor()
+        pqc = ChebyshevPQC(num_qubits=2, num_features=2, num_layers=1)
+        operator = [SummedPaulis(num_qubits=2), SummedPaulis(num_qubits=2)]
+>       loss = CrossEntropyLoss()
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_qnnc.py:48: TypeError
+------------------------------ Captured log setup ------------------------------
+_______________ ERROR at setup of TestQNNClassifier.test_predict _______________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7ffffe2a75b0>
+
+    @pytest.fixture(scope="module")
+    def qnn_classifier(self) -> QNNClassifier:
+        """QNNClassifier module."""
+        random_device = np.random.default_rng(seed=30)
+        executor = Executor()
+        pqc = ChebyshevPQC(num_qubits=2, num_features=2, num_layers=1)
+        operator = SummedPaulis(num_qubits=2)
+>       loss = CrossEntropyLoss()
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_qnnc.py:35: TypeError
+=================================== FAILURES ===================================
+_____ TestCrossEntropyLoss.test_value[value_dict0-ground_truth0-0.057705] ______
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22d2980>
+value_dict = {'f': [0.99, 0.01, 0.9, 0.1]}, ground_truth = array([1, 0, 1, 0])
+loss_value = 0.057705
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:30: TypeError
+_____ TestCrossEntropyLoss.test_value[value_dict1-ground_truth1-0.6931472] _____
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22d2200>
+value_dict = {'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...]}
+ground_truth = array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]), loss_value = 0.6931472
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:30: TypeError
+_____ TestCrossEntropyLoss.test_value[value_dict2-ground_truth2-0.0100503] _____
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22d2170>
+value_dict = {'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]}
+ground_truth = array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]])
+loss_value = 0.0100503
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, loss_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9, 0.1]},
+                np.array([1, 0, 1, 0]),
+                0.057705,
+            ),
+            (
+                {"f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                0.6931472,
+            ),
+            (
+                {"f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]]},
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                0.0100503,
+            ),
+        ],
+    )
+    def test_value(self, value_dict, ground_truth, loss_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:30: TypeError
+_ TestCrossEntropyLoss.test_gradient[value_dict0-ground_truth0-False-gradient_value0] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22d1e40>
+value_dict = {'f': [0.99, 0.01, 0.9], 'dfdp': [[0.1, 0.2, 0.3]]}
+ground_truth = array([1, 0, 1]), multiple_output = False
+gradient_value = array([0.05993933, 0.11987865, 0.17981798])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:65: TypeError
+_ TestCrossEntropyLoss.test_gradient[value_dict1-ground_truth1-False-gradient_value1] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22d1ae0>
+value_dict = {'f': [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], 'dfdp': [[0.1, 0.2, 0.3]]}
+ground_truth = array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]), multiple_output = False
+gradient_value = array([0.13333333, 0.26666667, 0.4       ])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:65: TypeError
+_ TestCrossEntropyLoss.test_gradient[value_dict2-ground_truth2-True-gradient_value2] _
+
+self = <tests.qnn.test_loss.TestCrossEntropyLoss object at 0x7fffe22b4370>
+value_dict = {'f': [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]], 'dfdp': [[[0.1, 0.2, 0.3]]]}
+ground_truth = array([[1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]])
+multiple_output = True, gradient_value = array([0.1, 0.2, 0.3])
+
+    @pytest.mark.parametrize(
+        "value_dict, ground_truth, multiple_output, gradient_value",
+        [
+            (
+                {"f": [0.99, 0.01, 0.9], "dfdp": [[0.1, 0.2, 0.3]]},
+                np.array([1, 0, 1]),
+                False,
+                np.array([0.05993933, 0.11987865, 0.17981798]),
+            ),
+            (
+                {
+                    "f": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                    "dfdp": [[0.1, 0.2, 0.3]],
+                },
+                np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]),
+                False,
+                np.array([0.13333333, 0.26666667, 0.4]),
+            ),
+            (
+                {
+                    "f": [[0.99, 0.01, 0.0], [0.0, 0.99, 0.01], [0.01, 0.0, 0.99]],
+                    "dfdp": [[[0.1, 0.2, 0.3]]],
+                },
+                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                True,
+                np.array([0.1, 0.2, 0.3]),
+            ),
+        ],
+    )
+    def test_gradient(self, value_dict, ground_truth, multiple_output, gradient_value):
+>       cross_entropy_loss = CrossEntropyLoss(1e-8)
+E       TypeError: Can't instantiate abstract class CrossEntropyLoss with abstract methods gradient_args_tuple, loss_args_tuple
+
+tests/qnn/test_loss.py:65: TypeError
+=============================== warnings summary ===============================
+src/squlearn/kernel/lowlevel_kernel/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/lowlevel_kernel/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict0-ground_truth0-0.057705]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict1-ground_truth1-0.6931472]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict2-ground_truth2-0.0100503]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict0-ground_truth0-False-gradient_value0]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict1-ground_truth1-False-gradient_value1]
+FAILED tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict2-ground_truth2-True-gradient_value2]
+ERROR tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit - TypeError: Can't ...
+ERROR tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out - TypeError: C...
+ERROR tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict - TypeError: Ca...
+6 failed, 4 warnings, 3 errors in 4.51s
+
+
+Running pass-pass tests...
+..                                                                       [100%]
+2 passed in 2.78s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 11a90f2
+
+HEAD is now at 3bb269e add qulacs to readme (#346)

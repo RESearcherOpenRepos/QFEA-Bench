@@ -1,0 +1,257 @@
+diff --git a/openqaoa/qaoa_parameters/baseparams.py b/openqaoa/qaoa_parameters/baseparams.py
+index c934dcb..8585cfe 100644
+--- a/openqaoa/qaoa_parameters/baseparams.py
++++ b/openqaoa/qaoa_parameters/baseparams.py
+@@ -17,6 +17,7 @@ from typing import List, Union, Tuple, Any, Callable, Iterable, Type
+ import numpy as np
+ 
+ from .operators import Hamiltonian
++from .gatemap import RotationGateMap
+ from .hamiltonianmapper import HamiltonianMapper
+ 
+ 
+@@ -122,11 +123,18 @@ class QAOACircuitParams(VQACircuitParams):
+     ----------    
+     cost_hamiltonian: `Hamiltonian` 
+ 
+-    mixer_hamiltonian: `Hamiltonian`
++    mixer_block: `Hamiltonian` or `List[RotationGateMap]`
++        The mixer block can be specified either as a Hamiltonian or as a list
++        of RotationGateMap objects.
+ 
+     p: `int`
+         Number of QAOA layers; defaults to 1 if not specified
+ 
++    mixer_coeffs: `List[float]`
++        List of coefficients for the mixer terms. Required when mixer_block is
++        a list of RotationGateMap objects. The number of coefficients must
++        match the number of gate maps.
++
+     Attributes
+     ----------
+         All the parameters specified above are initialised as attributes in __init__
+@@ -142,15 +150,54 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+     def __init__(self,
+                  cost_hamiltonian: Hamiltonian,
+-                 mixer_hamiltonian: Hamiltonian,
+-                 p: int):
++                 mixer_block: Union[Hamiltonian, List[RotationGateMap]],
++                 p: int,
++                 mixer_coeffs: List[float] = None):
+ 
+         super().__init__(algorithm='QAOA')
+         self.cost_hamiltonian = cost_hamiltonian
+-        self.mixer_hamiltonian = mixer_hamiltonian
+         self.qureg = cost_hamiltonian.qureg
+         self.p = p
+ 
++        if isinstance(mixer_block, Hamiltonian):
++            self.mixer_hamiltonian = mixer_block
++            self._mixer_gate_maps = None
++            self._is_custom_mixer = False
++        elif isinstance(mixer_block, list):
++            # Validate that all elements are RotationGateMap instances
++            if not all(isinstance(gm, RotationGateMap) for gm in mixer_block):
++                raise TypeError("mixer_block must be a Hamiltonian or a list of "
++                                "RotationGateMap objects")
++            self._mixer_gate_maps = mixer_block
++            self._is_custom_mixer = True
++
++            # Validate mixer_coeffs
++            if mixer_coeffs is None:
++                raise ValueError("mixer_coeffs must be provided when mixer_block "
++                                 "is a list of RotationGateMap objects")
++            if len(mixer_coeffs) != len(mixer_block):
++                raise ValueError(f"Number of mixer coefficients ({len(mixer_coeffs)}) "
++                                 f"must match the number of gate maps ({len(mixer_block)})")
++
++            # Build a lightweight mixer-like object for coefficient access
++            self._mixer_single_qubit_coeffs = []
++            self._mixer_pair_qubit_coeffs = []
++            self._mixer_qubits_singles = []
++            self._mixer_qubits_pairs = []
++
++            for gm, coeff in zip(mixer_block, mixer_coeffs):
++                if hasattr(gm, 'qubit_2'):
++                    # Two-qubit gate
++                    self._mixer_pair_qubit_coeffs.append(coeff)
++                    self._mixer_qubits_pairs.append((gm.qubit_1, gm.qubit_2))
++                else:
++                    # Single-qubit gate
++                    self._mixer_single_qubit_coeffs.append(coeff)
++                    self._mixer_qubits_singles.append((gm.qubit_1,))
++        else:
++            raise TypeError("mixer_block must be a Hamiltonian or a list of "
++                            "RotationGateMap objects")
++
+     def __repr__(self):
+         """Return an overview over the parameters and hyperparameters
+ 
+@@ -175,23 +222,72 @@ class QAOACircuitParams(VQACircuitParams):
+ 
+         string += "Mixer Hamiltonian:\n"
+         string += "\tmixer_qubits_singles: " + \
+-            str(self.mixer_hamiltonian.qubits_singles) + "\n"
++            str(self.mixer_qubits_singles) + "\n"
+         string += "\tmixer_single_qubit_coeffs: " + \
+-            str(self.mixer_hamiltonian.single_qubit_coeffs) + "\n"
++            str(self.mixer_single_qubit_coeffs) + "\n"
+         string += "\tmixer_qubits_pairs: " + \
+-            str(self.mixer_hamiltonian.qubits_pairs) + "\n"
++            str(self.mixer_qubits_pairs) + "\n"
+         string += "\tmixer_pair_qubit_coeffs: " + \
+-            str(self.mixer_hamiltonian.pair_qubit_coeffs) + "\n"
++            str(self.mixer_pair_qubit_coeffs) + "\n"
+ 
+         return string
+ 
++    @property
++    def mixer_qubits_singles(self):
++        """Return the single-qubit mixer terms."""
++        if self._is_custom_mixer:
++            return self._mixer_qubits_singles
++        return self.mixer_hamiltonian.qubits_singles
++
++    @property
++    def mixer_single_qubit_coeffs(self):
++        """Return the single-qubit mixer coefficients."""
++        if self._is_custom_mixer:
++            return self._mixer_single_qubit_coeffs
++        return self.mixer_hamiltonian.single_qubit_coeffs
++
++    @property
++    def mixer_qubits_pairs(self):
++        """Return the two-qubit mixer terms."""
++        if self._is_custom_mixer:
++            return self._mixer_qubits_pairs
++        return self.mixer_hamiltonian.qubits_pairs
++
++    @property
++    def mixer_pair_qubit_coeffs(self):
++        """Return the two-qubit mixer coefficients."""
++        if self._is_custom_mixer:
++            return self._mixer_pair_qubit_coeffs
++        return self.mixer_hamiltonian.pair_qubit_coeffs
++
+     @property
+     def abstract_circuit(self) -> List:
+ 
+         cost_gate_map_list = HamiltonianMapper.repeat_gate_maps(
+             self.cost_hamiltonian, 'cost', self.p)
+-        mixer_gate_map_list = HamiltonianMapper.repeat_gate_maps(
+-            self.mixer_hamiltonian, 'mixer', self.p)
++
++        if self._is_custom_mixer:
++            mixer_gate_map_list = []
++            for each_p in range(self.p):
++                layer_maps = []
++                one_q_count = 0
++                two_q_count = 0
++                for gm in self._mixer_gate_maps:
++                    import copy
++                    gm_copy = copy.copy(gm)
++                    if hasattr(gm, 'qubit_2'):
++                        # Two-qubit gate
++                        gm_copy.pauli_label = ['mixer', each_p, two_q_count]
++                        two_q_count += 1
++                    else:
++                        # Single-qubit gate
++                        gm_copy.pauli_label = ['mixer', each_p, one_q_count]
++                        one_q_count += 1
++                    layer_maps.append(gm_copy)
++                mixer_gate_map_list.append(layer_maps)
++        else:
++            mixer_gate_map_list = HamiltonianMapper.repeat_gate_maps(
++                self.mixer_hamiltonian, 'mixer', self.p)
+ 
+         _abstract_circuit = []
+         for each_p in range(self.p):
+@@ -228,8 +324,8 @@ class QAOAVariationalBaseParams(ABC):
+         self.p = self.qaoa_circuit_params.p
+         self.cost_1q_coeffs = qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs
+         self.cost_2q_coeffs = qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs
+-        self.mixer_1q_coeffs = qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs
+-        self.mixer_2q_coeffs = qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs
++        self.mixer_1q_coeffs = qaoa_circuit_params.mixer_single_qubit_coeffs
++        self.mixer_2q_coeffs = qaoa_circuit_params.mixer_pair_qubit_coeffs
+ 
+     def __len__(self):
+         """
+diff --git a/openqaoa/qaoa_parameters/extendedparams.py b/openqaoa/qaoa_parameters/extendedparams.py
+index 7632813..4b5bdfc 100644
+--- a/openqaoa/qaoa_parameters/extendedparams.py
++++ b/openqaoa/qaoa_parameters/extendedparams.py
+@@ -170,8 +170,8 @@ class QAOAVariationalExtendedParams(QAOAVariationalBaseParams):
+ 
+         n_gamma_singles = len(qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)
+         n_gamma_pairs = len(qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs)
+-        n_beta_singles = len(qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)
+-        n_beta_pairs = len(qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)
++        n_beta_singles = len(qaoa_circuit_params.mixer_single_qubit_coeffs)
++        n_beta_pairs = len(qaoa_circuit_params.mixer_pair_qubit_coeffs)
+ 
+         betas = np.linspace((dt / time) * (time * (1 - 0.5 / p)),
+                             (dt / time) * (time * 0.5 / p), p)
+@@ -199,8 +199,8 @@ class QAOAVariationalExtendedParams(QAOAVariationalBaseParams):
+         p=qaoa_circuit_params.p
+         n_gamma_singles = len(qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)
+         n_gamma_pairs = len(qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs)
+-        n_beta_singles = len(qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)
+-        n_beta_pairs = len(qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)
++        n_beta_singles = len(qaoa_circuit_params.mixer_single_qubit_coeffs)
++        n_beta_pairs = len(qaoa_circuit_params.mixer_pair_qubit_coeffs)
+ 
+         betas_singles = np.random.uniform(0,np.pi,(p,n_beta_singles))
+         betas_pairs = np.random.uniform(0,np.pi,(p,n_beta_pairs))
+@@ -219,8 +219,8 @@ class QAOAVariationalExtendedParams(QAOAVariationalBaseParams):
+         p=qaoa_circuit_params.p
+         n_gamma_singles = len(qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)
+         n_gamma_pairs = len(qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs)
+-        n_beta_singles = len(qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)
+-        n_beta_pairs = len(qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)
++        n_beta_singles = len(qaoa_circuit_params.mixer_single_qubit_coeffs)
++        n_beta_pairs = len(qaoa_circuit_params.mixer_pair_qubit_coeffs)
+ 
+         betas_singles = np.empty((p,n_beta_singles))
+         betas_pairs = np.empty((p,n_beta_pairs))
+diff --git a/openqaoa/qaoa_parameters/fourierparams.py b/openqaoa/qaoa_parameters/fourierparams.py
+index 66c1215..37508d7 100644
+--- a/openqaoa/qaoa_parameters/fourierparams.py
++++ b/openqaoa/qaoa_parameters/fourierparams.py
+@@ -657,9 +657,9 @@ class QAOAVariationalFourierExtendedParams(QAOAVariationalBaseParams):
+             qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)
+         n_u_pairs = len(qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs)
+         n_v_singles = len(
+-            qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)
++            qaoa_circuit_params.mixer_single_qubit_coeffs)
+         n_v_pairs = len(
+-            qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)
++            qaoa_circuit_params.mixer_pair_qubit_coeffs)
+ 
+         v = np.zeros(q)
+         v[0] = 0.5 * time / p
+@@ -691,9 +691,9 @@ class QAOAVariationalFourierExtendedParams(QAOAVariationalBaseParams):
+             qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)
+         n_u_pairs = len(qaoa_circuit_params.cost_hamiltonian.pair_qubit_coeffs)
+         n_v_singles = len(
+-            qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)
++            qaoa_circuit_params.mixer_single_qubit_coeffs)
+         n_v_pairs = len(
+-            qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)
++            qaoa_circuit_params.mixer_pair_qubit_coeffs)
+ 
+         v_singles = np.random.uniform(0, np.pi, (q, n_v_singles))
+         v_pairs = np.random.uniform(0, np.pi, (q, n_v_pairs))
+@@ -711,9 +711,9 @@ class QAOAVariationalFourierExtendedParams(QAOAVariationalBaseParams):
+         """
+ 
+         v_singles = np.empty(
+-            (q, len(qaoa_circuit_params.mixer_hamiltonian.single_qubit_coeffs)))
++            (q, len(qaoa_circuit_params.mixer_single_qubit_coeffs)))
+         v_pairs = np.empty(
+-            (q, len(qaoa_circuit_params.mixer_hamiltonian.pair_qubit_coeffs)))
++            (q, len(qaoa_circuit_params.mixer_pair_qubit_coeffs)))
+         u_singles = np.empty(
+             (q, len(qaoa_circuit_params.cost_hamiltonian.single_qubit_coeffs)))
+         u_pairs = np.empty(

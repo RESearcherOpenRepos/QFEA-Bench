@@ -1,0 +1,112 @@
+{
+  "id": 64,
+  "sample_id": "qiskit_nature_47_77",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "f6ae3a23c5c3435eaf7861dc84aa6ca11b409279",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/active_space_projection": 7
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "Full-space freeze-core transform preserves the original QMolecule and zero shift."
+        }
+      ],
+      "rationale": "The helper compares molecular integrals and energy bookkeeping."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "LiH freeze-core reduction matches the reference reduced QMolecule."
+        }
+      ],
+      "rationale": "The reference includes reduced quantum-chemistry integrals and energy shift."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "BeH core freezing plus orbital removal matches a reference reduced QMolecule."
+        }
+      ],
+      "rationale": "The assertion verifies active-orbital physical data."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "Existing minimal active-space reduction matches its molecular reference."
+        }
+      ],
+      "rationale": "The selected regression test checks reduced integrals and shifts."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "Unpaired-electron active-space reduction matches its reference."
+        }
+      ],
+      "rationale": "The selected regression test checks spin-aware active-space data."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Explicit active orbitals produce the reference reduced molecule."
+        }
+      ],
+      "rationale": "The selected test checks molecular projection results."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 172,
+          "expected": "Alternative QMolecule representation preserves full-space molecular data."
+        }
+      ],
+      "rationale": "The selected test checks physical data under active-space projection."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/f6ae3a23c5c3435eaf7861dc84aa6ca11b409279/test/transformers/test_active_space_transformer.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/f6ae3a23c5c3435eaf7861dc84aa6ca11b409279/test/transformers/test_freeze_core_transformer.py"
+  ],
+  "rationale": "Read the task and each of the 7 selected test cases at the exact patch; each record has one primary constraint."
+}

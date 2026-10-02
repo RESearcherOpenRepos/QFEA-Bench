@@ -1,0 +1,23 @@
+{
+  "oracle_files": [
+    "src/tequila/quantumchemistry/pyscf_interface.py"
+  ],
+  "task": {
+    "problem_statement": "The PySCF chemistry backend currently returns only the full configuration interaction energy. Users also need the corresponding ground-state wavefunction in Tequila qubit representation for comparison with the molecular Hamiltonian.",
+    "requirements": [
+      "When requested, return both the full configuration interaction energy and its quantum wavefunction.",
+      "Preserve the fermionic phase and spin-orbital ordering so that the returned wavefunction agrees with the molecular Hamiltonian ground state up to global phase.",
+      "Preserve the energy-only behavior and existing molecular Hamiltonian and reference-state functionality."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "QuantumChemistryPySCF.compute_fci",
+        "Path": "src/tequila/quantumchemistry/pyscf_interface.py",
+        "Input": "self, get_wfn=False, **kwargs",
+        "Output": "float or tuple[float, QubitWaveFunction]",
+        "Description": "Returns the energy by default, or energy and wavefunction when get_wfn=True; available on Molecule instances using the PySCF backend."
+      }
+    ]
+  }
+}

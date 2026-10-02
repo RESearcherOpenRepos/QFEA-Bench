@@ -1,0 +1,130 @@
+{
+  "id": 7,
+  "sample_id": "openfermion_457_549",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "302449a45ef0106a1ac210174ddefc2b7ffb71a6",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/coefficient_type_acceptance": 2,
+      "general_semantics/symbolic_operator_arithmetic": 3,
+      "interface/return_representation": 1,
+      "quantum_semantics/fermion_qubit_mapping": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_with_sympy",
+      "label": "interface/coefficient_type_acceptance",
+      "assertions": [{"line": 333, "expected": "Constructor accepts a SymPy symbol as the coefficient and exposes it under the input term"}]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_sympy",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [{"line": 397, "expected": "In-place scalar multiplication sets the dummy operator's term coefficient to the SymPy symbol"}]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_sympy_term_removal",
+      "label": "interface/return_representation",
+      "assertions": [{"line": 695, "expected": "Adding the negative symbolic coefficient removes the term from the exposed terms mapping"}]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3_sympy",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 82, "expected": "The transformed raising operator has two Pauli terms"},
+        {"line": 89, "expected": "The Z-string/X term has coefficient x/2"},
+        {"line": 90, "expected": "The Z-string/Y term has coefficient -ix/2"},
+        {"line": 91, "expected": "The full transformed operator equals the sum of those two Pauli terms"}
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform_sympy",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 82, "expected": "Tree-pattern X/Z term of the lowering operator has coefficient x/2"},
+        {"line": 83, "expected": "Tree-pattern Y/X/Z term of the lowering operator has coefficient ix/2"},
+        {"line": 84, "expected": "Corresponding raising Y/X/Z term has coefficient -ix/2"},
+        {"line": 85, "expected": "Corresponding raising X/Z term has coefficient x/2"},
+        {"line": 86, "expected": "The transformed raising-plus-lowering sum has one Pauli term"},
+        {"line": 88, "expected": "That sum is the expected X/Z Pauli term with coefficient x"}
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_init_tuple_complex_coefficient",
+      "label": "interface/coefficient_type_acceptance",
+      "assertions": [
+        {"line": 205, "expected": "Constructor stores one term for a tuple input with a complex coefficient"},
+        {"line": 206, "expected": "The exposed term coefficient equals the supplied complex value"}
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_imul_scalar_complex",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [{"line": 390, "expected": "In-place scalar multiplication applies the complex multiplier to the dummy operator's term"}]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_symbolic_operator_test.py::SymbolicOperatorTest1::test_iadd_different_term",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {"line": 651, "expected": "Adding a different term produces two stored terms"},
+        {"line": 652, "expected": "The original term keeps coefficient 1"},
+        {"line": 653, "expected": "The new term has coefficient 0.5"},
+        {"line": 655, "expected": "Adding the same second term again does not increase the term count"},
+        {"line": 656, "expected": "The original term remains unchanged"},
+        {"line": 657, "expected": "The repeated term's coefficients add to 1"}
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_jordan_wigner_test.py::JordanWignerTransformTest::test_transm_raise3",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 52, "expected": "The transformed mode-3 raising operator has two Pauli terms"},
+        {"line": 59, "expected": "Its Z-string/X term has coefficient 0.5"},
+        {"line": 60, "expected": "Its Z-string/Y term has coefficient -0.5i"},
+        {"line": 61, "expected": "The full transform equals the sum of the expected Pauli terms"}
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_bravyi_kitaev_test.py::BravyiKitaevTransformTest::test_bravyi_kitaev_transform",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {"line": 34, "expected": "Raising operator has two Pauli terms"},
+        {"line": 35, "expected": "Lowering operator has two Pauli terms"},
+        {"line": 51, "expected": "The specified Majorana component has logarithmic qubit locality"},
+        {"line": 61, "expected": "Mode-9 lowering has the expected X/Z Pauli-string coefficient 0.5"},
+        {"line": 62, "expected": "Mode-9 lowering has the expected Y/X/Z Pauli-string coefficient 0.5i"},
+        {"line": 63, "expected": "Mode-9 raising has the expected Y/X/Z coefficient -0.5i"},
+        {"line": 64, "expected": "Mode-9 raising has the expected X/Z coefficient 0.5"}
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/302449a45ef0106a1ac210174ddefc2b7ffb71a6/src/openfermion/ops/_symbolic_operator_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/302449a45ef0106a1ac210174ddefc2b7ffb71a6/src/openfermion/transforms/_jordan_wigner_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/302449a45ef0106a1ac210174ddefc2b7ffb71a6/src/openfermion/transforms/_bravyi_kitaev_test.py"
+  ],
+  "rationale": "DummyOperator1 tests check type acceptance, generic coefficient arithmetic, or exposed term removal. The transform tests check exact Pauli strings and coefficients and are quantum semantic. Each test has one primary label."
+}

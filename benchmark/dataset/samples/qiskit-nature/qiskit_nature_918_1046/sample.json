@@ -1,0 +1,129 @@
+{
+  "instance": {
+    "id": 86,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_918_1046",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/918",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1046",
+    "base_commit": "38db50085fbbbaebe858dc80d18bd601545f0c02",
+    "patch": "4b5426480044ffaebcdb945bf0c8bc435345091b"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements interleaved spin-orbital ordering before fermionic-to-qubit mapping."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/mappers/__init__.py",
+      "qiskit_nature/second_q/mappers/interleaved_qubit_mapper.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized mapper stack provides mapper implementations using the repository's default spin-orbital ordering, but it does not provide a wrapper for interleaved spin ordering. Users need a mapper that can reuse an existing QubitMapper while reordering fermionic operators into interleaved alpha/beta spin-orbital order before mapping.",
+    "requirements": [
+      "An InterleavedQubitMapper must be available through the public second-quantized mapper API.",
+      "The mapper must wrap an existing QubitMapper and delegate the final qubit mapping to that wrapped mapper.",
+      "Before delegation, it must reorder FermionicOp mode indices from blocked spin ordering into interleaved spin ordering.",
+      "The resulting mapped qubit operator must match the wrapped mapper's output for the interleaved operator."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "InterleavedQubitMapper",
+        "Path": "qiskit_nature/second_q/mappers/interleaved_qubit_mapper.py",
+        "Input": "constructor: mapper: QubitMapper",
+        "Output": "",
+        "Description": "Mapper wrapper that stores an underlying QubitMapper and maps fermionic operators after converting their mode ordering to interleaved spin order."
+      },
+      {
+        "Type": "Method",
+        "Name": "InterleavedQubitMapper.map",
+        "Path": "qiskit_nature/second_q/mappers/qubit_mapper.py",
+        "Input": "self, second_q_ops, register_length=None",
+        "Output": "PauliSumOp or mapped collection",
+        "Description": "Maps fermionic operators through the interleaved-order wrapper and returns the wrapped mapper's qubit-operator result."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_918_1046",
+      "image_id": "sha256:efd715905ae43b7fd76702931e3046194831e1b51da3f8f33d0eb2c8fe1dd2a7",
+      "image_size": "1026772493"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.23.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_interleaved_qubit_mapper.py::TestInterleavedQubitMapper::test_mapping"
+        ],
+        "summary": "1 passed in 5.60s",
+        "duration_seconds": 12.55
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping_for_single_op"
+        ],
+        "summary": "8 passed in 1.88s",
+        "duration_seconds": 5.05
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/mappers/test_interleaved_qubit_mapper.py::TestInterleavedQubitMapper::test_mapping"
+        ],
+        "summary": "1 error in 7.47s; ImportError: cannot import name 'InterleavedQubitMapper' from qiskit_nature.second_q.mappers",
+        "duration_seconds": 15.69
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping_for_single_op"
+        ],
+        "summary": "8 passed in 1.69s",
+        "duration_seconds": 6.59
+      }
+    }
+  }
+}

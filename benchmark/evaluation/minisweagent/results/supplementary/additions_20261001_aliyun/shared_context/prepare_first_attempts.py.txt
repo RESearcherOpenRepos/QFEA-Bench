@@ -1,0 +1,25 @@
+import json,shutil
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2]
+inflight={'minisweagent_deepseek_v4_flash':'squlearn_275_339','minisweagent_deepseek_v4_pro':'squlearn_275_339','minisweagent_glm5_2':'tequila_403_407','openhands_deepseek_v4_flash':'squlearn_274_279','openhands_deepseek_v4_pro':'squlearn_112_154','openhands_glm5_2':'squlearn_266_301'}
+assert not (B/'first_attempt_jobs.json').exists()
+jobs=[]
+for j in json.loads((B/'recovery_jobs.json').read_text()):
+ p=ROOT/j['out'];blocked=inflight[j['id']];ids=[sid for sid in j['recovery_ids'] if sid!=blocked]
+ for sid in ids:
+  f=p/'docker_io_interrupted/instances'/sid/(sid+'.traj.json')
+  if f.exists():
+   d=json.loads(f.read_text());assert not d.get('messages'),(sid,'prior model calls')
+   assert j['agent']=='minisweagent' and d.get('info',{}).get('exit_status')=='CalledProcessError'
+ source=[json.loads(l) for l in (p/'instances.secure.jsonl').read_text().splitlines() if l.strip()]
+ key=(lambda r:r['problem_statement']['id']) if j['agent']=='minisweagent' else (lambda r:r['instance_id'])
+ selected=[r for r in source if key(r) in ids];assert len(selected)==len(ids)
+ f=p/'first_attempt_instances.jsonl';f.write_text(''.join(json.dumps(r)+'\n' for r in selected))
+ command=j['command'].copy();command[command.index('--output-dir')+1]=str((p/'first_attempt_generation').relative_to(ROOT))
+ if j['agent']=='minisweagent':command[command.index('--instances')+1]=str(f.relative_to(ROOT))
+ else:
+  staged=Path('/private/tmp')/('qfea-first-attempt-'+j['id']+'.jsonl');shutil.copy2(f,staged);command[command.index('--dataset')+1]=str(staged)
+ jobs.append(dict(j,first_attempt_command=command,first_attempt_ids=ids,blocked_instance=blocked))
+ print(j['id'],len(ids),'first attempts; excluded',blocked)
+(B/'first_attempt_jobs.json').write_text(json.dumps(jobs,indent=2)+'\n')
+assert sum(len(j['first_attempt_ids']) for j in jobs)==28

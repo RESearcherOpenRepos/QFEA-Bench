@@ -1,0 +1,152 @@
+{
+  "instance": {
+    "id": 42,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_63_102",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/63",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/102",
+    "base_commit": "610e99bfe758b320571d08c655ae18d7b3543fc2",
+    "patch": "20ee69a5df54548d04558e817d8f35b342168a28"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task changes generic L1/L2 loss batch-shape behavior rather than quantum model or circuit semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/algorithms/objective_functions.py",
+      "qiskit_machine_learning/utils/loss_functions/loss_functions.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Neural-network classifier and regressor training still contains places that process samples one at a time even though the neural network implementations can evaluate batches. Users need the underlying loss handling to preserve per-sample behavior for batched predictions and targets so training objectives can consume batches without collapsing them into a single scalar loss too early.",
+    "requirements": [
+      "For one-dimensional batched inputs, L1 and L2 loss evaluation must return one loss value per sample instead of collapsing the entire batch into one scalar.",
+      "L1 and L2 loss gradients must preserve the input prediction shape and match the elementwise gradient of the corresponding loss.",
+      "Existing neural-network classifier and regressor workflows using L1 and L2-style losses must continue to run after the batched loss behavior is added."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "L1Loss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Provides L1 loss evaluation and gradients for one-dimensional batched arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "L1Loss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "predict, target",
+        "Output": "ndarray or scalar",
+        "Description": "Returns absolute-error losses with one value per sample for one-dimensional batched predictions."
+      },
+      {
+        "Type": "Method",
+        "Name": "L1Loss.gradient",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "predict, target",
+        "Output": "ndarray or scalar",
+        "Description": "Returns the elementwise L1 gradient with the same shape as the prediction input."
+      },
+      {
+        "Type": "Class",
+        "Name": "L2Loss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Provides squared-error loss evaluation and gradients for one-dimensional batched arrays."
+      },
+      {
+        "Type": "Method",
+        "Name": "L2Loss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "predict, target",
+        "Output": "ndarray or scalar",
+        "Description": "Returns squared-error losses with one value per sample for one-dimensional batched predictions."
+      },
+      {
+        "Type": "Method",
+        "Name": "L2Loss.gradient",
+        "Path": "qiskit_machine_learning/utils/loss_functions/loss_functions.py",
+        "Input": "predict, target",
+        "Output": "ndarray or scalar",
+        "Description": "Returns the elementwise L2 gradient with the same shape as the prediction input."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_machine_learning_63_102",
+      "build_success": true,
+      "image_id": "sha256:fed49a0273562d0613df004a642eaebcb2a9363599144122b918d9547f783233",
+      "image_size": "4784084737"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "scikit-learn<1.2",
+        "Cython<3",
+        "qiskit-terra==0.18.0",
+        "qiskit-aer==0.8.2",
+        "torch==1.13.1",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_2___5_____5_____l1__",
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_5___5_____5_____l2__"
+        ],
+        "result": "passed",
+        "summary": "2 passed in 3.45s",
+        "duration_seconds": 7
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_1___cobyla____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_3___bfgs____statevector__"
+        ],
+        "result": "passed",
+        "summary": "4 passed in 4.93s",
+        "duration_seconds": 9
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_2___5_____5_____l1__",
+          "test/utils/loss_functions/test_loss_functions.py::TestLossFunctions::test_l1_l2_loss_5___5_____5_____l2__"
+        ],
+        "result": "failed",
+        "summary": "2 failed with one-dimensional batch loss shape collapse in 3.35s",
+        "duration_seconds": 11
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_1___cobyla____l1____statevector__",
+          "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_3___cobyla____l2____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_1___cobyla____statevector__",
+          "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_3___bfgs____statevector__"
+        ],
+        "result": "passed",
+        "summary": "4 passed in 4.65s",
+        "duration_seconds": 11
+      }
+    }
+  }
+}

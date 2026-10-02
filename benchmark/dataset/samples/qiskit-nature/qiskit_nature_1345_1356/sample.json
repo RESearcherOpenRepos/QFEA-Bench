@@ -1,0 +1,163 @@
+{
+  "instance": {
+    "id": 49,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_1345_1356",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/1345",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1356",
+    "base_commit": "249d2da45c58103a3a588b39d93a302094874718",
+    "patch": "3221b5c56cc25bd83f95b5c9932f801e79f249ee"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements a boson-to-qubit logarithmic mapper with occupation encoding, coefficient, and qubit-ordering semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/mappers/__init__.py",
+      "qiskit_nature/second_q/mappers/bosonic_linear_mapper.py",
+      "qiskit_nature/second_q/mappers/bosonic_logarithmic_mapper.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository already supports bosonic operators and provides a linear boson-to-qubit mapper. However, it does not provide a logarithmic boson-to-qubit mapping. This means bosonic modes currently require a number of qubits that scales linearly with the represented occupation space, which limits larger truncation levels and future mixed boson-fermion workflows. The repository should support a logarithmic mapper for bosonic operators.",
+    "requirements": [
+      "The mapper must accept a maximum occupation value and use it to map each bosonic mode with logarithmic qubit scaling.",
+      "Calling the existing public mapper API on bosonic operator inputs must correctly translate creation and annihilation operators for single-mode and multi-mode cases.",
+      "The mapped qubit operators must have correct coefficients and qubit ordering for number-like terms, repeated operators, and cross-mode operator products."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "BosonicLogarithmicMapper",
+        "Path": "qiskit_nature/second_q/mappers/bosonic_logarithmic_mapper.py",
+        "Input": "constructor: max_occupation: int",
+        "Output": "",
+        "Description": "Boson-to-qubit mapper using logarithmic local encoding."
+      },
+      {
+        "Type": "Method",
+        "Name": "BosonicLogarithmicMapper.map",
+        "Path": "qiskit_nature/second_q/mappers/bosonic_mapper.py",
+        "Input": "self, second_q_op: BosonicOp",
+        "Output": "SparsePauliOp",
+        "Description": "Maps bosonic creation and annihilation operator inputs to qubit operators using logarithmic local encoding."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_1345_1356",
+      "image_id": "sha256:66457d1e166bd446d6301c320abbeb2d1ba72ccaf6c3c849442e62d4f4d018fc",
+      "image_size": "1430975942"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_1",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_5",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_7",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_9",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_1",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_7"
+        ],
+        "summary": "6 passed in 2.18s.",
+        "duration_seconds": 6.64
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_1",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_2",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_3",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_4",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_5",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_6",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_7",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_8",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_9",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_1",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_2",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_3",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_4",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_5",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_6",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_7",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_8",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_9",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_overwrite_reg_len"
+        ],
+        "summary": "26 passed in 1.74s",
+        "duration_seconds": 5.0
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_1",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_5",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_7",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_9",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_1",
+          "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_7"
+        ],
+        "summary": "ImportError during collection: cannot import name 'BosonicLogarithmicMapper' from qiskit_nature.second_q.mappers; 1 error in 2.05s.",
+        "duration_seconds": 8.25
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_1",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_2",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_3",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_4",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_5",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_6",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_7",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_8",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_9",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_1",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_2",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_3",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_4",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_5",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_6",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_7",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_8",
+          "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_9",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7",
+          "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_overwrite_reg_len"
+        ],
+        "summary": "26 passed in 1.58s",
+        "duration_seconds": 6.56
+      }
+    }
+  }
+}

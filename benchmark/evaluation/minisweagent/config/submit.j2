@@ -1,0 +1,41 @@
+## Submission
+
+When you've completed your work, you MUST submit your changes as a git patch.
+Follow these steps IN ORDER, with SEPARATE commands:
+
+Step 1: Create the patch file
+If you created any new source files that are part of the requested feature, first run
+`git add -N path/to/new_file1 path/to/new_file2` for those new files.
+Then run `git diff -- path/to/file1 path/to/file2 > patch.txt` listing only the source
+files you modified or created. The `git add -N` command makes git include new files in
+the patch with proper headers.
+Do NOT commit your changes.
+
+<IMPORTANT>
+The patch must only contain changes to the specific source files you modified to implement the requested feature.
+New source files are allowed when they are part of the requested public interface or necessary source implementation.
+Do not submit newly created files or changes to any of the following files:
+
+- test and reproduction files
+- helper scripts, tests, or tools that you created
+- installation, build, packaging, configuration, or setup scripts unless they are directly part of the requested feature (you can assume that the environment is already set up for your client)
+- binary or compiled files
+</IMPORTANT>
+
+Step 2: Verify your patch
+Inspect patch.txt to confirm it only contains your intended changes and headers show `--- a/` and `+++ b/` paths.
+
+Step 3: Submit (EXACT command required)
+You MUST use this EXACT command to submit:
+
+```bash
+echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT && cat patch.txt
+```
+
+If the command fails (nonzero exit status), it will not submit.
+
+<CRITICAL>
+- Creating/viewing the patch and submitting it MUST be separate commands (not combined with &&).
+- If you modify patch.txt after verifying, you SHOULD verify again before submitting.
+- You CANNOT continue working (reading, editing, testing) in any way on this task after submitting.
+</CRITICAL>

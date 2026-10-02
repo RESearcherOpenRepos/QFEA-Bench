@@ -1,0 +1,335 @@
+{
+  "id": 25,
+  "sample_id": "qiskit_machine_learning_227_244",
+  "test_number": 1,
+  "split": "F2P",
+  "selector": "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt",
+  "constraint_label": "general_semantics/model_training_performance",
+  "dominant_root_cause": "contract",
+  "mechanism": "训练结果携带的 QuantumKernel 未提供 test_qkt 所调用的 get_unbound_user_parameters 接口。",
+  "status": "reviewed",
+  "cause_support": {
+    "contract": 9
+  },
+  "unresolved_failure_count": 2,
+  "reviewed_observations": [
+    {
+      "agent": "minisweagent",
+      "run": "deepseek_v4_flash_20260602",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": null,
+      "defect_id": "025/minisweagent/deepseek_v4_flash_20260602/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练通过；自定义 loss 的结果内核没有 get_unbound_user_parameters，绑定检查抛 AttributeError。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/minisweagent_deepseek_v4_flash_20260602.json",
+        "prediction_source": "benchmark/evaluation/minisweagent/runs/deepseek_v4_flash_20260602/preds.json"
+      }
+    },
+    {
+      "agent": "minisweagent",
+      "run": "deepseek_v4_pro_20260602",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "score_zero",
+      "defect_id": "025/minisweagent/deepseek_v4_pro_20260602/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练 QSVC.score=0；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78,86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/minisweagent_deepseek_v4_pro_20260602.json",
+        "prediction_source": "benchmark/evaluation/minisweagent/runs/deepseek_v4_pro_20260602/preds.json"
+      }
+    },
+    {
+      "agent": "minisweagent",
+      "run": "gemini_3_flash_20260604",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "score_zero",
+      "defect_id": "025/minisweagent/gemini_3_flash_20260604/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练 QSVC.score=0；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78,86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/minisweagent_gemini_3_flash_20260604.json",
+        "prediction_source": "benchmark/evaluation/minisweagent/runs/gemini_3_flash_20260604/preds.json"
+      }
+    },
+    {
+      "agent": "minisweagent",
+      "run": "glm5_2_20260626",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": null,
+      "defect_id": "025/minisweagent/glm5_2_20260626/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练通过；自定义 loss 的结果内核缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+          "releasenotes/notes/quantum-kernel-trainer-7b3a9c1f2d4e5a6b.yaml"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/minisweagent_glm5_2_20260626.json",
+        "prediction_source": "benchmark/evaluation/minisweagent/runs/glm5_2_20260626/preds.json"
+      }
+    },
+    {
+      "agent": "minisweagent",
+      "run": "gpt55_20260604",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "score_zero",
+      "defect_id": "025/minisweagent/gpt55_20260604/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练 QSVC.score=0；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78,86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/minisweagent_gpt55_20260604.json",
+        "prediction_source": "benchmark/evaluation/minisweagent/runs/gpt55_20260604/preds.json"
+      }
+    },
+    {
+      "agent": "openhands",
+      "run": "deepseek_v4_flash_20260608",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": null,
+      "defect_id": "025/openhands/deepseek_v4_flash_20260608/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练通过；自定义 loss 的结果内核缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/openhands_deepseek_v4_flash_20260608.json",
+        "prediction_source": "benchmark/evaluation/openhands/runs/deepseek_v4_flash_20260608/preds.json"
+      }
+    },
+    {
+      "agent": "openhands",
+      "run": "deepseek_v4_pro_20260608",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "score_zero",
+      "defect_id": "025/openhands/deepseek_v4_pro_20260608/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练 QSVC.score=0；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78,86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/openhands_deepseek_v4_pro_20260608.json",
+        "prediction_source": "benchmark/evaluation/openhands/runs/deepseek_v4_pro_20260608/preds.json"
+      }
+    },
+    {
+      "agent": "openhands",
+      "run": "gemini3_flash_20260606",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "nan",
+      "defect_id": "025/openhands/gemini3_flash_20260606/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练遇到非有限矩阵；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/openhands_gemini3_flash_20260606.json",
+        "prediction_source": "benchmark/evaluation/openhands/runs/gemini3_flash_20260606/preds.json"
+      }
+    },
+    {
+      "agent": "openhands",
+      "run": "glm5_2_20260627",
+      "observed_status": "failed",
+      "cause": null,
+      "additional_unattributed_failure": "nan",
+      "defect_id": null,
+      "evidence": {
+        "explanation": "默认训练和自定义 loss 都在训练路径遇到非有限矩阵；目前不能从 traceback 唯一定位生成 NaN 的代码机制。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78-92",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+          "releasenotes/notes/quantum-kernel-trainer-7a3b9c1d2e4f5062.yaml"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/openhands_glm5_2_20260627.json",
+        "prediction_source": "benchmark/evaluation/openhands/runs/glm5_2_20260627/preds.json"
+      }
+    },
+    {
+      "agent": "openhands",
+      "run": "gpt55_20260625",
+      "observed_status": "failed",
+      "cause": "contract",
+      "additional_unattributed_failure": "score_zero",
+      "defect_id": "025/openhands/gpt55_20260625/missing_unbound_user_parameters",
+      "evidence": {
+        "explanation": "默认训练 QSVC.score=0；自定义 loss 的结果内核又缺少 get_unbound_user_parameters。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78,86",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/openhands_gpt55_20260625.json",
+        "prediction_source": "benchmark/evaluation/openhands/runs/gpt55_20260625/preds.json"
+      }
+    },
+    {
+      "agent": "autocoderover",
+      "run": "gpt55_20260625",
+      "observed_status": "not_collected",
+      "cause": null,
+      "additional_unattributed_failure": null,
+      "defect_id": null,
+      "evidence": {
+        "explanation": "not_collected；没有实际失败断言。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py",
+        "implementation_location": null,
+        "patch_files": [],
+        "replay_source": "rq/rq3/results/casewise_replays/autocoderover_gpt55_20260625.json",
+        "prediction_source": "benchmark/evaluation/autocoderover/runs/gpt55_20260625/preds.json"
+      }
+    },
+    {
+      "agent": "autocoderover",
+      "run": "deepseek_v4_flash_20260609",
+      "observed_status": "failed",
+      "cause": null,
+      "additional_unattributed_failure": "nan",
+      "defect_id": null,
+      "evidence": {
+        "explanation": "默认训练和自定义 loss 都在训练路径遇到非有限矩阵；目前不能从 traceback 唯一定位生成 NaN 的代码机制。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py:78-92",
+        "implementation_location": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py::QuantumKernelTrainer.fit",
+        "patch_files": [
+          "qiskit_machine_learning/kernels/algorithms/__init__.py",
+          "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+          "qiskit_machine_learning/utils/loss_functions/__init__.py",
+          "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+        ],
+        "replay_source": "rq/rq3/results/casewise_replays/autocoderover_deepseek_v4_flash_20260609.json",
+        "prediction_source": "benchmark/evaluation/autocoderover/runs/deepseek_v4_flash_20260609/preds.json"
+      }
+    },
+    {
+      "agent": "autocoderover",
+      "run": "deepseek_v4_pro_20260610",
+      "observed_status": "not_collected",
+      "cause": null,
+      "additional_unattributed_failure": null,
+      "defect_id": null,
+      "evidence": {
+        "explanation": "not_collected；没有实际失败断言。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py",
+        "implementation_location": null,
+        "patch_files": [],
+        "replay_source": "rq/rq3/results/casewise_replays/autocoderover_deepseek_v4_pro_20260610.json",
+        "prediction_source": "benchmark/evaluation/autocoderover/runs/deepseek_v4_pro_20260610/preds.json"
+      }
+    },
+    {
+      "agent": "autocoderover",
+      "run": "gemini3_flash_20260609",
+      "observed_status": "not_run",
+      "cause": null,
+      "additional_unattributed_failure": null,
+      "defect_id": null,
+      "evidence": {
+        "explanation": "not_run；没有实际失败断言。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py",
+        "implementation_location": null,
+        "patch_files": [],
+        "replay_source": "rq/rq3/results/casewise_replays/autocoderover_gemini3_flash_20260609.json",
+        "prediction_source": "benchmark/evaluation/autocoderover/runs/gemini3_flash_20260609/preds.json"
+      }
+    },
+    {
+      "agent": "autocoderover",
+      "run": "glm5_2_openrouter_20260628",
+      "observed_status": "not_run",
+      "cause": null,
+      "additional_unattributed_failure": null,
+      "defect_id": null,
+      "evidence": {
+        "explanation": "not_run；没有实际失败断言。",
+        "test_location": "test/kernels/algorithms/test_qkernel_trainer.py",
+        "implementation_location": null,
+        "patch_files": [],
+        "replay_source": "rq/rq3/results/casewise_replays/autocoderover_glm5_2_openrouter_20260628.json",
+        "prediction_source": "benchmark/evaluation/autocoderover/runs/glm5_2_openrouter_20260628/preds.json"
+      }
+    }
+  ],
+  "rationale": "11组实际失败中，9组在自定义 loss 子测试直接触发缺失方法错误；8组在默认训练或两个子测试出现 score=0 或非有限矩阵，其中一些与接口错误同时发生。8组数值异常尚未定位唯一机制；即使属于同一其他根因类别，支持运行最多8组，少于已确证接口缺陷的9组，因此主导根因仍为 contract。2组未收集、2组未运行不投票。 unresolved_failure_count counts the two failed configurations with no assigned cause; the eight numerical subtest symptoms are overlapping observations, not eight additional configurations.",
+  "limitations": [
+    "未将 score=0 或 NaN 的原因归给接口缺失；它们仍需独立诊断。",
+    "一个 testcase 包含两个独立 subTest，因此同一运行可同时有多项失败。",
+    "尚未进行诊断修复。"
+  ],
+  "review_basis": [
+    "task",
+    "patch_commit_test_source",
+    "all_15_structured_outcomes",
+    "all_11_failed_submission_file_lists",
+    "all_failed_subtest_traces"
+  ]
+}

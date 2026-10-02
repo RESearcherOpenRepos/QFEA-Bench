@@ -1,0 +1,133 @@
+{
+  "instance": {
+    "id": 69,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_577_591",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/577",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/591",
+    "base_commit": "2c7a298a95a1a3ad405b8f1e35dc2d1055b69eed",
+    "patch": "3372bc1c19ab0e738720fcf847b338af2be3ceb2"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task constructs Heisenberg spin Hamiltonians with axis couplings and magnetic-field terms over lattice connectivity."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/properties/__init__.py",
+      "qiskit_nature/second_q/properties/heisenberg_model.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The lattice-model stack includes models such as the Ising model, but it lacks a Heisenberg model even though the Heisenberg Hamiltonian is a common spin-system model and generalizes several useful special cases. Users need a lattice-based Heisenberg model that can construct the corresponding spin Hamiltonian from a lattice, configurable axis couplings, and an external magnetic field.",
+    "requirements": [
+      "A Heisenberg model must be available from the second-quantized lattice-model properties API.",
+      "The model must preserve and expose the lattice supplied at construction.",
+      "With default parameters on a two-node line lattice, the model must produce X, Y, and Z two-site spin interaction terms for the connected nodes.",
+      "The model must support arbitrary lattice connectivity, including triangular lattices, and produce same-axis two-site terms for every non-self edge.",
+      "The model must apply an external magnetic field across the X, Y, and Z axes as one-site spin terms on lattice self-edges.",
+      "The model must support per-axis coupling constants so that selected axes can be included or omitted.",
+      "The transverse-field Ising model must be reproducible as a special case by using only Z-axis coupling and an X-axis magnetic field.",
+      "Existing IsingModel lattice construction, uniform-parameter construction, parameter-matrix construction, coupling-matrix behavior, and second-quantized operator output must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HeisenbergModel",
+        "Path": "qiskit_nature/second_q/properties/heisenberg_model.py",
+        "Input": "constructor: lattice, coupling_constants=(1.0, 1.0, 1.0), ext_magnetic_field=(0.0, 0.0, 0.0)",
+        "Output": "",
+        "Description": "Represents a spin-1/2 Heisenberg lattice model using a lattice, per-axis coupling constants, and per-axis external magnetic-field coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "HeisenbergModel.second_q_ops",
+        "Path": "qiskit_nature/second_q/properties/heisenberg_model.py",
+        "Input": "self, display_format=None",
+        "Output": "SpinOp",
+        "Description": "Builds the Heisenberg Hamiltonian as a SpinOp, using same-axis two-site terms for lattice edges and one-site terms for nonzero external magnetic-field components on self-edges."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_577_591",
+      "image_id": "sha256:874242143fdee8c1c231c4f6117107829cce2f3283e890e966ae0adf4db421f1",
+      "image_size": "1093659009"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.21.2",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_triangular",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_ising",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xy",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xyz_ext_field"
+        ],
+        "summary": "5 passed in 2.07s",
+        "duration_seconds": 5.72
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_uniform_parameters",
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_from_parameters"
+        ],
+        "summary": "3 passed in 2.64s",
+        "duration_seconds": 6.01
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_triangular",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_ising",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xy",
+          "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xyz_ext_field"
+        ],
+        "summary": "5 collection errors in 2.72s; ImportError: cannot import name 'HeisenbergModel' from 'qiskit_nature.second_q.properties'",
+        "duration_seconds": 9.37
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_init",
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_uniform_parameters",
+          "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_from_parameters"
+        ],
+        "summary": "3 passed in 1.97s",
+        "duration_seconds": 8.33
+      }
+    }
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "instance": {
+    "id": 16,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_4881_4928",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/4881",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/4928",
+    "base_commit": "bb0bf88e311a6d89fc2ddb6f4a09f8dc7d63a4a7",
+    "patch": "2b971e013bb5b962263a27e987c56371d75e9b3f"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements parity-basis fermion-to-qubit mapping with wire and coefficient semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/fermi/__init__.py",
+      "pennylane/fermi/conversion.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PennyLane supports converting fermionic operators to qubit operators, but users also need a parity-basis mapping in addition to the existing Jordan-Wigner path. The fermionic conversion utilities should expose a parity transform that maps FermiWord and FermiSentence objects to equivalent qubit operators or Pauli sentences, with support for explicit wire labels and coefficient tolerance handling.",
+    "requirements": [
+      "A public parity transform must be available for fermionic operators.",
+      "The transform must accept FermiWord and FermiSentence inputs and reject incompatible operator types with a clear ValueError.",
+      "The caller must provide the number of qubits or spin orbitals, and the transform must reject fermionic terms that address orbitals outside that system size.",
+      "The transform must be able to return either a PennyLane qubit operator or a PauliSentence, depending on the requested output mode.",
+      "Identity and empty fermionic operators must produce valid identity or zero qubit representations.",
+      "The transform must support custom wire mappings for both word and sentence inputs.",
+      "Small imaginary coefficient components must be removable according to the requested tolerance.",
+      "Using the parity mapping must emit the documented warning that operators and states should be in the parity basis."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "parity_transform",
+        "Path": "pennylane/fermi/conversion.py",
+        "Input": "fermi_operator, n, ps=False, wire_map=None, tol=None",
+        "Output": "PennyLane Operator or PauliSentence",
+        "Description": "Converts FermiWord and FermiSentence objects into qubit representations using the parity mapping."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_4881_4928",
+      "image_id": "sha256:6fee123e02bb678e00e036da9597ab7dd32bd7fd17203992cc20342b66dc157b",
+      "image_size": "1281943058"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pennylane-lightning==0.37.0",
+        "autoray>=0.6.11,<0.7"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_parity_mapping.py::test_error_is_raised_for_incompatible_type",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op4-4-result4]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op8-6-result8]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_operation[fermionic_op4-4-result4]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_identity",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_null_operator_fermi_word_ps[operator0]",
+          "tests/fermi/test_parity_mapping.py::test_empty_fermi_sentence",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_ps[fermionic_op0-4-result0]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_operation[fermionic_op0-4-result0]",
+          "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+          "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_tolerance[fermi_op2-qubit_op_data2-1e-12]"
+        ],
+        "summary": "14 passed in 0.13s",
+        "duration_seconds": 9.05
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_fermi_mapping.py::test_error_is_raised_for_incompatible_type",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op4-result4]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op8-result8]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_operation[fermionic_op4-result4]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_identity",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_null_operator_fermi_word_ps[operator0]",
+          "tests/fermi/test_fermi_mapping.py::test_empty_fermi_sentence",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_ps[fermionic_op0-result0]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_operation[fermionic_op0-result0]",
+          "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+          "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_tolerance[fermi_op2-qubit_op_data2-1e-12]"
+        ],
+        "summary": "12 passed in 0.16s",
+        "duration_seconds": 6.76
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/fermi/test_parity_mapping.py::test_error_is_raised_for_incompatible_type",
+          "tests/fermi/test_parity_mapping.py::test_error_is_raised_for_dimension_mismatch",
+          "tests/fermi/test_parity_mapping.py::test_warning_is_raised_with_use",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op4-4-result4]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op8-6-result8]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_operation[fermionic_op4-4-result4]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_identity",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_null_operator_fermi_word_ps[operator0]",
+          "tests/fermi/test_parity_mapping.py::test_empty_fermi_sentence",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_ps[fermionic_op0-4-result0]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_operation[fermionic_op0-4-result0]",
+          "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+          "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+          "tests/fermi/test_parity_mapping.py::test_parity_transform_tolerance[fermi_op2-qubit_op_data2-1e-12]"
+        ],
+        "summary": "14 selected selectors errored during collection with ImportError: cannot import name 'parity_transform' from pennylane.fermi.conversion in 0.20s",
+        "duration_seconds": 7.01
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_fermi_mapping.py::test_error_is_raised_for_incompatible_type",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op4-result4]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op8-result8]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_operation[fermionic_op4-result4]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_identity",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_null_operator_fermi_word_ps[operator0]",
+          "tests/fermi/test_fermi_mapping.py::test_empty_fermi_sentence",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_ps[fermionic_op0-result0]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_operation[fermionic_op0-result0]",
+          "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+          "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+          "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_tolerance[fermi_op2-qubit_op_data2-1e-12]"
+        ],
+        "summary": "12 passed in 0.13s",
+        "duration_seconds": 6.46
+      }
+    }
+  }
+}

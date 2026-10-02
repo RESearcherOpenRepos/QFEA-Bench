@@ -1,0 +1,88 @@
+"""Run only 28 never-started model workflows; six paid retries remain excluded."""
+import concurrent.futures,datetime,hashlib,json,os,shutil,signal,subprocess,time
+import run_batch as batch
+from benchmark.evaluation.common.run_io import write_batch_prediction_files
+B=batch.OUT;ROOT=batch.ROOT
+JOBS=json.loads((B/'first_attempt_jobs.json').read_text())
+JOBS.sort(key=lambda j:(j['agent']!='minisweagent',j['model']))
+
+def collect(job):
+ p=ROOT/job['out'];g=p/'generation';freshdir=p/'first_attempt_generation'
+ fresh=json.loads((freshdir/'preds.json').read_text())['predictions'];old=json.loads((g/'preds.json').read_text())['predictions']
+ assert set(fresh)==set(job['first_attempt_ids']) and job['blocked_instance'] not in fresh
+ assert not (set(old)&set(fresh))
+ audit=json.loads((p/'storage_recovery_audit.json').read_text())
+ for sid,digest in audit['retained_prediction_hashes'].items():assert hashlib.sha256(json.dumps(old[sid],sort_keys=True).encode()).hexdigest()==digest
+ for sid in fresh:
+  f=freshdir/sid/(sid+'.traj.json')
+  if f.exists():
+   txt=f.read_text().lower();assert 'input/output error' not in txt and 'read-only file system' not in txt,(sid,'storage failure recurred')
+   if job['agent']=='minisweagent':assert json.loads(f.read_text())['info'].get('exit_status')!='CalledProcessError',(sid,'container startup failed')
+  assert not (g/sid).exists()
+  if (freshdir/sid).exists():shutil.copytree(freshdir/sid,g/sid)
+ combined=old|fresh;assert len(combined)==12 and job['blocked_instance'] not in combined
+ write_batch_prediction_files(g,list(combined.values()))
+ if job['agent']=='openhands':
+  for name in ['output.critic_attempt_1.jsonl','output.jsonl']:
+   f=g/name;new=freshdir/name
+   rows=[json.loads(l) for l in f.read_text().splitlines() if l.strip()]
+   rows += [json.loads(l) for l in new.read_text().splitlines() if l.strip()]
+   assert len(rows)==12 and {r['instance_id'] for r in rows}==set(combined)
+   f.write_text(''.join(json.dumps(r)+'\n' for r in rows))
+ batch.save(p/'first_attempt_collected.json',{'valid_workflows':12,'blocked_instance':job['blocked_instance']})
+
+def validate(job):
+ p=ROOT/job['out'];output=p/'results_completed_subset.json'
+ if not output.with_suffix('.json.partial').exists():shutil.copy2(p/'prevalidation_results.json',output.with_suffix('.json.partial'))
+ result=batch.ev.evaluate_predictions(p/'generation/preds.json',ROOT/'benchmark/dataset/samples',output,timeout=600,workers=1,stable_runs=3,setup_retries=1,resume=True)
+ assert len(result['results'])==12 and all(not r.get('eval_infra_failed') and not r.get('timed_out') for r in result['results'])
+ batch.save(p/'completed_subset_verification.json',{'evaluated':12,'resolved':result['summary']['resolved'],'blocked_instance':job['blocked_instance'],'note':'One Docker-interrupted paid workflow awaits explicit rerun approval. No original 106 results changed.'})
+ return {'evaluated':12,'resolved':result['summary']['resolved'],'blocked_instance':job['blocked_instance']}
+
+def main():
+ os.chdir(ROOT);active={};waiting=[];pending=[];state={};future=None;current=None
+ for j in JOBS:
+  p=ROOT/j['out']
+  if (p/'completed_subset_verification.json').exists():state[j['id']]={'phase':'subset_completed_pending_decision'}
+  elif (p/'first_attempt_collected.json').exists():waiting.append(j)
+  elif (p/'first_attempt_launch.json').exists():
+   pid=json.loads((p/'first_attempt_launch.json').read_text())['pid'];active[j['id']]=(j,batch.AdoptedProcess(pid,p/'first_attempt_generation',len(j['first_attempt_ids'])),None)
+  else:pending.append(j)
+ pool=concurrent.futures.ThreadPoolExecutor(max_workers=1);last_health=0
+ try:
+  while pending or active or waiting or future:
+   if time.monotonic()-last_health>20:
+    check=subprocess.run(['docker','image','inspect','benchmark-minisweagent-qiskit_addon_sqd_148_230:latest','--format','{{.Id}}'],capture_output=True,text=True,timeout=15)
+    if check.returncode:
+     for j,proc,log in active.values():os.kill(proc.pid,signal.SIGSTOP)
+     raise RuntimeError('Docker health check failed; controllers suspended: '+check.stderr)
+    last_health=time.monotonic()
+   occupied={j['model'] for j,_,_ in active.values()}
+   for j in pending[:]:
+    if len(active)>=3 or j['model'] in occupied:continue
+    p=ROOT/j['out'];assert j['blocked_instance'] not in j['first_attempt_ids'];assert not (p/'first_attempt_launch.json').exists()
+    log=(p/'first_attempt_agents.log').open('w');proc=subprocess.Popen(j['first_attempt_command'],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT)
+    batch.save(p/'first_attempt_launch.json',{'pid':proc.pid,'started_at':datetime.datetime.now().isoformat(),'command':j['first_attempt_command'],'excluded_paid_retry':j['blocked_instance']})
+    active[j['id']]=(j,proc,log);pending.remove(j);occupied.add(j['model']);print('FIRST_ATTEMPT_START',j['id'],proc.pid,flush=True)
+   for key,(j,proc,log) in list(active.items()):
+    state[key]={'phase':'first_attempt_running','pid':proc.pid};rc=proc.poll()
+    if rc is None:continue
+    if log:log.close()
+    del active[key];batch.save(ROOT/j['out']/'first_attempt_generation_done.json',{'returncode':rc})
+    if rc:state[key]={'phase':'runner_failed','returncode':rc};continue
+    try:collect(j)
+    except Exception as exc:
+     state[key]={'phase':'collection_failed','error':str(exc)};print('COLLECT_ERROR',key,str(exc),flush=True);continue
+    state[key]={'phase':'waiting_for_validation'};waiting.append(j)
+   if future is not None and future.done():
+    try:state[current['id']]={'phase':'subset_completed_pending_decision',**future.result()};print('SUBSET_COMPLETED',current['id'],state[current['id']],flush=True)
+    except Exception as exc:
+     import traceback;traceback.print_exc();state[current['id']]={'phase':'validation_failed','error':str(exc)}
+    future=None
+   if future is None and waiting:
+    current=waiting.pop(0);state[current['id']]={'phase':'validating_subset'};future=pool.submit(validate,current)
+   for j in pending:state[j['id']]={'phase':'queued_first_attempts'}
+   batch.save(B/'status.json',{'updated_at':datetime.datetime.now().isoformat(),'jobs':state,'queued':[j['id'] for j in pending],'paid_reruns_excluded':6})
+   time.sleep(10)
+ finally:pool.shutdown(wait=True)
+if __name__=='__main__':main()

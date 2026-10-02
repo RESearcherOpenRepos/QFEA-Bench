@@ -1,0 +1,288 @@
+{
+  "id": 81,
+  "sample_id": "qiskit_nature_848_858",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "abfd9973b316b8b33990c7aace0940b950b3ddab",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 8,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "quantum_semantics/fermionic_commutation": 7,
+      "general_semantics/numeric_tolerance_comparison": 2,
+      "general_semantics/symbolic_operator_arithmetic": 2,
+      "general_semantics/complex_conjugation": 2,
+      "general_semantics/input_immutability": 1,
+      "general_semantics/operator_equality": 1,
+      "interface/mapping_access": 3,
+      "interface/zero_operator_representation": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_1",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 55,
+          "expected": "Number and vacancy operators have the expected zero anticommutator."
+        }
+      ],
+      "rationale": "This case checks a fermionic operator relation."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_anti_commutator_2",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 55,
+          "expected": "Number operator and complex combination have the expected nonzero anticommutator."
+        }
+      ],
+      "rationale": "This case checks a second fermionic operator relation."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_1",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 46,
+          "expected": "Number and vacancy operators commute to zero."
+        }
+      ],
+      "rationale": "This case checks a fermionic commutator."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_commutator_2",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 46,
+          "expected": "Creation and annihilation commute to the expected signed terms."
+        }
+      ],
+      "rationale": "This case checks canonical ladder algebra."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_1",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "Symmetric double commutator of number, vacancy, and complex operator vanishes."
+        }
+      ],
+      "rationale": "The nested relation depends on fermionic products."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_2",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "First sign convention gives complex creation-operator coefficient 1+0.5j."
+        }
+      ],
+      "rationale": "This variant checks a specific nested fermionic commutator."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_commutators.py::TestCommutators::test_double_commutator_3",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "Second sign convention gives creation-operator coefficient 2+0.5j."
+        }
+      ],
+      "rationale": "This variant checks the alternate nested relation."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_is_zero",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 337,
+          "expected": "Sparse-label zero predicate respects empty, zero, nonzero, and tolerance cases."
+        }
+      ],
+      "rationale": "The dummy operator check is numeric thresholding, not quantum zero-operator algebra."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Sparse-label addition combines numeric coefficients."
+        }
+      ],
+      "rationale": "The dummy base regression checks generic term arithmetic."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 198,
+          "expected": "Dummy sparse-label adjoint conjugates coefficient values."
+        }
+      ],
+      "rationale": "The selected control checks generic complex arithmetic."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 209,
+          "expected": "Dummy sparse-label conjugation changes imaginary coefficient signs."
+        }
+      ],
+      "rationale": "The selected control checks generic complex arithmetic."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+      "label": "general_semantics/input_immutability",
+      "assertions": [
+        {
+          "line": 303,
+          "expected": "Copied input mapping is unaffected by later mutation."
+        }
+      ],
+      "rationale": "The selected control checks copy semantics."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+      "label": "general_semantics/operator_equality",
+      "assertions": [
+        {
+          "line": 215,
+          "expected": "Exact sparse-label equality distinguishes matching and differing content."
+        }
+      ],
+      "rationale": "The dummy base regression checks generic equality."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 276,
+          "expected": "Equivalence respects coefficient tolerance and key identity."
+        }
+      ],
+      "rationale": "The dummy base regression checks numeric closeness."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 288,
+          "expected": "Sparse-label lookup returns the stored coefficient."
+        }
+      ],
+      "rationale": "The selected control checks a mapping API."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "Sparse-label iterator yields stored keys."
+        }
+      ],
+      "rationale": "The selected control checks a mapping API."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 293,
+          "expected": "Sparse-label length reports two keys."
+        }
+      ],
+      "rationale": "The selected control checks a mapping API."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Scalar multiplication scales sparse-label coefficients."
+        }
+      ],
+      "rationale": "The dummy base regression checks generic arithmetic."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_one",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 313,
+          "expected": "One operator exposes the empty label with coefficient one."
+        }
+      ],
+      "rationale": "The selected control checks public identity encoding."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_zero",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 308,
+          "expected": "Zero operator exposes an empty mapping."
+        }
+      ],
+      "rationale": "The selected control checks public zero encoding."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/abfd9973b316b8b33990c7aace0940b950b3ddab/test/second_q/operators/test_commutators.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/abfd9973b316b8b33990c7aace0940b950b3ddab/test/second_q/operators/test_sparse_label_op.py"
+  ],
+  "rationale": "Individually reviewed all 20 selected exact-patch tests; the primary label follows the explicit behavior checked."
+}

@@ -1,0 +1,491 @@
+{
+  "instance": {
+    "id": 117,
+    "repo": "sQUlearn/squlearn",
+    "instance_id": "squlearn_266_301",
+    "status": "completed",
+    "issue_url": "https://github.com/sQUlearn/squlearn/issues/266",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/sQUlearn/squlearn/pull/301",
+    "base_commit": "e3866c7448a9d05e4ba2360fdc9b309168caa3e1",
+    "patch": "1b0adcd9d26f56ce19ae8122e8631901c5b303df"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "PR main goal matches Issue266: deferred encoding-circuit and QML-model initialization infers feature dimension at fit time. Encoding-slot capacity/mismatch checks are explicitly discussed in Issue266; also closing related Issue292 does not add a clearly independent task. New circuit tests exercise dimension inference, slot mismatch and numerical kernel predictions."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+      "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+      "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+      "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+      "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/encoding_circuit_base.py",
+      "src/squlearn/encoding_circuit/encoding_circuit_derivatives.py",
+      "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+      "src/squlearn/encoding_circuit/transpiled_encoding_circuit.py",
+      "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py",
+      "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_expectation_value.py",
+      "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_pennylane.py",
+      "src/squlearn/kernel/lowlevel_kernel/kernel_matrix_base.py",
+      "src/squlearn/kernel/lowlevel_kernel/kernel_optimizer.py",
+      "src/squlearn/kernel/lowlevel_kernel/projected_quantum_kernel.py",
+      "src/squlearn/kernel/qgpc.py",
+      "src/squlearn/kernel/qgpr.py",
+      "src/squlearn/kernel/qkrr.py",
+      "src/squlearn/kernel/qsvc.py",
+      "src/squlearn/kernel/qsvr.py",
+      "src/squlearn/qnn/base_qnn.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_base.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_pennylane.py",
+      "src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn_qiskit.py",
+      "src/squlearn/qnn/qnnc.py",
+      "src/squlearn/qnn/qnnr.py",
+      "src/squlearn/util/data_preprocessing.py",
+      "src/squlearn/util/executor.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Users currently have to specify the number of input features when constructing quantum encoding circuits. Models should infer that dimension from their data while maintaining consistent encoding behavior and detecting explicit feature-count mismatches.",
+    "requirements": [
+      "Allow supported encoding circuits to be constructed without num_features and infer it when quantum-kernel models receive data.",
+      "Support fitting and prediction through the supported circuit families and quantum-kernel regression and classification models.",
+      "Retain explicit num_features behavior and reject inconsistent feature vectors.",
+      "Preserve nearby quantum-kernel prediction and quantum-neural-network behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "LayeredEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, feature_str: str='x', parameter_str: str='p', **kwargs",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "LayeredEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "Layer",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "constructor: encoding_circuit: LayeredEncodingCircuit",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "Layer.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevRx",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=False, alpha: float=4.0, nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevRx.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_rx.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "RandomLayeredEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, seed: int=0, min_num_layers: int=2, max_num_layers: int=10, feature_probability=0.3",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "RandomLayeredEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_layered_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "YZ_CX_EncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, c: float=1.0",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "YZ_CX_EncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/yz_cx_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "KyriienkoEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, encoding_style: str='chebyshev_tower', variational_arrangement: str='HEA', num_encoding_layers: int=1, num_variational_layers: int=1, rotation_gate: str='ry', block_width: int=2, block_depth: int=1",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "KyriienkoEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/kyriienko_nonlinear_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevTower",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+        "Input": "constructor: num_qubits: int, num_chebyshev: int, num_features: int=None, alpha: float=1.0, num_layers: int=1, rotation_gate: str='ry', hadamard_start: bool=True, arrangement: str='block', nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevTower.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_tower.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ParamZFeatureMap",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=2, num_features: int=None, entangling: bool=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParamZFeatureMap.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/param_z_feature_map.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "RandomEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, seed: int=0, min_gates: int=10, max_gates: int=50, gate_weights: dict=default_gate_weights, encoding_weights: dict=default_encoding_weights",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "RandomEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/random_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "MultiControlEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, final_encoding=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "MultiControlEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/multi_control_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "ChebyshevPQC",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, entangling_gate: str='crz', alpha: float=4.0, nonlinearity: str='arccos'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "ChebyshevPQC.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/chebyshev_pqc.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "HubregtsenEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_layers: int=1, num_features: int=None, closed: bool=True, final_encoding=False",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "HubregtsenEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/hubregtsen_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Class",
+        "Name": "HighDimEncodingCircuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+        "Input": "constructor: num_qubits: int, num_features: int=None, cycling: bool=True, cycling_type: str='saw', num_layers: Union[None, int]=None, layer_type: str='rows', entangling_gate: str='iswap'",
+        "Output": "",
+        "Description": "Encoding circuit supporting omitted num_features and subsequent inference from data."
+      },
+      {
+        "Type": "Method",
+        "Name": "HighDimEncodingCircuit.get_circuit",
+        "Path": "src/squlearn/encoding_circuit/circuit_library/highdim_encoding_circuit.py",
+        "Input": "self, features, parameters",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the encoded circuit and rejects inputs inconsistent with an explicitly specified feature count."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPR.fit",
+        "Path": "src/squlearn/kernel/qgpr.py",
+        "Input": "self, X, y",
+        "Output": "QGPR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPR.predict",
+        "Path": "src/squlearn/kernel/qgpr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPC.fit",
+        "Path": "src/squlearn/kernel/qgpc.py",
+        "Input": "self, X, y",
+        "Output": "QGPC",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QGPC.predict",
+        "Path": "src/squlearn/kernel/qgpc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QKRR.fit",
+        "Path": "src/squlearn/kernel/qkrr.py",
+        "Input": "self, X, y",
+        "Output": "QKRR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QKRR.predict",
+        "Path": "src/squlearn/kernel/qkrr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVC.fit",
+        "Path": "src/squlearn/kernel/qsvc.py",
+        "Input": "self, X, y",
+        "Output": "QSVC",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVC.predict",
+        "Path": "src/squlearn/kernel/qsvc.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVR.fit",
+        "Path": "src/squlearn/kernel/qsvr.py",
+        "Input": "self, X, y",
+        "Output": "QSVR",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "QSVR.predict",
+        "Path": "src/squlearn/kernel/qsvr.py",
+        "Input": "self, X",
+        "Output": "numpy.ndarray",
+        "Description": "Supports kernels whose encoding-circuit feature count is inferred from input data."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-squlearn_266_301:latest",
+      "image_id": "sha256:2cd3e8a642d9b380689c69f82875be33dac9714696f339d2e7c6c7493c278754",
+      "image_size": "1262058066",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.20",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.4\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/encoding_circuit/circuit_library/test_multi_control_encoding_circuit.py::TestMultiControlEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_param_z_feature_map.py::TestParamZFeatureMap::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_kyriienko_encoding_circuit.py::TestKyriienkoEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_high_dim_encoding_circuit.py::TestHighDimEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_hubregtsen_encoding_circuit.py::TestHubregtsenEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py::TestRandomEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_tower.py::TestChebyshevTower::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_pqc.py::TestChebyshevPQC::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_rx.py::TestChebyshevRx::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_yz_cx_encoding_circuit.py::TestYZ_CX_EncodingCircuit::test_minimal_fit",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_predict_without_num_features[qsvr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_predict_without_num_features[qsvr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict_without_num_features[qkrr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict_without_num_features[qkrr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_predict_without_num_features[qsvc_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_predict_without_num_features[qsvc_pqk_without_num_features]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]",
+          "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_multi_control_encoding_circuit.py::TestMultiControlEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_param_z_feature_map.py::TestParamZFeatureMap::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_kyriienko_encoding_circuit.py::TestKyriienkoEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_hubregtsen_encoding_circuit.py::TestHubregtsenEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py::TestRandomEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_tower.py::TestChebyshevTower::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_pqc.py::TestChebyshevPQC::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_rx.py::TestChebyshevRx::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_yz_cx_encoding_circuit.py::TestYZ_CX_EncodingCircuit::test_feature_consistency"
+        ],
+        "summary": "33 selected selectors blocked by target-feature import failure (4.47s); each independently confirmed in three stability trials",
+        "duration_seconds": 6.195
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted"
+        ],
+        "summary": "3 passed in 4.16s",
+        "duration_seconds": 5.923
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/encoding_circuit/circuit_library/test_multi_control_encoding_circuit.py::TestMultiControlEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_param_z_feature_map.py::TestParamZFeatureMap::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_kyriienko_encoding_circuit.py::TestKyriienkoEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_high_dim_encoding_circuit.py::TestHighDimEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_hubregtsen_encoding_circuit.py::TestHubregtsenEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py::TestRandomEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_tower.py::TestChebyshevTower::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_pqc.py::TestChebyshevPQC::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_rx.py::TestChebyshevRx::test_minimal_fit",
+          "tests/encoding_circuit/circuit_library/test_yz_cx_encoding_circuit.py::TestYZ_CX_EncodingCircuit::test_minimal_fit",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_predict_without_num_features[qsvr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qsvr.py::TestQSVR::test_predict_without_num_features[qsvr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict_without_num_features[qkrr_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict_without_num_features[qkrr_pqk_without_num_features]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_predict_without_num_features[qsvc_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qsvc.py::TestQSVC::test_predict_without_num_features[qsvc_pqk_without_num_features]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_fidelity_without_num_features]",
+          "tests/kernel/ml/test_qgpc.py::TestQGPC::test_predict_without_num_features[qgpc_pqk_without_num_features]",
+          "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_minimal_fit",
+          "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_multi_control_encoding_circuit.py::TestMultiControlEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_param_z_feature_map.py::TestParamZFeatureMap::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_kyriienko_encoding_circuit.py::TestKyriienkoEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_hubregtsen_encoding_circuit.py::TestHubregtsenEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_random_encoding_circuit.py::TestRandomEncodingCircuit::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_tower.py::TestChebyshevTower::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_pqc.py::TestChebyshevPQC::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_chebyshev_rx.py::TestChebyshevRx::test_feature_consistency",
+          "tests/encoding_circuit/circuit_library/test_yz_cx_encoding_circuit.py::TestYZ_CX_EncodingCircuit::test_feature_consistency"
+        ],
+        "summary": "33 passed in 7.40s",
+        "duration_seconds": 9.319
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]",
+          "tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]",
+          "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted"
+        ],
+        "summary": "3 passed in 4.33s",
+        "duration_seconds": 6.203
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/squlearn_266_301",
+    "selector_exclusions": {
+      "tests/encoding_circuit/circuit_library/test_high_dim_encoding_circuit.py::TestHighDimEncodingCircuit::test_feature_consistency": "Passes independently on base in repeated runs; not F2P. All other circuit/model target cases retained."
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "id": 15,
+  "sample_id": "pennylane_3982_3977",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "258e729e3a445b2c06de45a5948e9ca1cf06d5e0",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "general_semantics/lossless_chunk_partitioning": 2,
+      "quantum_semantics/tapering_expectation_preservation": 1,
+      "general_semantics/binary_linear_algebra": 2,
+      "quantum_semantics/pauli_symmetry_construction": 1,
+      "quantum_semantics/clifford_operator_construction": 1,
+      "quantum_semantics/hamiltonian_tapering": 1,
+      "quantum_semantics/hartree_fock_tapering": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/qchem/test_tapering.py::test_split_pauli_sentence[190-49]",
+      "label": "general_semantics/lossless_chunk_partitioning",
+      "assertions": [
+        {
+          "line": 979,
+          "expected": "Each PauliSentence chunk contains at most 49 entries"
+        },
+        {
+          "line": 982,
+          "expected": "Recombining all chunks restores every original key and coefficient"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/qchem/test_tapering.py::test_split_pauli_sentence[40-13]",
+      "label": "general_semantics/lossless_chunk_partitioning",
+      "assertions": [
+        {
+          "line": 979,
+          "expected": "Each PauliSentence chunk contains at most 13 entries"
+        },
+        {
+          "line": 982,
+          "expected": "Recombining all chunks restores every original key and coefficient"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/qchem/test_tapering.py::test_taper_obs[symbols0-geometry0-0]",
+      "label": "quantum_semantics/tapering_expectation_preservation",
+      "assertions": [
+        {
+          "line": 537,
+          "expected": "Tapering preserves Hartree-Fock expectation values of the selected observables"
+        },
+        {
+          "line": 538,
+          "expected": "Public tapering matches the PauliSentence tapering representation"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_reduced_row_echelon[binary_matrix0-result0]",
+      "label": "general_semantics/binary_linear_algebra",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "Reduced row echelon output matches an independently constructed GF(2) result"
+        },
+        {
+          "line": 127,
+          "expected": "Reduced row echelon output matches the supplied reference matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_kernel[binary_matrix0-result0]",
+      "label": "general_semantics/binary_linear_algebra",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "Each independently derived nullspace vector is returned"
+        },
+        {
+          "line": 183,
+          "expected": "The GF(2) nullspace matches the reference matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_generate_paulis[generators0-4-result0]",
+      "label": "quantum_semantics/pauli_symmetry_construction",
+      "assertions": [
+        {
+          "line": 204,
+          "expected": "Symmetry generators produce the expected single-wire Pauli-X operators"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_cliford[generator0-paulixops0-result0]",
+      "label": "quantum_semantics/clifford_operator_construction",
+      "assertions": [
+        {
+          "line": 264,
+          "expected": "The Clifford operator matches the expected Pauli expansion"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_transform_hamiltonian[symbols0-geometry0-generator0-paulixops0-paulix_sector0-ham_ref0]",
+      "label": "quantum_semantics/hamiltonian_tapering",
+      "assertions": [
+        {
+          "line": 296,
+          "expected": "The tapered molecular Hamiltonian has the reference coefficients"
+        },
+        {
+          "line": 297,
+          "expected": "Its Pauli terms match the reference operators"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "tests/qchem/test_tapering.py::test_transform_hf[generators0-paulixops0-paulix_sector0-2-4-result0]",
+      "label": "quantum_semantics/hartree_fock_tapering",
+      "assertions": [
+        {
+          "line": 458,
+          "expected": "The Hartree-Fock occupation state tapers to the reference bit string"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/258e729e3a445b2c06de45a5948e9ca1cf06d5e0/tests/qchem/test_tapering.py"
+  ],
+  "rationale": "Chunk-size and exact recombination are generic partitioning properties despite PauliSentence inputs. Binary RREF and nullspace checks are ordinary GF(2) linear algebra. Pauli symmetry, Clifford, tapered Hamiltonian/state, and expectation-value checks use quantum semantics."
+}

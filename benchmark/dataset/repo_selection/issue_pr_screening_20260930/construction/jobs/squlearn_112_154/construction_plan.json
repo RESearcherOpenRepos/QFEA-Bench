@@ -1,0 +1,41 @@
+{
+  "sample_id": "squlearn_112_154",
+  "repository": "sQUlearn/squlearn",
+  "issue_url": "https://github.com/sQUlearn/squlearn/issues/112",
+  "pr_url": "https://github.com/sQUlearn/squlearn/pull/154",
+  "issue_title": "QNN Class has no classification loss",
+  "issue_state": "CLOSED",
+  "target_tests": "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value; test_gradient; tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out",
+  "construction_risk": "",
+  "reason": "Adds missing classification objective to QNN, integrating expectation-output postprocessing and circuit/observable parameter gradients with cross entropy. Unit tests check loss/gradients and modified QNNClassifier tests exercise training with single and multiple observables. Retained as a core QML application API feature under the historical scope (not claiming cross entropy itself is quantum-specific).",
+  "current_issue_state": "closed",
+  "status": "completed",
+  "base_commit": "3bb269ebb14818b87041e61690be28a168af2833",
+  "patch_commit": "11a90f284dcbef9e5e543b927929b2a97d113f74",
+  "pr_head_commit": "6e01b8293c109f48d457ab8418f4324b69fc92d2",
+  "source_dir": "/Users/shiyasai/Desktop/Quantum/[FSE 27 submit] QFEA-Bench - Benchmarking LLM-Based Agents on Repo-Level Quantum Feature Implementation/benchmark/dataset/repo_selection/issue_pr_screening_20260930/construction/sources/squlearn_112_154",
+  "merged_at": "2025-08-21T12:03:30Z",
+  "recipe_status": "built_and_runtime_validated",
+  "fail_pass_hint": "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value; test_gradient; tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out",
+  "selected_fail_pass": [
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict0-ground_truth0-0.057705]",
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict1-ground_truth1-0.6931472]",
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_value[value_dict2-ground_truth2-0.0100503]",
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict0-ground_truth0-False-gradient_value0]",
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict1-ground_truth1-False-gradient_value1]",
+    "tests/qnn/test_loss.py::TestCrossEntropyLoss::test_gradient[value_dict2-ground_truth2-True-gradient_value2]",
+    "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit",
+    "tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit_2out",
+    "tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict"
+  ],
+  "selected_pass_pass": [
+    "tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit",
+    "tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict"
+  ],
+  "stability_runs": 3,
+  "official_validation_runs": 4,
+  "task_fields_complete": true,
+  "golden_patch_scope_complete": true,
+  "constraints_rationale": "Environment adjusted against fixed PR-era metadata and actual import/test failures; requirements.resolved.txt records installed versions. Tests ran offline against both fixed commits.",
+  "dependency_snapshot_complete": true
+}

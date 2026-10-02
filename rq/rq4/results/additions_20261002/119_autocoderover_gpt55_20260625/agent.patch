@@ -1,0 +1,229 @@
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..6b1e699
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,5 @@
++"""Serialization utilities."""
++
++from .serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..7b7a2b1
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,212 @@
++"""Serialization utilities for quantum-learning models.
++
++This module provides :class:`SerializableModelMixin`, a small mixin that can be
++used by model classes to persist trained models without serializing live quantum
++execution backends.
++"""
++
++from __future__ import annotations
++
++import io
++import os
++from dataclasses import dataclass
++from typing import Any
++
++import dill as pickle
++
++from squlearn.util.executor import Executor
++
++
++@dataclass(frozen=True)
++class _ExecutorPlaceholder:
++    """Pickle-safe marker used in place of executor instances."""
++
++
++class SerializableModelMixin:
++    """Mixin supplying serialization for models that contain executors.
++
++    The live :class:`~squlearn.util.executor.Executor` instances are excluded
++    from the serialized payload.  During loading, all executor placeholders are
++    replaced by the executor supplied to :meth:`load`.
++    """
++
++    _EXECUTOR_PLACEHOLDER = _ExecutorPlaceholder()
++
++    def dump(self, target) -> None:
++        """Serialize the model to a path or binary stream.
++
++        Args:
++            target: String/path-like file path or writable binary IO stream.
++
++        Raises:
++            TypeError: If ``target`` is neither a path-like object nor a binary
++                IO stream.
++        """
++
++        restore_actions = []
++        try:
++            self._replace_executors(self, self._EXECUTOR_PLACEHOLDER, restore_actions, set())
++            if isinstance(target, (str, bytes, os.PathLike)):
++                with open(target, "wb") as file:
++                    pickle.dump(self, file)
++            elif isinstance(target, io.IOBase) and target.writable():
++                pickle.dump(self, target)
++            else:
++                raise TypeError(
++                    "Serialization target must be a file path or a writable binary IOBase stream."
++                )
++        finally:
++            for container, key, executor in reversed(restore_actions):
++                if isinstance(container, dict):
++                    container[key] = executor
++                elif isinstance(container, list):
++                    container[key] = executor
++                elif isinstance(container, set):
++                    container.remove(self._EXECUTOR_PLACEHOLDER)
++                    container.add(executor)
++                else:
++                    setattr(container, key, executor)
++
++    @classmethod
++    def load(cls, source, executor: Executor):
++        """Load a serialized model from a path or binary stream.
++
++        Args:
++            source: String/path-like file path or readable binary IO stream.
++            executor: Executor instance to insert into all restored executor
++                references.
++
++        Returns:
++            The restored model instance.
++
++        Raises:
++            TypeError: If ``source`` is unsupported or ``executor`` is not an
++                :class:`Executor`.
++        """
++
++        if not isinstance(executor, Executor):
++            raise TypeError("executor must be an Executor instance.")
++
++        if isinstance(source, (str, bytes, os.PathLike)):
++            with open(source, "rb") as file:
++                model = pickle.load(file)
++        elif isinstance(source, io.IOBase) and source.readable():
++            model = pickle.load(source)
++        else:
++            raise TypeError("Serialization source must be a file path or a readable binary IOBase stream.")
++
++        cls._restore_executors(model, executor, set())
++        return model
++
++    @classmethod
++    def _replace_executors(cls, obj: Any, placeholder: _ExecutorPlaceholder, restore_actions, seen):
++        """Replace nested executor references by placeholders before pickling."""
++
++        obj_id = id(obj)
++        if obj_id in seen:
++            return
++        seen.add(obj_id)
++
++        if isinstance(obj, dict):
++            for key, value in list(obj.items()):
++                if isinstance(value, Executor):
++                    obj[key] = placeholder
++                    restore_actions.append((obj, key, value))
++                else:
++                    cls._replace_executors(value, placeholder, restore_actions, seen)
++            return
++
++        if isinstance(obj, list):
++            for index, value in enumerate(obj):
++                if isinstance(value, Executor):
++                    obj[index] = placeholder
++                    restore_actions.append((obj, index, value))
++                else:
++                    cls._replace_executors(value, placeholder, restore_actions, seen)
++            return
++
++        if isinstance(obj, tuple):
++            # Tuples are immutable.  They are handled when they are attributes or
++            # container values by rebuilding the tuple in _replace_tuple.
++            return
++
++        if isinstance(obj, set):
++            for value in list(obj):
++                if isinstance(value, Executor):
++                    obj.remove(value)
++                    obj.add(placeholder)
++                    restore_actions.append((obj, None, value))
++                else:
++                    cls._replace_executors(value, placeholder, restore_actions, seen)
++            return
++
++        if not hasattr(obj, "__dict__"):
++            return
++
++        for name, value in list(vars(obj).items()):
++            if isinstance(value, Executor):
++                setattr(obj, name, placeholder)
++                restore_actions.append((obj, name, value))
++            elif isinstance(value, tuple):
++                new_value, tuple_actions = cls._replace_tuple(value, placeholder, seen)
++                if tuple_actions:
++                    setattr(obj, name, new_value)
++                    restore_actions.append((obj, name, value))
++            else:
++                cls._replace_executors(value, placeholder, restore_actions, seen)
++
++    @classmethod
++    def _replace_tuple(cls, value: tuple, placeholder: _ExecutorPlaceholder, seen):
++        """Return a tuple with executors replaced and whether it changed."""
++
++        changed = False
++        items = []
++        for item in value:
++            if isinstance(item, Executor):
++                items.append(placeholder)
++                changed = True
++            elif isinstance(item, tuple):
++                new_item, item_changed = cls._replace_tuple(item, placeholder, seen)
++                items.append(new_item)
++                changed = changed or item_changed
++            else:
++                cls._replace_executors(item, placeholder, [], seen)
++                items.append(item)
++        return tuple(items), changed
++
++    @classmethod
++    def _restore_executors(cls, obj: Any, executor: Executor, seen):
++        """Replace executor placeholders by the supplied executor."""
++
++        if isinstance(obj, _ExecutorPlaceholder):
++            return executor
++
++        obj_id = id(obj)
++        if obj_id in seen:
++            return obj
++        seen.add(obj_id)
++
++        if isinstance(obj, dict):
++            for key, value in list(obj.items()):
++                obj[key] = cls._restore_executors(value, executor, seen)
++            return obj
++
++        if isinstance(obj, list):
++            for index, value in enumerate(obj):
++                obj[index] = cls._restore_executors(value, executor, seen)
++            return obj
++
++        if isinstance(obj, tuple):
++            return tuple(cls._restore_executors(value, executor, seen) for value in obj)
++
++        if isinstance(obj, set):
++            restored = {cls._restore_executors(value, executor, seen) for value in obj}
++            obj.clear()
++            obj.update(restored)
++            return obj
++
++        if hasattr(obj, "__dict__"):
++            for name, value in list(vars(obj).items()):
++                setattr(obj, name, cls._restore_executors(value, executor, seen))
++
++        return obj

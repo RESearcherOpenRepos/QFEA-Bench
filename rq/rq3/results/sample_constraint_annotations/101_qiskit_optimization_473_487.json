@@ -1,0 +1,294 @@
+{
+  "id": 101,
+  "sample_id": "qiskit_optimization_473_487",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 8,
+    "p2p_tests": 11,
+    "subtype_test_counts": {
+      "quantum_semantics/qrac_encoding": 1,
+      "interface/input_validation": 1,
+      "quantum_semantics/qrac_objective_equivalence": 1,
+      "interface/rounding_configuration": 1,
+      "quantum_semantics/qrac_magic_rounding": 1,
+      "quantum_semantics/qrac_optimization_result": 1,
+      "quantum_semantics/qrac_relaxed_eigensolve": 1,
+      "quantum_semantics/qrac_semideterministic_rounding": 1,
+      "interface/converter_list_contract": 1,
+      "interface/result_object_contract": 1,
+      "interface/result_formatting": 2,
+      "general_semantics/knapsack_solution_interpretation": 1,
+      "general_semantics/knapsack_model_formulation": 1,
+      "general_semantics/maxcut_solution_interpretation": 1,
+      "general_semantics/maxcut_model_formulation": 1,
+      "general_semantics/binary_integer_conversion": 1,
+      "general_semantics/inequality_conversion": 1,
+      "general_semantics/equality_penalty_conversion": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+      "label": "quantum_semantics/qrac_encoding",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "One-variable-per-qubit QRAC produces the expected encoded Pauli operator."
+        }
+      ],
+      "rationale": "One-variable-per-qubit QRAC produces the expected encoded Pauli operator."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 245,
+          "expected": "Unsupported QRAC variable density raises ValueError."
+        }
+      ],
+      "rationale": "Unsupported QRAC variable density raises ValueError."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+      "label": "quantum_semantics/qrac_objective_equivalence",
+      "assertions": [
+        {
+          "line": 263,
+          "via_helper": 275,
+          "helper_selector": "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::check_problem_commutation",
+          "expected": "Each encoded QRAC objective equals the original objective within tolerance."
+        }
+      ],
+      "rationale": "Commutation verifier compares encoded quantum and original objective values via helper."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+      "label": "interface/rounding_configuration",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "Magic rounding accepts supported basis modes and rejects an invalid one."
+        }
+      ],
+      "rationale": "Magic rounding accepts supported basis modes and rejects an invalid one."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+      "label": "quantum_semantics/qrac_magic_rounding",
+      "assertions": [
+        {
+          "line": 88,
+          "expected": "Uniform QRAC measurements yield expected rounded bit strings and probabilities."
+        }
+      ],
+      "rationale": "Uniform QRAC measurements yield expected rounded bit strings and probabilities."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+      "label": "quantum_semantics/qrac_optimization_result",
+      "assertions": [
+        {
+          "line": 131,
+          "expected": "QRAC solve returns the expected relaxed eigenvalue and rounded optimum."
+        }
+      ],
+      "rationale": "QRAC solve returns the expected relaxed eigenvalue and rounded optimum."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+      "label": "quantum_semantics/qrac_relaxed_eigensolve",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "Relaxed QRAC eigensolver returns expected energy and auxiliary expectations."
+        }
+      ],
+      "rationale": "Relaxed QRAC eigensolver returns expected energy and auxiliary expectations."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding",
+      "label": "quantum_semantics/qrac_semideterministic_rounding",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Expectation signs round to the expected binary string."
+        }
+      ],
+      "rationale": "Expectation signs round to the expected binary string."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+      "label": "interface/converter_list_contract",
+      "assertions": [
+        {
+          "line": 178,
+          "expected": "Control optimizer accepts converter lists and rejects invalid converter type."
+        }
+      ],
+      "rationale": "Control optimizer accepts converter lists and rejects invalid converter type."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+      "label": "interface/result_object_contract",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "OptimizationResult initialization exposes values, status and sample probability."
+        }
+      ],
+      "rationale": "OptimizationResult initialization exposes values, status and sample probability."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+      "label": "interface/result_formatting",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "OptimizationResult prettyprint matches the expected text."
+        }
+      ],
+      "rationale": "OptimizationResult prettyprint matches the expected text."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+      "label": "interface/result_formatting",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "OptimizationResult string and repr match expected text."
+        }
+      ],
+      "rationale": "OptimizationResult string and repr match expected text."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+      "label": "general_semantics/knapsack_solution_interpretation",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Knapsack solution is decoded to selected items one and three."
+        }
+      ],
+      "rationale": "Knapsack solution is decoded to selected items one and three."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+      "label": "general_semantics/knapsack_model_formulation",
+      "assertions": [
+        {
+          "line": 62,
+          "expected": "Knapsack capacity and values become the expected quadratic program."
+        }
+      ],
+      "rationale": "Knapsack capacity and values become the expected quadratic program."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+      "label": "general_semantics/maxcut_solution_interpretation",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "Max-cut bit string decodes to expected vertex partition."
+        }
+      ],
+      "rationale": "Max-cut bit string decodes to expected vertex partition."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+      "label": "general_semantics/maxcut_model_formulation",
+      "assertions": [
+        {
+          "line": 58,
+          "expected": "Max-cut weights become the expected quadratic objective."
+        }
+      ],
+      "rationale": "Max-cut weights become the expected quadratic objective."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+      "label": "general_semantics/binary_integer_conversion",
+      "assertions": [
+        {
+          "line": 405,
+          "expected": "Binary solution decodes to integer values zero, one and five."
+        }
+      ],
+      "rationale": "Binary solution decodes to integer values zero, one and five."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+      "label": "general_semantics/inequality_conversion",
+      "assertions": [
+        {
+          "line": 162,
+          "expected": "Binary inequality conversion preserves interpreted original vector."
+        }
+      ],
+      "rationale": "Binary inequality conversion preserves interpreted original vector."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+      "label": "general_semantics/equality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "Penalty conversion removes constraints and interprets original vector."
+        }
+      ],
+      "rationale": "Penalty conversion removes constraints and interprets original vector."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/qrao/test_magic_rounding.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/qrao/test_quantum_random_access_encoding.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/qrao/test_quantum_random_access_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/qrao/test_semideterministic_rounding.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/test_min_eigen_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/algorithms/test_optimization_result.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/applications/test_knapsack.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/applications/test_max_cut.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f/test/converters/test_converters.py"
+  ],
+  "rationale": "Each selected test was read individually against the task and exact test body; the single most decisive constraint is recorded."
+}

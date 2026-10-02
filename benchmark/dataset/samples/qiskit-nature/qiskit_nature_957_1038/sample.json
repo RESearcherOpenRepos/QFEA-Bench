@@ -1,0 +1,141 @@
+{
+  "instance": {
+    "id": 91,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_957_1038",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/957",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1038",
+    "base_commit": "72f28aa0d05a510516c7de30234dd5406d052468",
+    "patch": "0f73ea754c25fe549c37b1c4ccb51db381a57078"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a Kagome lattice graph constructor with boundary-condition edge handling rather than core quantum semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/hamiltonians/lattices/__init__.py",
+      "qiskit_nature/second_q/hamiltonians/lattices/kagome_lattice.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized lattice Hamiltonians module includes common lattice classes but does not provide a Kagome lattice. Users need a dedicated KagomeLattice class that follows the existing lattice API and supports open, periodic, and mixed boundary conditions.",
+    "requirements": [
+      "A dedicated KagomeLattice must be available through the public second-quantized lattice API.",
+      "The lattice must create a two-dimensional Kagome graph with three sites per unit cell for the requested row and column dimensions.",
+      "Node count, node indexes, and weighted edge lists must follow the existing Lattice semantics.",
+      "The lattice must support open, fully periodic, x-periodic, and y-periodic boundary conditions using the existing BoundaryCondition API.",
+      "Bulk edges, boundary edges, and onsite self-loops must be represented with the configured weights.",
+      "The weighted adjacency matrix must follow the existing Hermitian edge-weight convention, including conjugate entries for reverse directions."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "KagomeLattice",
+        "Path": "qiskit_nature/second_q/hamiltonians/lattices/kagome_lattice.py",
+        "Input": "constructor: rows: int, cols: int, edge_parameter: complex = 1.0, onsite_parameter: complex = 0.0, boundary_condition: BoundaryCondition | tuple[BoundaryCondition, BoundaryCondition] = BoundaryCondition.OPEN",
+        "Output": "",
+        "Description": "Lattice class representing a Kagome lattice graph with configurable weights and boundary conditions, exposing graph, num_nodes, node_indexes, weighted_edge_list, and boundary-aware Hermitian edge weights."
+      },
+      {
+        "Type": "Method",
+        "Name": "KagomeLattice.to_adjacency_matrix",
+        "Path": "qiskit_nature/second_q/hamiltonians/lattices/lattice.py",
+        "Input": "self, weighted: bool = False",
+        "Output": "adjacency matrix",
+        "Description": "Returns the Kagome lattice adjacency matrix using the existing Hermitian weighted-edge convention."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_957_1038",
+      "image_id": "sha256:6263f9f313ccd9185a4407fcd3e21679fbc95ac422adb7e48a19e039f70f76df",
+      "image_size": "958793003"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.25.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest",
+        "ddt"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_x_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_y_periodic"
+        ],
+        "summary": "4 passed in 3.63s",
+        "duration_seconds": 12.04
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py::TestHyperCubic::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_edges_removed",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/second_q/hamiltonians/lattices/test_line_lattice.py::TestLineLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_square_lattice.py::TestSquareLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_periodic"
+        ],
+        "summary": "11 passed in 1.17s",
+        "duration_seconds": 4.2
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_x_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_y_periodic"
+        ],
+        "summary": "ImportError during collection: cannot import name 'KagomeLattice' from qiskit_nature.second_q.hamiltonians.lattices; 1 error in 11.35s",
+        "duration_seconds": 27.86
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py::TestHyperCubic::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_edges_removed",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/second_q/hamiltonians/lattices/test_line_lattice.py::TestLineLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_square_lattice.py::TestSquareLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_periodic"
+        ],
+        "summary": "11 passed in 1.19s",
+        "duration_seconds": 6.18
+      }
+    }
+  }
+}

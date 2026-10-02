@@ -1,0 +1,84 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..6a9c1da 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -61,12 +61,14 @@ class BaseQNN(BaseEstimator, ABC):
+         self.variance = variance
+         self.parameter_seed = parameter_seed
+ 
++        self._param_ini_provided = param_ini is not None
+         if param_ini is None:
+             self.param_ini = pqc.generate_initial_parameters(seed=parameter_seed)
+         else:
+             self.param_ini = param_ini
+         self.param = self.param_ini.copy()
+ 
++        self._param_op_ini_provided = param_op_ini is not None
+         if param_op_ini is None:
+             if isinstance(operator, list):
+                 self.param_op_ini = np.concatenate(
+@@ -98,6 +100,64 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def set_params(self, **params) -> "BaseQNN":
++        """Set the parameters of this estimator and reinitialize derived state.
++
++        Updates nested quantum-model hyperparameters and reinitializes
++        the internal QNN, parameter arrays, and fitted state accordingly.
++
++        Args:
++            **params: Estimator parameters.
++
++        Returns:
++            self: Estimator instance.
++        """
++        if not params:
++            return self
++
++        # Determine if pqc or operator related parameters are being changed
++        pqc_related = any(key == "pqc" or key.startswith("pqc__") for key in params)
++        operator_related = any(
++            key == "operator" or key.startswith("operator__") for key in params
++        )
++
++        # Call parent set_params to handle nested parameter updates
++        super().set_params(**params)
++
++        # Reinitialize derived state if pqc or operator changed
++        if pqc_related or operator_related:
++            self._reinitialize_derived_state()
++
++        return self
++
++    def _reinitialize_derived_state(self) -> None:
++        """Reinitialize parameter arrays and internal QNN after hyperparameter changes."""
++        # Reinitialize param_ini if it was auto-generated
++        if not self._param_ini_provided:
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++        self.param = self.param_ini.copy()
++
++        # Reinitialize param_op_ini if it was auto-generated
++        if not self._param_op_ini_provided:
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [
++                        op.generate_initial_parameters(seed=self.parameter_seed)
++                        for op in self.operator
++                    ]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++        self.param_op = self.param_op_ini.copy()
++
++        # Reinitialize the internal QNN
++        self._qnn = QNN(self.pqc, self.operator, self.executor)
++
++        # Mark as unfitted
++        self._is_fitted = False
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

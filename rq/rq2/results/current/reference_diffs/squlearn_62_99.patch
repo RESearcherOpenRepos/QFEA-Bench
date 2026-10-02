@@ -1,0 +1,956 @@
+diff --git a/src/squlearn/kernel/ml/qkrr.py b/src/squlearn/kernel/ml/qkrr.py
+index 48b09c5..f5b657f 100644
+--- a/src/squlearn/kernel/ml/qkrr.py
++++ b/src/squlearn/kernel/ml/qkrr.py
+@@ -11,7 +11,7 @@ from ..matrix.regularization import thresholding_regularization, tikhonov_regula
+ 
+ class QKRR(BaseEstimator, RegressorMixin):
+     """
+-    Quantum Kernel Ridge Regression
++    Quantum Kernel Ridge Regression.
+ 
+     This class implements the Quantum Kernel Ridge Regression analogous to KRR [1] in scikit-learn
+     but is not a wrapper.
+@@ -84,22 +84,19 @@ class QKRR(BaseEstimator, RegressorMixin):
+         self.k_train = None
+         self.dual_coeff_ = None
+ 
+-        # Apply kwargs to quantum kernel set_params
+-        valid_params = self.get_params().keys()
+-        set_params_dict = {}
+-        for key, value in kwargs.items():
+-            if key in valid_params:
+-                set_params_dict[key] = value
+-        if len(set_params_dict) > 0:
+-            self.set_params(**set_params_dict)
++        # Apply kwargs to set_params
++        update_params = self.get_params().keys() & kwargs.keys()
++        if update_params:
++            self.set_params(**{key: kwargs[key] for key in update_params})
+ 
+     def fit(self, x_train: np.ndarray, y_train: np.ndarray):
+         """
+-        Fit the Quantum Kernel Ridge regression model. Depending on whether ``regularization``
+-        is set, the training kernel matrix is pre-processed accordingly prior to the
+-        actual fitting step is performed. The respective solution of the QKRR problem
+-        is obtained by solving the linear system using scipy's Cholesky decomposition for
+-        providing numerical stability
++        Fit the Quantum Kernel Ridge regression model.
++
++        Depending on whether ``regularization`` is set, the training kernel matrix is pre-processed
++        accordingly prior to the actual fitting step is performed. The respective solution of the
++        QKRR problem is obtained by solving the linear system using scipy's Cholesky decomposition
++        for providing numercial stability.
+ 
+         Args:
+             x_train (np.ndarray) : Training data of shape (n_samples, n_features)
+diff --git a/src/squlearn/optimizers/adam.py b/src/squlearn/optimizers/adam.py
+index 1fddc2a..5edeb9c 100644
+--- a/src/squlearn/optimizers/adam.py
++++ b/src/squlearn/optimizers/adam.py
+@@ -56,6 +56,15 @@ class Adam(OptimizerBase, SGDMixin):
+             f.write(output)
+             f.close()
+ 
++    def reset(self):
++        self.gradient_deque = deque(maxlen=self.num_average)
++        self.m = None
++        self.v = None
++        self.x = None
++        self.lr_eff = 0.0
++        self.iteration = 0
++        self._update_lr()
++
+     def minimize(self, fun, x0, grad=None, bounds=None) -> OptimizerResult:
+         # set-up number of iterations of the current run (needed for restarts)
+         if self.maxiter != self.maxiter_total:
+@@ -75,7 +84,8 @@ class Adam(OptimizerBase, SGDMixin):
+             else:
+                 fval = fun(self.x)
+ 
+-            #  Calculate the gradient and average it over the last num_average gradients (1 is default: no averaging)
++            # Calculate the gradient and average it over the last num_average gradients
++            # (1 is default: no averaging)
+             self.gradient_deque.append(grad(self.x))
+             gradient = np.average(self.gradient_deque, axis=0)
+ 
+diff --git a/src/squlearn/optimizers/optimizer_base.py b/src/squlearn/optimizers/optimizer_base.py
+index a530eb7..82771a1 100644
+--- a/src/squlearn/optimizers/optimizer_base.py
++++ b/src/squlearn/optimizers/optimizer_base.py
+@@ -66,6 +66,17 @@ class SGDMixin(IterativeOptimizerMixin, abc.ABC):
+         self._update_lr()
+         return x_return
+ 
++    def reset(self):
++        """
++        Resets the object to its initial state.
++
++        This function does not take any parameters.
++
++        Returns:
++            None: This function does not return anything.
++        """
++        pass
++
+     @abc.abstractmethod
+     def _get_update(self, grad: np.ndarray) -> np.ndarray:
+         raise NotImplementedError()
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..1d74864 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -1,8 +1,10 @@
+ """QNN Base Implemenation"""
++from __future__ import annotations
++
++from abc import abstractmethod, ABC
+ from typing import Callable, Union
+ from warnings import warn
+ 
+-from abc import abstractmethod, ABC
+ import numpy as np
+ from sklearn.base import BaseEstimator
+ 
+@@ -20,7 +22,7 @@ class BaseQNN(BaseEstimator, ABC):
+     """Base Class for Quantum Neural Networks.
+ 
+     Args:
+-        pqc : Parameterized quantum circuit in feature map format
++        feature_map : Parameterized quantum circuit in feature map format
+         operator : Operator that are used in the expectation value of the QNN. Can be a list for
+             multiple outputs.
+         executor : Executor instance
+@@ -38,7 +40,7 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+     def __init__(
+         self,
+-        pqc: FeatureMapBase,
++        feature_map: FeatureMapBase,
+         operator: Union[ExpectationOperatorBase, list[ExpectationOperatorBase]],
+         executor: Executor,
+         loss: LossBase,
+@@ -52,9 +54,10 @@ class BaseQNN(BaseEstimator, ABC):
+         variance: Union[float, Callable] = None,
+         shot_adjusting: shot_adjusting_options = None,
+         parameter_seed: Union[int, None] = 0,
++        **kwargs,
+     ) -> None:
+         super().__init__()
+-        self.pqc = pqc
++        self.feature_map = feature_map
+         self.operator = operator
+         self.loss = loss
+         self.optimizer = optimizer
+@@ -62,21 +65,24 @@ class BaseQNN(BaseEstimator, ABC):
+         self.parameter_seed = parameter_seed
+ 
+         if param_ini is None:
+-            self.param_ini = pqc.generate_initial_parameters(seed=parameter_seed)
++            self.param_ini = feature_map.generate_initial_parameters(seed=parameter_seed)
+         else:
+             self.param_ini = param_ini
+-        self.param = self.param_ini.copy()
++        self._param = self.param_ini.copy()
+ 
+         if param_op_ini is None:
+             if isinstance(operator, list):
+                 self.param_op_ini = np.concatenate(
+-                    [op.generate_initial_parameters(seed=parameter_seed) for op in operator]
++                    [
++                        operator.generate_initial_parameters(seed=parameter_seed)
++                        for operator in operator
++                    ]
+                 )
+             else:
+                 self.param_op_ini = operator.generate_initial_parameters(seed=parameter_seed)
+         else:
+             self.param_op_ini = param_op_ini
+-        self.param_op = self.param_op_ini.copy()
++        self._param_op = self.param_op_ini.copy()
+ 
+         if not isinstance(optimizer, SGDMixin) and any(
+             param is not None for param in [batch_size, epochs, shuffle]
+@@ -94,7 +100,11 @@ class BaseQNN(BaseEstimator, ABC):
+         self.shot_adjusting = shot_adjusting
+ 
+         self.executor = executor
+-        self._qnn = QNN(self.pqc, self.operator, executor)
++        self._qnn = QNN(self.feature_map, self.operator, executor)
++
++        update_params = self.get_params().keys() & kwargs.keys()
++        if update_params:
++            self.set_params(**{key: kwargs[key] for key in update_params})
+ 
+         self._is_fitted = False
+ 
+@@ -108,11 +118,85 @@ class BaseQNN(BaseEstimator, ABC):
+             y: Labels
+             weights: Weights for each data point
+         """
+-        self.param = self.param_ini.copy()
+-        self.param_op = self.param_op_ini.copy()
++        self._param = self.param_ini.copy()
++        self._param_op = self.param_op_ini.copy()
+         self._is_fitted = False
+         self._fit(X, y, weights)
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """
++        Returns a dictionary of parameters for the current object.
++
++        Parameters:
++            deep: If True, includes the parameters from the base class.
++
++        Returns:
++            dict: A dictionary of parameters for the current object.
++        """
++        # Create a dictionary of all public parameters
++        params = super().get_params(deep=False)
++
++        if deep:
++            params.update(self._qnn.get_params(deep=True))
++        return params
++
++    def set_params(self: BaseQNN, **params) -> BaseQNN:
++        """
++        Sets the hyper-parameters of the BaseQNN.
++
++        Args:
++            params: Hyper-parameters of the BaseQNN.
++
++        Returns:
++            updated BaseQNN
++        """
++        # Create dictionary of valid parameters
++        valid_params = self.get_params().keys()
++        for key in params.keys():
++            # Check if parameter is valid
++            if key not in valid_params:
++                raise ValueError(
++                    f"Invalid parameter {key!r}. "
++                    f"Valid parameters are {sorted(valid_params)!r}."
++                )
++
++        # Set parameters
++        self_params = params.keys() & self.get_params(deep=False).keys()
++        for key in self_params:
++            setattr(self, key, params[key])
++
++        # Set parameters of the QNN
++        qnn_params = params.keys() & self._qnn.get_params(deep=True).keys()
++        if qnn_params:
++            self._qnn.set_params(
++                **{key: value for key, value in params.items() if key in qnn_params}
++            )
++
++            # If the number of parameters has changed, reinitialize the parameters
++            if self.feature_map.num_parameters != len(self.param_ini):
++                self.param_ini = self.feature_map.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            if isinstance(self.operator, list):
++                num_op_parameters = sum(operator.num_parameters for operator in self.operator)
++                if num_op_parameters != len(self.param_op_ini):
++                    self.param_op_ini = np.concatenate(
++                        [
++                            operator.generate_initial_parameters(seed=self.parameter_seed)
++                            for operator in self.operator
++                        ]
++                    )
++            elif self.operator.num_parameters != len(self.param_op_ini):
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            if isinstance(self.optimizer, SGDMixin):
++                self.optimizer.reset()
++
++        self._is_fitted = False
++
++        return self
++
+     @abstractmethod
+     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Internal fit function."""
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 1177c3c..f8ec75c 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -1,6 +1,5 @@
+ """QNNClassifier Implemenation"""
+ from typing import Callable, Union
+-from warnings import warn
+ 
+ import numpy as np
+ from sklearn.base import ClassifierMixin
+@@ -25,8 +24,8 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+     Mini-batch training is possible.
+ 
+     Args:
+-        pqc (FeatureMapBase): The parameterized quantum circuit (PQC) part of the QNN. For a list
+-            of feature maps, check this list of implemented :ref:`feature_maps`.
++        feature_map (FeatureMapBase): The parameterized quantum circuit (PQC) part of the QNN.
++            For a list of feature maps, check this list of implemented :ref:`feature_maps`.
+         operator (Union[ExpectationOperatorBase, list[ExpectationOperatorBase]]): The operator that
+             is used in the expectation value of the QNN. Can be a list for multiple outputs. For a
+             list of operators, check this list of implemented :ref:`operators`.
+@@ -90,7 +89,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+ 
+     def __init__(
+         self,
+-        pqc: FeatureMapBase,
++        feature_map: FeatureMapBase,
+         operator: Union[ExpectationOperatorBase, list[ExpectationOperatorBase]],
+         executor: Executor,
+         loss: LossBase,
+@@ -103,9 +102,10 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         opt_param_op: bool = True,
+         variance: Union[float, Callable] = None,
+         parameter_seed: Union[int, None] = 0,
++        **kwargs,
+     ) -> None:
+         super().__init__(
+-            pqc,
++            feature_map,
+             operator,
+             executor,
+             loss,
+@@ -118,6 +118,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             opt_param_op,
+             variance,
+             parameter_seed=parameter_seed,
++            **kwargs,
+         )
+         self._label_binarizer = None
+ 
+@@ -132,7 +133,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         """
+         if not self._is_fitted:
+             raise RuntimeError("The model is not fitted.")
+-        pred = self._qnn.evaluate_f(X, self.param, self.param_op)
++        pred = self._qnn.evaluate_f(X, self._param, self._param_op)
+         return self._label_binarizer.inverse_transform(pred)
+ 
+     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+@@ -144,7 +145,7 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         Returns:
+             np.ndarray : The probabilities
+         """
+-        pred = self._qnn.evaluate_f(X, self.param, self.param_op)
++        pred = self._qnn.evaluate_f(X, self._param, self._param_op)
+         if pred.ndim == 1:
+             return np.vstack([1 - pred, pred]).T
+ 
+@@ -176,12 +177,12 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+ 
+         if isinstance(self.optimizer, SGDMixin) and self.batch_size:
+             if self.opt_param_op:
+-                self.param, self.param_op = solve_mini_batch(
++                self._param, self._param_op = solve_mini_batch(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss=loss,
+                     optimizer=self.optimizer,
+                     batch_size=self.batch_size,
+@@ -191,12 +192,12 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+                     opt_param_op=True,
+                 )
+             else:
+-                self.param = solve_mini_batch(
++                self._param = solve_mini_batch(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss=loss,
+                     optimizer=self.optimizer,
+                     batch_size=self.batch_size,
+@@ -208,24 +209,24 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+ 
+         else:
+             if self.opt_param_op:
+-                self.param, self.param_op = regression(
++                self._param, self._param_op = regression(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss,
+                     self.optimizer.minimize,
+                     weights,
+                     True,
+                 )
+             else:
+-                self.param = regression(
++                self._param = regression(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss,
+                     self.optimizer.minimize,
+                     weights,
+diff --git a/src/squlearn/qnn/qnnr.py b/src/squlearn/qnn/qnnr.py
+index de6b434..508fbff 100644
+--- a/src/squlearn/qnn/qnnr.py
++++ b/src/squlearn/qnn/qnnr.py
+@@ -24,8 +24,8 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+     training is possible.
+ 
+     Args:
+-        pqc (FeatureMapBase): The parameterized quantum circuit (PQC) part of the QNN. For a list
+-            of feature maps, check this list of implemented :ref:`feature_maps`.
++        feature_map (FeatureMapBase): The parameterized quantum circuit (PQC) part of the QNN.
++            For a list of feature maps, check this list of implemented :ref:`feature_maps`.
+         operator (Union[ExpectationOperatorBase, list[ExpectationOperatorBase]]): The operator that
+             is used in the expectation value of the QNN. Can be a list for multiple outputs. For a
+             list of operators, check this list of implemented :ref:`operators`.
+@@ -88,7 +88,7 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+ 
+     def __init__(
+         self,
+-        pqc: FeatureMapBase,
++        feature_map: FeatureMapBase,
+         operator: Union[ExpectationOperatorBase, list[ExpectationOperatorBase]],
+         executor: Executor,
+         loss: LossBase,
+@@ -101,9 +101,10 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+         opt_param_op: bool = True,
+         variance: Union[float, Callable] = None,
+         parameter_seed: Union[int, None] = 0,
++        **kwargs,
+     ) -> None:
+         super().__init__(
+-            pqc,
++            feature_map,
+             operator,
+             executor,
+             loss,
+@@ -116,6 +117,7 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+             opt_param_op,
+             variance,
+             parameter_seed=parameter_seed,
++            **kwargs,
+         )
+ 
+     def predict(self, X: np.ndarray) -> np.ndarray:
+@@ -129,7 +131,7 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+         """
+         if not self._is_fitted:
+             warn("The model is not fitted.")
+-        return self._qnn.evaluate_f(X, self.param, self.param_op)
++        return self._qnn.evaluate_f(X, self._param, self._param_op)
+ 
+     def partial_fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a model to data.
+@@ -149,12 +151,12 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+ 
+         if isinstance(self.optimizer, SGDMixin) and self.batch_size:
+             if self.opt_param_op:
+-                self.param, self.param_op = solve_mini_batch(
++                self._param, self._param_op = solve_mini_batch(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss=loss,
+                     optimizer=self.optimizer,
+                     batch_size=self.batch_size,
+@@ -164,12 +166,12 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+                     opt_param_op=True,
+                 )
+             else:
+-                self.param = solve_mini_batch(
++                self._param = solve_mini_batch(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss=loss,
+                     optimizer=self.optimizer,
+                     batch_size=self.batch_size,
+@@ -181,24 +183,24 @@ class QNNRegressor(BaseQNN, RegressorMixin):
+ 
+         else:
+             if self.opt_param_op:
+-                self.param, self.param_op = regression(
++                self._param, self._param_op = regression(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss,
+                     self.optimizer.minimize,
+                     weights,
+                     True,
+                 )
+             else:
+-                self.param = regression(
++                self._param = regression(
+                     self._qnn,
+                     X,
+                     y,
+-                    self.param,
+-                    self.param_op,
++                    self._param,
++                    self._param_op,
+                     loss,
+                     self.optimizer.minimize,
+                     weights,
+diff --git a/tests/qnn/test_base_qnn.py b/tests/qnn/test_base_qnn.py
+new file mode 100644
+index 0000000..32ad0e3
+--- /dev/null
++++ b/tests/qnn/test_base_qnn.py
+@@ -0,0 +1,149 @@
++"""Tests for BaseQNN"""
++import pytest
++
++import numpy as np
++
++from squlearn import Executor
++from squlearn.expectation_operator import IsingHamiltonian
++from squlearn.feature_map import ChebPQC
++from squlearn.optimizers import SLSQP
++from squlearn.qnn import SquaredLoss
++from squlearn.qnn.base_qnn import BaseQNN
++
++
++class MockBaseQNN(BaseQNN):
++    """Mock class for BaseQNN."""
++
++    def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
++        pass
++
++
++class TestBaseQNN:
++    """Test class for BaseQNN."""
++
++    @pytest.fixture(scope="module")
++    def qnn_single_op(self) -> MockBaseQNN:
++        """BaseQNN module with single operator."""
++        np.random.seed(42)
++        executor = Executor("statevector_simulator")
++        pqc = ChebPQC(num_qubits=4, num_features=1, num_layers=2)
++        operator = IsingHamiltonian(num_qubits=4, I="S", Z="S", ZZ="S")
++        loss = SquaredLoss()
++        optimizer = SLSQP(options={"maxiter": 2})
++        return MockBaseQNN(pqc, operator, executor, loss, optimizer)
++
++    @pytest.fixture(scope="module")
++    def qnn_multi_op(self) -> MockBaseQNN:
++        """BaseQNN module with multiple operators."""
++        np.random.seed(42)
++        executor = Executor("statevector_simulator")
++        pqc = ChebPQC(num_qubits=4, num_features=1, num_layers=2)
++        operator = [IsingHamiltonian(num_qubits=4, I="S", Z="S", ZZ="S") for _ in range(5)]
++        loss = SquaredLoss()
++        optimizer = SLSQP(options={"maxiter": 2})
++        return MockBaseQNN(pqc, operator, executor, loss, optimizer)
++
++    def test_set_params_invalid_param(self, qnn_single_op: MockBaseQNN):
++        """
++        Test if setting an invalid parameter raises a ValueError.
++
++        Args:
++            qnn_single_op (MockBaseQNN): The MockBaseQNN object to test.
++
++        Returns:
++            None
++        """
++        with pytest.raises(ValueError):
++            qnn_single_op.set_params(invalid_param=3)
++
++    def test_set_params_seed(self, qnn_single_op: MockBaseQNN):
++        """
++        Test `set_params` with `parameter_seed`.
++
++        Args:
++            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_single_op.set_params(parameter_seed=42)
++        assert qnn_single_op.parameter_seed == 42
++
++    def test_set_params_num_qubits_single_op(self, qnn_single_op: MockBaseQNN):
++        """
++        Test `set_params` with `num_qubits` for single operator.
++
++        Args:
++            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_single_op.set_params(num_qubits=5)
++        assert qnn_single_op.feature_map.num_qubits == 5
++        assert qnn_single_op.operator.num_qubits == 5
++        assert qnn_single_op._qnn.num_qubits == 5
++
++    def test_set_params_num_qubits_multi_op(self, qnn_multi_op):
++        """
++        Test `set_params` with `num_qubits` for mutiple operators.
++
++        Args:
++            qnn_multi_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_multi_op.set_params(num_qubits=5)
++        assert qnn_multi_op.feature_map.num_qubits == 5
++        for operator in qnn_multi_op.operator:
++            assert operator.num_qubits == 5
++        assert qnn_multi_op._qnn.num_qubits == 5
++
++    def test_set_params_feature_map(self, qnn_single_op):
++        """
++        Test `set_params` for pqc parameters.
++
++        Args:
++            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_single_op.set_params(num_layers=3, closed=True)
++        assert qnn_single_op.feature_map.num_layers == 3
++        assert qnn_single_op.feature_map.closed
++        assert qnn_single_op._qnn.pqc.get_params()["num_layers"] == 3
++        assert qnn_single_op._qnn.pqc.get_params()["closed"]
++
++    def test_set_params_single_operator(self, qnn_single_op):
++        """
++        Test `set_params` for single operator parameters.
++
++        Args:
++            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_single_op.set_params(X="S", Z="N")
++        assert qnn_single_op.operator.X == "S"
++        assert qnn_single_op.operator.Z == "N"
++        assert qnn_single_op._qnn.operator.X == "S"
++        assert qnn_single_op._qnn.operator.Z == "N"
++
++    def test_set_params_multi_operator(self, qnn_multi_op):
++        """
++        Test `set_params` for multiple operator parameters.
++
++        Args:
++            qnn_multi_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
++
++        Returns:
++            None
++        """
++        qnn_multi_op.set_params(op0__X="S", op3__Z="N")
++        assert qnn_multi_op.operator[0].X == "S"
++        assert qnn_multi_op.operator[3].Z == "N"
++        assert qnn_multi_op._qnn.operator[0].X == "S"
++        assert qnn_multi_op._qnn.operator[3].Z == "N"
+diff --git a/tests/qnn/test_qnnc.py b/tests/qnn/test_qnnc.py
+index d42a93a..211a172 100644
+--- a/tests/qnn/test_qnnc.py
++++ b/tests/qnn/test_qnnc.py
+@@ -3,7 +3,7 @@ import pytest
+ 
+ import numpy as np
+ from sklearn.datasets import make_blobs
+-from sklearn.preprocessing import MinMaxScaler
++from sklearn.preprocessing import LabelBinarizer, MinMaxScaler
+ 
+ from squlearn import Executor
+ from squlearn.expectation_operator import IsingHamiltonian
+@@ -37,23 +37,6 @@ class TestQNNClassifier:
+         param_op_ini = np.random.rand(operator.num_parameters)
+         return QNNClassifier(pqc, operator, executor, loss, optimizer, param_ini, param_op_ini)
+ 
+-    def test_params(self, qnn_classifier):
+-        """Asserts that all parameters are present in the QNNClassifier."""
+-        assert list(qnn_classifier.get_params().keys()) == [
+-            "batch_size",
+-            "epochs",
+-            "executor",
+-            "loss",
+-            "operator",
+-            "opt_param_op",
+-            "optimizer",
+-            "param_ini",
+-            "param_op_ini",
+-            "pqc",
+-            "shuffle",
+-            "variance",
+-        ]
+-
+     def test_predict_unfitted(self, qnn_classifier, data):
+         """Tests concerning the unfitted QNNClassifier.
+ 
+@@ -71,30 +54,30 @@ class TestQNNClassifier:
+ 
+         Tests include
+             - whether `_is_fitted` is set True
+-            - whether `param` is updated
+-            - whether `param_op` is updated
++            - whether `_param` is updated
++            - whether `_param_op` is updated
+         """
+         X, y = data
+         qnn_classifier.fit(X, y)
+         assert qnn_classifier._is_fitted
+-        assert not np.allclose(qnn_classifier.param, qnn_classifier.param_ini)
+-        assert not np.allclose(qnn_classifier.param_op, qnn_classifier.param_op_ini)
++        assert not np.allclose(qnn_classifier._param, qnn_classifier.param_ini)
++        assert not np.allclose(qnn_classifier._param_op, qnn_classifier.param_op_ini)
+ 
+     def test_partial_fit(self, qnn_classifier, data):
+         """Tests concerning the partial_fit function of the QNNClassifier.
+ 
+         Tests include
+-            - whether `param` is the same after two calls to fit
+-            - whether `param` is different after a call to partial_fit and a call to fit
++            - whether `_param` is the same after two calls to fit
++            - whether `_param` is different after a call to partial_fit and a call to fit
+         """
+         X, y = data
+ 
+         qnn_classifier.fit(X, y)
+-        param_1 = qnn_classifier.param
++        param_1 = qnn_classifier._param
+         qnn_classifier.partial_fit(X, y)
+-        param_2 = qnn_classifier.param
++        param_2 = qnn_classifier._param
+         qnn_classifier.fit(X, y)
+-        param_3 = qnn_classifier.param
++        param_3 = qnn_classifier._param
+ 
+         assert np.allclose(param_1, param_3)
+         assert not np.allclose(param_2, param_3)
+@@ -104,13 +87,13 @@ class TestQNNClassifier:
+ 
+         Tests include
+             - whether `_is_fitted` is True
+-            - whether `param` is updated
+-            - whether `param_op` is updated
++            - whether `_param` is updated
++            - whether `_param_op` is updated
+         """
+         X, y = data
+ 
++        qnn_classifier._optimizer = Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1})
+         qnn_classifier.set_params(
+-            optimizer=Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1}),
+             batch_size=2,
+             epochs=2,
+             shuffle=True,
+@@ -118,8 +101,8 @@ class TestQNNClassifier:
+         qnn_classifier.fit(X, y)
+ 
+         assert qnn_classifier._is_fitted
+-        assert not np.allclose(qnn_classifier.param, qnn_classifier.param_ini)
+-        assert not np.allclose(qnn_classifier.param_op, qnn_classifier.param_op_ini)
++        assert not np.allclose(qnn_classifier._param, qnn_classifier.param_ini)
++        assert not np.allclose(qnn_classifier._param_op, qnn_classifier.param_op_ini)
+ 
+     def test_predict(self, qnn_classifier, data):
+         """Tests concerning the predict function of the QNNClassifier.
+@@ -128,11 +111,30 @@ class TestQNNClassifier:
+             - whether the prediction output is correct
+         """
+         X, y = data
+-        qnn_classifier.param = np.arange(0.1, 2.45, 0.1)
+-        qnn_classifier.param_op = np.arange(0.1, 0.35, 0.1)
++        qnn_classifier._param = np.arange(0.1, 2.45, 0.1)
++        qnn_classifier._param_op = np.arange(0.1, 0.35, 0.1)
++        qnn_classifier._label_binarizer = LabelBinarizer()
++        qnn_classifier._label_binarizer.fit(y)
+         qnn_classifier._is_fitted = True
+         y_pred = qnn_classifier.predict(X)
+ 
+         assert isinstance(y_pred, np.ndarray)
+         assert y_pred.shape == y.shape
+         assert np.allclose(y_pred, np.zeros_like(y))
++
++    def test_set_params_and_fit(self, qnn_classifier, data):
++        """
++        Tests fit after changing parameters that alter the number of parameters of the pqc.
++
++        Tests include
++            - whether `_is_fitted` is True
++            - whether `_param` is updated
++            - whether `_param_op` is updated
++        """
++        X, y = data
++        qnn_classifier.set_params(num_layers=3)
++        qnn_classifier.fit(X, y)
++
++        assert qnn_classifier._is_fitted
++        assert not np.allclose(qnn_classifier._param, qnn_classifier.param_ini)
++        assert not np.allclose(qnn_classifier._param_op, qnn_classifier.param_op_ini)
+diff --git a/tests/qnn/test_qnnr.py b/tests/qnn/test_qnnr.py
+index a1febb7..199cf39 100644
+--- a/tests/qnn/test_qnnr.py
++++ b/tests/qnn/test_qnnr.py
+@@ -37,23 +37,6 @@ class TestQNNRegressor:
+         param_op_ini = np.random.rand(operator.num_parameters)
+         return QNNRegressor(pqc, operator, executor, loss, optimizer, param_ini, param_op_ini)
+ 
+-    def test_params(self, qnn_regressor):
+-        """Asserts that all parameters are present in the QNNRegressor."""
+-        assert list(qnn_regressor.get_params().keys()) == [
+-            "batch_size",
+-            "epochs",
+-            "executor",
+-            "loss",
+-            "operator",
+-            "opt_param_op",
+-            "optimizer",
+-            "param_ini",
+-            "param_op_ini",
+-            "pqc",
+-            "shuffle",
+-            "variance",
+-        ]
+-
+     def test_predict_unfitted(self, qnn_regressor, data):
+         """Tests concerning the unfitted QNNRegressor.
+ 
+@@ -74,30 +57,30 @@ class TestQNNRegressor:
+ 
+         Tests include
+             - whether `_is_fitted` is set True
+-            - whether `param` is updated
+-            - whether `param_op` is updated
++            - whether `_param` is updated
++            - whether `_param_op` is updated
+         """
+         X, y = data
+         qnn_regressor.fit(X, y)
+         assert qnn_regressor._is_fitted
+-        assert not np.allclose(qnn_regressor.param, qnn_regressor.param_ini)
+-        assert not np.allclose(qnn_regressor.param_op, qnn_regressor.param_op_ini)
++        assert not np.allclose(qnn_regressor._param, qnn_regressor.param_ini)
++        assert not np.allclose(qnn_regressor._param_op, qnn_regressor.param_op_ini)
+ 
+     def test_partial_fit(self, qnn_regressor, data):
+         """Tests concerning the partial_fit function of the QNNRegressor.
+ 
+         Tests include
+-            - whether `param` is the same after two calls to fit
+-            - whether `param` is different after a call to partial_fit and a call to fit
++            - whether `_param` is the same after two calls to fit
++            - whether `_param` is different after a call to partial_fit and a call to fit
+         """
+         X, y = data
+ 
+         qnn_regressor.fit(X, y)
+-        param_1 = qnn_regressor.param
++        param_1 = qnn_regressor._param
+         qnn_regressor.partial_fit(X, y)
+-        param_2 = qnn_regressor.param
++        param_2 = qnn_regressor._param
+         qnn_regressor.fit(X, y)
+-        param_3 = qnn_regressor.param
++        param_3 = qnn_regressor._param
+ 
+         assert np.allclose(param_1, param_3)
+         assert not np.allclose(param_2, param_3)
+@@ -107,13 +90,13 @@ class TestQNNRegressor:
+ 
+         Tests include
+             - whether `_is_fitted` is True
+-            - whether `param` is updated
+-            - whether `param_op` is updated
++            - whether `_param` is updated
++            - whether `_param_op` is updated
+         """
+         X, y = data
+ 
++        qnn_regressor._optimizer = Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1})
+         qnn_regressor.set_params(
+-            optimizer=Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1}),
+             batch_size=2,
+             epochs=2,
+             shuffle=True,
+@@ -121,8 +104,8 @@ class TestQNNRegressor:
+         qnn_regressor.fit(X, y)
+ 
+         assert qnn_regressor._is_fitted
+-        assert not np.allclose(qnn_regressor.param, qnn_regressor.param_ini)
+-        assert not np.allclose(qnn_regressor.param_op, qnn_regressor.param_op_ini)
++        assert not np.allclose(qnn_regressor._param, qnn_regressor.param_ini)
++        assert not np.allclose(qnn_regressor._param_op, qnn_regressor.param_op_ini)
+ 
+     def test_predict(self, qnn_regressor, data):
+         """Tests concerning the predict function of the QNNRegressor.
+@@ -131,8 +114,8 @@ class TestQNNRegressor:
+             - whether the prediction output is correct
+         """
+         X, y = data
+-        qnn_regressor.param = np.arange(0.1, 2.45, 0.1)
+-        qnn_regressor.param_op = np.arange(0.1, 0.35, 0.1)
++        qnn_regressor._param = np.arange(0.1, 2.45, 0.1)
++        qnn_regressor._param_op = np.arange(0.1, 0.35, 0.1)
+         qnn_regressor._is_fitted = True
+         y_pred = qnn_regressor.predict(X)
+ 
+@@ -142,3 +125,20 @@ class TestQNNRegressor:
+             y_pred,
+             np.array([0.57240016, 1.20027015, 0.39182531, 1.24520867, -0.1851392, 1.24521491]),
+         )
++
++    def test_set_params_and_fit(self, qnn_regressor, data):
++        """
++        Tests fit after changing parameters that alter the number of parameters of the pqc.
++
++        Tests include
++            - whether `_is_fitted` is True
++            - whether `_param` is updated
++            - whether `_param_op` is updated
++        """
++        X, y = data
++        qnn_regressor.set_params(num_layers=3)
++        qnn_regressor.fit(X, y)
++
++        assert qnn_regressor._is_fitted
++        assert not np.allclose(qnn_regressor._param, qnn_regressor.param_ini)
++        assert not np.allclose(qnn_regressor._param_op, qnn_regressor.param_op_ini)
+diff --git a/tests/qnn/test_training.py b/tests/qnn/test_training.py
+index 2b65b97..0e1ec4f 100644
+--- a/tests/qnn/test_training.py
++++ b/tests/qnn/test_training.py
+@@ -6,7 +6,7 @@ import pytest
+ from squlearn import Executor
+ from squlearn.expectation_operator import SummedPaulis
+ from squlearn.feature_map import ChebPQC
+-from squlearn.optimizers import Adam, SLSQP
++from squlearn.optimizers import SLSQP
+ from squlearn.qnn.loss import SquaredLoss
+ from squlearn.qnn.qnn import QNN
+ from squlearn.qnn.training import solve_mini_batch

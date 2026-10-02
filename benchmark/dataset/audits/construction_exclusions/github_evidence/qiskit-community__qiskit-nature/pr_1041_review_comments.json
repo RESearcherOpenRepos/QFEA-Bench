@@ -1,0 +1,349 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085914427",
+    "pull_request_review_id": 1268286046,
+    "id": 1085914427,
+    "node_id": "PRRC_kwDOE-DJV85Aub07",
+    "diff_hunk": "@@ -33,6 +34,109 @@ class ElectronicDensity(ElectronicIntegrals):\n     :meth:`~qiskit_nature.second_q.operators.ElectronicIntegrals.trace_spin`.\n     \"\"\"\n \n+    @staticmethod\n+    def _rdm2_from_rdm1s(\n+        rdm1_a: np.ndarray, rdm1_b: np.ndarray, *, mixed_spin: bool = False\n+    ) -> np.ndarray:\n+        einsum_func, _ = get_einsum()\n+        rdm2 = einsum_func(\"ij,kl->ijkl\", rdm1_a, rdm1_b)\n+        if not mixed_spin:\n+            rdm2 -= einsum_func(\"ij,kl->ikjl\", rdm1_a, rdm1_b)\n+\n+        return rdm2\n+\n+    @classmethod\n+    def empty(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an empty (all-zero) ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.zeros((num_spatial_orbitals, num_spatial_orbitals), dtype=float)\n+        rdm2 = (\n+            np.zeros(\n+                (\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                ),\n+                dtype=float,\n+            )\n+            if include_rdm2\n+            else None\n+        )\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2, auto_index_order=False\n+        )\n+\n+    @classmethod\n+    def identity(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an identity ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.eye(num_spatial_orbitals, dtype=float)\n+        rdm2: np.ndarray | None = None\n+        rdm2_ba: np.ndarray | None = None\n+        if include_rdm2:\n+            rdm2 = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1)\n+            rdm2_ba = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1, mixed_spin=True)\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2_ba, auto_index_order=False\n+        )\n+\n+    @staticmethod\n+    def from_particle_number(",
+    "path": "qiskit_nature/second_q/properties/electronic_density.py",
+    "commit_id": "397c152bdc97c7f1aaeb95722fec230c1ed93565",
+    "original_commit_id": "d4b773d683a9be068018327621b33ea2cf1411cb",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is there a reason this a staticmethod while the empty and identity are classmethods (the latter two do not seem to use the cls parameter).",
+    "created_at": "2023-01-24T20:56:53Z",
+    "updated_at": "2023-01-24T21:16:19Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085914427",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085914427"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085914427"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085914427/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 101,
+    "original_line": 101,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 84,
+    "position": 83,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085918689",
+    "pull_request_review_id": 1268286046,
+    "id": 1085918689,
+    "node_id": "PRRC_kwDOE-DJV85Auc3h",
+    "diff_hunk": "@@ -0,0 +1,19 @@\n+---\n+features:\n+  - |\n+    Three news means of initializing an :class:`~qiskit_nature.second_q.properties.ElectronicDensity`\n+    have been added.",
+    "path": "releasenotes/notes/feat-electronic-denisty-initializations-d1bd5131c5776418.yaml",
+    "commit_id": "397c152bdc97c7f1aaeb95722fec230c1ed93565",
+    "original_commit_id": "d4b773d683a9be068018327621b33ea2cf1411cb",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "In the text here could you list the 3 capabilities. I can presume they are for an empty density, an identity and one based on the number of particles from the example code, but I think it would be nice to have some text here describing things rather than having to try to figure what the 3 things are from the code example - even though I grant you its not that hard. And maybe mention they all can optionally include the 2-body RDM or not, by default they do (as per the first 2 examples but not in the latter).\r\n\r\nAnd for this text `Three news means of initializing...` the `initializing` has me thinking about constructors. Maybe `Three new methods for creating instances of...` or something like that.",
+    "created_at": "2023-01-24T21:00:52Z",
+    "updated_at": "2023-01-24T21:16:19Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085918689",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085918689"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085918689"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085918689/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 4,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 5,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085929573",
+    "pull_request_review_id": 1268286046,
+    "id": 1085929573,
+    "node_id": "PRRC_kwDOE-DJV85Aufhl",
+    "diff_hunk": "@@ -0,0 +1,19 @@\n+---\n+features:\n+  - |\n+    Three news means of initializing an :class:`~qiskit_nature.second_q.properties.ElectronicDensity`\n+    have been added.\n+\n+    .. code-block:: python\n+\n+      size = 4  # number of spatial orbitals\n+\n+      from qiskit_nature.second_q.properties import ElectronicDensity\n+\n+      empty = ElectronicDensity.empty(size, include_rdm2=True)",
+    "path": "releasenotes/notes/feat-electronic-denisty-initializations-d1bd5131c5776418.yaml",
+    "commit_id": "397c152bdc97c7f1aaeb95722fec230c1ed93565",
+    "original_commit_id": "d4b773d683a9be068018327621b33ea2cf1411cb",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Since the API has num_spatial_orbitals as the name, not size, would it not be a little more straightforward to do this\r\n```\r\nnum_spatial_orbitals = 4\r\n\r\nempty = ElectronicDensity.empty(num_spatial_orbitals, include_rdm2=True)\r\n```\r\nor even\r\n```\r\nempty = ElectronicDensity.empty(num_spatial_orbitals=4, include_rdm2=True)\r\n```\r\nIt ties things more closely to the names and avoids dealing with the indirect (size), which needs a comment here to clarify what it is, where the actual parameter name in the first place captures that intrinsically.",
+    "created_at": "2023-01-24T21:14:58Z",
+    "updated_at": "2023-01-24T21:16:19Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085929573",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085929573"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1085929573"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1085929573/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 13,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 13,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086269424",
+    "pull_request_review_id": 1268799713,
+    "id": 1086269424,
+    "node_id": "PRRC_kwDOE-DJV85Avyfw",
+    "diff_hunk": "@@ -33,6 +34,109 @@ class ElectronicDensity(ElectronicIntegrals):\n     :meth:`~qiskit_nature.second_q.operators.ElectronicIntegrals.trace_spin`.\n     \"\"\"\n \n+    @staticmethod\n+    def _rdm2_from_rdm1s(\n+        rdm1_a: np.ndarray, rdm1_b: np.ndarray, *, mixed_spin: bool = False\n+    ) -> np.ndarray:\n+        einsum_func, _ = get_einsum()\n+        rdm2 = einsum_func(\"ij,kl->ijkl\", rdm1_a, rdm1_b)\n+        if not mixed_spin:\n+            rdm2 -= einsum_func(\"ij,kl->ikjl\", rdm1_a, rdm1_b)\n+\n+        return rdm2\n+\n+    @classmethod\n+    def empty(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an empty (all-zero) ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.zeros((num_spatial_orbitals, num_spatial_orbitals), dtype=float)\n+        rdm2 = (\n+            np.zeros(\n+                (\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                ),\n+                dtype=float,\n+            )\n+            if include_rdm2\n+            else None\n+        )\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2, auto_index_order=False\n+        )\n+\n+    @classmethod\n+    def identity(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an identity ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.eye(num_spatial_orbitals, dtype=float)\n+        rdm2: np.ndarray | None = None\n+        rdm2_ba: np.ndarray | None = None\n+        if include_rdm2:\n+            rdm2 = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1)\n+            rdm2_ba = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1, mixed_spin=True)\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2_ba, auto_index_order=False\n+        )\n+\n+    @staticmethod\n+    def from_particle_number(",
+    "path": "qiskit_nature/second_q/properties/electronic_density.py",
+    "commit_id": "397c152bdc97c7f1aaeb95722fec230c1ed93565",
+    "original_commit_id": "d4b773d683a9be068018327621b33ea2cf1411cb",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Good question :sweat_smile: I do not recall a good reason why I would have made `from_orbital_occupation` a `staticmethod`. Probably because it does not use `cls` (although it should use that instead of hard-coding the `ElectronicDensity` to allow subclassing)..\r\nThe reason `empty` and `identity` are `classmethod` is because I mirrored this from `SparsePauliOp.zero` and `.one`, resp.\r\n\r\nMaybe we can change this to be `classmethod` and at the same time change `from_orbital_occupation` to be a `classmethod`, too? I'm not sure about deprecation-implications of the latter though.. :thinking: ",
+    "created_at": "2023-01-25T07:12:17Z",
+    "updated_at": "2023-01-25T07:12:17Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1086269424",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086269424"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1086269424"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086269424/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 101,
+    "original_line": 101,
+    "side": "RIGHT",
+    "in_reply_to_id": 1085914427,
+    "author_association": "MEMBER",
+    "original_position": 84,
+    "position": 83,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086748030",
+    "pull_request_review_id": 1269516587,
+    "id": 1086748030,
+    "node_id": "PRRC_kwDOE-DJV85AxnV-",
+    "diff_hunk": "@@ -33,6 +34,109 @@ class ElectronicDensity(ElectronicIntegrals):\n     :meth:`~qiskit_nature.second_q.operators.ElectronicIntegrals.trace_spin`.\n     \"\"\"\n \n+    @staticmethod\n+    def _rdm2_from_rdm1s(\n+        rdm1_a: np.ndarray, rdm1_b: np.ndarray, *, mixed_spin: bool = False\n+    ) -> np.ndarray:\n+        einsum_func, _ = get_einsum()\n+        rdm2 = einsum_func(\"ij,kl->ijkl\", rdm1_a, rdm1_b)\n+        if not mixed_spin:\n+            rdm2 -= einsum_func(\"ij,kl->ikjl\", rdm1_a, rdm1_b)\n+\n+        return rdm2\n+\n+    @classmethod\n+    def empty(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an empty (all-zero) ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.zeros((num_spatial_orbitals, num_spatial_orbitals), dtype=float)\n+        rdm2 = (\n+            np.zeros(\n+                (\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                    num_spatial_orbitals,\n+                ),\n+                dtype=float,\n+            )\n+            if include_rdm2\n+            else None\n+        )\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2, auto_index_order=False\n+        )\n+\n+    @classmethod\n+    def identity(cls, num_spatial_orbitals: int, *, include_rdm2: bool = True) -> ElectronicDensity:\n+        \"\"\"Initializes an identity ``ElectronicDensity``.\n+\n+        Args:\n+            num_spatial_orbitals: the number of spatial orbitals.\n+            include_rdm2: whether to include the 2-body RDMs.\n+\n+        Returns:\n+            The resulting ``ElectronicDensity``.\n+        \"\"\"\n+        rdm1 = np.eye(num_spatial_orbitals, dtype=float)\n+        rdm2: np.ndarray | None = None\n+        rdm2_ba: np.ndarray | None = None\n+        if include_rdm2:\n+            rdm2 = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1)\n+            rdm2_ba = ElectronicDensity._rdm2_from_rdm1s(rdm1, rdm1, mixed_spin=True)\n+\n+        return ElectronicDensity.from_raw_integrals(\n+            rdm1, rdm2, rdm1, rdm2, rdm2_ba, auto_index_order=False\n+        )\n+\n+    @staticmethod\n+    def from_particle_number(",
+    "path": "qiskit_nature/second_q/properties/electronic_density.py",
+    "commit_id": "397c152bdc97c7f1aaeb95722fec230c1ed93565",
+    "original_commit_id": "d4b773d683a9be068018327621b33ea2cf1411cb",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "In fact one can simply call a `classmethod` also from an instance. That means nothing effectively changes from the user side of thins so I updated the code to use `classmethod` in both cases :+1: ",
+    "created_at": "2023-01-25T14:58:24Z",
+    "updated_at": "2023-01-25T14:58:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1086748030",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086748030"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1041#discussion_r1086748030"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1041"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1086748030/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 101,
+    "original_line": 101,
+    "side": "RIGHT",
+    "in_reply_to_id": 1085914427,
+    "author_association": "MEMBER",
+    "original_position": 84,
+    "position": 83,
+    "subject_type": "line"
+  }
+]

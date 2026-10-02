@@ -1,0 +1,142 @@
+{
+  "instance": {
+    "id": 90,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_956_1027",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/956",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1027",
+    "base_commit": "0f73ea754c25fe549c37b1c4ccb51db381a57078",
+    "patch": "660bfdba911a3b9226301e3ab22f4f99a03c595a"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a hexagonal lattice graph constructor with weighted adjacency behavior rather than quantum modeling semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/hamiltonians/lattices/__init__.py",
+      "qiskit_nature/second_q/hamiltonians/lattices/hexagonal_lattice.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized lattice Hamiltonians module includes several common lattice classes but does not provide a hexagonal lattice. Users need a dedicated HexagonalLattice class that follows the existing lattice API and can construct hexagonal lattice graphs directly from row and column counts with configurable edge and onsite weights.",
+    "requirements": [
+      "A dedicated HexagonalLattice must be available through the public second-quantized lattice API.",
+      "The lattice must create a two-dimensional hexagonal graph for the requested row and column dimensions.",
+      "Node count, node indexes, and weighted edge lists must follow the existing Lattice semantics.",
+      "Bulk edges and onsite self-loops must be represented with the configured weights.",
+      "The weighted adjacency matrix must follow the existing Hermitian edge-weight convention, including conjugate entries for reverse directions."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "HexagonalLattice",
+        "Path": "qiskit_nature/second_q/hamiltonians/lattices/hexagonal_lattice.py",
+        "Input": "constructor: rows: int, cols: int, edge_parameter: complex = 1.0, onsite_parameter: complex = 0.0",
+        "Output": "",
+        "Description": "Lattice class representing a hexagonal lattice graph with configurable edge and onsite weights, exposing graph, num_nodes, node_indexes, weighted_edge_list, and Hermitian weighted adjacency behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "HexagonalLattice.to_adjacency_matrix",
+        "Path": "qiskit_nature/second_q/hamiltonians/lattices/lattice.py",
+        "Input": "self, weighted: bool = False",
+        "Output": "adjacency matrix",
+        "Description": "Returns the hexagonal lattice adjacency matrix using the existing Hermitian weighted-edge convention."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_956_1027",
+      "image_id": "sha256:ebf89c3919afe59a6fe7df48d32ee0b6bdd79ae2cb2d21e0e8b4947b94884f86",
+      "image_size": "954189666"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.25.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hexagonal_lattice.py::TestHexagonalLattice::test_init"
+        ],
+        "summary": "1 passed in 3.32s",
+        "duration_seconds": 8.44
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py::TestHyperCubic::test_init",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_x_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_y_periodic",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_edges_removed",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/second_q/hamiltonians/lattices/test_line_lattice.py::TestLineLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_square_lattice.py::TestSquareLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_periodic"
+        ],
+        "summary": "15 passed in 1.21s",
+        "duration_seconds": 3.96
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hexagonal_lattice.py::TestHexagonalLattice::test_init"
+        ],
+        "summary": "ImportError during collection: cannot import name 'HexagonalLattice' from qiskit_nature.second_q.hamiltonians.lattices; 1 error in 6.08s",
+        "duration_seconds": 15.38
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/hamiltonians/lattices/test_hyper_cubic_lattice.py::TestHyperCubic::test_init",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_x_periodic",
+          "test/second_q/hamiltonians/lattices/test_kagome_lattice.py::TestKagomeLattice::test_init_y_periodic",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_copy",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_edges_removed",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+          "test/second_q/hamiltonians/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+          "test/second_q/hamiltonians/lattices/test_line_lattice.py::TestLineLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_square_lattice.py::TestSquareLattice::test_init",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_open",
+          "test/second_q/hamiltonians/lattices/test_triangular_lattice.py::TestTriangularLattice::test_init_periodic"
+        ],
+        "summary": "15 passed in 1.09s",
+        "duration_seconds": 5.79
+      }
+    }
+  }
+}

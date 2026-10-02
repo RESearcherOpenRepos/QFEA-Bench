@@ -1,0 +1,62 @@
+[
+  {
+    "sha": "591f04d02f4582a0b5eb322aef8ec1dc05015488",
+    "filename": "src/squlearn/kernel/ml/qgpc.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 0,
+    "changes": 5,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpc.py?ref=d54bf928062087f62a31ecd476d7a106679b4c5c",
+    "patch": "@@ -17,11 +17,16 @@ class QGPC(GaussianProcessClassifier):\n     Read more in the\n     `scikit-learn user guide\n     <https://scikit-learn.org/stable/modules/gaussian_process.html#gaussian-process>`_.\n+    Additional arguments can be set via ``**kwargs``.\n \n     Args:\n         quantum_kernel (KernelMatrixBase): The quantum kernel matrix to be used for the GP\n                 (either a fidelity quantum kernel (FQK)\n                 or projected quantum kernel (PQK) must be provided)\n+        **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be obtained\n+            by calling ``get_params()``. Can be used to set for example the number of qubits\n+            (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)\n+            of the underlying feature map.\n \n     See Also\n     --------"
+  },
+  {
+    "sha": "ec051812b96574bcb375bb479ff6fc5246074c27",
+    "filename": "src/squlearn/kernel/ml/qgpr.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 0,
+    "changes": 5,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqgpr.py?ref=d54bf928062087f62a31ecd476d7a106679b4c5c",
+    "patch": "@@ -17,6 +17,7 @@ class QGPR(BaseEstimator, RegressorMixin):\n     This class implements the Gaussian process regression analogous to scikit-learn\n     but is not a wrapper.\n     The implementation is based on Algorithm 2.1 of Ref. [1].\n+    Additional arguments can be set via ``**kwargs``.\n \n     Args:\n         quantum_kernel (KernelMatrixBase):\n@@ -34,6 +35,10 @@ class QGPR(BaseEstimator, RegressorMixin):\n                 unit-variance priors are used. Note that, in this implementation,\n                 the normalization is reversed before the GP predictions are reported.\n         full_regularization: (bool), default=True: enable full gram matrix regularization.\n+        **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be obtained\n+            by calling ``get_params()``. Can be used to set for example the number of qubits\n+            (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)\n+            of the underlying feature map.\n \n     See Also\n     --------"
+  },
+  {
+    "sha": "bbb91953f592a8431f3805bbe0f4b6f7e81c884a",
+    "filename": "src/squlearn/kernel/ml/qkrr.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqkrr.py?ref=d54bf928062087f62a31ecd476d7a106679b4c5c",
+    "patch": "@@ -17,6 +17,7 @@ class QKRR(BaseEstimator, RegressorMixin):\n     but is not a wrapper.\n     Read more about the theoretical background of KRR in, e.g., the\n     `scikit-learn user guide <https://scikit-learn.org/stable/modules/kernel_ridge.html#kernel-ridge>`_.\n+    Additional arguments can be set via ``**kwargs``.\n \n     Args:\n         quantum_kernel (KernelMatrixBase) :"
+  },
+  {
+    "sha": "5316313c517c1d2d034d185fd585730e99554456",
+    "filename": "src/squlearn/kernel/ml/qsvc.py",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 9,
+    "changes": 19,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvc.py?ref=d54bf928062087f62a31ecd476d7a106679b4c5c",
+    "patch": "@@ -9,10 +9,10 @@ class QSVC(SVC):\n \n     This class is a wrapper of :class:`sklearn.svm.SVC`. It uses a quantum kernel matrix\n     to replace the kernel matrix in the :class:`sklearn.svm.SVC` class.\n-    See https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html\n-    for additional information about the standard SVC parameters.\n-    The scikit-learn SVC has kernel specific arguments that are omitted here because they do not apply\n-    to the quantum kernels. These are\n+    The parameters of the parent class can be adjusted via ``**kwargs``. See the documentation\n+    there for additional information about the standard SVC parameters.\n+    The scikit-learn SVC has kernel specific arguments that are omitted here because they do not\n+    apply to the quantum kernels. These are\n \n         - `kernel`\n         - `gamma`\n@@ -22,10 +22,12 @@ class QSVC(SVC):\n     Args:\n         quantum_kernel (KernelMatrixBase): The quantum kernel matrix to be used in the SVC. Either\n             a fidelity quantum kernel (FQK) or projected quantum kernel (PQK) must be provided.\n-        **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be\n-            obtained by calling ``get_params()``. Can be used to set for example the number of\n-            qubits (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)\n-            of the underlying feature map.\n+        **kwargs: Possible arguments can be\n+            obtained by calling ``get_params()``. Notable examples are parameters of the\n+            :class:`sklearn.svm.SVC` class such as the regularization parameters ``C``\n+            (float, default=1.0). Additionally, properties of the underlying feature map can be\n+            adjusted via kwargs such as the number of qubits (``num_qubits``), or (if supported)\n+            the number of layers (``num_layers``).\n \n     See Also\n     --------\n@@ -93,7 +95,6 @@ def __init__(\n     @classmethod\n     def _get_param_names(cls):\n         names = SVC._get_param_names()\n-        names.remove(\"kernel\")\n         names.remove(\"gamma\")\n         names.remove(\"degree\")\n         names.remove(\"coef0\")"
+  },
+  {
+    "sha": "8076932d4a2169053082dac2b30f0f8b14eedf07",
+    "filename": "src/squlearn/kernel/ml/qsvr.py",
+    "status": "modified",
+    "additions": 11,
+    "deletions": 10,
+    "changes": 21,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/d54bf928062087f62a31ecd476d7a106679b4c5c/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fkernel%2Fml%2Fqsvr.py?ref=d54bf928062087f62a31ecd476d7a106679b4c5c",
+    "patch": "@@ -8,11 +8,11 @@ class QSVR(SVR):\n     Quantum Support Vector Regression\n \n     This class is a wrapper of :class:`sklearn.svm.SVR`. It uses a quantum kernel matrix\n-    to replace the kernel matrix in the :class:`sklearn.svm.SVR` class.\n-    See https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html\n-    for additional information about the standard SVR parameters.\n-    The scikit-learn SVR has kernel specific arguments that are omitted here because they do not apply\n-    to the quantum kernels. These are\n+    to replace the kernel matrix in the :class:`sklearn.svm.SVR` class. The parameters of the\n+    parent class can be adjusted via ``**kwargs``.\n+    See the documentation there for additional information about the standard SVR parameters.\n+    The scikit-learn SVR has kernel specific arguments that are omitted here because they do not\n+    apply to the quantum kernels. These are\n \n         - `kernel`\n         - `gamma`\n@@ -22,10 +22,12 @@ class QSVR(SVR):\n     Args:\n         quantum_kernel (KernelMatrixBase): The quantum kernel matrix to be used in the SVC. Either\n             a fidelity quantum kernel (FQK) or projected quantum kernel (PQK) must be provided.\n-        **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be\n-            obtained by calling ``get_params()``. Can be used to set for example the number of\n-            qubits (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)\n-            of the underlying feature map.\n+        **kwargs: Possible arguments can be\n+            obtained by calling ``get_params()``. Notable examples are parameters of the\n+            :class:`sklearn.svm.SVR` class such as the regularization parameters ``C``\n+            (float, default=1.0) or epsilon (float, default=0.1). Additionally, properties of the\n+            underlying feature map can be adjusted via kwargs such as the number of qubits\n+            (``num_qubits``), or (if supported) the number of layers (``num_layers``).\n \n     See Also\n     --------\n@@ -92,7 +94,6 @@ def __init__(\n     @classmethod\n     def _get_param_names(cls):\n         names = SVR._get_param_names()\n-        names.remove(\"kernel\")\n         names.remove(\"gamma\")\n         names.remove(\"degree\")\n         names.remove(\"coef0\")"
+  }
+]

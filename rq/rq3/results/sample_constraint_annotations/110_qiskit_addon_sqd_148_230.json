@@ -1,0 +1,104 @@
+{
+  "id": 110,
+  "sample_id": "qiskit_addon_sqd_148_230",
+  "repo": "Qiskit/qiskit-addon-sqd",
+  "patch_commit": "0f8d2805b811fb0853f99de2756dc97893edcbb3",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "interface/user_parameter_binding": 1,
+      "general_semantics/seed_reproducibility": 1,
+      "general_semantics/binary_integer_conversion": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+      "label": "interface/user_parameter_binding",
+      "assertions": [
+        {
+          "line": 191,
+          "expected": "Scalar and spin-resolved max_dim bound the alpha/beta CI dimensions to 10/10 and 15/10 respectively. Spin-square equivalence is also checked at 193/217."
+        },
+        {
+          "line": 192,
+          "expected": "Scalar and spin-resolved max_dim bound the alpha/beta CI dimensions to 10/10 and 15/10 respectively. Spin-square equivalence is also checked at 193/217."
+        },
+        {
+          "line": 215,
+          "expected": "Scalar and spin-resolved max_dim bound the alpha/beta CI dimensions to 10/10 and 15/10 respectively. Spin-square equivalence is also checked at 193/217."
+        },
+        {
+          "line": 216,
+          "expected": "Scalar and spin-resolved max_dim bound the alpha/beta CI dimensions to 10/10 and 15/10 respectively. Spin-square equivalence is also checked at 193/217."
+        }
+      ],
+      "rationale": "Primary target is the new dimension-control parameter; record the secondary physical assertion without assigning two primary labels."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_reproducible_with_seed",
+      "label": "general_semantics/seed_reproducibility",
+      "assertions": [
+        {
+          "line": 273,
+          "expected": "Repeated runs with the same seed return identical energies, amplitudes and CI strings; the assertion is reproducibility, not a physical target value."
+        },
+        {
+          "line": 274,
+          "expected": "Repeated runs with the same seed return identical energies, amplitudes and CI strings; the assertion is reproducibility, not a physical target value."
+        },
+        {
+          "line": 275,
+          "expected": "Repeated runs with the same seed return identical energies, amplitudes and CI strings; the assertion is reproducibility, not a physical target value."
+        },
+        {
+          "line": 276,
+          "expected": "Repeated runs with the same seed return identical energies, amplitudes and CI strings; the assertion is reproducibility, not a physical target value."
+        }
+      ],
+      "rationale": "Repeated runs with the same seed return identical energies, amplitudes and CI strings; the assertion is reproducibility, not a physical target value."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs",
+      "label": "general_semantics/binary_integer_conversion",
+      "assertions": [
+        {
+          "line": 285,
+          "expected": "Converting a 57-bit Boolean row to an integer preserves its binary digits."
+        }
+      ],
+      "rationale": "Converting a 57-bit Boolean row to an integer preserves its binary digits."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs_large",
+      "label": "general_semantics/binary_integer_conversion",
+      "assertions": [
+        {
+          "line": 294,
+          "expected": "Converting a 64-bit Boolean row to an integer preserves its binary digits."
+        }
+      ],
+      "rationale": "Converting a 64-bit Boolean row to an integer preserves its binary digits."
+    }
+  ],
+  "source_files": [
+    "https://github.com/Qiskit/qiskit-addon-sqd/blob/0f8d2805b811fb0853f99de2756dc97893edcbb3/test/test_fermion.py"
+  ],
+  "rationale": "Test bodies and referenced helpers at the exact patched commit were reviewed individually against the existing primary-assertion protocol. Setup and quantum repository membership do not determine the label. Parametrized cases retain distinct selectors.",
+  "review_provenance": {
+    "reviewer": "Codex",
+    "method": "Individual source-assertion review under existing protocol; explicit saved decisions, not automatic keyword classification.",
+    "date": "2026-10-02",
+    "human_agreement": "Author confirmation is recorded separately; these evidence records do not simulate three independent human votes."
+  }
+}

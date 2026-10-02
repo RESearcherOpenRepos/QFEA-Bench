@@ -1,0 +1,129 @@
+{
+  "instance": {
+    "id": 44,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_920_924",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/920",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/924",
+    "base_commit": "ff55d2c23b7ee023d6a0ecf3094c9109ed2ddc98",
+    "patch": "9725adebbffc9dfe96825038b6f894478da3d1da"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a generic NLopt SBPLX optimizer integration rather than quantum-specific modeling or algorithm semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/optimizers/__init__.py",
+      "qiskit_machine_learning/optimizers/nlopts/__init__.py",
+      "qiskit_machine_learning/optimizers/nlopts/nloptimizer.py",
+      "qiskit_machine_learning/optimizers/nlopts/sbplx.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository provides several optimizers backed by NLopt, including CRS, DIRECT_L, DIRECT_L_RAND, ESCH, and ISRES. However, it does not currently include support for the SBPLX optimizer. Users who rely on the existing NLopt optimizer family cannot use SBPLX through the same optimizer workflow. The repository should support SBPLX consistently with the other NLopt-backed optimizers.",
+    "requirements": [
+      "The new optimizer must integrate with the existing NLopt-backed optimizer family, be exported through the same public __init__.py modules as the other NLopt optimizers, be importable both as qiskit_machine_learning.optimizers.SBPLX and from the NLopt optimizer package, and identify SBPLX as the local NLopt LN_SBPLX backend through the repository's NLopt optimizer type protocol.",
+      "It must support the standard optimizer workflow, including option setting, optional bounds, and minimization behavior consistent with the other NLopt-backed optimizers."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SBPLX",
+        "Path": "qiskit_machine_learning/optimizers/nlopts/sbplx.py",
+        "Input": "constructor: max_evals: int = 1000",
+        "Output": "",
+        "Description": "NLopt-based Subplex optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "SBPLX.get_nlopt_optimizer",
+        "Path": "qiskit_machine_learning/optimizers/nlopts/sbplx.py",
+        "Input": "self",
+        "Output": "NLoptOptimizerType.LN_SBPLX",
+        "Description": "Returns the NLopt backend associated with SBPLX."
+      },
+      {
+        "Type": "Method",
+        "Name": "SBPLX.set_options",
+        "Path": "qiskit_machine_learning/optimizers/optimizer.py",
+        "Input": "self, **kwargs",
+        "Output": "",
+        "Description": "Updates optimizer options such as max_evals for the SBPLX optimizer workflow."
+      },
+      {
+        "Type": "Method",
+        "Name": "SBPLX.minimize",
+        "Path": "qiskit_machine_learning/optimizers/nlopts/nloptimizer.py",
+        "Input": "self, fun, x0, jac=None, bounds=None",
+        "Output": "OptimizerResult",
+        "Description": "Runs SBPLX minimization with optional bounds through the existing NLopt optimizer workflow."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_920_924",
+      "image_id": "sha256:bd3757d4fb137311c6379ed52ed7c676037d169fdb3120d76a95c7e88f4c8b83",
+      "image_size": "1605136358",
+      "evaluation_source_image": "benchmark-qiskit_machine_learning_920_924:latest"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy==1.26.4",
+        "nlopt==2.7.1"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_7"
+        ],
+        "summary": "1 passed in 8.12s",
+        "duration_seconds": 12.66
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_2",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_3",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_5",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_6"
+        ],
+        "summary": "4 passed in 5.98s",
+        "duration_seconds": 8.13
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_7"
+        ],
+        "summary": "1 error in 3.14s",
+        "duration_seconds": 5.11
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_2",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_3",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_5",
+          "test/optimizers/test_optimizers.py::TestOptimizers::test_nlopt_6"
+        ],
+        "summary": "4 passed in 6.93s",
+        "duration_seconds": 10.09
+      }
+    }
+  }
+}

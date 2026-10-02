@@ -1,0 +1,22 @@
+{
+  "oracle_files": [
+    "openqaoa/problems/converters.py"
+  ],
+  "task": {
+    "problem_statement": "Users need to transform binary optimization models written with Docplex into the Ising representation used by OpenQAOA, so that the same optimization problem can be solved through the quantum optimization workflow.",
+    "requirements": [
+      "Convert a binary quadratic Docplex objective into an OpenQAOA QUBO object representing an Ising model.",
+      "Map MaxCut objective terms to the expected Ising weights, respecting the documented normalization relative to the existing MaximumCut implementation."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "FromDocplex2IsingModel",
+        "Path": "openqaoa/problems/converters.py",
+        "Input": "constructor: model, multipliers=None",
+        "Output": "",
+        "Description": "Converts a Docplex model; exposes ising_model as an OpenQAOA QUBO object."
+      }
+    ]
+  }
+}

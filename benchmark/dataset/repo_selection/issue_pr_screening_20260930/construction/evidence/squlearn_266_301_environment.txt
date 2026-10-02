@@ -1,0 +1,360 @@
+FILE pyproject.toml
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "squlearn"
+readme = "README.md"
+authors = [
+    {name = "David Kreplin", email = "david.kreplin@ipa.fraunhofer.de"},
+    {name = "Moritz Willmann", email = "moritz.willmann@ipa.fraunhofer.de"},
+    {name = "Jan Schnabel", email = "jan.schnabel@ipa.fraunhofer.de"},
+    {name = "Frederic Rapp", email = "frederic.rapp@ipa.fraunhofer.de"},
+    {name = "Manuel Hagelüken", email = "manuel.hagelueken@ipa.fraunhofer.de"},
+    {name = "Marco Roth", email = "marco.roth@ipa.fraunhofer.de"},
+]
+maintainers = [
+    {name = "David Kreplin", email = "david.kreplin@ipa.fraunhofer.de"},
+    {name = "Moritz Willmann", email = "moritz.willmann@ipa.fraunhofer.de"},
+]
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["quantum", "machine learning", "qml"]
+dependencies = [
+    "bayesian-optimization>=1.4.3,<2",
+    "dill>=0.3.4",
+    "mapomatic>=0.10.0",
+    "networkx>=3.0",
+    "numpy>=1.20",
+    "pennylane>=0.34.0",
+    "qiskit>=0.45.0,<2",
+    "qiskit-aer>=0.12.0",
+    "qiskit-algorithms>=0.3.0",
+    "qiskit-ibm-runtime>=0.18.0",
+    "qiskit-machine-learning>=0.7.0",
+    "scipy>=1.8.0",
+    "scikit-learn>=1.2.0",
+    "tqdm>=4.1.0",
+]
+requires-python = ">=3.9,<3.13"
+dynamic = ["version", "description"]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flit",
+    "nbmake",
+    "pylint",
+    "pytest",
+]
+examples = [
+    "jupyter",
+    "matplotlib>=3.5.1",
+    "mlflow",
+    "pandas",
+    "pylatexenc>=2.10",
+    "seaborn",
+    "scikit-optimize",
+]
+docs = [
+    "ipykernel",
+    "jupyter-sphinx",
+    "matplotlib>=3.5.1",
+    "myst-parser",
+    "nbsphinx",
+    "nbsphinx_link",
+    "pylatexenc>=2.10",
+    "sphinx",
+    "sphinxcontrib-spelling",
+    "sphinx-rtd-theme<3.0.0",
+    "sphinx-sitemap",
+    "scikit-learn!=1.7.1",
+]
+
+[project.urls]
+github = "https://github.com/sQUlearn/squlearn"
+documentation = "https://squlearn.github.io"
+
+[tool.black]
+line-length=99
+
+[tool.pylint]
+max-line-length=99
+good-names=["X", "y", "i", "j"]
+
+[tool.pylint.main]
+extension-pkg-allow-list = [
+    "numpy",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+    "--ignore=examples/tutorials/qnn_backend_mitigation.ipynb",
+    "--ignore=examples/tutorials/qnn_ode_solver.ipynb",
+]
+
+FILE .github/workflows/publish.yml
+name: Publish to PyPI
+on:
+  release:
+    types: [published]
+
+jobs:
+    pypi-publish:
+      name: Upload release to PyPI
+      runs-on: ubuntu-latest
+      environment:
+        name: release
+        url: https://pypi.org/p/squlearn
+      permissions:
+        id-token: write
+      steps:
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.9
+
+        - name: Install dependencies
+          run: pip install flit
+
+        - uses: actions/checkout@v4
+        
+        - name: Build
+          run: flit build
+
+        - name: Publish package distributions to PyPI
+          uses: pypa/gh-action-pypi-publish@release/v1
+
+FILE .github/workflows/format.yml
+name: Formatting check
+on:
+- pull_request
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel Workflow Action
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install black[jupyter]
+
+      - uses: actions/checkout@v4
+
+      - name: Run Black
+        run: |
+          black -l 99 src --check
+          black -l 99 tests --check
+          black -l 99 --ipynb examples --check
+
+FILE .github/workflows/publish_docs.yml
+name: Publish to GH Pages
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+    publish-pages:
+      name: Publish to GH Pages
+      runs-on: ubuntu-latest
+      env:
+        QISKIT_SETTINGS: ${{github.workspace}}/docs/qiskit_settings.conf
+      steps:
+          - name: Checkout Source Code
+            uses: actions/checkout@v4
+          - name: Checkout GH Pages
+            uses: actions/checkout@v4
+            with:
+              repository: sQUlearn/squlearn.github.io
+              fetch-depth: 0
+              path: "docs/_build"
+              token: ${{ secrets.PUSH_DOCS_TOKEN }}
+          - name: Build Docs
+            uses: sQUlearn/sphinx-action@master
+            with:
+              docs-folder: "docs/"
+              pre-build-command: "pip3 install .[docs]"
+              build-command: "sphinx-build -E -b html . _build -W"
+          - name: Commit Files
+            run: |
+              cd docs/_build
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git config --global user.name "github-actions[bot]"
+              git add .
+              git commit -m "update documentation ${{ github.event.release.tag_name }}"
+          - name: Tag
+            run: |
+              cd docs/_build
+              git tag -a "${{ github.event.release.tag_name }}" -m "${{ github.event.release.name}}"
+            if: github.event_name == 'release'
+          - name: Push Changes
+            uses: ad-m/github-push-action@master
+            with:
+              github_token: ${{ secrets.PUSH_DOCS_TOKEN }}
+              directory: docs/_build
+              repository: sQUlearn/squlearn.github.io
+              force: true
+              tags: true
+
+FILE .github/workflows/doc_checks.yml
+name: Documentation check
+on:
+- pull_request
+
+jobs:
+  doc_checks:
+    runs-on: ubuntu-latest
+    env:
+      QISKIT_SETTINGS: ${{github.workspace}}/docs/qiskit_settings.conf
+
+    steps:
+        - name: Cancel Workflow Action
+          uses: styfle/cancel-workflow-action@0.11.0
+
+        - uses: actions/checkout@v4
+
+        - uses: sQUlearn/sphinx-action@master
+          with:
+            docs-folder: "docs/"
+            pre-build-command: "pip3 install .[docs]"
+            build-command: "sphinx-build -b html . _build -W --keep-going"
+
+FILE .github/workflows/tests.yaml
+name: Tests
+on:
+  pull_request:
+  schedule:
+    - cron: '23 1 * * *'
+
+jobs:
+  pytest_minimal_requirements:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv_minimal
+          source venv_minimal/bin/activate
+          pip install toml
+          python3 install_lowest_dependencies.py
+      - name: Test with pytest
+        run: |
+          source venv_minimal/bin/activate
+          pip install pytest
+          pytest tests/
+      - name: Test examples
+        run: |
+          source venv_minimal/bin/activate
+          pip install nbmake
+          pytest --nbmake --nbmake-timeout 600 examples/
+      - name: clean
+        run: |
+          rm -rf venv_minimal
+
+  pytest_qiskit_0_46:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv_qiskit_0_46
+          source venv_qiskit_0_46/bin/activate
+          pip install .[examples] qiskit==0.46.3 qiskit-ibm-runtime==0.20.0
+      - name: Test with pytest
+        run: |
+          source venv_qiskit_0_46/bin/activate
+          pip install pytest
+          pytest tests/
+      - name: Test examples
+        run: |
+          source venv_qiskit_0_46/bin/activate
+          pip install nbmake
+          pytest --nbmake --nbmake-timeout 600 examples/
+      - name: clean
+        run: |
+          rm -rf venv_qiskit_0_46
+
+  pytest_qiskit_1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv_qiskit_1
+          source venv_qiskit_1/bin/activate
+          pip install .[examples] qiskit==1.1.2 qiskit-ibm-runtime==0.27.1
+      - name: Test with pytest
+        run: |
+          source venv_qiskit_1/bin/activate
+          pip install pytest
+          pytest tests/
+      - name: Test examples
+        run: |
+          source venv_qiskit_1/bin/activate
+          pip install nbmake
+          pytest --nbmake --nbmake-timeout 600 examples/
+      - name: clean
+        run: |
+          rm -rf venv_qiskit_1
+
+  pytest_latest: 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: |
+            3.12
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv_latest
+          source venv_latest/bin/activate
+          pip install .[examples]
+      - name: Test with pytest
+        run: |
+          source venv_latest/bin/activate
+          pip install pytest
+          pytest tests/
+      - name: Test examples
+        run: |
+          source venv_latest/bin/activate
+          pip install nbmake
+          pytest --nbmake --nbmake-timeout 600 examples/
+      - name: clean
+        run: |
+          rm -rf venv_latest

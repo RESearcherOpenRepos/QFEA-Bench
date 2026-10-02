@@ -1,0 +1,341 @@
+{
+  "id": 30,
+  "sample_id": "qiskit_machine_learning_367_540",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "8dcbed77523beed5bcb31b2d47421634c3278400",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 7,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "interface/callable_optimizer_support": 6,
+      "general_semantics/warm_start_optimization_state": 3,
+      "interface/class_label_roundtrip": 1,
+      "general_semantics/model_training_performance": 9
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17___callable____absolute_error____statevector___True_",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 237,
+          "expected": "CircuitQNN classifier fits and scores using a callable minimizer"
+        },
+        {
+          "line": 243,
+          "expected": "Its fit-result optimum equals the exposed weights"
+        }
+      ],
+      "rationale": "This CircuitQNN variant passes a callable optimizer and verifies usable fit results and exposed weights; the score is supporting evidence."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_09___callable____absolute_error___True_",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 210,
+          "expected": "SamplerQNN classifier fits and scores using a callable minimizer"
+        },
+        {
+          "line": 216,
+          "expected": "Its fit-result optimum equals the exposed weights"
+        }
+      ],
+      "rationale": "This SamplerQNN variant passes a callable optimizer and inspects the fitted result and weights; callable acceptance is the distinctive contract."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_09___callable____statevector___True_",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "OpflowQNN regressor fits and scores using a callable minimizer"
+        },
+        {
+          "line": 160,
+          "expected": "Its fit-result optimum equals the exposed weights"
+        }
+      ],
+      "rationale": "The OpflowQNN regressor uses a callable optimizer and checks fitted output and weights; the callback and score are secondary checks."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_5___callable____statevector__",
+      "label": "general_semantics/warm_start_optimization_state",
+      "assertions": [
+        {
+          "line": 180,
+          "expected": "The previous fitted weights become the next optimization start"
+        },
+        {
+          "line": 183,
+          "expected": "The warm-start regressor still scores above 0.5"
+        }
+      ],
+      "rationale": "The selected callable-optimizer case directly compares the previous final weights with the next initial weights, so warm-start state is primary."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_5___callable___True_",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "EstimatorQNN regressor fits and scores using a callable minimizer"
+        },
+        {
+          "line": 137,
+          "expected": "Its fit-result optimum equals the exposed weights"
+        }
+      ],
+      "rationale": "The EstimatorQNN regressor uses a callable minimizer and checks the fitted result and weights; this is optimizer API compatibility."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Callable-trained fidelity kernel has bound parameter values"
+        },
+        {
+          "line": 84,
+          "expected": "The fitted kernel passes the helper's classifier-score check"
+        }
+      ],
+      "rationale": "The fidelity-kernel trainer receives a callable minimizer and exposes bound kernel parameters after fit; that callable workflow is primary."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params",
+      "label": "interface/callable_optimizer_support",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "Callable-trained quantum kernel has no unbound training parameters"
+        },
+        {
+          "line": 102,
+          "expected": "Its downstream classifier scores at least 0.5"
+        }
+      ],
+      "rationale": "The quantum-kernel trainer receives a callable minimizer and leaves no unbound training parameters; the score checks usability."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_001___statevector___2___zz_feature_map____real_amplitudes____cobyla____binary__",
+      "label": "interface/class_label_roundtrip",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "VQC trains and scores above threshold"
+        },
+        {
+          "line": 165,
+          "expected": "Predictions retain the supplied class-label encoding"
+        }
+      ],
+      "rationale": "The selected VQC object-optimizer case checks both score and predicted label encoding; the exact class-label round trip is more specific."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_1___cobyla___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 100,
+          "expected": "VQR with object optimizer scores above 0.5"
+        }
+      ],
+      "rationale": "This VQR object-optimizer control asserts a predictive score threshold, with no quantum-specific numeric expectation."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_01___cobyla____absolute_error____statevector___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 237,
+          "expected": "CircuitQNN classifier with COBYLA scores above 0.5"
+        },
+        {
+          "line": 243,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This COBYLA CircuitQNN control primarily requires a classifier score above 0.5; fit-result consistency is secondary."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_09___bfgs____absolute_error____statevector___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 237,
+          "expected": "CircuitQNN classifier with BFGS scores above 0.5"
+        },
+        {
+          "line": 243,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This BFGS CircuitQNN control primarily requires a classifier score above 0.5; fit-result consistency is secondary."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_01___cobyla____absolute_error___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 210,
+          "expected": "SamplerQNN classifier with COBYLA scores above 0.5"
+        },
+        {
+          "line": 216,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This COBYLA SamplerQNN control primarily requires a classifier score above 0.5; fit-result consistency is secondary."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py::TestNeuralNetworkClassifier::test_classifier_with_sampler_qnn_05___bfgs____absolute_error___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 210,
+          "expected": "SamplerQNN classifier with BFGS scores above 0.5"
+        },
+        {
+          "line": 216,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This BFGS SamplerQNN control primarily requires a classifier score above 0.5; fit-result consistency is secondary."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_01___cobyla____statevector___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "OpflowQNN regressor with COBYLA scores above 0.5"
+        },
+        {
+          "line": 160,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This COBYLA OpflowQNN control checks regression score and fit-state consistency; the score is the main explicit success criterion."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_05___bfgs____statevector___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "OpflowQNN regressor with BFGS scores above 0.5"
+        },
+        {
+          "line": 160,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This BFGS OpflowQNN control checks regression score and fit-state consistency; the score is the main explicit success criterion."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_1___cobyla____statevector__",
+      "label": "general_semantics/warm_start_optimization_state",
+      "assertions": [
+        {
+          "line": 180,
+          "expected": "Previous fitted weights become the next COBYLA start"
+        }
+      ],
+      "rationale": "This COBYLA case compares the first fit endpoint with the second fit starting point, directly testing warm-start reuse."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_warm_start_3___bfgs____statevector__",
+      "label": "general_semantics/warm_start_optimization_state",
+      "assertions": [
+        {
+          "line": 180,
+          "expected": "Previous fitted weights become the next BFGS start"
+        }
+      ],
+      "rationale": "This BFGS case compares the first fit endpoint with the second fit starting point, directly testing warm-start reuse."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_1___cobyla___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "EstimatorQNN regressor with COBYLA scores above 0.5"
+        },
+        {
+          "line": 137,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This COBYLA EstimatorQNN control checks regression score and fitted weights; the score threshold is primary."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py::TestNeuralNetworkRegressor::test_regressor_with_estimator_qnn_3___bfgs___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "EstimatorQNN regressor with BFGS scores above 0.5"
+        },
+        {
+          "line": 137,
+          "expected": "Fit result and exposed weights agree"
+        }
+      ],
+      "rationale": "This BFGS EstimatorQNN control checks regression score and fitted weights; the score threshold is primary."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/classifiers/test_neural_network_classifier_sampler_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/classifiers/test_vqc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/regressors/test_neural_network_regressor.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/regressors/test_neural_network_regressor_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/algorithms/regressors/test_vqr_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/kernels/algorithms/test_fidelity_qkernel_trainer.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/8dcbed77523beed5bcb31b2d47421634c3278400/test/kernels/algorithms/test_qkernel_trainer.py"
+  ],
+  "rationale": "The selected new variants exercise fitting with a callable optimizer and inspect fitted state or trained-kernel bindings; warm-start tests directly compare optimizer states. Existing object-optimizer cases primarily check predictive score and fit-state behavior, with one VQC label round-trip check."
+}

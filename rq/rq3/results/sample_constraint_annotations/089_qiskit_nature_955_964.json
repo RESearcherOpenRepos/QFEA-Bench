@@ -1,0 +1,283 @@
+{
+  "id": 89,
+  "sample_id": "qiskit_nature_955_964",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "cd0fcca70df419d19ce975ba047c00a48c527775",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 19,
+    "subtype_test_counts": {
+      "general_semantics/tensor_arithmetic": 11,
+      "interface/mapping_access": 3,
+      "interface/input_validation": 1,
+      "interface/sparse_storage_contract": 5
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 805,
+          "expected": "Dense, sparse, and mixed einsum contractions equal reference tensor calculations."
+        }
+      ],
+      "rationale": "The assertions compare generic one- and two-body array contractions."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 280,
+          "expected": "Dense and sparse polynomial-tensor addition yields expected coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic addition."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_apply",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 715,
+          "expected": "Apply transforms tensors by transpose, conjugation, and Kronecker product."
+        }
+      ],
+      "rationale": "The selected control checks generic array operations."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "PolynomialTensor composition yields expected dense and sparse contractions."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor composition."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 618,
+          "expected": "PolynomialTensor expansion yields expected dense and sparse coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor expansion."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 188,
+          "expected": "Coefficient key lookup returns the stored value."
+        }
+      ],
+      "rationale": "The selected control checks mapping access."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 120,
+          "expected": "Constructor rejects key/rank and size mismatches."
+        }
+      ],
+      "rationale": "The selected control checks input validation."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_dense",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 171,
+          "expected": "is_dense distinguishes dense, sparse, and mixed storage."
+        }
+      ],
+      "rationale": "The selected control checks storage-mode reporting."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_empty",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 143,
+          "expected": "is_empty reports empty and nonempty coefficient mappings."
+        }
+      ],
+      "rationale": "The selected control checks storage-state reporting."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_sparse",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 153,
+          "expected": "is_sparse distinguishes sparse, dense, and mixed storage."
+        }
+      ],
+      "rationale": "The selected control checks storage-mode reporting."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 210,
+          "expected": "Iteration returns stored coefficient keys."
+        }
+      ],
+      "rationale": "The selected control checks mapping iteration."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 204,
+          "expected": "Length reports four coefficient keys."
+        }
+      ],
+      "rationale": "The selected control checks mapping length."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Scalar zero multiplies dense and sparse tensors to zero."
+        }
+      ],
+      "rationale": "The selected variant checks generic arithmetic."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Scalar 0.75 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "The selected variant checks generic arithmetic."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Scalar 1.5 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "The selected variant checks generic arithmetic."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Scalar 2.25 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "The selected variant checks generic arithmetic."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 253,
+          "expected": "Scalar 3 scales dense and sparse tensors."
+        }
+      ],
+      "rationale": "The selected variant checks generic arithmetic."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 476,
+          "expected": "Tensor product yields expected dense and sparse coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks generic tensor arithmetic."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_dense",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 224,
+          "expected": "to_dense returns equivalent NumPy coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks public storage conversion."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_sparse",
+      "label": "interface/sparse_storage_contract",
+      "assertions": [
+        {
+          "line": 237,
+          "expected": "to_sparse returns equivalent sparse coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks public storage conversion."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/cd0fcca70df419d19ce975ba047c00a48c527775/test/second_q/operators/test_polynomial_tensor.py"
+  ],
+  "rationale": "Individually reviewed all 20 selected exact-patch cases. Graph construction is classified from graph assertions; tensor contractions from numeric assertions."
+}

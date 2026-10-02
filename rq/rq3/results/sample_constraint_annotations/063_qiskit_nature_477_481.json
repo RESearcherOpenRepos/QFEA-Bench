@@ -1,0 +1,100 @@
+{
+  "id": 63,
+  "sample_id": "qiskit_nature_477_481",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "4a0ab6bdd0314dd0848ea3903df085da90b93010",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/coordinate_unit_contract": 1,
+      "interface/property_mutability": 2,
+      "general_semantics/molecular_geometry_transform": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_construct",
+      "label": "interface/coordinate_unit_contract",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Molecule reports Angstrom by default and Bohr when specified, preserving coordinates."
+        }
+      ],
+      "rationale": "The new explicit unit property and constructor option are the most specific checks."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_charge",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "Charge starts at zero and reflects an assigned value of one."
+        }
+      ],
+      "rationale": "The test directly checks a public mutable property."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_multiplicity",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 101,
+          "expected": "Multiplicity starts at one and reflects an assigned value of zero."
+        }
+      ],
+      "rationale": "The test directly checks a public mutable property."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_stretch",
+      "label": "general_semantics/molecular_geometry_transform",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Absolute stretching changes the second atom position by the requested distance."
+        }
+      ],
+      "rationale": "The expected coordinate is an ordinary geometric transformation."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_bend",
+      "label": "general_semantics/molecular_geometry_transform",
+      "assertions": [
+        {
+          "line": 131,
+          "expected": "Absolute bending rotates selected atom coordinates for right, oblique, and linear cases."
+        }
+      ],
+      "rationale": "The checks are three-dimensional coordinate calculations."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/drivers/second_quantization/test_driver_molecule.py::TestMolecule::test_perturbations",
+      "label": "general_semantics/molecular_geometry_transform",
+      "assertions": [
+        {
+          "line": 186,
+          "expected": "Applying and clearing perturbations changes then restores molecule geometry."
+        }
+      ],
+      "rationale": "The explicit checks are coordinate updates and restoration."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/4a0ab6bdd0314dd0848ea3903df085da90b93010/test/drivers/second_quantization/test_driver_molecule.py"
+  ],
+  "rationale": "Read the task and each of the 6 selected test cases at the exact patch; each record has one primary constraint."
+}

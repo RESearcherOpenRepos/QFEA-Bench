@@ -1,0 +1,974 @@
+[
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437027016",
+    "pull_request_review_id": 4526364124,
+    "id": 3437027016,
+    "node_id": "PRRC_kwDOMkVQrc7M3N7I",
+    "diff_hunk": "@@ -0,0 +1,173 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"65adf860-4443-494f-ad90-5d8ea444ac4e\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# Scale SQD chemistry workflows with Fulqrum\\n\",\n+    \"\\n\",\n+    \"For information on how to install and use ``qiskit-addon-dice-solver``, [visit the docs](https://qiskit.github.io/qiskit-addon-dice-solver/).\\n\",\n+    \"\\n\",\n+    \"For more details on the SQD code used in this example, check out [tutorial 1](https://qiskit.github.io/qiskit-addon-sqd/tutorials/01_chemistry_hamiltonian.html).\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"baf7d074-4443-4695-875e-65f7fb8cef25\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"converged SCF energy = -108.835236570775\\n\",\n+      \"CASCI E = -109.046671778080  E(CI) = -32.8155692383187  S^2 = 0.0000000\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"import fulqrum as fq\\n\",\n+    \"import numpy as np\\n\",\n+    \"import pyscf\\n\",\n+    \"import pyscf.cc\\n\",\n+    \"import pyscf.mcscf\\n\",\n+    \"import scipy.sparse.linalg\\n\",\n+    \"from fulqrum.convert.integrals import integrals_to_fq_fermionic_op\\n\",\n+    \"from qiskit_addon_sqd.counts import generate_bit_array_uniform\\n\",\n+    \"from qiskit_addon_sqd.fermion import SCIResult, SCIState, diagonalize_fermionic_hamiltonian\\n\",\n+    \"\\n\",\n+    \"# Specify molecule properties\\n\",\n+    \"num_orbitals = 16\\n\",\n+    \"num_elec_a = num_elec_b = 5\\n\",\n+    \"spin_sq = 0\\n\",\n+    \"\\n\",\n+    \"# Build N2 molecule\\n\",\n+    \"mol = pyscf.gto.Mole()\\n\",\n+    \"mol.build(\\n\",\n+    \"    atom=[[\\\"N\\\", (0, 0, 0)], [\\\"N\\\", (1.0, 0, 0)]],\\n\",\n+    \"    basis=\\\"6-31g\\\",\\n\",\n+    \"    symmetry=\\\"Dooh\\\",\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"# Define active space\\n\",\n+    \"n_frozen = 2\\n\",\n+    \"active_space = range(n_frozen, mol.nao_nr())\\n\",\n+    \"\\n\",\n+    \"# Get molecular integrals\\n\",\n+    \"scf = pyscf.scf.RHF(mol).run()\\n\",\n+    \"num_orbitals = len(active_space)\\n\",\n+    \"n_electrons = int(sum(scf.mo_occ[active_space]))\\n\",\n+    \"num_elec_a = (n_electrons + mol.spin) // 2\\n\",\n+    \"num_elec_b = (n_electrons - mol.spin) // 2\\n\",\n+    \"cas = pyscf.mcscf.CASCI(scf, num_orbitals, (num_elec_a, num_elec_b))\\n\",\n+    \"mo = cas.sort_mo(active_space, base=0)\\n\",\n+    \"hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\\n\",\n+    \"eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), num_orbitals)\\n\",\n+    \"\\n\",\n+    \"# Compute exact energy\\n\",\n+    \"exact_energy = cas.run().e_tot\\n\",\n+    \"\\n\",\n+    \"# Create a seed to control randomness throughout this workflow\\n\",\n+    \"rng = np.random.default_rng(24)\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Generate random samples\\n\",\n+    \"bit_array = generate_bit_array_uniform(10_000, num_orbitals * 2, rand_seed=rng)\\n\",\n+    \"\\n\",\n+    \"# Convert Hamiltonian to Fulqrum format\\n\",\n+    \"fermionic_op = integrals_to_fq_fermionic_op(one_body_integrals=hcore, two_body_integrals=eri)\\n\",\n+    \"fulqrum_operator = fermionic_op.extended_jw_transformation()\\n\",\n+    \"\\n\",\n+    \"# Initialize a Hamiltonian with a trivial subspace to be updated later\\n\",\n+    \"Hsub = fq.SubspaceHamiltonian(\\n\",\n+    \"    fulqrum_operator, fq.Subspace([[\\\"0\\\" * num_orbitals], [\\\"0\\\" * num_orbitals]])\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Define fulqrum solver\\n\",\n+    \"def solve_sci_batch(ci_batches, h1, h2, norb, nelec, tol=1e-12):\\n\",",
+    "path": "docs/how_tos/integrate_fulqrum.ipynb",
+    "commit_id": "d259627013938ec080c6bc304a62567b0d24f617",
+    "original_commit_id": "9938e3bf23e6203d0f1e7056a1265c38ff46c569",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The lint workflow is noting that `h1` and `h2` are unused.  I suspect the following will silence the warning, but this also brings into question whether `solve_sci`'s interface should be tweaked.\n```suggestion\n    \"def solve_sci_batch(ci_batches, _h1, _h2, norb, nelec, tol=1e-12):\\n\",\n```",
+    "created_at": "2026-06-18T15:30:26Z",
+    "updated_at": "2026-06-18T15:30:26Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437027016",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437027016"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437027016"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437027016/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 90,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 90,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437144521",
+    "pull_request_review_id": 4526499182,
+    "id": 3437144521,
+    "node_id": "PRRC_kwDOMkVQrc7M3qnJ",
+    "diff_hunk": "@@ -0,0 +1,173 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"65adf860-4443-494f-ad90-5d8ea444ac4e\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# Scale SQD chemistry workflows with Fulqrum\\n\",\n+    \"\\n\",\n+    \"For information on how to install and use ``qiskit-addon-dice-solver``, [visit the docs](https://qiskit.github.io/qiskit-addon-dice-solver/).\\n\",\n+    \"\\n\",\n+    \"For more details on the SQD code used in this example, check out [tutorial 1](https://qiskit.github.io/qiskit-addon-sqd/tutorials/01_chemistry_hamiltonian.html).\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"baf7d074-4443-4695-875e-65f7fb8cef25\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"converged SCF energy = -108.835236570775\\n\",\n+      \"CASCI E = -109.046671778080  E(CI) = -32.8155692383187  S^2 = 0.0000000\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"import fulqrum as fq\\n\",\n+    \"import numpy as np\\n\",\n+    \"import pyscf\\n\",\n+    \"import pyscf.cc\\n\",\n+    \"import pyscf.mcscf\\n\",\n+    \"import scipy.sparse.linalg\\n\",\n+    \"from fulqrum.convert.integrals import integrals_to_fq_fermionic_op\\n\",\n+    \"from qiskit_addon_sqd.counts import generate_bit_array_uniform\\n\",\n+    \"from qiskit_addon_sqd.fermion import SCIResult, SCIState, diagonalize_fermionic_hamiltonian\\n\",\n+    \"\\n\",\n+    \"# Specify molecule properties\\n\",\n+    \"num_orbitals = 16\\n\",\n+    \"num_elec_a = num_elec_b = 5\\n\",\n+    \"spin_sq = 0\\n\",\n+    \"\\n\",\n+    \"# Build N2 molecule\\n\",\n+    \"mol = pyscf.gto.Mole()\\n\",\n+    \"mol.build(\\n\",\n+    \"    atom=[[\\\"N\\\", (0, 0, 0)], [\\\"N\\\", (1.0, 0, 0)]],\\n\",\n+    \"    basis=\\\"6-31g\\\",\\n\",\n+    \"    symmetry=\\\"Dooh\\\",\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"# Define active space\\n\",\n+    \"n_frozen = 2\\n\",\n+    \"active_space = range(n_frozen, mol.nao_nr())\\n\",\n+    \"\\n\",\n+    \"# Get molecular integrals\\n\",\n+    \"scf = pyscf.scf.RHF(mol).run()\\n\",\n+    \"num_orbitals = len(active_space)\\n\",\n+    \"n_electrons = int(sum(scf.mo_occ[active_space]))\\n\",\n+    \"num_elec_a = (n_electrons + mol.spin) // 2\\n\",\n+    \"num_elec_b = (n_electrons - mol.spin) // 2\\n\",\n+    \"cas = pyscf.mcscf.CASCI(scf, num_orbitals, (num_elec_a, num_elec_b))\\n\",\n+    \"mo = cas.sort_mo(active_space, base=0)\\n\",\n+    \"hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\\n\",\n+    \"eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), num_orbitals)\\n\",\n+    \"\\n\",\n+    \"# Compute exact energy\\n\",\n+    \"exact_energy = cas.run().e_tot\\n\",\n+    \"\\n\",\n+    \"# Create a seed to control randomness throughout this workflow\\n\",\n+    \"rng = np.random.default_rng(24)\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Generate random samples\\n\",\n+    \"bit_array = generate_bit_array_uniform(10_000, num_orbitals * 2, rand_seed=rng)\\n\",\n+    \"\\n\",\n+    \"# Convert Hamiltonian to Fulqrum format\\n\",\n+    \"fermionic_op = integrals_to_fq_fermionic_op(one_body_integrals=hcore, two_body_integrals=eri)\\n\",",
+    "path": "docs/guides/integrate_fulqrum.ipynb",
+    "commit_id": "1a731f5066de58729c0df36299c9b988c7f7dddc",
+    "original_commit_id": "47215c41084597c73394bf35b4b72d3e854c7333",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The `integrals_to_fq_fermionic_op` function depends on openfermion, so it looks like we will need to list openfermion among the dependencies related to fulqrum.",
+    "created_at": "2026-06-18T15:48:48Z",
+    "updated_at": "2026-06-18T15:48:48Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437144521",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437144521"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437144521"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437144521/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 80,
+    "original_line": 80,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 80,
+    "position": 80,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437252863",
+    "pull_request_review_id": 4526612282,
+    "id": 3437252863,
+    "node_id": "PRRC_kwDOMkVQrc7M4FD_",
+    "diff_hunk": "@@ -0,0 +1,173 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"65adf860-4443-494f-ad90-5d8ea444ac4e\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# Scale SQD chemistry workflows with Fulqrum\\n\",\n+    \"\\n\",\n+    \"For information on how to install and use ``qiskit-addon-dice-solver``, [visit the docs](https://qiskit.github.io/qiskit-addon-dice-solver/).\\n\",\n+    \"\\n\",\n+    \"For more details on the SQD code used in this example, check out [tutorial 1](https://qiskit.github.io/qiskit-addon-sqd/tutorials/01_chemistry_hamiltonian.html).\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"baf7d074-4443-4695-875e-65f7fb8cef25\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"converged SCF energy = -108.835236570775\\n\",\n+      \"CASCI E = -109.046671778080  E(CI) = -32.8155692383187  S^2 = 0.0000000\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"import fulqrum as fq\\n\",\n+    \"import numpy as np\\n\",\n+    \"import pyscf\\n\",\n+    \"import pyscf.cc\\n\",\n+    \"import pyscf.mcscf\\n\",\n+    \"import scipy.sparse.linalg\\n\",\n+    \"from fulqrum.convert.integrals import integrals_to_fq_fermionic_op\\n\",\n+    \"from qiskit_addon_sqd.counts import generate_bit_array_uniform\\n\",\n+    \"from qiskit_addon_sqd.fermion import SCIResult, SCIState, diagonalize_fermionic_hamiltonian\\n\",\n+    \"\\n\",\n+    \"# Specify molecule properties\\n\",\n+    \"num_orbitals = 16\\n\",\n+    \"num_elec_a = num_elec_b = 5\\n\",\n+    \"spin_sq = 0\\n\",\n+    \"\\n\",\n+    \"# Build N2 molecule\\n\",\n+    \"mol = pyscf.gto.Mole()\\n\",\n+    \"mol.build(\\n\",\n+    \"    atom=[[\\\"N\\\", (0, 0, 0)], [\\\"N\\\", (1.0, 0, 0)]],\\n\",\n+    \"    basis=\\\"6-31g\\\",\\n\",\n+    \"    symmetry=\\\"Dooh\\\",\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"# Define active space\\n\",\n+    \"n_frozen = 2\\n\",\n+    \"active_space = range(n_frozen, mol.nao_nr())\\n\",\n+    \"\\n\",\n+    \"# Get molecular integrals\\n\",\n+    \"scf = pyscf.scf.RHF(mol).run()\\n\",\n+    \"num_orbitals = len(active_space)\\n\",\n+    \"n_electrons = int(sum(scf.mo_occ[active_space]))\\n\",\n+    \"num_elec_a = (n_electrons + mol.spin) // 2\\n\",\n+    \"num_elec_b = (n_electrons - mol.spin) // 2\\n\",\n+    \"cas = pyscf.mcscf.CASCI(scf, num_orbitals, (num_elec_a, num_elec_b))\\n\",\n+    \"mo = cas.sort_mo(active_space, base=0)\\n\",\n+    \"hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\\n\",\n+    \"eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), num_orbitals)\\n\",\n+    \"\\n\",\n+    \"# Compute exact energy\\n\",\n+    \"exact_energy = cas.run().e_tot\\n\",\n+    \"\\n\",\n+    \"# Create a seed to control randomness throughout this workflow\\n\",\n+    \"rng = np.random.default_rng(24)\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Generate random samples\\n\",\n+    \"bit_array = generate_bit_array_uniform(10_000, num_orbitals * 2, rand_seed=rng)\\n\",\n+    \"\\n\",\n+    \"# Convert Hamiltonian to Fulqrum format\\n\",\n+    \"fermionic_op = integrals_to_fq_fermionic_op(one_body_integrals=hcore, two_body_integrals=eri)\\n\",",
+    "path": "docs/guides/integrate_fulqrum.ipynb",
+    "commit_id": "1a731f5066de58729c0df36299c9b988c7f7dddc",
+    "original_commit_id": "47215c41084597c73394bf35b4b72d3e854c7333",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Updated in d259627013938ec080c6bc304a62567b0d24f617.",
+    "created_at": "2026-06-18T16:03:13Z",
+    "updated_at": "2026-06-18T16:03:14Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437252863",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437252863"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3437252863"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3437252863/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 80,
+    "original_line": 80,
+    "side": "RIGHT",
+    "in_reply_to_id": 3437144521,
+    "author_association": "MEMBER",
+    "original_position": 80,
+    "position": 80,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3438602372",
+    "pull_request_review_id": 4528195164,
+    "id": 3438602372,
+    "node_id": "PRRC_kwDOMkVQrc7M9OiE",
+    "diff_hunk": "@@ -0,0 +1,7 @@\n+---\n+upgrade:\n+  - |\n+    NumPy 2.0 and SciPy 1.14.1 are now the minimum required versions, for\n+    compatibility with fulqrum.  Support for NumPy 1.x has been dropped,",
+    "path": "releasenotes/notes/bump-numpy-scipy-7f3c1a9e2b4d6c08.yaml",
+    "commit_id": "f2c1cd3d8812030a1b86a28ad709b7121111ebcb",
+    "original_commit_id": "f2c1cd3d8812030a1b86a28ad709b7121111ebcb",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "No need to mention fulqrum here\n```suggestion\n    NumPy 2.0 and SciPy 1.14.1 are now the minimum required versions.\n    Support for NumPy 1.x has been dropped,\n```",
+    "created_at": "2026-06-18T20:07:29Z",
+    "updated_at": "2026-06-18T20:07:30Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3438602372",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3438602372"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3438602372"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3438602372/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 4,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 5,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3439165638",
+    "pull_request_review_id": 4528824632,
+    "id": 3439165638,
+    "node_id": "PRRC_kwDOMkVQrc7M_YDG",
+    "diff_hunk": "@@ -25,14 +25,19 @@ requires-python = \">=3.10\"\n \n dependencies = [\n     \"qiskit>=1.2, <3\",\n-    \"numpy>=1.26\",\n+    \"numpy>=2.0\",\n     \"pyscf>=2.5; sys_platform != 'win32'\",\n     \"jaxlib>=0.4.30\",\n     \"jax>=0.4.30\",\n-    \"scipy>=1.13.1\",\n+    \"scipy>=1.14.1\",\n ]\n \n [project.optional-dependencies]\n+fulqrum = [\n+    \"fulqrum @ git+https://github.com/qiskit-community/fulqrum.git@644fafdd02668e24c3fc83cdb00dc42f8bd23631\",\n+    \"primme>=3.2.3\",\n+    \"openfermion>=1.6.1\",",
+    "path": "pyproject.toml",
+    "commit_id": "a1fa2e5e440e3a1c539dcd54161a9cc1b0ecacd9",
+    "original_commit_id": "f2c1cd3d8812030a1b86a28ad709b7121111ebcb",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The openfermion dependency can be removed once https://github.com/qiskit-community/fulqrum/issues/37 is fixed.",
+    "created_at": "2026-06-18T22:12:01Z",
+    "updated_at": "2026-06-18T22:12:01Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3439165638",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3439165638"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3439165638"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3439165638/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 39,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3452566072",
+    "pull_request_review_id": 4544480541,
+    "id": 3452566072,
+    "node_id": "PRRC_kwDOMkVQrc7Nyfo4",
+    "diff_hunk": "@@ -0,0 +1,173 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"65adf860-4443-494f-ad90-5d8ea444ac4e\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# Scale SQD chemistry workflows with Fulqrum\\n\",\n+    \"\\n\",\n+    \"For information on how to install and use ``qiskit-addon-dice-solver``, [visit the docs](https://qiskit.github.io/qiskit-addon-dice-solver/).\\n\",\n+    \"\\n\",\n+    \"For more details on the SQD code used in this example, check out [tutorial 1](https://qiskit.github.io/qiskit-addon-sqd/tutorials/01_chemistry_hamiltonian.html).\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"baf7d074-4443-4695-875e-65f7fb8cef25\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"converged SCF energy = -108.835236570775\\n\",\n+      \"CASCI E = -109.046671778080  E(CI) = -32.8155692383187  S^2 = 0.0000000\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"import fulqrum as fq\\n\",\n+    \"import numpy as np\\n\",\n+    \"import pyscf\\n\",\n+    \"import pyscf.cc\\n\",\n+    \"import pyscf.mcscf\\n\",\n+    \"import scipy.sparse.linalg\\n\",\n+    \"from fulqrum.convert.integrals import integrals_to_fq_fermionic_op\\n\",\n+    \"from qiskit_addon_sqd.counts import generate_bit_array_uniform\\n\",\n+    \"from qiskit_addon_sqd.fermion import SCIResult, SCIState, diagonalize_fermionic_hamiltonian\\n\",\n+    \"\\n\",\n+    \"# Specify molecule properties\\n\",\n+    \"num_orbitals = 16\\n\",\n+    \"num_elec_a = num_elec_b = 5\\n\",\n+    \"spin_sq = 0\\n\",\n+    \"\\n\",\n+    \"# Build N2 molecule\\n\",\n+    \"mol = pyscf.gto.Mole()\\n\",\n+    \"mol.build(\\n\",\n+    \"    atom=[[\\\"N\\\", (0, 0, 0)], [\\\"N\\\", (1.0, 0, 0)]],\\n\",\n+    \"    basis=\\\"6-31g\\\",\\n\",\n+    \"    symmetry=\\\"Dooh\\\",\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"# Define active space\\n\",\n+    \"n_frozen = 2\\n\",\n+    \"active_space = range(n_frozen, mol.nao_nr())\\n\",\n+    \"\\n\",\n+    \"# Get molecular integrals\\n\",\n+    \"scf = pyscf.scf.RHF(mol).run()\\n\",\n+    \"num_orbitals = len(active_space)\\n\",\n+    \"n_electrons = int(sum(scf.mo_occ[active_space]))\\n\",\n+    \"num_elec_a = (n_electrons + mol.spin) // 2\\n\",\n+    \"num_elec_b = (n_electrons - mol.spin) // 2\\n\",\n+    \"cas = pyscf.mcscf.CASCI(scf, num_orbitals, (num_elec_a, num_elec_b))\\n\",\n+    \"mo = cas.sort_mo(active_space, base=0)\\n\",\n+    \"hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\\n\",\n+    \"eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), num_orbitals)\\n\",\n+    \"\\n\",\n+    \"# Compute exact energy\\n\",\n+    \"exact_energy = cas.run().e_tot\\n\",\n+    \"\\n\",\n+    \"# Create a seed to control randomness throughout this workflow\\n\",\n+    \"rng = np.random.default_rng(24)\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Generate random samples\\n\",\n+    \"bit_array = generate_bit_array_uniform(10_000, num_orbitals * 2, rand_seed=rng)\\n\",\n+    \"\\n\",\n+    \"# Convert Hamiltonian to Fulqrum format\\n\",\n+    \"fermionic_op = integrals_to_fq_fermionic_op(one_body_integrals=hcore, two_body_integrals=eri)\\n\",\n+    \"fulqrum_operator = fermionic_op.extended_jw_transformation()\\n\",\n+    \"\\n\",\n+    \"# Initialize a Hamiltonian with a trivial subspace to be updated later\\n\",\n+    \"Hsub = fq.SubspaceHamiltonian(\\n\",\n+    \"    fulqrum_operator, fq.Subspace([[\\\"0\\\" * num_orbitals], [\\\"0\\\" * num_orbitals]])\\n\",\n+    \")\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"# Define fulqrum solver\\n\",\n+    \"def solve_sci_batch(ci_batches, h1, h2, norb, nelec, tol=1e-12):\\n\",",
+    "path": "docs/how_tos/integrate_fulqrum.ipynb",
+    "commit_id": "d259627013938ec080c6bc304a62567b0d24f617",
+    "original_commit_id": "9938e3bf23e6203d0f1e7056a1265c38ff46c569",
+    "user": {
+      "login": "garrison",
+      "id": 91987,
+      "node_id": "MDQ6VXNlcjkxOTg3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91987?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/garrison",
+      "html_url": "https://github.com/garrison",
+      "followers_url": "https://api.github.com/users/garrison/followers",
+      "following_url": "https://api.github.com/users/garrison/following{/other_user}",
+      "gists_url": "https://api.github.com/users/garrison/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/garrison/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/garrison/subscriptions",
+      "organizations_url": "https://api.github.com/users/garrison/orgs",
+      "repos_url": "https://api.github.com/users/garrison/repos",
+      "events_url": "https://api.github.com/users/garrison/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/garrison/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Issue opened in #312.",
+    "created_at": "2026-06-22T13:28:36Z",
+    "updated_at": "2026-06-22T13:28:37Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3452566072",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3452566072"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3452566072"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3452566072/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 90,
+    "side": "RIGHT",
+    "in_reply_to_id": 3437027016,
+    "author_association": "MEMBER",
+    "original_position": 90,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572363024",
+    "pull_request_review_id": 4686696019,
+    "id": 3572363024,
+    "node_id": "PRRC_kwDOMkVQrc7U7e8Q",
+    "diff_hunk": "@@ -0,0 +1,62 @@\n+########\n+Overview\n+########\n+\n+This page summarizes the guides that are available. All guides are written to focus on specific aspects of the package. Examples of end-to-end workflows can be found in the tutorials hosted on the IBM Quantum Platform.\n+\n+Getting started\n+---------------\n+\n+These simple guides help you to get started quickly with the package.\n+\n+- :doc:`Quickstart <quickstart>`\n+\n+Beyond the basics\n+-----------------\n+\n+These guides provide a deeper explanation of specific concepts and components from this package.\n+\n+General\n+\"\"\"\"\"\"\"\n+- :doc:`How to choose the subspace dimension from its impact on eigenvalue estimation accuracy <choose_subspace_dimension>`",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "bdca0c767fe2401c3461d28bbf5c479947be082b",
+    "original_commit_id": "bdca0c767fe2401c3461d28bbf5c479947be082b",
+    "user": {
+      "login": "caleb-johnson",
+      "id": 22727774,
+      "node_id": "MDQ6VXNlcjIyNzI3Nzc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22727774?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/caleb-johnson",
+      "html_url": "https://github.com/caleb-johnson",
+      "followers_url": "https://api.github.com/users/caleb-johnson/followers",
+      "following_url": "https://api.github.com/users/caleb-johnson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/caleb-johnson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/caleb-johnson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/caleb-johnson/subscriptions",
+      "organizations_url": "https://api.github.com/users/caleb-johnson/orgs",
+      "repos_url": "https://api.github.com/users/caleb-johnson/repos",
+      "events_url": "https://api.github.com/users/caleb-johnson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/caleb-johnson/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'm not sure if the fulqrum tutorial should go here or below in Fermionic systems in this overview docs page. Of course it could also be applied to spin systems. What do you think?",
+    "created_at": "2026-07-13T16:28:54Z",
+    "updated_at": "2026-07-13T16:28:54Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572363024",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572363024"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572363024"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572363024/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 21,
+    "original_line": 21,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 21,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572409947",
+    "pull_request_review_id": 4686753230,
+    "id": 3572409947,
+    "node_id": "PRRC_kwDOMkVQrc7U7qZb",
+    "diff_hunk": "@@ -0,0 +1,62 @@\n+########\n+Overview\n+########\n+\n+This page summarizes the guides that are available. All guides are written to focus on specific aspects of the package. Examples of end-to-end workflows can be found in the tutorials hosted on the IBM Quantum Platform.\n+\n+Getting started\n+---------------\n+\n+These simple guides help you to get started quickly with the package.\n+\n+- :doc:`Quickstart <quickstart>`\n+\n+Beyond the basics\n+-----------------\n+\n+These guides provide a deeper explanation of specific concepts and components from this package.\n+\n+General\n+\"\"\"\"\"\"\"\n+- :doc:`How to choose the subspace dimension from its impact on eigenvalue estimation accuracy <choose_subspace_dimension>`",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "bdca0c767fe2401c3461d28bbf5c479947be082b",
+    "original_commit_id": "bdca0c767fe2401c3461d28bbf5c479947be082b",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I put it under fermionic systems. I think we would need a separate guide for spin systems.",
+    "created_at": "2026-07-13T16:36:28Z",
+    "updated_at": "2026-07-13T16:36:29Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572409947",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572409947"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572409947"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572409947/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 21,
+    "original_line": 21,
+    "side": "RIGHT",
+    "in_reply_to_id": 3572363024,
+    "author_association": "COLLABORATOR",
+    "original_position": 21,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572598193",
+    "pull_request_review_id": 4686979059,
+    "id": 3572598193,
+    "node_id": "PRRC_kwDOMkVQrc7U8YWx",
+    "diff_hunk": "",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "original_commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "user": {
+      "login": "caleb-johnson",
+      "id": 22727774,
+      "node_id": "MDQ6VXNlcjIyNzI3Nzc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22727774?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/caleb-johnson",
+      "html_url": "https://github.com/caleb-johnson",
+      "followers_url": "https://api.github.com/users/caleb-johnson/followers",
+      "following_url": "https://api.github.com/users/caleb-johnson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/caleb-johnson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/caleb-johnson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/caleb-johnson/subscriptions",
+      "organizations_url": "https://api.github.com/users/caleb-johnson/orgs",
+      "repos_url": "https://api.github.com/users/caleb-johnson/repos",
+      "events_url": "https://api.github.com/users/caleb-johnson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/caleb-johnson/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We'll need to add a button on the leftnav here as well to clear the Sphinx error",
+    "created_at": "2026-07-13T17:03:38Z",
+    "updated_at": "2026-07-13T17:03:38Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572598193",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572598193"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572598193"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572598193/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 54,
+    "original_line": 53,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 1,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572606411",
+    "pull_request_review_id": 4686989268,
+    "id": 3572606411,
+    "node_id": "PRRC_kwDOMkVQrc7U8aXL",
+    "diff_hunk": "",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "original_commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "user": {
+      "login": "caleb-johnson",
+      "id": 22727774,
+      "node_id": "MDQ6VXNlcjIyNzI3Nzc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22727774?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/caleb-johnson",
+      "html_url": "https://github.com/caleb-johnson",
+      "followers_url": "https://api.github.com/users/caleb-johnson/followers",
+      "following_url": "https://api.github.com/users/caleb-johnson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/caleb-johnson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/caleb-johnson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/caleb-johnson/subscriptions",
+      "organizations_url": "https://api.github.com/users/caleb-johnson/orgs",
+      "repos_url": "https://api.github.com/users/caleb-johnson/repos",
+      "events_url": "https://api.github.com/users/caleb-johnson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/caleb-johnson/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We can put it on top of list here above the Dice guide to keep the order the same as the text in the overview guide above",
+    "created_at": "2026-07-13T17:04:59Z",
+    "updated_at": "2026-07-13T17:04:59Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572606411",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572606411"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572606411"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572606411/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 54,
+    "original_line": 53,
+    "side": "RIGHT",
+    "in_reply_to_id": 3572598193,
+    "author_association": "COLLABORATOR",
+    "original_position": 1,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572806929",
+    "pull_request_review_id": 4687218578,
+    "id": 3572806929,
+    "node_id": "PRRC_kwDOMkVQrc7U9LUR",
+    "diff_hunk": "",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "original_commit_id": "03a3d7ca1d6fb98687104bccdc9fcc5843d8234f",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "done",
+    "created_at": "2026-07-13T17:35:17Z",
+    "updated_at": "2026-07-13T17:35:17Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572806929",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572806929"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572806929"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572806929/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 54,
+    "original_line": 53,
+    "side": "RIGHT",
+    "in_reply_to_id": 3572598193,
+    "author_association": "COLLABORATOR",
+    "original_position": 1,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572834608",
+    "pull_request_review_id": 4687248959,
+    "id": 3572834608,
+    "node_id": "PRRC_kwDOMkVQrc7U9SEw",
+    "diff_hunk": "@@ -50,6 +50,7 @@ Spin systems\n    :hidden:\n    :caption: Fermionic systems\n \n+   Scale workloads with the Fulqrum <integrate_fulqrum>",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "02f38ed6aa3e5afe259b3b1cf7b5da96a1da54ec",
+    "original_commit_id": "02f38ed6aa3e5afe259b3b1cf7b5da96a1da54ec",
+    "user": {
+      "login": "caleb-johnson",
+      "id": 22727774,
+      "node_id": "MDQ6VXNlcjIyNzI3Nzc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22727774?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/caleb-johnson",
+      "html_url": "https://github.com/caleb-johnson",
+      "followers_url": "https://api.github.com/users/caleb-johnson/followers",
+      "following_url": "https://api.github.com/users/caleb-johnson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/caleb-johnson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/caleb-johnson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/caleb-johnson/subscriptions",
+      "organizations_url": "https://api.github.com/users/caleb-johnson/orgs",
+      "repos_url": "https://api.github.com/users/caleb-johnson/repos",
+      "events_url": "https://api.github.com/users/caleb-johnson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/caleb-johnson/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "There's a stray `the` in the title here",
+    "created_at": "2026-07-13T17:38:58Z",
+    "updated_at": "2026-07-13T17:38:58Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572834608",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572834608"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3572834608"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3572834608/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 53,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3573273635",
+    "pull_request_review_id": 4687745996,
+    "id": 3573273635,
+    "node_id": "PRRC_kwDOMkVQrc7U-9Qj",
+    "diff_hunk": "@@ -50,6 +50,7 @@ Spin systems\n    :hidden:\n    :caption: Fermionic systems\n \n+   Scale workloads with the Fulqrum <integrate_fulqrum>",
+    "path": "docs/guides/overview.rst",
+    "commit_id": "02f38ed6aa3e5afe259b3b1cf7b5da96a1da54ec",
+    "original_commit_id": "02f38ed6aa3e5afe259b3b1cf7b5da96a1da54ec",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "thanks done",
+    "created_at": "2026-07-13T18:45:27Z",
+    "updated_at": "2026-07-13T18:45:27Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3573273635",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3573273635"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3573273635"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3573273635/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 53,
+    "side": "RIGHT",
+    "in_reply_to_id": 3572834608,
+    "author_association": "COLLABORATOR",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3581991721",
+    "pull_request_review_id": 4697788938,
+    "id": 3581991721,
+    "node_id": "PRRC_kwDOMkVQrc7VgNsp",
+    "diff_hunk": "@@ -34,6 +34,24 @@ jobs:\n         run: |\n           python -m pip install --upgrade pip\n           pip install tox\n+      - name: Install BLAS/LAPACK (Linux)",
+    "path": ".github/workflows/test_latest_versions.yml",
+    "commit_id": "1a731f5066de58729c0df36299c9b988c7f7dddc",
+    "original_commit_id": "68532bee38e03bf966d3caae73f3c2f3e9514b29",
+    "user": {
+      "login": "caleb-johnson",
+      "id": 22727774,
+      "node_id": "MDQ6VXNlcjIyNzI3Nzc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22727774?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/caleb-johnson",
+      "html_url": "https://github.com/caleb-johnson",
+      "followers_url": "https://api.github.com/users/caleb-johnson/followers",
+      "following_url": "https://api.github.com/users/caleb-johnson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/caleb-johnson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/caleb-johnson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/caleb-johnson/subscriptions",
+      "organizations_url": "https://api.github.com/users/caleb-johnson/orgs",
+      "repos_url": "https://api.github.com/users/caleb-johnson/repos",
+      "events_url": "https://api.github.com/users/caleb-johnson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/caleb-johnson/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Can we make a comment that these stages allow fulqrum to be built for notebook testing so we don't forget what these CI stages are for? Here and in the other two actions where these steps are taken",
+    "created_at": "2026-07-14T19:22:16Z",
+    "updated_at": "2026-07-14T19:22:16Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3581991721",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3581991721"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/305#discussion_r3581991721"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/305"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/3581991721/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 38,
+    "original_line": 37,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 4,
+    "position": 5,
+    "subject_type": "line"
+  }
+]

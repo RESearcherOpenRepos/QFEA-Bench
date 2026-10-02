@@ -1,0 +1,187 @@
+{
+  "instance": {
+    "id": 25,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_227_244",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/227",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/244",
+    "base_commit": "26bf303b4a7897ac3f0934d630d236660afa4b98",
+    "patch": "93f8cbb3f4f92d40648d616312a4201dedf71113"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements parameterized quantum-kernel training with kernel-loss semantics and optimized-kernel behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/kernels/algorithms/__init__.py",
+      "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+      "qiskit_machine_learning/kernels/quantum_kernel.py",
+      "qiskit_machine_learning/utils/loss_functions/__init__.py",
+      "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Machine Learning provides quantum kernels that can be evaluated and used in kernel-based classifiers, but there is no built-in training component for tuning parameterized quantum kernels against labeled data. Users need a trainer that optimizes the trainable parameters of a QuantumKernel with a kernel-specific loss and returns an optimized kernel that can be used by downstream classifiers.",
+    "requirements": [
+      "Provide a QuantumKernelTrainer that accepts a QuantumKernel with trainable user parameters, an optional kernel loss, an optional optimizer, and an optional initial point.",
+      "QuantumKernelTrainer.fit must optimize the kernel user parameters against labeled training data and return a result object containing optimizer metadata and an optimized QuantumKernel.",
+      "The input QuantumKernel must not be mutated by training; the fitted result must carry the optimized kernel state.",
+      "Provide a KernelLoss abstraction and an SVCLoss implementation usable by the trainer, including support for passing SVC keyword arguments.",
+      "Training must reject quantum kernels that do not expose trainable user parameters."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QuantumKernelTrainer",
+        "Path": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+        "Input": "constructor: quantum_kernel, loss, optimizer, initial_point",
+        "Output": "QuantumKernelTrainer instance",
+        "Description": "Creates a trainer for optimizing the user parameters of a QuantumKernel with a kernel loss and optimizer."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumKernelTrainer.fit",
+        "Path": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+        "Input": "data, labels",
+        "Output": "QuantumKernelTrainerResult",
+        "Description": "Fits the trainer on labeled data and returns optimization results with an optimized quantum kernel."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuantumKernelTrainerResult",
+        "Path": "qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py",
+        "Input": "",
+        "Output": "QuantumKernelTrainerResult instance",
+        "Description": "Stores optimizer results and exposes the optimized QuantumKernel through quantum_kernel."
+      },
+      {
+        "Type": "Class",
+        "Name": "KernelLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "",
+        "Output": "KernelLoss instance",
+        "Description": "Defines the callable and evaluate contract for kernel loss functions used by QuantumKernelTrainer."
+      },
+      {
+        "Type": "Class",
+        "Name": "SVCLoss",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "constructor: **kwargs",
+        "Output": "SVCLoss instance",
+        "Description": "Computes a support-vector-classifier-based loss for a parameterized QuantumKernel and forwards keyword arguments to sklearn.svm.SVC."
+      },
+      {
+        "Type": "Method",
+        "Name": "SVCLoss.evaluate",
+        "Path": "qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py",
+        "Input": "parameter_values, quantum_kernel, data, labels",
+        "Output": "float",
+        "Description": "Assigns user parameters, evaluates the kernel matrix, fits an SVC, and returns the kernel training loss."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_227_244",
+      "image_id": "sha256:5d97c7b3a242067923ce4ada4f99151503294629ad77e2b8fd1e78b28d546701",
+      "image_size": "1459024315"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "numpy<2",
+        "qiskit-terra==0.20.2",
+        "qiskit-aer==0.10.4",
+        "scikit-learn<1.2"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt"
+        ],
+        "summary": "1 passed in 40.94s",
+        "duration_seconds": 45.23
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_callable",
+          "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_precomputed",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_no_backend",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_nopsd",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_psd",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_symmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_unsymmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_symmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_unsymmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_more_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_xy_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_feature_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_more_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct_nomeasurement",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerprodect_nomeasurement",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_xdim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_ydim"
+        ],
+        "summary": "22 passed in 2.69s",
+        "duration_seconds": 5.95
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/kernels/algorithms/test_qkernel_trainer.py::TestQuantumKernelTrainer::test_qkt"
+        ],
+        "summary": "ImportError during collection: base cannot import QuantumKernelTrainer from qiskit_machine_learning.kernels.algorithms; 1 error in 3.25s.",
+        "duration_seconds": 9.03
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_callable",
+          "test/kernels/test_qkernel.py::TestQuantumKernelClassify::test_precomputed",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_no_backend",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_nopsd",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_psd",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_symmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_qasm_unsymmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_symmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_sv_unsymmetric",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_more_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_x_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_xy_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_feature_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_more_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelEvaluate::test_y_one_dim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_innerproduct_nomeasurement",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerprodect_nomeasurement",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_selfinnerproduct",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_statevector",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_xdim",
+          "test/kernels/test_qkernel.py::TestQuantumKernelConstructCircuit::test_ydim"
+        ],
+        "summary": "22 passed in 3.40s",
+        "duration_seconds": 8.53
+      }
+    }
+  }
+}

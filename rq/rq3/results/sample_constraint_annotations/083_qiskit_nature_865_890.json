@@ -1,0 +1,102 @@
+{
+  "id": 83,
+  "sample_id": "qiskit_nature_865_890",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "92a0b86bddf48c52f5b359e69e020031aa38488a",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "general_semantics/tensor_arithmetic": 2,
+      "interface/string_representation": 1,
+      "interface/constructor_defaults": 1,
+      "quantum_semantics/fermionic_operator_conversion": 1,
+      "quantum_semantics/hamiltonian_domain_validity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_addition",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 223,
+          "expected": "QuadraticHamiltonian addition and subtraction combine both blocks and constant."
+        }
+      ],
+      "rationale": "The expected operation is componentwise tensor arithmetic."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_multiplication",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 241,
+          "expected": "Left and right scalar multiplication scale Hamiltonian blocks and constant."
+        }
+      ],
+      "rationale": "The expected operation is componentwise numeric scaling."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_repr",
+      "label": "interface/string_representation",
+      "assertions": [
+        {
+          "line": 254,
+          "expected": "repr exposes exact constructor-style matrices, constant, modes, whitespace, and line breaks."
+        }
+      ],
+      "rationale": "The assertion is an exact public textual representation."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 46,
+          "expected": "Constructor exposes supplied blocks, zero-fills omissions, and infers mode count."
+        }
+      ],
+      "rationale": "The selected control checks public constructor behavior."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+      "label": "quantum_semantics/fermionic_operator_conversion",
+      "assertions": [
+        {
+          "line": 190,
+          "expected": "QuadraticHamiltonian converts to matrix-equivalent FermionicOp terms."
+        }
+      ],
+      "rationale": "The selected control checks physical operator equivalence."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/hamiltonians/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_validate",
+      "label": "quantum_semantics/hamiltonian_domain_validity",
+      "assertions": [
+        {
+          "line": 196,
+          "expected": "Invalid Hermitian or antisymmetric blocks and incompatible sizes are rejected."
+        }
+      ],
+      "rationale": "Hermiticity and pairing antisymmetry are mathematical domain conditions."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/92a0b86bddf48c52f5b359e69e020031aa38488a/test/second_q/hamiltonians/test_quadratic_hamiltonian.py"
+  ],
+  "rationale": "Individually reviewed all 6 selected exact-patch tests; the primary label follows the explicit behavior checked."
+}

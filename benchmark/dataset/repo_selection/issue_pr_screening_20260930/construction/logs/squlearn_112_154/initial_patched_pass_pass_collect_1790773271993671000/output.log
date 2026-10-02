@@ -1,0 +1,29 @@
+HEAD is now at 11a90f2 Add `CrossEntropyLoss` for QNNs (#154)
+ERROR: found no collectors for /workspace/repo/tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+
+ERROR: found no collectors for /workspace/repo/tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict
+
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/qnn/test_qnnr.py ____________________
+ImportError while importing test module '/workspace/repo/tests/qnn/test_qnnr.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/qnn/test_qnnr.py:10: in <module>
+    from squlearn import Executor
+src/squlearn/__init__.py:3: in <module>
+    from .util import Executor
+src/squlearn/util/__init__.py:1: in <module>
+    from .executor import Executor
+src/squlearn/util/executor.py:47: in <module>
+    from qiskit_algorithms.utils import algorithm_globals as qiskit_algorithm_globals
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/__init__.py:307: in <module>
+    from .minimum_eigensolvers import (
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/__init__.py:15: in <module>
+    from .adapt_vqe import AdaptVQE, AdaptVQEResult
+/usr/local/lib/python3.10/site-packages/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py:25: in <module>
+    from qiskit.circuit.library import EvolvedOperatorAnsatz, evolved_operator_ansatz
+E   ImportError: cannot import name 'evolved_operator_ansatz' from 'qiskit.circuit.library' (/usr/local/lib/python3.10/site-packages/qiskit/circuit/library/__init__.py)
+=========================== short test summary info ============================
+ERROR tests/qnn/test_qnnr.py
+no tests collected, 1 error in 4.50s

@@ -1,0 +1,24 @@
+{
+  "oracle_files": [
+    "qiskit_addon_sqd/fermion.py",
+    "qiskit_addon_sqd/counts.py"
+  ],
+  "task": {
+    "problem_statement": "Sample-based quantum diagonalization currently ties the selected configuration-interaction subspace size too closely to the sampling batch size. Users need independent control of the alpha and beta determinant subspace dimensions while preserving the physical interpretation of the resulting state.",
+    "requirements": [
+      "Accept a common maximum determinant dimension or separate alpha/beta maximum dimensions.",
+      "Enforce the requested dimensions in the selected configuration-interaction state, including spin-symmetrized sampling.",
+      "Preserve the spin-square expectation when interpreting the selected state in the full configuration-interaction basis."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "diagonalize_fermionic_hamiltonian",
+        "Path": "qiskit_addon_sqd/fermion.py",
+        "Input": "one_body_tensor, two_body_tensor, bit_array, samples_per_batch, norb, nelec, *, max_dim=None, symmetrize_spin=False, max_iterations=100, seed=None, ...",
+        "Output": "SCIResult",
+        "Description": "Runs SQD with max_dim an integer, an (alpha, beta) pair, or None; result.sci_state exposes amplitudes, ci_strs_a, ci_strs_b and spin_square()."
+      }
+    ]
+  }
+}

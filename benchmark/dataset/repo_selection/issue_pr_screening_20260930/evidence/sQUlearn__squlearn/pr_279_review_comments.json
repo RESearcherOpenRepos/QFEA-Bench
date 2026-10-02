@@ -1,0 +1,416 @@
+[
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673564512",
+    "pull_request_review_id": 2171167139,
+    "id": 1673564512,
+    "node_id": "PRRC_kwDOJkEH0s5jwJFg",
+    "diff_hunk": "@@ -0,0 +1,89 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._opt_result = None\n+        self._optimal_value = None\n+        self._optimal_point = None\n+        self._is_trainable = True\n+\n+    def run_optimization(self, X: np.ndarray, y: np.ndarray = None):\n+        \"\"\"Run the optimization and return the result.\n+\n+        Args:\n+            X (np.ndarray): The input data.\n+            y (np.ndarray): The labels.\n+\n+        Returns:\n+            OptimizeResult: The optimization result.\n+        \"\"\"\n+        num_params = self._quantum_kernel.num_parameters\n+        if num_params == 0:\n+            raise ValueError(\n+                \"Quantum kernel cannot be fit because there are no training parameters specified.\"\n+            )\n+\n+        # Perform kernel optimization\n+        loss_function = partial(self._loss.compute, data=X, labels=y)\n+        opt_result = self._optimizer.minimize(fun=loss_function, x0=self._initial_parameters)\n+        self._optimal_value = opt_result.fun\n+        self._optimal_point = opt_result.x\n+        self._opt_result = opt_result\n+\n+        # Assign optimal parameters to the quantum kernel\n+        self.assign_parameters(self._opt_result.x)",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "0bcc41ac244eb2e80c4deb291c2714df2c6ae198",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is this working? Somewhere I'm missing the call to ``self._quantum_kernel.assign_parameters()``",
+    "created_at": "2024-07-11T07:47:37Z",
+    "updated_at": "2024-07-11T07:53:38Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673564512",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673564512"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673564512"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673564512/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 75,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 75,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673566543",
+    "pull_request_review_id": 2171167139,
+    "id": 1673566543,
+    "node_id": "PRRC_kwDOJkEH0s5jwJlP",
+    "diff_hunk": "@@ -0,0 +1,89 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._opt_result = None",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "0bcc41ac244eb2e80c4deb291c2714df2c6ae198",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think opt_result is not really needed",
+    "created_at": "2024-07-11T07:49:09Z",
+    "updated_at": "2024-07-11T07:53:38Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673566543",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673566543"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673566543"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673566543/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 46,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 46,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567267",
+    "pull_request_review_id": 2171167139,
+    "id": 1673567267,
+    "node_id": "PRRC_kwDOJkEH0s5jwJwj",
+    "diff_hunk": "@@ -0,0 +1,89 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._opt_result = None\n+        self._optimal_value = None\n+        self._optimal_point = None",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "0bcc41ac244eb2e80c4deb291c2714df2c6ae198",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think a getter for the optimal_point would be great, I would also suggest to rename it into _optimal_parameters",
+    "created_at": "2024-07-11T07:49:45Z",
+    "updated_at": "2024-07-11T07:53:38Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673567267",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567267"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673567267"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567267/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 48,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 48,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567743",
+    "pull_request_review_id": 2171167139,
+    "id": 1673567743,
+    "node_id": "PRRC_kwDOJkEH0s5jwJ3_",
+    "diff_hunk": "@@ -0,0 +1,89 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._opt_result = None\n+        self._optimal_value = None\n+        self._optimal_point = None\n+        self._is_trainable = True\n+\n+    def run_optimization(self, X: np.ndarray, y: np.ndarray = None):\n+        \"\"\"Run the optimization and return the result.\n+\n+        Args:\n+            X (np.ndarray): The input data.\n+            y (np.ndarray): The labels.\n+\n+        Returns:\n+            OptimizeResult: The optimization result.\n+        \"\"\"\n+        num_params = self._quantum_kernel.num_parameters\n+        if num_params == 0:\n+            raise ValueError(\n+                \"Quantum kernel cannot be fit because there are no training parameters specified.\"\n+            )\n+\n+        # Perform kernel optimization\n+        loss_function = partial(self._loss.compute, data=X, labels=y)\n+        opt_result = self._optimizer.minimize(fun=loss_function, x0=self._initial_parameters)\n+        self._optimal_value = opt_result.fun\n+        self._optimal_point = opt_result.x\n+        self._opt_result = opt_result\n+\n+        # Assign optimal parameters to the quantum kernel\n+        self.assign_parameters(self._opt_result.x)\n+\n+        return self._opt_result",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "0bcc41ac244eb2e80c4deb291c2714df2c6ae198",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "just return opt_result without storring it. ",
+    "created_at": "2024-07-11T07:50:07Z",
+    "updated_at": "2024-07-11T07:53:38Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673567743",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567743"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673567743"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673567743/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 77,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 77,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673568396",
+    "pull_request_review_id": 2171167139,
+    "id": 1673568396,
+    "node_id": "PRRC_kwDOJkEH0s5jwKCM",
+    "diff_hunk": "@@ -0,0 +1,89 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._opt_result = None\n+        self._optimal_value = None",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "0bcc41ac244eb2e80c4deb291c2714df2c6ae198",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Probably not really needed. ",
+    "created_at": "2024-07-11T07:50:40Z",
+    "updated_at": "2024-07-11T07:53:38Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673568396",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673568396"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1673568396"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1673568396/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 47,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 47,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1676000826",
+    "pull_request_review_id": 2175022022,
+    "id": 1676000826,
+    "node_id": "PRRC_kwDOJkEH0s5j5b46",
+    "diff_hunk": "@@ -0,0 +1,93 @@\n+\"\"\"Quantum Kernel Optimizer\"\"\"\n+\n+import numpy as np\n+from functools import partial\n+from typing import Optional, Sequence\n+\n+from squlearn.kernel.matrix.kernel_matrix_base import KernelMatrixBase\n+from squlearn.kernel.optimization.kernel_loss_base import KernelLossBase\n+from squlearn.optimizers.optimizer_base import OptimizerBase\n+\n+\n+class KernelOptimizer(KernelMatrixBase):\n+    \"\"\"\n+    Quantum kernel optimizer.\n+    This class can be used to optimize the variational parameters of a quantum kernel.\n+\n+    Args:\n+        loss (KernelLossBase): The loss function to be minimized.\n+        optimizer (OptimizerBase): The optimizer to be used.\n+        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.\n+        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.\n+    \"\"\"\n+\n+    def __init__(\n+        self,\n+        quantum_kernel: KernelMatrixBase,\n+        loss: KernelLossBase = None,\n+        optimizer: OptimizerBase = None,\n+        initial_parameters: Optional[Sequence[float]] = None,\n+    ) -> None:\n+        super().__init__(\n+            encoding_circuit=quantum_kernel.encoding_circuit,\n+            executor=quantum_kernel._executor,\n+            initial_parameters=initial_parameters,\n+            parameter_seed=quantum_kernel._parameter_seed,\n+            regularization=quantum_kernel._regularization,\n+        )\n+        self._quantum_kernel = quantum_kernel\n+        self._loss = loss\n+        self._optimizer = optimizer\n+        self._initial_parameters = (\n+            initial_parameters\n+            if initial_parameters is not None\n+            else self._quantum_kernel.parameters\n+        )\n+        self._optimal_parameters = None\n+        self._is_trainable = True\n+\n+    def run_optimization(self, X: np.ndarray, y: np.ndarray = None):\n+        \"\"\"Run the optimization and return the result.\n+\n+        Args:\n+            X (np.ndarray): The input data.\n+            y (np.ndarray): The labels.\n+\n+        Returns:\n+            OptimizeResult: The optimization result.\n+        \"\"\"\n+        num_params = self._quantum_kernel.num_parameters\n+        if num_params == 0:\n+            raise ValueError(\n+                \"Quantum kernel cannot be fit because there are no training parameters specified.\"\n+            )\n+\n+        # Perform kernel optimization\n+        loss_function = partial(self._loss.compute, data=X, labels=y)\n+        opt_result = self._optimizer.minimize(fun=loss_function, x0=self._initial_parameters)\n+        self._optimal_parameters = opt_result.x\n+\n+        # Assign optimal parameters to the quantum kernel\n+        self._quantum_kernel.assign_parameters(self._optimal_parameters)",
+    "path": "src/squlearn/kernel/matrix/kernel_optimizer.py",
+    "commit_id": "324100e000d988387f85f1e42635cfb24dcd8a30",
+    "original_commit_id": "d4722949d56348519645dffc5e666294fffd6711",
+    "user": {
+      "login": "David-Kreplin",
+      "id": 106071697,
+      "node_id": "U_kgDOBlKGkQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106071697?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/David-Kreplin",
+      "html_url": "https://github.com/David-Kreplin",
+      "followers_url": "https://api.github.com/users/David-Kreplin/followers",
+      "following_url": "https://api.github.com/users/David-Kreplin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/David-Kreplin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/David-Kreplin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/David-Kreplin/subscriptions",
+      "organizations_url": "https://api.github.com/users/David-Kreplin/orgs",
+      "repos_url": "https://api.github.com/users/David-Kreplin/repos",
+      "events_url": "https://api.github.com/users/David-Kreplin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/David-Kreplin/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Sorry to comment again, but there is missing a assign_parameters for the class (just call self._quantum_kernel.assign_parameters)",
+    "created_at": "2024-07-12T14:20:12Z",
+    "updated_at": "2024-07-12T14:20:12Z",
+    "html_url": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1676000826",
+    "pull_request_url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1676000826"
+      },
+      "html": {
+        "href": "https://github.com/sQUlearn/squlearn/pull/279#discussion_r1676000826"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/sQUlearn/squlearn/pulls/279"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/sQUlearn/squlearn/pulls/comments/1676000826/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 80,
+    "original_line": 71,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 71,
+    "position": 80,
+    "subject_type": "line"
+  }
+]

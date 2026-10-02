@@ -1,0 +1,143 @@
+{
+  "id": 86,
+  "sample_id": "qiskit_nature_918_1046",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "4b5426480044ffaebcdb945bf0c8bc435345091b",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "quantum_semantics/fermion_qubit_mapping": 3,
+      "interface/mapper_capability_property": 3,
+      "interface/container_mapping_contract": 2,
+      "quantum_semantics/fermion_qubit_parity_mapping": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_interleaved_qubit_mapper.py::TestInterleavedQubitMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 35,
+          "expected": "Interleaved mapper maps blocked +0 -1 to the specified four-qubit Pauli sum."
+        }
+      ],
+      "rationale": "The exact Pauli terms reflect spin-orbital reordering."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 68,
+          "expected": "JordanWignerMapper reports no two-qubit reduction."
+        }
+      ],
+      "rationale": "The selected control checks a capability flag."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_dict_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 145,
+          "expected": "Jordan-Wigner mapping preserves dict entries."
+        }
+      ],
+      "rationale": "The selected control checks dictionary mapping."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_list_ops",
+      "label": "interface/container_mapping_contract",
+      "assertions": [
+        {
+          "line": 123,
+          "expected": "Jordan-Wigner mapping preserves list entries."
+        }
+      ],
+      "rationale": "The selected control checks list mapping."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Jordan-Wigner single fermionic terms map to their reference Pauli sums."
+        }
+      ],
+      "rationale": "The selected control checks physical operator mapping."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "ParityMapper reports two-qubit reduction support."
+        }
+      ],
+      "rationale": "The selected control checks a capability flag."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "ParityMapper single fermionic terms map to reference Pauli sums."
+        }
+      ],
+      "rationale": "The selected control checks parity mapping."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 66,
+          "expected": "BravyiKitaevMapper reports no two-qubit reduction."
+        }
+      ],
+      "rationale": "The selected control checks a capability flag."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "BravyiKitaevMapper single fermionic terms map to reference Pauli sums."
+        }
+      ],
+      "rationale": "The selected control checks physical operator mapping."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/4b5426480044ffaebcdb945bf0c8bc435345091b/test/second_q/mappers/test_bravyi_kitaev_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/4b5426480044ffaebcdb945bf0c8bc435345091b/test/second_q/mappers/test_interleaved_qubit_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/4b5426480044ffaebcdb945bf0c8bc435345091b/test/second_q/mappers/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/4b5426480044ffaebcdb945bf0c8bc435345091b/test/second_q/mappers/test_parity_mapper.py"
+  ],
+  "rationale": "Read each of 9 selected exact-patch tests, including parameterized occupation, mapper, and excitation variants."
+}

@@ -1,0 +1,99 @@
+{
+  "id": 32,
+  "sample_id": "qiskit_machine_learning_387_398",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "5df0a738d1120c492ce7fb5e18d61ee8489a6b78",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "general_semantics/decision_score_consistency": 1,
+      "general_semantics/model_training_performance": 5
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_decision_function",
+      "label": "general_semantics/decision_score_consistency",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "The sign of each decision score matches the expected class boundary."
+        }
+      ],
+      "rationale": "The new method returns scores, but the assertion directly checks decision semantics against labels."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "Baseline PegasosQSVC scores 1.0."
+        }
+      ],
+      "rationale": "This P2P case checks prediction quality after fitting."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_qsvc_4d",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Four-dimensional PegasosQSVC scores 1.0."
+        }
+      ],
+      "rationale": "The four-feature variant independently checks classifier score."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_precomputed_kernel",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "Precomputed-kernel PegasosQSVC scores 1.0."
+        }
+      ],
+      "rationale": "The precomputed-kernel input form is setup; the assertion is a classifier score."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 158,
+          "expected": "After replacing the kernel, classifier score is 1."
+        }
+      ],
+      "rationale": "The selected changed-kernel case measures retained predictions."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_pegasos_qsvc.py::TestPegasosQSVC::test_change_kernel_types",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 244,
+          "expected": "After changing kernel types, classifier score is 1.0."
+        }
+      ],
+      "rationale": "This variant again asserts prediction quality, now across kernel types."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/5df0a738d1120c492ce7fb5e18d61ee8489a6b78/test/algorithms/classifiers/test_pegasos_qsvc.py"
+  ],
+  "rationale": "Reviewed the F2P decision-sign assertion and all five distinct P2P classifier configurations."
+}

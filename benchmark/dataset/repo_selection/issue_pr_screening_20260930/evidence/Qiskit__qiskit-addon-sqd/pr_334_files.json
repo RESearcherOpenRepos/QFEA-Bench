@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "8b5690058d71938c28f31512137d853047894454",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 14,
+    "deletions": 0,
+    "changes": 14,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48",
+    "patch": "@@ -32,6 +32,7 @@\n     spin_square,\n )\n from qiskit.primitives import BitArray\n+from qiskit.utils.deprecation import deprecate_func\n from scipy import linalg as LA\n \n from .configuration_recovery import recover_configurations\n@@ -41,6 +42,17 @@\n \n config.update(\"jax_enable_x64\", True)  # To deal with large integers\n \n+_ORBITAL_OPTIMIZATION_DEPRECATION = dict(\n+    since=\"0.13.0\",\n+    package_name=\"qiskit-addon-sqd\",\n+    removal_timeline=\"no earlier than v0.15.0\",\n+    additional_msg=(\n+        \"Orbital optimization is now supported by the ffsim package. See \"\n+        \"https://quantum.cloud.ibm.com/docs/addons/qiskit-addon-sqd/guides/optimize-orbitals \"\n+        \"for a guide on how to optimize the Hamiltonian basis with ffsim.\"\n+    ),\n+)\n+\n \n @dataclass(frozen=True)\n class SCIState:\n@@ -800,6 +812,7 @@ def solve_fermion(\n     return e_sci, sci_state, avg_occupancy, spin_squared\n \n \n+@deprecate_func(**_ORBITAL_OPTIMIZATION_DEPRECATION)\n def optimize_orbitals(\n     bitstring_matrix: tuple[np.ndarray, np.ndarray] | np.ndarray,\n     /,\n@@ -914,6 +927,7 @@ def optimize_orbitals(\n     return e_qsci, k_flat, avg_occupancy\n \n \n+@deprecate_func(**_ORBITAL_OPTIMIZATION_DEPRECATION)\n def rotate_integrals(\n     hcore: np.ndarray, eri: np.ndarray, k_flat: np.ndarray\n ) -> tuple[np.ndarray, np.ndarray]:"
+  },
+  {
+    "sha": "39c07e8807f2ddcbc73ec9dccca4c327e28ea890",
+    "filename": "releasenotes/notes/deprecate-orbital-optimization-3a31b1685faa0b0b.yaml",
+    "status": "added",
+    "additions": 8,
+    "deletions": 0,
+    "changes": 8,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48/releasenotes%2Fnotes%2Fdeprecate-orbital-optimization-3a31b1685faa0b0b.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48/releasenotes%2Fnotes%2Fdeprecate-orbital-optimization-3a31b1685faa0b0b.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fdeprecate-orbital-optimization-3a31b1685faa0b0b.yaml?ref=e0e86fa49a0ca426a4fa6ae54a8d7ea9a189ea48",
+    "patch": "@@ -0,0 +1,8 @@\n+---\n+deprecations:\n+  - |\n+    The :func:`qiskit_addon_sqd.fermion.optimize_orbitals` and\n+    :func:`qiskit_addon_sqd.fermion.rotate_integrals` functions are now deprecated.\n+    Refer to the `orbital optimization guide\n+    <https://quantum.cloud.ibm.com/docs/addons/qiskit-addon-sqd/guides/optimize-orbitals>`_\n+    for how to optimize the Hamiltonian basis with the ffsim package instead."
+  }
+]

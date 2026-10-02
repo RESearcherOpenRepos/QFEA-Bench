@@ -1,0 +1,31 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  1b0adcd Remove need for `num_features` before fitting  (#301)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 1b0adcd
+
+HEAD is now at e3866c7 fix pennylane executor (#343)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ TestRandomLayeredEncodingCircuit.test_minimal_fit _______________
+
+self = <tests.encoding_circuit.circuit_library.test_random_layered_encoding_circuit.TestRandomLayeredEncodingCircuit object at 0x7fffe2643610>
+
+    def test_minimal_fit(self):
+>       circuit = RandomLayeredEncodingCircuit(
+            num_qubits=2,
+            min_num_layers=3,
+            max_num_layers=12,
+            feature_probability=0.5,
+            seed=40,
+        )
+E       TypeError: RandomLayeredEncodingCircuit.__init__() missing 1 required positional argument: 'num_features'
+
+tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py:132: TypeError
+=========================== short test summary info ============================
+FAILED tests/encoding_circuit/circuit_library/test_random_layered_encoding_circuit.py::TestRandomLayeredEncodingCircuit::test_minimal_fit
+1 failed, 2 warnings in 3.52s

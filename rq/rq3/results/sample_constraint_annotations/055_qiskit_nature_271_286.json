@@ -1,0 +1,131 @@
+{
+  "id": 55,
+  "sample_id": "qiskit_nature_271_286",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "df73128801f5653b2a76cd68eab9059649a2d1bb",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 7,
+    "subtype_test_counts": {
+      "quantum_semantics/parity_two_qubit_reduction": 1,
+      "interface/mapper_capability_property": 1,
+      "quantum_semantics/fermion_qubit_parity_mapping": 1,
+      "interface/return_representation": 1,
+      "interface/operator_label_parsing": 1,
+      "general_semantics/symbolic_operator_arithmetic": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/converters/second_quantization/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction",
+      "label": "quantum_semantics/parity_two_qubit_reduction",
+      "assertions": [
+        {
+          "line": 176,
+          "expected": "Two-qubit fermionic input maps to the expected unreduced Pauli operator."
+        }
+      ],
+      "rationale": "The F2P regression also checks a warning, but preserving the correct ParityMapper Pauli image when reduction is inapplicable is the primary behavior."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_property",
+      "assertions": [
+        {
+          "line": 69,
+          "expected": "ParityMapper advertises that two-qubit reduction is supported."
+        }
+      ],
+      "rationale": "The assertion reads a public capability flag; it does not perform mapping."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_parity_mapper.py::TestParityMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 64,
+          "expected": "ParityMapper maps the H2 FermionicOp to its reference PauliSumOp."
+        }
+      ],
+      "rationale": "The selected P2P mapping case compares quantum Pauli labels and coefficients."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "Multi-term FermionicOp construction exposes the supplied labels via to_list."
+        }
+      ],
+      "rationale": "The selected constructor case checks public list representation."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiple_digits",
+      "label": "interface/operator_label_parsing",
+      "assertions": [
+        {
+          "line": 112,
+          "expected": "Multi-digit orbital indices are parsed and exposed in the expected label list."
+        }
+      ],
+      "rationale": "The selected case concerns accepted label syntax and public serialization."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Scalar multiplication scales FermionicOp coefficients."
+        }
+      ],
+      "rationale": "The selected mul test checks generic coefficient arithmetic."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "Adding FermionicOp terms combines coefficients as expected."
+        }
+      ],
+      "rationale": "The add case has no anticommuting product."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 252,
+          "expected": "Reducing duplicate FermionicOp labels sums their coefficients."
+        }
+      ],
+      "rationale": "The selected reduce case contains only repeated-label aggregation, no fermionic sign rewrite."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/df73128801f5653b2a76cd68eab9059649a2d1bb/test/converters/second_quantization/test_qubit_converter.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/df73128801f5653b2a76cd68eab9059649a2d1bb/test/mappers/second_quantization/test_parity_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/df73128801f5653b2a76cd68eab9059649a2d1bb/test/operators/second_quantization/test_fermionic_op.py"
+  ],
+  "rationale": "Reviewed the mixed ParityMapper regression and all seven retained property, mapping and symbolic-container cases; the regression warning is recorded but the Pauli mapping is primary."
+}

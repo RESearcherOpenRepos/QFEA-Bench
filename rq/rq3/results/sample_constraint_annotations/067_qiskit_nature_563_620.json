@@ -1,0 +1,89 @@
+{
+  "id": 67,
+  "sample_id": "qiskit_nature_563_620",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "e9fc62d3dc9f4aa05130dc910ee5764e85ca38a7",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "quantum_semantics/hubbard_hamiltonian_construction": 4,
+      "interface/eigensolver_result_conversion": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_second_q_ops",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 40,
+          "via_helper": 51,
+          "helper_selector": "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::_compare_second_q_op",
+          "expected": "Lattice problem second-quantized operator has the same ladder labels as its wrapped model."
+        }
+      ],
+      "rationale": "The compared operator encodes a lattice Hamiltonian, including physical coefficients."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/test_lattice_model_problem.py::TestLatticeModelProblem::test_interpret",
+      "label": "interface/eigensolver_result_conversion",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "Eigenstate, Eigensolver, and MinimumEigensolver values are transferred to lattice-result fields."
+        }
+      ],
+      "rationale": "This checks conversion among public result containers, not an energy calculation."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_init",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Four-site Fermi-Hubbard operator has the expected hopping and interaction terms."
+        }
+      ],
+      "rationale": "The exact second-q Hamiltonian is the decisive assertion."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_uniform_parameters",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Uniform lattice parameters yield the prescribed Fermi-Hubbard operator."
+        }
+      ],
+      "rationale": "The physical term coefficients and sites are compared."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py::TestFermiHubbardModel::test_from_parameters",
+      "label": "quantum_semantics/hubbard_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 189,
+          "expected": "Explicit parameter matrices yield the prescribed Fermi-Hubbard operator."
+        }
+      ],
+      "rationale": "The selected test checks model-to-Hamiltonian conversion."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/e9fc62d3dc9f4aa05130dc910ee5764e85ca38a7/test/problems/second_quantization/lattice/models/test_fermi_hubbard_model.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/e9fc62d3dc9f4aa05130dc910ee5764e85ca38a7/test/problems/second_quantization/lattice/test_lattice_model_problem.py"
+  ],
+  "rationale": "Reviewed all 5 selected cases against exact-patch source; physical operator equalities are quantum constraints and result-container contracts are interface constraints."
+}

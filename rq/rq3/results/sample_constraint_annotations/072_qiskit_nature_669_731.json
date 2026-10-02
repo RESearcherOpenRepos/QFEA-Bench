@@ -1,0 +1,331 @@
+{
+  "id": 72,
+  "sample_id": "qiskit_nature_669_731",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "a4ea55a2bfee90260eb97fbd5eb60673350f6a90",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 11,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "general_semantics/symbolic_operator_arithmetic": 7,
+      "general_semantics/complex_conjugation": 2,
+      "general_semantics/operator_equality": 1,
+      "general_semantics/numeric_tolerance_comparison": 4,
+      "interface/mapping_access": 3,
+      "interface/register_length_contract": 2,
+      "general_semantics/input_immutability": 1,
+      "quantum_semantics/fermionic_operator_algebra": 1,
+      "quantum_semantics/spin_operator_algebra": 1,
+      "general_semantics/tensor_arithmetic": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "Sparse-label addition combines shared and unique real/complex coefficients."
+        }
+      ],
+      "rationale": "The dummy base operator checks generic term aggregation."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 114,
+          "expected": "Sparse-label scalar multiplication scales real and complex coefficients."
+        }
+      ],
+      "rationale": "The dummy base operator checks generic coefficient arithmetic."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_adjoint",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "Dummy sparse-label adjoint conjugates complex coefficients."
+        }
+      ],
+      "rationale": "The subclass test uses identity transpose, leaving ordinary complex conjugation."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_conjugate",
+      "label": "general_semantics/complex_conjugation",
+      "assertions": [
+        {
+          "line": 178,
+          "expected": "Conjugate returns coefficientwise complex conjugates."
+        }
+      ],
+      "rationale": "The check is generic complex-number arithmetic."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_eq",
+      "label": "general_semantics/operator_equality",
+      "assertions": [
+        {
+          "line": 184,
+          "expected": "Exact equality distinguishes identical, different-key, different-value, and near-equal data."
+        }
+      ],
+      "rationale": "The dummy sparse mapping uses exact container equality."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 250,
+          "expected": "Equivalence accepts coefficient differences within tolerance and rejects larger or key differences."
+        }
+      ],
+      "rationale": "The test checks ordinary approximate numeric comparison."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 256,
+          "expected": "Iteration yields the stored sparse labels."
+        }
+      ],
+      "rationale": "The assertion checks the public iterator."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 262,
+          "expected": "Lookup by label returns its stored coefficient."
+        }
+      ],
+      "rationale": "The assertion checks mapping access."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 267,
+          "expected": "Length reports two stored labels."
+        }
+      ],
+      "rationale": "The assertion checks mapping length."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_get_register_length",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 272,
+          "expected": "Public register length equals the supplied value two."
+        }
+      ],
+      "rationale": "The assertion checks exposed metadata."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_sparse_label_op.py::TestSparseLabelOp::test_copy",
+      "label": "general_semantics/input_immutability",
+      "assertions": [
+        {
+          "line": 282,
+          "expected": "Default copied input mapping is unaffected by later source mutation."
+        }
+      ],
+      "rationale": "The test checks copy semantics."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_register_length",
+      "label": "interface/register_length_contract",
+      "assertions": [
+        {
+          "line": 164,
+          "expected": "Fermionic register length is inferred from the highest mode index."
+        }
+      ],
+      "rationale": "The selected control checks exposed metadata."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Fermionic scalar multiplication scales coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic arithmetic."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 196,
+          "expected": "Fermionic addition combines labeled terms."
+        }
+      ],
+      "rationale": "The selected control checks generic term aggregation."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 304,
+          "expected": "Fermionic adjoint yields expected exchanged ladder actions and signs."
+        }
+      ],
+      "rationale": "The expected signs follow fermion algebra."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 377,
+          "expected": "Fermionic equivalence uses the requested coefficient tolerance."
+        }
+      ],
+      "rationale": "The focused checks compare numeric coefficient differences and operand type."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 212,
+          "expected": "SpinOp multiplication scales its coefficients."
+        }
+      ],
+      "rationale": "The selected control checks generic scalar arithmetic."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [
+        {
+          "line": 231,
+          "expected": "X plus iY equals the spin raising operator."
+        }
+      ],
+      "rationale": "The selected addition includes a spin-algebra relation."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "SpinOp adjoint conjugates and transposes coefficient arrays."
+        }
+      ],
+      "rationale": "The selected control checks numeric tensor adjoint."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 367,
+          "expected": "SpinOp equivalence changes with absolute tolerance."
+        }
+      ],
+      "rationale": "The selected control checks numeric comparison of coefficients."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "VibrationalOp multiplication doubles coefficients."
+        }
+      ],
+      "rationale": "The selected control checks scalar arithmetic."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "VibrationalOp addition combines matching terms."
+        }
+      ],
+      "rationale": "The selected control checks generic aggregation."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "VibrationalOp equivalence changes with absolute tolerance."
+        }
+      ],
+      "rationale": "The selected control checks numeric coefficient comparison."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/a4ea55a2bfee90260eb97fbd5eb60673350f6a90/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/a4ea55a2bfee90260eb97fbd5eb60673350f6a90/test/second_q/operators/test_sparse_label_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/a4ea55a2bfee90260eb97fbd5eb60673350f6a90/test/second_q/operators/test_spin_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/a4ea55a2bfee90260eb97fbd5eb60673350f6a90/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Read all 23 selected tests at the exact sample commit; each case is labeled by its explicit assertion rather than operator class name."
+}

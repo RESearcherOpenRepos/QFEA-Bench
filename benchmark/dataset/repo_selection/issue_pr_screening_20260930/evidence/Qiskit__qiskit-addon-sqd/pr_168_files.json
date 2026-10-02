@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "5778526130371248c4d2763954356f857bf86c50",
+    "filename": ".github/workflows/test_minimum_versions.yml",
+    "status": "added",
+    "additions": 38,
+    "deletions": 0,
+    "changes": 38,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/90b7a0c4c9301c33fc265444adbeb5a15ac8cd80/.github%2Fworkflows%2Ftest_minimum_versions.yml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/90b7a0c4c9301c33fc265444adbeb5a15ac8cd80/.github%2Fworkflows%2Ftest_minimum_versions.yml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/.github%2Fworkflows%2Ftest_minimum_versions.yml?ref=90b7a0c4c9301c33fc265444adbeb5a15ac8cd80",
+    "patch": "@@ -0,0 +1,38 @@\n+name: Minimum version tests\n+\n+on:\n+  push:\n+    branches:\n+      - main\n+      - 'stable/**'\n+  pull_request:\n+    branches:\n+      - main\n+      - 'stable/**'\n+\n+jobs:\n+  tests:\n+    name: minimum version tests (${{ matrix.os }}, ${{ matrix.python-version }})\n+    runs-on: ${{ matrix.os }}\n+    timeout-minutes: 30\n+    strategy:\n+      max-parallel: 4\n+      matrix:\n+        os: [ubuntu-latest]\n+        python-version: [3.9]\n+    steps:\n+      - uses: actions/checkout@v4\n+      - name: Set up Python ${{ matrix.python-version }}\n+        uses: actions/setup-python@v5\n+        with:\n+          python-version: ${{ matrix.python-version }}\n+      - name: Install dependencies (minimum versions)\n+        shell: bash\n+        run: |\n+          python -m pip install --upgrade pip\n+          python -m pip install extremal-python-dependencies==0.0.3\n+          pip install \"tox==$(extremal-python-dependencies get-tox-minversion)\"\n+          extremal-python-dependencies pin-dependencies-to-minimum --inplace\n+      - name: Test using tox environment\n+        run: |\n+          tox -e py,notebook --parallel --parallel-no-spinner"
+  }
+]

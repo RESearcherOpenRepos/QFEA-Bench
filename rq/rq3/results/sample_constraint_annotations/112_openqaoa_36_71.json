@@ -1,0 +1,138 @@
+{
+  "id": 112,
+  "sample_id": "openqaoa_36_71",
+  "repo": "entropicalabs/openqaoa",
+  "patch_commit": "d4b99fe091869e0e3d3beaf9365c98228c30e0bf",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/return_representation": 1,
+      "general_semantics/maxcut_model_formulation": 2,
+      "interface/input_validation": 1,
+      "general_semantics/qubo_conversion": 2,
+      "general_semantics/symbolic_operator_arithmetic": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/test_converters.py::TestDocplex2IsingClass::test_qubo",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 45,
+          "expected": "Conversion returns an instance of the public QUBO class."
+        }
+      ],
+      "rationale": "Conversion returns an instance of the public QUBO class."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/test_converters.py::TestDocplex2IsingClass::test_model_maxcut",
+      "label": "general_semantics/maxcut_model_formulation",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "The Docplex MaxCut conversion gives the expected classical objective coefficients after the documented factor-of-two convention."
+        }
+      ],
+      "rationale": "The Docplex MaxCut conversion gives the expected classical objective coefficients after the documented factor-of-two convention."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tests/test_problems.py::TestProblem::test_qubo_terms_and_weight_same_size",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 36,
+          "expected": "Mismatched term and coefficient counts raise ValueError; the companion valid construction exposes constant 3."
+        }
+      ],
+      "rationale": "Mismatched term and coefficient counts raise ValueError; the companion valid construction exposes constant 3."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tests/test_problems.py::TestProblem::test_qubo_cleaning_terms",
+      "label": "general_semantics/qubo_conversion",
+      "assertions": [
+        {
+          "line": 48,
+          "expected": "Cleaning the polynomial terms returns the expected canonical term list."
+        }
+      ],
+      "rationale": "Cleaning the polynomial terms returns the expected canonical term list."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/test_problems.py::TestProblem::test_qubo_cleaning_weights",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 56,
+          "expected": "Duplicate polynomial terms have their numeric weights added correctly."
+        }
+      ],
+      "rationale": "Duplicate polynomial terms have their numeric weights added correctly."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/test_problems.py::TestProblem::test_maximumcut_terms_weights_constant",
+      "label": "general_semantics/maxcut_model_formulation",
+      "assertions": [
+        {
+          "line": 175,
+          "expected": "MaxCut classical quadratic objective matches graph edges, weights and zero constant."
+        },
+        {
+          "line": 176,
+          "expected": "MaxCut classical quadratic objective matches graph edges, weights and zero constant."
+        },
+        {
+          "line": 177,
+          "expected": "MaxCut classical quadratic objective matches graph edges, weights and zero constant."
+        }
+      ],
+      "rationale": "MaxCut classical quadratic objective matches graph edges, weights and zero constant."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "tests/test_problems.py::TestProblem::test_number_partitioning_terms_weights_constant",
+      "label": "general_semantics/qubo_conversion",
+      "assertions": [
+        {
+          "line": 122,
+          "expected": "Number-partitioning quadratic objective has the expected terms, coefficients and constant."
+        },
+        {
+          "line": 123,
+          "expected": "Number-partitioning quadratic objective has the expected terms, coefficients and constant."
+        },
+        {
+          "line": 124,
+          "expected": "Number-partitioning quadratic objective has the expected terms, coefficients and constant."
+        }
+      ],
+      "rationale": "Number-partitioning quadratic objective has the expected terms, coefficients and constant."
+    }
+  ],
+  "source_files": [
+    "https://github.com/entropicalabs/openqaoa/blob/d4b99fe091869e0e3d3beaf9365c98228c30e0bf/tests/test_converters.py",
+    "https://github.com/entropicalabs/openqaoa/blob/d4b99fe091869e0e3d3beaf9365c98228c30e0bf/tests/test_problems.py"
+  ],
+  "rationale": "Test bodies and referenced helpers at the exact patched commit were reviewed individually against the existing primary-assertion protocol. Setup and quantum repository membership do not determine the label. Parametrized cases retain distinct selectors.",
+  "review_provenance": {
+    "reviewer": "Codex",
+    "method": "Individual source-assertion review under existing protocol; explicit saved decisions, not automatic keyword classification.",
+    "date": "2026-10-02",
+    "human_agreement": "Author confirmation is recorded separately; these evidence records do not simulate three independent human votes."
+  }
+}

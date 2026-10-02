@@ -1,0 +1,260 @@
+{
+  "id": 21,
+  "sample_id": "qiskit_finance_72_112",
+  "repo": "qiskit-community/qiskit-finance",
+  "patch_commit": "34cc9db2d716de32ba99e13be9435088cdb62f77",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 18,
+    "subtype_test_counts": {
+      "quantum_semantics/circuit_decomposition": 1,
+      "interface/input_validation": 8,
+      "quantum_semantics/probability_state_preparation": 10
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestUniformDistribution::test_uniform",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 40,
+          "expected": "Decomposing the wrapped uniform circuit yields the expected Hadamard layer"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_1___0__0____0__1__",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "The first invalid bounds configuration raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_bounds_invalid_2____2___1____1__0__",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "The second invalid bounds configuration raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_1__2___1__1___2___0__1__",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "An incompatible mean dimension raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_2__2__1_2____1__0____0__1_____0__1__",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "An incompatible covariance shape raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_3__2__1_2__1____0__1____0__1___",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "An incompatible bounds shape raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_4___1__2___1____1__0____0__1______0__1____0__1___",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "The multivariate mean dimension mismatch raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_5___1__2____0__0_____2______0__1____0__1___",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "The multivariate covariance dimension mismatch raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_mismatching_dimensions_6___1__2____0__0_____1__0____0__1_____0__1__",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "The multivariate bounds dimension mismatch raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_1__2__None__None__None__False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "The default normal-distribution circuit prepares the expected statevector amplitudes",
+          "via_helper": "assertDistributionIsCorrect (called at line 123)"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_2__3__1_75__2_5__None__True_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 81,
+          "expected": "The selected normal circuit prepares the expected amplitudes up to diagonal equivalence",
+          "via_helper": "assertDistributionIsCorrect (called at line 123)"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_3__2__1_75__2_5___0__3___False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "The bounded univariate normal circuit prepares the expected statevector",
+          "via_helper": "assertDistributionIsCorrect (called at line 123)"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_4___1__2__2___None__None__None__True_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 81,
+          "expected": "The selected multivariate normal circuit prepares the expected state up to diagonal equivalence",
+          "via_helper": "assertDistributionIsCorrect (called at line 123)"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestNormalDistribution::test_normal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 83,
+          "expected": "The bounded multivariate normal circuit prepares the expected statevector",
+          "via_helper": "assertDistributionIsCorrect (called at line 123)"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_1__2__None__None__None__False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "The default lognormal circuit prepares the expected statevector amplitudes",
+          "via_helper": "assertDistributionIsCorrect (called at line 234)"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_2__3__1_75__2_5__None__True_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 192,
+          "expected": "The selected lognormal circuit prepares the expected state up to diagonal equivalence",
+          "via_helper": "assertDistributionIsCorrect (called at line 234)"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_3__2__1_75__2_5___0__3___False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "The bounded univariate lognormal circuit prepares the expected statevector",
+          "via_helper": "assertDistributionIsCorrect (called at line 234)"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_4___1__2__2___None__None__None__True_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 192,
+          "expected": "The selected multivariate lognormal circuit prepares the expected state up to diagonal equivalence",
+          "via_helper": "assertDistributionIsCorrect (called at line 234)"
+        }
+      ]
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/circuit/test_probability_distributions.py::TestLogNormalDistribution::test_lognormal_5___1__2__1____0__1__1_____1_2__0__0____0__0_5__0____0__0__0_1______0__2_____1__1_____3__3____False_",
+      "label": "quantum_semantics/probability_state_preparation",
+      "assertions": [
+        {
+          "line": 194,
+          "expected": "The bounded multivariate lognormal circuit prepares the expected statevector",
+          "via_helper": "assertDistributionIsCorrect (called at line 234)"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-finance/blob/34cc9db2d716de32ba99e13be9435088cdb62f77/test/circuit/test_probability_distributions.py"
+  ],
+  "rationale": "The uniform circuit's decomposition and statevector amplitudes of normal/lognormal circuits are quantum state-preparation properties. Invalid bounds and inconsistent parameter dimensions are constructor input contracts."
+}

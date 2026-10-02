@@ -1,0 +1,142 @@
+{
+  "instance": {
+    "id": 20,
+    "repo": "qiskit-community/qiskit-finance",
+    "instance_id": "qiskit_finance_54_57",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-finance/issues/54",
+    "pr_url": "https://github.com/qiskit-community/qiskit-finance/pull/57",
+    "base_commit": "f3123c89fe3352f2e66cfc38965c99956561f233",
+    "patch": "027401b87718aa8ad76263aa26afd3544b1885f3"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task changes classical portfolio optimization variable bounds rather than quantum modeling or mapping semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_finance/applications/optimization/portfolio_optimization.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PortfolioOptimization currently models each asset decision as binary, so a portfolio can only choose whether to buy an asset or not. This prevents users from representing integer asset holdings, where the portfolio should be able to buy multiple units of the same asset within configured bounds. The finance optimization workflow needs PortfolioOptimization to support integer decision variables while preserving the existing binary behavior when no bounds are provided.",
+    "requirements": [
+      "PortfolioOptimization must continue to create binary decision variables when no bounds are provided.",
+      "PortfolioOptimization must accept optional per-asset integer bounds and use them to create integer decision variables in the quadratic program.",
+      "The generated quadratic program must preserve the existing portfolio objective and budget constraint behavior for both binary and bounded-integer configurations.",
+      "PortfolioOptimization must reject incompatible expected-return, covariance, and bounds shapes with QiskitFinanceError.",
+      "PortfolioOptimization must reject bounds whose upper bound is smaller than the lower bound.",
+      "PortfolioOptimization must expose readable and writable bounds configuration for the portfolio model."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "PortfolioOptimization",
+        "Path": "qiskit_finance/applications/optimization/portfolio_optimization.py",
+        "Input": "constructor: expected_returns, covariances, risk_factor, budget, bounds=None",
+        "Output": "",
+        "Description": "Portfolio optimization application supports either binary asset decisions or bounded integer asset holdings."
+      },
+      {
+        "Type": "Method",
+        "Name": "PortfolioOptimization.to_quadratic_program",
+        "Path": "qiskit_finance/applications/optimization/portfolio_optimization.py",
+        "Input": "self",
+        "Output": "QuadraticProgram",
+        "Description": "Builds a quadratic program whose variables are binary when bounds is unset and integer-bounded when bounds is configured."
+      },
+      {
+        "Type": "Method",
+        "Name": "PortfolioOptimization.bounds",
+        "Path": "qiskit_finance/applications/optimization/portfolio_optimization.py",
+        "Input": "",
+        "Output": "list[tuple[int, int]] | None",
+        "Description": "Property getter and setter expose the optional lower and upper integer bounds for each asset variable."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_finance_54_57",
+      "image_id": "sha256:c52f4518919ebf445133197cb2e646683e0ed19b51ce744dc131b4e0950a41b0",
+      "image_size": "1468651787"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "qiskit-terra==0.18.3",
+        "qiskit-aer==0.8.2",
+        "qiskit-optimization==0.2.1",
+        "docplex==2.21.207",
+        "networkx<2.6",
+        "ddt",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_to_quadratic_program",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_1___1_____1____1____0_5__2__None_",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_2___1_____1__1____0_5__2__None_",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_3___1__2_____1__2____3__4____0_5__2____0__2____3__1___",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_4___1__2_____1__2____3__4____0_5__2____0__2____0__2____0__2___",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_bounds"
+        ],
+        "summary": "6 passed in 3.49s",
+        "duration_seconds": 7.25
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_interpret",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_expected_value",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_variance",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_risk_factor",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_budget"
+        ],
+        "summary": "5 passed in 3.56s",
+        "duration_seconds": 7.15
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_to_quadratic_program",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_1___1_____1____1____0_5__2__None_",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_2___1_____1__1____0_5__2__None_",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_3___1__2_____1__2____3__4____0_5__2____0__2____3__1___",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_is_compatibility_4___1__2_____1__2____3__4____0_5__2____0__2____0__2____0__2___",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_bounds"
+        ],
+        "summary": "6 failed in 3.81s",
+        "duration_seconds": 9.62
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_interpret",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_expected_value",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_portfolio_variance",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_risk_factor",
+          "test/applications/test_portfolio_optimization.py::TestPortfolioDiversification::test_budget"
+        ],
+        "summary": "5 passed in 3.40s",
+        "duration_seconds": 9.04
+      }
+    }
+  }
+}

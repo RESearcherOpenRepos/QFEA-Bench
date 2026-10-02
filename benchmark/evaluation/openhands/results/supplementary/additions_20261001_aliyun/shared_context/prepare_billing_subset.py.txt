@@ -1,0 +1,50 @@
+"""Snapshot the provider outage and retain only completed, unaffected workflows."""
+import datetime, hashlib, json, re, shutil
+from pathlib import Path
+B=Path(__file__).resolve().parent; ROOT=B.parents[2]
+incident=B/'billing_incident';incident.mkdir(exist_ok=True)
+for name in ['status.json','REPORT.md','approved.log']:
+ dest=incident/name
+ if (B/name).exists() and not dest.exists():shutil.copy2(B/name,dest)
+rows=[]
+for j in json.loads((B/'approved_jobs.json').read_text()):
+ p=ROOT/j['out'];audit=json.loads((p/'approved_recovery_audit.json').read_text())
+ gen=json.loads((p/'generation/preds.json').read_text())['predictions']
+ fresh=json.loads((p/'approved_generation/preds.json').read_text())['predictions']
+ original={sid:gen[sid] for sid in audit['retained_prediction_hashes']}
+ for sid,digest in audit['retained_prediction_hashes'].items():assert hashlib.sha256(json.dumps(original[sid],sort_keys=True).encode()).hexdigest()==digest
+ blocked={};valid=original.copy()
+ for sid,pred in fresh.items():
+  d=p/'approved_generation'/sid
+  if j['agent']=='minisweagent':
+   info=json.loads((d/(sid+'.traj.json')).read_text())['info'];err=info.get('exception_str') or ''
+  else:
+   rs=[json.loads(l) for l in (p/'approved_generation/output.critic_attempt_1.jsonl').read_text().splitlines() if l.strip()]
+   err=next(r.get('error') or '' for r in rs if r['instance_id']==sid)
+  if err:
+   log=p/'approved_generation/logs'/('instance_'+sid+'.output.log')
+   txt=log.read_text() if log.exists() else err
+   assert 'overdue-p' in txt or 'overdue-payment' in txt,(j['id'],sid,err)
+   steps=re.findall(r'OPENHANDS_PROGRESS instance='+re.escape(sid)+r' step=(\d+)',(p/'approved_agents.log').read_text()) if j['agent']=='openhands' else []
+   blocked[sid]={'reason':'Aliyun account rejection; overdue-payment link','last_observed_step':max(map(int,steps)) if steps else None,'error':err,'log':str(log if log.exists() else d/(sid+'.traj.json'))}
+  else:valid[sid]=pred
+ allids=json.loads((p/'sample_ids.json').read_text());pending=[sid for sid in allids if sid not in valid]
+ subset=p/'billing_valid_generation';subset.mkdir(exist_ok=True)
+ (subset/'preds.json').write_text(json.dumps({'predictions':valid},indent=2)+'\n')
+ sources=[p/'results_additions.json',p/'results_additions.json.partial']
+ source=next(f for f in sources if f.exists());cache=json.loads(source.read_text())
+ good=[r for r in cache['results'] if r['instance_id'] in valid and not r.get('eval_infra_failed') and not r.get('timed_out')]
+ target=p/'results_billing_valid_subset.json'
+ if not (p/'final_verification.json').exists():
+  target.with_suffix('.json.partial').write_text(json.dumps({'results':good},indent=2)+'\n')
+ else:target=p/'results_additions.json'
+ row=dict(j,completed_workflows=len(valid),pending_ids=pending,account_rejected=blocked,not_completed_ids=[sid for sid in pending if sid not in blocked],result_source=str(target),preds_source=str(subset/'preds.json'))
+ rows.append(row)
+ for f in ['approved_generation/preds.json','results_additions.json','results_additions.json.partial']:
+  src=p/f;dest=incident/(j['id']+'.'+f.replace('/','.'))
+  if src.exists() and not dest.exists():shutil.copy2(src,dest)
+ print(j['id'],'valid',len(valid),'pending',pending)
+(B/'billing_jobs.json').write_text(json.dumps(rows,indent=2)+'\n')
+hold={'time':datetime.datetime.now().isoformat(),'status':'blocked_by_provider_account','error':'Access denied, please make sure your account is in good standing.','provider_error_reference':'https://help.aliyun.com/zh/model-studio/error-code#overdue-payment','model_controllers_stopped':True,'pending_workflows':sum(len(r['pending_ids']) for r in rows),'note':'Provider-interrupted or unfinished workflows are excluded from valid results; do not classify as model failures. User must restore account access before generation can continue.'}
+(B/'billing_hold.json').write_text(json.dumps(hold,indent=2)+'\n')
+(B/'status.json').write_text(json.dumps(dict(hold,jobs={r['id']:{'phase':'completed' if not r['pending_ids'] else 'blocked_provider_account','completed_workflows':r['completed_workflows'],'pending_ids':r['pending_ids']} for r in rows}),indent=2)+'\n')

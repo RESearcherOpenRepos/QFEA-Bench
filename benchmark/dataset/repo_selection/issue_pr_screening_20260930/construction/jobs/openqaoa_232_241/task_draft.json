@@ -1,0 +1,23 @@
+{
+  "oracle_files": [
+    "src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py"
+  ],
+  "task": {
+    "problem_statement": "Users need an explicit matrix representation of an OpenQAOA Hamiltonian, including sums of mixed Pauli terms acting on nonadjacent qubits, to compare and manipulate the corresponding quantum operator.",
+    "requirements": [
+      "Expose the Hamiltonian as a sparse matrix in the repository computational-basis convention.",
+      "Combine Pauli terms with their coefficients while preserving tensor-product ordering and complex phases.",
+      "Preserve existing Hamiltonian and Pauli-operator behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "Hamiltonian.as_matrix",
+        "Path": "src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py",
+        "Input": "self (property access)",
+        "Output": "scipy.sparse matrix",
+        "Description": "Property returning the Hamiltonian matrix; supports toarray() for dense conversion."
+      }
+    ]
+  }
+}

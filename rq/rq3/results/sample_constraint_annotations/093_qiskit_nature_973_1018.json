@@ -1,0 +1,172 @@
+{
+  "id": 93,
+  "sample_id": "qiskit_nature_973_1018",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "575c24e18f6da34c5e3bdd055f322621ee2ddfdc",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 8,
+    "subtype_test_counts": {
+      "quantum_semantics/parity_two_qubit_reduction": 2,
+      "quantum_semantics/excited_state_energy": 1,
+      "quantum_semantics/fermion_qubit_mapping": 5,
+      "interface/mapper_capability_flag": 1,
+      "quantum_semantics/symmetry_tapering": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_with_two_qubit_reduction",
+      "label": "quantum_semantics/parity_two_qubit_reduction",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Configured particle counts give the reduced H2 Pauli operator."
+        }
+      ],
+      "rationale": "Configured particle counts give the reduced H2 Pauli operator."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_paritymapper_two_qubit_reduction",
+      "label": "quantum_semantics/parity_two_qubit_reduction",
+      "assertions": [
+        {
+          "line": 225,
+          "expected": "Converter and mapper cooperate to reduce parity-mapped H2."
+        }
+      ],
+      "rationale": "Converter and mapper cooperate to reduce parity-mapped H2."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/algorithms/excited_state_solvers/test_excited_states_solvers.py::TestNumericalQEOMESCCalculation::test_solve_with_vqe_mes_03_PM_TQR",
+      "label": "quantum_semantics/excited_state_energy",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "QEOM with a reducing ParityMapper reproduces reference excited energies."
+        }
+      ],
+      "rationale": "QEOM with a reducing ParityMapper reproduces reference excited energies."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "Jordan-Wigner mapping preserves its H2 Pauli operator."
+        }
+      ],
+      "rationale": "Jordan-Wigner mapping preserves its H2 Pauli operator."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "Bravyi-Kitaev mapping preserves its H2 Pauli operator."
+        }
+      ],
+      "rationale": "Bravyi-Kitaev mapping preserves its H2 Pauli operator."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 189,
+          "expected": "BKSF mapping yields the expected H2 Pauli operator."
+        }
+      ],
+      "rationale": "BKSF mapping yields the expected H2 Pauli operator."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+      "label": "interface/mapper_capability_flag",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "ParityMapper reports that two-qubit reduction is supported."
+        }
+      ],
+      "rationale": "ParityMapper reports that two-qubit reduction is supported."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Single-mode creation maps to the expected parity Pauli terms."
+        }
+      ],
+      "rationale": "Single-mode creation maps to the expected parity Pauli terms."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_mapping_basic",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 125,
+          "expected": "Converter parity mapping with reduction matches the reduced H2 reference."
+        }
+      ],
+      "rationale": "Converter parity mapping with reduction matches the reduced H2 reference."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry",
+      "label": "quantum_semantics/symmetry_tapering",
+      "assertions": [
+        {
+          "line": 290,
+          "expected": "Combined parity reduction and Z2 tapering select expected eigenvalues."
+        }
+      ],
+      "rationale": "Combined parity reduction and Z2 tapering select expected eigenvalues."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry",
+      "label": "quantum_semantics/symmetry_tapering",
+      "assertions": [
+        {
+          "line": 274,
+          "expected": "Z2 symmetry tapering records the expected sector for Jordan-Wigner mapping."
+        }
+      ],
+      "rationale": "Z2 symmetry tapering records the expected sector for Jordan-Wigner mapping."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/algorithms/excited_state_solvers/test_excited_states_solvers.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/mappers/test_bksf_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/mappers/test_bravyi_kitaev_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/mappers/test_jordan_wigner_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/mappers/test_parity_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/575c24e18f6da34c5e3bdd055f322621ee2ddfdc/test/second_q/mappers/test_qubit_converter.py"
+  ],
+  "rationale": "Every selected test was inspected individually against the task and test assertion."
+}

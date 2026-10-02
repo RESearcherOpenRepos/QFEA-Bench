@@ -1,0 +1,78 @@
+{
+  "instance": {
+    "repo": "__OWNER__/__REPO__",
+    "instance_id": "__SAMPLE_ID__",
+    "status": "pending",
+    "issue_url": "__ISSUE_URL__",
+    "pr_url": "__PR_URL__",
+    "base_commit": "__BASE_COMMIT__",
+    "patch": "__PATCHED_COMMIT__"
+  },
+  "golden_patch": {
+    "included_files": [
+      "__SUFFICIENT_IMPLEMENTATION_FILE__"
+    ]
+  },
+  "task": {
+    "problem_statement": "__PROBLEM_STATEMENT__",
+    "requirements": [
+      "__REQUIREMENT__"
+    ],
+    "interface": [
+      {
+        "Type": "__Function|Class|Method__",
+        "Name": "__SYMBOL_NAME__",
+        "Path": "__REPO_RELATIVE_PATH__",
+        "Input": "",
+        "Output": "",
+        "Description": "__INTERFACE_CONTRACT__"
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": false,
+      "platform": "linux/amd64",
+      "image": "benchmark-__SAMPLE_ID__:latest",
+      "image_id": "",
+      "image_size": ""
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "not_applicable",
+        "file_list": [
+          "__FAIL_PASS_TEST_FILE_LIST__"
+        ],
+        "summary": "Not run yet."
+      },
+      "pass_pass": {
+        "result": "not_applicable",
+        "file_list": [],
+        "summary": "Not run yet."
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "not_applicable",
+        "file_list": [
+          "__FAIL_PASS_TEST_FILE_LIST__"
+        ],
+        "summary": "Not run yet."
+      },
+      "pass_pass": {
+        "result": "not_applicable",
+        "file_list": [],
+        "summary": "Not run yet."
+      }
+    }
+  }
+}

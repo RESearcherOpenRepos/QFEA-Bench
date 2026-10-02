@@ -1,0 +1,193 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..3ce144d 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,188 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Get parameters for this estimator.
++
++        Returns the parameters of the :class:`BaseQNN` that are used as hyper-parameters
++        together with the nested hyper-parameters of the encoding circuit (``pqc``) and
++        the observable(s) (``operator``). Nested parameters are prefixed with ``pqc__`` for
++        the encoding circuit and ``operator__`` (or ``op0__``, ``op1__``, ... for a list of
++        observables) for the observable(s).
++
++        Args:
++            deep (bool): If True, also the parameters of the contained circuit and
++                observable objects are returned (default: True).
++
++        Returns:
++            Dictionary with hyper-parameters and values.
++        """
++        params = dict(
++            num_qubits=self.pqc.num_qubits,
++            pqc=self.pqc,
++            operator=self.operator,
++            executor=self.executor,
++            loss=self.loss,
++            optimizer=self.optimizer,
++            param_ini=self.param_ini,
++            param_op_ini=self.param_op_ini,
++            batch_size=self.batch_size,
++            epochs=self.epochs,
++            shuffle=self.shuffle,
++            opt_param_op=self.opt_param_op,
++            variance=self.variance,
++            shot_adjusting=self.shot_adjusting,
++            parameter_seed=self.parameter_seed,
++        )
++
++        if deep:
++            for key, value in self.pqc.get_params().items():
++                params["pqc__" + key] = value
++
++            if isinstance(self.operator, list):
++                for i, oper in enumerate(self.operator):
++                    for key, value in oper.get_params().items():
++                        params["op" + str(i) + "__" + key] = value
++            else:
++                for key, value in self.operator.get_params().items():
++                    params["operator__" + key] = value
++
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Set the parameters of this estimator.
++
++        Updates the hyper-parameters of the :class:`BaseQNN` and propagates nested
++        hyper-parameters to the encoding circuit (``pqc__`` prefix) and the observable(s)
++        (``operator__`` prefix, or ``op0__``, ``op1__``, ... for a list of observables).
++
++        Whenever the encoding circuit, the observable(s), or their hyper-parameters (such as
++        the number of qubits or the circuit depth) change, the trainable parameter arrays are
++        reinitialized consistently and the underlying :class:`QNN` is rebuilt. A top-level
++        ``num_qubits`` parameter is propagated to both the encoding circuit and all
++        observables.
++
++        Args:
++            **params: Hyper-parameters to set.
++
++        Returns:
++            self
++        """
++        valid_params = self.get_params()
++        for key, value in params.items():
++            if key not in valid_params:
++                raise ValueError(
++                    f"Invalid parameter {key!r}. "
++                    f"Valid parameters are {sorted(valid_params)!r}."
++                )
++
++        # Determine whether the circuit or observable specification needs to be rebuilt.
++        rebuild = False
++
++        # Direct (top-level) parameters.
++        direct_keys = {
++            "pqc",
++            "operator",
++            "executor",
++            "loss",
++            "optimizer",
++            "param_ini",
++            "param_op_ini",
++            "batch_size",
++            "epochs",
++            "shuffle",
++            "opt_param_op",
++            "variance",
++            "shot_adjusting",
++            "parameter_seed",
++        }
++        for key, value in params.items():
++            if key in direct_keys:
++                setattr(self, key, value)
++                if key in ("pqc", "operator", "param_ini", "param_op_ini"):
++                    rebuild = True
++
++        # Top-level num_qubits propagates to the circuit and all observables.
++        if "num_qubits" in params:
++            num_qubits = params["num_qubits"]
++            self.pqc.set_params(num_qubits=num_qubits)
++            if isinstance(self.operator, list):
++                for oper in self.operator:
++                    oper.set_params(num_qubits=num_qubits)
++            else:
++                self.operator.set_params(num_qubits=num_qubits)
++            rebuild = True
++
++        # Nested circuit parameters (pqc__*).
++        dict_pqc = {}
++        for key, value in params.items():
++            if key.startswith("pqc__"):
++                dict_pqc[key[len("pqc__") :]] = value
++        if len(dict_pqc) > 0:
++            self.pqc.set_params(**dict_pqc)
++            rebuild = True
++
++        # Nested observable parameters (operator__* or op{i}__*).
++        if isinstance(self.operator, list):
++            for i, oper in enumerate(self.operator):
++                dict_operator = {}
++                prefix = "op" + str(i) + "__"
++                for key, value in params.items():
++                    if key.startswith(prefix):
++                        dict_operator[key[len(prefix) :]] = value
++                if len(dict_operator) > 0:
++                    oper.set_params(**dict_operator)
++                    rebuild = True
++        else:
++            dict_operator = {}
++            for key, value in params.items():
++                if key.startswith("operator__"):
++                    dict_operator[key[len("operator__") :]] = value
++            if len(dict_operator) > 0:
++                self.operator.set_params(**dict_operator)
++                rebuild = True
++
++        if rebuild:
++            self._reinitialize_parameters()
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self._is_fitted = False
++
++        return self
++
++    def _reinitialize_parameters(self) -> None:
++        """Reinitialize the trainable parameter arrays.
++
++        Regenerates the initial parameter arrays of the encoding circuit and the
++        observable(s) whenever the circuit or observable specification has changed.
++        """
++        if self.param_ini is None or (
++            hasattr(self, "pqc")
++            and len(self.param_ini) != self.pqc.num_parameters
++        ):
++            self.param_ini = self.pqc.generate_initial_parameters(
++                seed=self.parameter_seed
++            )
++        self.param = self.param_ini.copy()
++
++        if isinstance(self.operator, list):
++            num_op_params = sum(op.num_parameters for op in self.operator)
++        else:
++            num_op_params = self.operator.num_parameters
++
++        if self.param_op_ini is None or len(self.param_op_ini) != num_op_params:
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [
++                        op.generate_initial_parameters(seed=self.parameter_seed)
++                        for op in self.operator
++                    ]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++        self.param_op = self.param_op_ini.copy()
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

@@ -1,0 +1,47 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________ TestQGPR.test_serialization[qgpr_fidelity] __________________
+
+self = <tests.kernel.ml.test_qgpr.TestQGPR object at 0x7fffe1edc940>
+qgpr = 'qgpr_fidelity'
+request = <FixtureRequest for <Function test_serialization[qgpr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qgpr", ["qgpr_fidelity", "qgpr_pqk"])
+    def test_serialization(self, qgpr, request, data):
+        """Tests serialization of QGPR."""
+        instance = request.getfixturevalue(qgpr)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       instance.dump(buffer)
+E       AttributeError: 'QGPR' object has no attribute 'dump'
+
+tests/kernel/ml/test_qgpr.py:268: AttributeError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+=========================== short test summary info ============================
+FAILED tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_fidelity]
+1 failed, 3 warnings in 3.98s

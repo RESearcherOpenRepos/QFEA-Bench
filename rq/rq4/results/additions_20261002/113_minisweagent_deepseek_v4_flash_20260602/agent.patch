@@ -1,0 +1,752 @@
+diff --git a/src/squlearn/kernel/__init__.py b/src/squlearn/kernel/__init__.py
+index d2aecb4..2379d0f 100644
+--- a/src/squlearn/kernel/__init__.py
++++ b/src/squlearn/kernel/__init__.py
+@@ -1,14 +1,16 @@
+-from . import matrix, ml, optimization
++from . import matrix, ml, optimization, loss
+ 
+-from .matrix import FidelityKernel, ProjectedQuantumKernel
++from .matrix import FidelityKernel, ProjectedQuantumKernel, KernelOptimizer
+ from .ml import QKRR, QGPC, QGPR, QSVR, QSVC
+ 
+ __all__ = [
+     "matrix",
+     "ml",
+     "optimization",
++    "loss",
+     "FidelityKernel",
+     "ProjectedQuantumKernel",
++    "KernelOptimizer",
+     "QKRR",
+     "QGPC",
+     "QGPR",
+diff --git a/src/squlearn/kernel/loss/__init__.py b/src/squlearn/kernel/loss/__init__.py
+new file mode 100644
+index 0000000..da3822f
+--- /dev/null
++++ b/src/squlearn/kernel/loss/__init__.py
+@@ -0,0 +1,4 @@
++from .negative_log_likelihood import NLL
++from .target_alignment import TargetAlignment
++
++__all__ = ["NLL", "TargetAlignment"]
+diff --git a/src/squlearn/kernel/loss/negative_log_likelihood.py b/src/squlearn/kernel/loss/negative_log_likelihood.py
+new file mode 100644
+index 0000000..bd85339
+--- /dev/null
++++ b/src/squlearn/kernel/loss/negative_log_likelihood.py
+@@ -0,0 +1,75 @@
++"""Negative log likelihood loss function"""
++
++import scipy
++import numpy as np
++
++from typing import Sequence
++from ..matrix.kernel_matrix_base import KernelMatrixBase
++
++
++class NLL:
++    """
++    Kernel negative-log-likelihood loss.
++
++    This class can be used to compute the negative log likelihood loss function
++    for a given quantum kernel :math:`K_{\\theta}` with variational parameters :math:`\\theta`.
++    The definition of the function is taken from Equation 5.8 Chapter 5.4 of Ref. [1].
++
++    The log-likelihood function is defined as:
++
++    .. math::
++
++        L(\\theta) =
++        -\\frac{1}{2} \\log(|K_{\\theta} + \\sigma I|)
++        -\\frac{1}{2} y^{T}(K_{\\theta} + \\sigma I)^{-1}y
++        -\\frac{n}{2} \\log(2\\pi)
++
++    Args:
++        sigma: (float), default=0.0: Hyperparameter for the regularization strength.
++
++    References
++    ----------
++        [1]: `Carl E. Rasmussen and Christopher K.I. Williams,
++        "Gaussian Processes for Machine Learning",
++        MIT Press 2006 <https://www.gaussianprocess.org/gpml/chapters/RW.pdf>`_
++    """
++
++    def __init__(self, sigma=0.0):
++        self._sigma = sigma
++
++    def __call__(
++        self, parameter_values: Sequence[float], quantum_kernel: KernelMatrixBase,
++        data: np.ndarray, labels: np.ndarray
++    ) -> float:
++        """Compute the negative log likelihood loss function.
++
++        Args:
++            parameter_values: (Sequence[float]):
++                The parameter values for the variational quantum kernel parameters.
++            quantum_kernel (KernelMatrixBase): The quantum kernel to evaluate.
++            data (np.ndarray): The training data to be used for the kernel matrix.
++            labels (np.ndarray): The training labels.
++
++        Returns:
++            float: The negative log likelihood loss function.
++        """
++
++        # Bind training parameters
++        quantum_kernel.assign_parameters(parameter_values)
++
++        # get estimated kernel matrix
++        kmatrix = quantum_kernel.evaluate(data)
++        kmatrix = kmatrix + self._sigma * np.eye(kmatrix.shape[0])
++
++        # Cholesky decomposition since numerically more stable
++        L = scipy.linalg.cholesky(kmatrix, lower=True)
++        S1 = scipy.linalg.solve_triangular(L, labels, lower=True)
++        S2 = scipy.linalg.solve_triangular(L.T, S1, lower=False)
++        neg_log_lh = (
++            np.sum(np.log(np.diagonal(L)))
++            + 0.5 * labels.T @ S2
++            + 0.5 * len(data) * np.log(2.0 * np.pi)
++        )
++        neg_log_lh = neg_log_lh.reshape(-1)
++
++        return neg_log_lh
+diff --git a/src/squlearn/kernel/loss/target_alignment.py b/src/squlearn/kernel/loss/target_alignment.py
+new file mode 100644
+index 0000000..193a00c
+--- /dev/null
++++ b/src/squlearn/kernel/loss/target_alignment.py
+@@ -0,0 +1,73 @@
++"""Target alignment loss function for kernel matrices."""
++
++import numpy as np
++
++from typing import Sequence
++from ..matrix.kernel_matrix_base import KernelMatrixBase
++
++
++class TargetAlignment:
++    """
++    Kernel target-alignment loss.
++
++    This class can be used to compute the target alignment for a given quantum kernel
++    :math:`K_{\\theta}` with variational parameters :math:`\\theta`.
++    The definition of the function is taken from Equation (27,28) of [1].
++    The log-likelihood function is defined as:
++
++    .. math::
++
++        TA(K_{\\theta}) =
++        \\frac{\\sum_{i,j} K_{\\theta}(x_i, x_j) y_i y_j}
++        {\\sqrt{\\sum_{i,j} K_{\\theta}(x_i, x_j)^2 \\sum_{i,j} y_i^2 y_j^2}}
++
++    References
++    -----------
++        [1]: T. Hubregtsen et al.,
++        "Training Quantum Embedding Kernels on Near-Term Quantum Computers",
++        `arXiv:2105.02276v1 (2021) <https://arxiv.org/abs/2105.02276>`_.
++    """
++
++    def __init__(self):
++        pass
++
++    def __call__(
++        self,
++        parameter_values: Sequence[float],
++        quantum_kernel: KernelMatrixBase,
++        data: np.ndarray,
++        labels: np.ndarray,
++        rescale_class_labels=True,
++    ) -> float:
++        """Compute the target alignment.
++
++        Args:
++            parameter_values: (Sequence[float]):
++                The parameter values for the variational quantum kernel parameters.
++            quantum_kernel (KernelMatrixBase): The quantum kernel to evaluate.
++            data (np.ndarray): The training data to be used for the kernel matrix.
++            labels (np.ndarray): The training labels.
++            rescale_class_labels: (bool), default=True:
++                Whether to rescale the class labels to -1 and 1.
++
++        Returns:
++            float: The negative target alignment.
++        """
++
++        # Bind training parameters
++        quantum_kernel.assign_parameters(parameter_values)
++
++        # Get estimated kernel matrix
++        kmatrix = quantum_kernel.evaluate(data)
++        if rescale_class_labels:
++            nplus = np.count_nonzero(np.array(labels) == 1)
++            nminus = len(labels) - nplus
++            _Y = np.array([y / nplus if y == 1 else y / nminus for y in labels])
++        else:
++            _Y = np.array(labels)
++
++        T = np.outer(_Y, _Y)
++        inner_product = np.sum(kmatrix * T)
++        norm = np.sqrt(np.sum(kmatrix * kmatrix) * np.sum(T * T))
++        alignment = inner_product / norm
++        return -alignment
+diff --git a/src/squlearn/kernel/matrix/__init__.py b/src/squlearn/kernel/matrix/__init__.py
+index 3817ddb..f72a09e 100644
+--- a/src/squlearn/kernel/matrix/__init__.py
++++ b/src/squlearn/kernel/matrix/__init__.py
+@@ -1,4 +1,5 @@
+ from .fidelity_kernel import FidelityKernel
+ from .projected_quantum_kernel import ProjectedQuantumKernel
++from .kernel_optimizer import KernelOptimizer
+ 
+-__all__ = ["FidelityKernel", "ProjectedQuantumKernel"]
++__all__ = ["FidelityKernel", "ProjectedQuantumKernel", "KernelOptimizer"]
+diff --git a/src/squlearn/kernel/matrix/kernel_optimizer.py b/src/squlearn/kernel/matrix/kernel_optimizer.py
+new file mode 100644
+index 0000000..e77fc4c
+--- /dev/null
++++ b/src/squlearn/kernel/matrix/kernel_optimizer.py
+@@ -0,0 +1,134 @@
++"""Quantum Kernel Optimizer"""
++
++import numpy as np
++from functools import partial
++from typing import Optional, Sequence, Callable, Union
++from .kernel_matrix_base import KernelMatrixBase
++from ...optimizers.optimizer_base import OptimizerBase
++
++
++class KernelOptimizer:
++    """
++    Wraps a quantum kernel and exposes fitted state and optimized parameters.
++
++    This class can be used to optimize the variational parameters of a quantum kernel.
++    Users can wrap an existing kernel with an optimizer and have model fitting optimize
++    the kernel parameters.
++
++    Args:
++        quantum_kernel (KernelMatrixBase): The quantum kernel to be optimized.
++        loss (Optional[Callable]): The loss function to be minimized. Should be a callable
++            that takes (parameter_values, quantum_kernel, data, labels) and returns a float.
++            If None, no optimization is performed.
++        optimizer (Optional[OptimizerBase]): The optimizer to be used.
++        initial_parameters (Optional[Sequence[float]]): Initial parameters for the optimizer.
++            If None, the current kernel parameters are used.
++
++    Attributes:
++        optimizer (OptimizerBase): The optimizer used.
++        opt_result (OptimizeResult): The optimization result after fitting.
++        optimal_parameters (np.ndarray): The optimized kernel parameters after fitting.
++
++    **Example**
++
++    .. code-block::
++
++        from squlearn import Executor
++        from squlearn.encoding_circuit import HubregtsenEncodingCircuit
++        from squlearn.kernel.matrix import FidelityKernel
++        from squlearn.kernel.matrix import KernelOptimizer
++        from squlearn.optimizers import Adam
++        from squlearn.kernel.loss import NLL
++
++        enc_circ = HubregtsenEncodingCircuit(num_qubits=num_qubits, num_features=num_features, num_layers=2)
++        q_kernel = FidelityKernel(encoding_circuit=enc_circ, executor=Executor())
++        adam = Adam(options={"maxiter": 20, "lr": 0.1})
++        nll_loss = NLL(sigma=noise_std**2)
++        optimizer = KernelOptimizer(
++            quantum_kernel=q_kernel,
++            loss=nll_loss,
++            optimizer=adam,
++            initial_parameters=np.random.rand(enc_circ.num_parameters)
++        )
++        optimizer.run_optimization(X=X_train, y=Y_train)
++        optimal_parameters = optimizer.get_optimal_parameters()
++        q_kernel.assign_parameters(optimal_parameters)
++    """
++
++    def __init__(
++        self,
++        quantum_kernel: KernelMatrixBase,
++        loss: Optional[Callable] = None,
++        optimizer: Optional[OptimizerBase] = None,
++        initial_parameters: Optional[Sequence[float]] = None,
++    ) -> None:
++        self._quantum_kernel = quantum_kernel
++        self._loss = loss
++        self._optimizer = optimizer
++        self._initial_parameters = initial_parameters
++        self._opt_result = None
++        self._optimal_parameters = None
++
++        if self._initial_parameters is None:
++            self._initial_parameters = self._quantum_kernel.parameters
++
++    def run_optimization(self, X: np.ndarray, y: np.ndarray = None):
++        """Run the optimization and return the result.
++
++        Args:
++            X (np.ndarray): The input data.
++            y (np.ndarray): The labels.
++
++        Returns:
++            OptimizeResult: The optimization result.
++        """
++        num_params = self._quantum_kernel.num_parameters
++        if num_params == 0:
++            raise ValueError(
++                "Quantum kernel cannot be fit because there are no training parameters specified."
++            )
++
++        if self._loss is None or self._optimizer is None:
++            raise ValueError(
++                "Both loss and optimizer must be provided to run optimization."
++            )
++
++        # Perform kernel optimization
++        loss_function = partial(
++            self._loss,
++            quantum_kernel=self._quantum_kernel,
++            data=X,
++            labels=y,
++        )
++        opt_result = self._optimizer.minimize(
++            fun=loss_function, x0=self._initial_parameters
++        )
++        self._opt_result = opt_result
++        self._optimal_parameters = opt_result.x
++
++        # Assign optimal parameters to the kernel
++        self._quantum_kernel.assign_parameters(self._optimal_parameters)
++
++        return self._opt_result
++
++    def get_optimal_parameters(self) -> np.ndarray:
++        """Returns the optimized kernel parameters after fitting.
++
++        Returns:
++            np.ndarray: The optimized kernel parameters.
++        """
++        if self._optimal_parameters is None:
++            raise ValueError(
++                "No optimal parameters available. Run run_optimization() first."
++            )
++        return self._optimal_parameters
++
++    @property
++    def optimizer(self):
++        """Returns the optimizer used."""
++        return self._optimizer
++
++    @property
++    def opt_result(self):
++        """Returns the optimization result."""
++        return self._opt_result
+diff --git a/src/squlearn/kernel/ml/qgpc.py b/src/squlearn/kernel/ml/qgpc.py
+index 2ac9164..3ec7f05 100644
+--- a/src/squlearn/kernel/ml/qgpc.py
++++ b/src/squlearn/kernel/ml/qgpc.py
+@@ -1,6 +1,7 @@
+ """ Quantum Gaussian process classifier"""
+ 
+ from ..matrix.kernel_matrix_base import KernelMatrixBase
++from ..matrix.kernel_optimizer import KernelOptimizer
+ from squlearn.kernel.matrix.kernel_util import kernel_wrapper
+ from sklearn.gaussian_process import GaussianProcessClassifier
+ 
+@@ -21,9 +22,11 @@ class QGPC(GaussianProcessClassifier):
+     Additional arguments can be set via ``**kwargs``.
+ 
+     Args:
+-        quantum_kernel (Union[KernelMatrixBase, str]): The quantum kernel matrix to be used for the GP
++        quantum_kernel (Union[KernelMatrixBase, KernelOptimizer, str]): The quantum kernel matrix to be used for the GP
+                 (either a fidelity quantum kernel (FQK)
+                 or projected quantum kernel (PQK) must be provided)
++                If a KernelOptimizer is provided, the kernel parameters are optimized
++                during the fit method.
+         **kwargs: Keyword arguments for the quantum kernel matrix, possible arguments can be obtained
+             by calling ``get_params()``. Can be used to set for example the number of qubits
+             (``num_qubits=``), or (if supported) the number of layers (``num_layers=``)
+@@ -59,21 +62,51 @@ class QGPC(GaussianProcessClassifier):
+     --------
+     """
+ 
+-    def __init__(self, quantum_kernel: KernelMatrixBase, **kwargs) -> None:
++    def __init__(self, quantum_kernel, **kwargs) -> None:
+         self._quantum_kernel = quantum_kernel
++        self._kernel_optimizer = None
++
++        # Handle KernelOptimizer: extract the underlying kernel for initialization
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            kernel_for_init = self._quantum_kernel._quantum_kernel
++        else:
++            kernel_for_init = self._quantum_kernel
+ 
+         # Apply kwargs to set_params of quantum kernel
+-        quantum_kernel_update_params = self.quantum_kernel.get_params().keys() & kwargs.keys()
+-        if quantum_kernel_update_params:
+-            self.quantum_kernel.set_params(
+-                **{key: kwargs[key] for key in quantum_kernel_update_params}
+-            )
+-            # remove quantum_kernel_kwargs for SVR initialization
+-            for key in quantum_kernel_update_params:
+-                kwargs.pop(key, None)
++        if isinstance(kernel_for_init, KernelMatrixBase):
++            quantum_kernel_update_params = kernel_for_init.get_params().keys() & kwargs.keys()
++            if quantum_kernel_update_params:
++                kernel_for_init.set_params(
++                    **{key: kwargs[key] for key in quantum_kernel_update_params}
++                )
++                # remove quantum_kernel_kwargs for GPC initialization
++                for key in quantum_kernel_update_params:
++                    kwargs.pop(key, None)
+ 
+         super().__init__(**kwargs)
+-        self.kernel = kernel_wrapper(self._quantum_kernel)
++        self.kernel = kernel_wrapper(kernel_for_init)
++
++    def fit(self, X, y):
++        """Fit the QGPC model according to the given training data.
++
++        If a KernelOptimizer is provided as quantum_kernel, the kernel parameters
++        are optimized before fitting the Gaussian process classifier.
++
++        Args:
++            X : Training data
++            y : Target values
++
++        Returns:
++            self : Fitted estimator
++        """
++        # Handle KernelOptimizer: run optimization and extract the underlying kernel
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X=X, y=y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++            self.kernel = kernel_wrapper(self._quantum_kernel)
++
++        return super().fit(X, y)
+ 
+     @classmethod
+     def _get_param_names(cls):
+@@ -101,7 +134,7 @@ class QGPC(GaussianProcessClassifier):
+ 
+         # add qgpc specific parameters
+         params["quantum_kernel"] = self._quantum_kernel
+-        if deep:
++        if deep and isinstance(self._quantum_kernel, KernelMatrixBase):
+             params.update(self._quantum_kernel.get_params(deep=deep))
+         return params
+ 
+@@ -128,9 +161,10 @@ class QGPC(GaussianProcessClassifier):
+                 setattr(self, "_" + key, params[key])
+ 
+         # Set parameters of the Quantum Kernel and its underlying objects
+-        quantum_kernel_params = self._quantum_kernel.get_params().keys() & params.keys()
+-        if quantum_kernel_params:
+-            self._quantum_kernel.set_params(**{key: params[key] for key in quantum_kernel_params})
++        if isinstance(self._quantum_kernel, KernelMatrixBase):
++            quantum_kernel_params = self._quantum_kernel.get_params().keys() & params.keys()
++            if quantum_kernel_params:
++                self._quantum_kernel.set_params(**{key: params[key] for key in quantum_kernel_params})
+         return self
+ 
+     @property
+diff --git a/src/squlearn/kernel/ml/qgpr.py b/src/squlearn/kernel/ml/qgpr.py
+index 430fb84..a5f87ae 100644
+--- a/src/squlearn/kernel/ml/qgpr.py
++++ b/src/squlearn/kernel/ml/qgpr.py
+@@ -3,6 +3,7 @@
+ import warnings
+ 
+ from ..matrix.kernel_matrix_base import KernelMatrixBase
++from ..matrix.kernel_optimizer import KernelOptimizer
+ from ..matrix.regularization import regularize_full_kernel
+ 
+ import numpy as np
+@@ -22,7 +23,7 @@ class QGPR(BaseEstimator, RegressorMixin):
+     Additional arguments can be set via ``**kwargs``.
+ 
+     Args:
+-        quantum_kernel (Optional[Union[KernelMatrixBase, str]]):
++        quantum_kernel (Optional[Union[KernelMatrixBase, KernelOptimizer, str]]):
+             The quantum kernel matrix to be used for the Gaussian process
+             (either a fidelity quantum kernel (FQK) or
+             projected quantum kernel (PQK) must be provided). By
+@@ -30,6 +31,8 @@ class QGPR(BaseEstimator, RegressorMixin):
+             - train for fit() method and total Gram matrix within predict(). This
+             is particularly useful when storing quantum kernel
+             matrices from real backends to numpy arrays.
++            If a KernelOptimizer is provided, the kernel parameters are optimized
++            during the fit method.
+         sigma: (float), default=1.e-6: Hyperparameter for the regularization strength;
+                 must be a positive float.
+                 This regularization improves the conditioning of the problem
+@@ -82,13 +85,14 @@ class QGPR(BaseEstimator, RegressorMixin):
+ 
+     def __init__(
+         self,
+-        quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,
++        quantum_kernel: Optional[Union[KernelMatrixBase, KernelOptimizer, str]] = None,
+         sigma: float = 1.0e-6,
+         normalize_y: bool = False,
+         full_regularization: bool = True,
+         **kwargs,
+     ):
+         self._quantum_kernel = quantum_kernel
++        self._kernel_optimizer = None
+         self.X_train = None
+         self.y_train = None
+         self.sigma = sigma
+@@ -132,6 +136,12 @@ class QGPR(BaseEstimator, RegressorMixin):
+ 
+         self.X_train = X
+ 
++        # Handle KernelOptimizer: run optimization and extract the underlying kernel
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X=X, y=y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++
+         if isinstance(self._quantum_kernel, str):
+             if self._quantum_kernel == "precomputed":
+                 self.K_train = X
+@@ -168,26 +178,21 @@ class QGPR(BaseEstimator, RegressorMixin):
+         Depending on the choice of regularization the quantum kernel matrix is regularized.
+         The respective solution of the QKRR problem
+         is obtained by solving the linear system using scipy's Cholesky decomposition for
+-        providing numerical stability
+-        Optionally also
+-        returns its standard deviation (`return_std=True`) or covariance
+-        (`return_cov=True`). Note that at most one of the two can be requested.
++        providing numerical stability.
+ 
+         Args:
+-            X: The test data of shape (n_samples, n_features). If
+-                quantum_kernel == "precomputed", this is the precomputed
+-                Gram matrix instead, which has to be of shape
+-                np.block[[K_train, K_testtrain.T], [K_testtrain, K_test]]
+-            return_std: (bool),
+-                default=True: Whether to return the standard deviation of the prediction
+-            return_cov: (bool), default=False:
+-                Whether to return the covariance of the prediction
++            X: Query points of shape (n_samples, n_features). If
++                quantum_kernel == "precomputed" this is instead a precomputed Gram matrix
++                of shape (n_samples, n_samples_fitted + n_samples) where n_samples_fitted
++                is the number of samples used in the fitting.
++            return_std: If True, the standard-deviation of the predictive distribution at
++                the query points is returned along with the mean.
++            return_cov: If True, the covariance of the joint predictive distribution at the
++                query points is returned along with the mean.
+ 
+         Returns:
+-            y_mean: The predicted values of shape (n_samples,)
+-                Mean of predictive distribution at query points.
+-            y_std: The standard deviation of the prediction of shape (n_samples,), optional
+-                Standard deviation of predictive distribution at query points.
++            y_mean: The mean of predictive distribution at query points.
++            y_std: The standard deviation of predictive distribution at query points.
+                 Only returned when `return_std` is True.
+             y_cov: The covariance of the prediction of shape (n_samples, n_samples), optional
+                 Covariance of joint predictive distribution a query points.
+diff --git a/src/squlearn/kernel/ml/qkrr.py b/src/squlearn/kernel/ml/qkrr.py
+index 3c8ab7e..04c0145 100644
+--- a/src/squlearn/kernel/ml/qkrr.py
++++ b/src/squlearn/kernel/ml/qkrr.py
+@@ -1,6 +1,7 @@
+ """Quantum Kernel Ridge Regressor"""
+ 
+ from ..matrix.kernel_matrix_base import KernelMatrixBase
++from ..matrix.kernel_optimizer import KernelOptimizer
+ 
+ import scipy
+ import numpy as np
+@@ -21,12 +22,14 @@ class QKRR(BaseEstimator, RegressorMixin):
+     Additional arguments can be set via ``**kwargs``.
+ 
+     Args:
+-        quantum_kernel (Optional[Union[KernelMatrixBase, str]]) :
++        quantum_kernel (Optional[Union[KernelMatrixBase, KernelOptimizer, str]]) :
+             The quantum kernel matrix to be used in the KRR pipeline (either a fidelity
+             quantum kernel (FQK) or projected quantum kernel (PQK) must be provided). By
+             setting quantum_kernel="precomputed", X is assumed to be a kernel matrix
+             (train and test-train). This is particularly useful when storing quantum kernel
+             matrices from real backends to numpy arrays.
++            If a KernelOptimizer is provided, the kernel parameters are optimized
++            during the fit method.
+         alpha (Union[float, np.ndarray], default=1.0e-6) :
+             Hyperparameter for the regularization strength; must be a positive float. This
+             regularization improves the conditioning of the problem and assure the solvability
+@@ -87,11 +90,12 @@ class QKRR(BaseEstimator, RegressorMixin):
+ 
+     def __init__(
+         self,
+-        quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,
++        quantum_kernel: Optional[Union[KernelMatrixBase, KernelOptimizer, str]] = None,
+         alpha: Union[float, np.ndarray] = 1.0e-6,
+         **kwargs,
+     ) -> None:
+         self._quantum_kernel = quantum_kernel
++        self._kernel_optimizer = None
+         self.alpha = alpha
+         self.X_train = None
+         self.k_testtrain = None
+@@ -128,6 +132,12 @@ class QKRR(BaseEstimator, RegressorMixin):
+ 
+         self.X_train = X
+ 
++        # Handle KernelOptimizer: run optimization and extract the underlying kernel
++        if isinstance(self._quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self._quantum_kernel
++            self._kernel_optimizer.run_optimization(X=X, y=y)
++            self._quantum_kernel = self._kernel_optimizer._quantum_kernel
++
+         if isinstance(self._quantum_kernel, str):
+             if self._quantum_kernel == "precomputed":
+                 self.k_train = X
+diff --git a/src/squlearn/kernel/ml/qsvc.py b/src/squlearn/kernel/ml/qsvc.py
+index cf5da5b..857c4eb 100644
+--- a/src/squlearn/kernel/ml/qsvc.py
++++ b/src/squlearn/kernel/ml/qsvc.py
+@@ -1,4 +1,5 @@
+ from ..matrix.kernel_matrix_base import KernelMatrixBase
++from ..matrix.kernel_optimizer import KernelOptimizer
+ 
+ from sklearn.svm import SVC
+ from typing import Union, Optional
+@@ -21,11 +22,13 @@ class QSVC(SVC):
+         - `coef0`
+ 
+     Args:
+-        quantum_kernel (Union[KernelMatrixBase, str]): The quantum kernel matrix to be used in the SVC. Either
++        quantum_kernel (Union[KernelMatrixBase, KernelOptimizer, str]): The quantum kernel matrix to be used in the SVC. Either
+             a fidelity quantum kernel (FQK) or projected quantum kernel (PQK) must be provided. By
+             setting quantum_kernel="precomputed", X is assumed to be a kernel matrix
+             (train and test-train). This is particularly useful when storing quantum kernel
+             matrices from real backends to numpy arrays.
++            If a KernelOptimizer is provided, the kernel parameters are optimized
++            during the fit method.
+         **kwargs: Possible arguments can be
+             obtained by calling ``get_params()``. Notable examples are parameters of the
+             :class:`sklearn.svm.SVC` class such as the regularization parameters ``C``
+@@ -71,10 +74,11 @@ class QSVC(SVC):
+ 
+     def __init__(
+         self,
+-        quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,
++        quantum_kernel: Optional[Union[KernelMatrixBase, KernelOptimizer, str]] = None,
+         **kwargs,
+     ) -> None:
+         self.quantum_kernel = quantum_kernel
++        self._kernel_optimizer = None
+ 
+         if isinstance(self.quantum_kernel, KernelMatrixBase):
+             # Apply kwargs to set_params of quantum kernel
+@@ -94,6 +98,34 @@ class QSVC(SVC):
+         else:
+             super().__init__(kernel="precomputed", **kwargs)
+ 
++    def fit(self, X, y, sample_weight=None):
++        """Fit the QSVC model according to the given training data.
++
++        If a KernelOptimizer is provided as quantum_kernel, the kernel parameters
++        are optimized before fitting the SVC model.
++
++        Args:
++            X : Training data
++            y : Target values
++            sample_weight : Per-sample weights. Rescale C per sample. Higher weights
++                force the estimator to put more emphasis on these points.
++
++        Returns:
++            self : Fitted estimator
++        """
++        # Handle KernelOptimizer: run optimization and extract the underlying kernel
++        if isinstance(self.quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self.quantum_kernel
++            self._kernel_optimizer.run_optimization(X=X, y=y)
++            self.quantum_kernel = self._kernel_optimizer._quantum_kernel
++            # Re-initialize the parent with the optimized kernel
++            super().__init__(
++                kernel=self.quantum_kernel.evaluate,
++                **{k: getattr(self, k) for k in self._get_param_names()},
++            )
++
++        return super().fit(X, y, sample_weight=sample_weight)
++
+     @classmethod
+     def _get_param_names(cls):
+         names = SVC._get_param_names()
+diff --git a/src/squlearn/kernel/ml/qsvr.py b/src/squlearn/kernel/ml/qsvr.py
+index bf62914..99b4b1a 100644
+--- a/src/squlearn/kernel/ml/qsvr.py
++++ b/src/squlearn/kernel/ml/qsvr.py
+@@ -1,4 +1,5 @@
+ from ..matrix.kernel_matrix_base import KernelMatrixBase
++from ..matrix.kernel_optimizer import KernelOptimizer
+ 
+ from sklearn.svm import SVR
+ from typing import Union, Optional
+@@ -21,11 +22,13 @@ class QSVR(SVR):
+         - `coef0`
+ 
+     Args:
+-        quantum_kernel (Union[KernelMatrixBase, str]): The quantum kernel matrix to be used in the SVC. Either
++        quantum_kernel (Union[KernelMatrixBase, KernelOptimizer, str]): The quantum kernel matrix to be used in the SVC. Either
+             a fidelity quantum kernel (FQK) or projected quantum kernel (PQK) must be provided. By
+             setting quantum_kernel="precomputed", X is assumed to be a kernel matrix
+             (train and test-train). This is particularly useful when storing quantum kernel
+             matrices from real backends to numpy arrays.
++            If a KernelOptimizer is provided, the kernel parameters are optimized
++            during the fit method.
+         **kwargs: Possible arguments can be
+             obtained by calling ``get_params()``. Notable examples are parameters of the
+             :class:`sklearn.svm.SVR` class such as the regularization parameters ``C``
+@@ -70,10 +73,11 @@ class QSVR(SVR):
+ 
+     def __init__(
+         self,
+-        quantum_kernel: Optional[Union[KernelMatrixBase, str]] = None,
++        quantum_kernel: Optional[Union[KernelMatrixBase, KernelOptimizer, str]] = None,
+         **kwargs,
+     ) -> None:
+         self.quantum_kernel = quantum_kernel
++        self._kernel_optimizer = None
+ 
+         if isinstance(self.quantum_kernel, KernelMatrixBase):
+             # Apply kwargs to set_params of quantum kernel
+@@ -93,6 +97,34 @@ class QSVR(SVR):
+         else:
+             super().__init__(kernel="precomputed", **kwargs)
+ 
++    def fit(self, X, y, sample_weight=None):
++        """Fit the QSVR model according to the given training data.
++
++        If a KernelOptimizer is provided as quantum_kernel, the kernel parameters
++        are optimized before fitting the SVR model.
++
++        Args:
++            X : Training data
++            y : Target values
++            sample_weight : Per-sample weights. Rescale C per sample. Higher weights
++                force the estimator to put more emphasis on these points.
++
++        Returns:
++            self : Fitted estimator
++        """
++        # Handle KernelOptimizer: run optimization and extract the underlying kernel
++        if isinstance(self.quantum_kernel, KernelOptimizer):
++            self._kernel_optimizer = self.quantum_kernel
++            self._kernel_optimizer.run_optimization(X=X, y=y)
++            self.quantum_kernel = self._kernel_optimizer._quantum_kernel
++            # Re-initialize the parent with the optimized kernel
++            super().__init__(
++                kernel=self.quantum_kernel.evaluate,
++                **{k: getattr(self, k) for k in self._get_param_names()},
++            )
++
++        return super().fit(X, y, sample_weight=sample_weight)
++
+     @classmethod
+     def _get_param_names(cls):
+         names = SVR._get_param_names()

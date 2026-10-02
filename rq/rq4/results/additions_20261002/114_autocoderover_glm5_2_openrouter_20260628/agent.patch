@@ -1,0 +1,216 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..ead9245
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,140 @@
++"""Cross-entropy loss for QNNs."""
++
++import numpy as np
++
++from .qnn_loss_base import QNNLossBase
++
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for quantum neural network classifiers.
++
++    Supports both binary classification (single observable output) and
++    multi-class classification (multiple observable outputs).
++
++    Args:
++        eps (float, default=1e-8): Small constant for numerical clipping to
++            avoid log(0).
++    """
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self.eps = eps
++        self._opt_param_op = True
++
++    def set_opt_param_op(self, opt_param_op: bool = True) -> None:
++        """Select whether observable parameters are optimized.
++
++        Args:
++            opt_param_op (bool, default=True): If True, observable parameters
++                are optimized.
++        """
++        self._opt_param_op = opt_param_op
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        """Compute the cross-entropy loss.
++
++        Args:
++            value_dict (dict): Dictionary containing the model output under
++                the key ``"f"``.
++            **kwargs: Additional keyword arguments. Must contain
++                ``ground_truth`` and may contain ``multiple_output``.
++
++        Returns:
++            float: The cross-entropy loss value.
++        """
++        ground_truth = kwargs.get("ground_truth")
++        multiple_output = kwargs.get("multiple_output", False)
++
++        f = np.asarray(value_dict["f"], dtype=float)
++        ground_truth = np.asarray(ground_truth, dtype=float)
++
++        if multiple_output or f.ndim > 1:
++            # Multi-class: f has shape (n_samples, n_classes)
++            if f.ndim == 1:
++                f = f.reshape(-1, 1)
++            if ground_truth.ndim == 1:
++                ground_truth = ground_truth.reshape(-1, 1)
++            # Clip for numerical stability
++            f_clipped = np.clip(f, self.eps, 1.0 - self.eps)
++            loss = -np.mean(np.sum(ground_truth * np.log(f_clipped), axis=1))
++        else:
++            # Binary: f has shape (n_samples,)
++            f_clipped = np.clip(f, self.eps, 1.0 - self.eps)
++            loss = -np.mean(
++                ground_truth * np.log(f_clipped)
++                + (1.0 - ground_truth) * np.log(1.0 - f_clipped)
++            )
++
++        return float(loss)
++
++    def gradient(self, value_dict: dict, **kwargs) -> np.ndarray:
++        """Compute the parameter gradients of the cross-entropy loss.
++
++        Args:
++            value_dict (dict): Dictionary containing the model output under
++                the key ``"f"`` and its derivatives under ``"df"`` (and
++                ``"df_op"`` if observable parameters are optimized).
++            **kwargs: Additional keyword arguments. Must contain
++                ``ground_truth`` and may contain ``multiple_output``.
++
++        Returns:
++            np.ndarray: The gradients with respect to the parameters (and
++            observable parameters if applicable).
++        """
++        ground_truth = kwargs.get("ground_truth")
++        multiple_output = kwargs.get("multiple_output", False)
++
++        f = np.asarray(value_dict["f"], dtype=float)
++        ground_truth = np.asarray(ground_truth, dtype=float)
++        df = np.asarray(value_dict["df"], dtype=float)
++
++        if multiple_output or f.ndim > 1:
++            # Multi-class: f has shape (n_samples, n_classes)
++            if f.ndim == 1:
++                f = f.reshape(-1, 1)
++            if ground_truth.ndim == 1:
++                ground_truth = ground_truth.reshape(-1, 1)
++            f_clipped = np.clip(f, self.eps, 1.0 - self.eps)
++            # dL/df = -ground_truth / f
++            dL_df = -ground_truth / f_clipped
++            # df has shape (n_samples, n_params, n_classes) or
++            # (n_samples, n_classes, n_params)
++            # We need to contract over samples and classes
++            if df.ndim == 3:
++                if df.shape[1] == f.shape[1]:
++                    # df shape: (n_samples, n_classes, n_params)
++                    grad = np.einsum("sc,scp->p", dL_df, df) / f.shape[0]
++                else:
++                    # df shape: (n_samples, n_params, n_classes)
++                    grad = np.einsum("sc,spc->p", dL_df, df) / f.shape[0]
++            else:
++                grad = np.zeros(df.shape[-1])
++        else:
++            # Binary: f has shape (n_samples,)
++            f_clipped = np.clip(f, self.eps, 1.0 - self.eps)
++            # dL/df = -(ground_truth / f - (1 - ground_truth) / (1 - f))
++            dL_df = -(ground_truth / f_clipped - (1.0 - ground_truth) / (1.0 - f_clipped))
++            # df has shape (n_samples, n_params)
++            if df.ndim == 2:
++                grad = np.einsum("s,sp->p", dL_df, df) / f.shape[0]
++            else:
++                grad = np.zeros(df.shape[-1] if df.ndim > 0 else 1)
++
++        if self._opt_param_op and "df_op" in value_dict:
++            df_op = np.asarray(value_dict["df_op"], dtype=float)
++            if multiple_output or f.ndim > 1:
++                if df_op.ndim == 3:
++                    if df_op.shape[1] == f.shape[1]:
++                        grad_op = np.einsum("sc,scp->p", dL_df, df_op) / f.shape[0]
++                    else:
++                        grad_op = np.einsum("sc,spc->p", dL_df, df_op) / f.shape[0]
++                else:
++                    grad_op = np.zeros(df_op.shape[-1])
++            else:
++                if df_op.ndim == 2:
++                    grad_op = np.einsum("s,sp->p", dL_df, df_op) / f.shape[0]
++                else:
++                    grad_op = np.zeros(df_op.shape[-1] if df_op.ndim > 0 else 1)
++            return np.concatenate([grad, grad_op])
++
++        return grad
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 9f173c0..e8cbc5c 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -169,6 +169,9 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             np.ndarray : The predicted values.
+         """
+         pred = self._predict(X)
++        if pred.ndim == 1:
++            # Binary classification with single observable output
++            pred = np.vstack([1 - pred, pred]).T
+         return self._label_binarizer.inverse_transform(pred)
+ 
+     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+@@ -218,6 +221,11 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+         if y.shape[1] == 1:
+             y = self._label_binarizer.transform(y).ravel()
+ 
++        # For cross-entropy loss with single observable, convert binary
++        # single-output to two-output probabilities
++        if isinstance(self.loss, CrossEntropyLoss) and y.ndim == 1:
++            y = np.vstack([1 - y, y]).T
++
+         loss = self.loss
+         if self.variance is not None:
+             loss = loss + VarianceLoss(alpha=self.variance)

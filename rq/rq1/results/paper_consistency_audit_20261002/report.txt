@@ -1,0 +1,59 @@
+全文数据与概念一致性审计（2026-10-02）
+
+范围：main.tex 实际包含的全部正文、当前 PDF、6 张引用图、Table 1–5、117 条 sample.json、15 组汇总与 RQ3 独立 casewise 文件、RQ4 失败记录。没有运行模型或改动评测结果。κ 保留作者确认值，本次没有重新计算标注者一致性。
+
+一、已验证的数据
+117 个实例、11 个仓库；623 F2P + 994 P2P = 1,617 个选定 selector。
+49 strong + 68 medium；3 个 patch-size 组各 39 条；Large–Strong 21 条，最高 3/21，6 个配置为零。
+Table 1 中位数：52 个 statement words、6 个 requirements、4 个 interfaces、4 个非测试补丁文件、204 行增删、3 个 F2P、6 个 P2P。
+15 个配置各 117 个结果，共 1,755 个实例–配置结果。所有 Table 2 展示数值与当前 CSV 一致；Table 3 的180个数据格与逐实例结果一致。
+Mini-SWE：GPT69，GLM59，Gemini50，Pro53，Flash51。
+OpenHands：GPT62，GLM55，Gemini48，Pro52，Flash47。
+AutoCodeRover：GPT33，GLM16，Gemini24，Pro16，Flash16。
+DeepSeek Pro 两个交互系统共享46，Mini独有7，OpenHands独有6，合计59。
+RQ2 独立复算：OR=0.3378955445，95% CI=[0.1779915267, 0.6414541248]，p=0.0009078798。
+RQ3：量子语义 F2P 组70实例、284/1050；另一组47实例、367/705。汇总27.0%与52.1%，差25.009个百分点。
+RQ3 bootstrap复算95% CI=[12.557,37.017]个百分点；按patch size与F2P数量的24个代理/总体分层对比均保持同向差距；去掉Qiskit Nature后200/525=38.1%与248/495=50.1%。
+RQ4：38个全配置未解决实例、684个测试、280个至少失败一次的testcase、1907个去重testcase–configuration失败；每条记录都能对应到实际failed状态，未把not_run/not_collected当失败。
+98/280=35.0%跨配置存在多种root cause；Table 5全部10行计数与百分比核对通过。
+Figure 1的n=117；Figure 3/4与当前117条生成文件字节一致；Figure 5计数及通过率匹配当前统计；Figure 6为ID79与ID4。
+
+二、旧版本残留检查
+最终PDF未发现把QFEA总体写成106或119、七仓库、1517测试、34未解决实例、250失败testcase、58.5%最佳解决率、19条Large–Strong或47.4%作为当前Application root-cause占比。
+源文件中250、47.4%等保留于sys旧参数；ZJ中的seven也是隐藏历史批注。showrevisionsfalse时不显示，故未删除修订史。Figure 4中的106是稳定样本ID，不是样本总数。
+复现材料仍有历史文档，例如benchmark/dataset/audits/patch_statistics/README.md写119/212行，feature_count_sources.md写106；当前CSV与summary.json均为117/204。这些旧文档未用于本次正文统计，但发布artifact前应同步当前说明。
+
+三、已直接修正并编译
+1. paper/4_QFea-Bench.tex Table 1图注明确完整非测试补丁、包含空行。RQ2原有定义为指定实现文件中的非空变更行；两种口径可以不同，不应混为一个量。
+2. paper/6_evaluation_results.tex 把284/1050 runs改为284/1050 instance–configuration outcomes。该分母是70实例×15配置，不应称1050个独立agent运行。
+结果数字、κ和三次独立运行声明均未改动。
+
+四、优先处理的概念/证据问题
+[A，高优先级] 三次独立agent生成的声明尚无法由当前数据管道核验。
+定位：paper/5_experimental_design.tex:8,34；rq/refresh_extended_paper.py:63,113。
+当前脚本每实例–配置读取一个保留resolved结果，并未读取三个独立生成结果再做逻辑AND。1755条中149条agent_runs=1，6条=2，其余1600未提供该字段；没有agent_runs=3。evaluation_repeats=3是验证次数，不能证明独立生成三次。
+这不证明作者在别处没有完成三次运行，但当前可访问artifact不能复现该声明。若三次已完成，应接入三份结果与AND聚合；同时明示Submitted、F2P/P2P、平均Steps/Tokens如何跨三次汇总。1755作为聚合后的实例–配置数量本身合理。
+
+[B，中高优先级] cross-component quantum semantic preservation比当前量子语义标签更窄。
+定位：paper/0_abstract.tex:2；paper/6_evaluation_results.tex RQ3 Method。
+Operator/Circuit/Application标签回答测试检查哪种语义，并没有单独标出是否跨组件。不能把全部量子语义测试自动称为跨组件一致性测试，也不能把汇总差距全部归因于跨组件转换。当前案例能支撑这个机制，RQ3支持更广义的量子语义要求相关难度。建议在措辞中明确两者关系，或增加跨组件标注后再定量主张。
+
+[C，中优先级] 30-step分析来自已保存100-step轨迹的截断，不是单独30-step运行。
+定位：paper/6_evaluation_results.tex:76-77；rq/refresh_extended_paper.py:108-131。
+当前Method有using the same trajectories，但Table 2的under 100- and 30-step budgets容易被理解为独立实验。现有数据说明最终提交发生在第几步内，不能直接测量提前强制停止时agent提交策略会如何改变。ACR30-step tokens已用dagger说明复用100-step值，不能解释为实际30步用量。
+
+[D，中优先级] RQ4的κ标注单位需要明确。
+定位：paper/6_evaluation_results.tex:209-210。
+root cause单位已经改成testcase–configuration失败观察，但κ句子仍说annotated the testcases。须说明0.79是基于1907个失败观察的三人标签，还是基于280个testcase及其归纳结果。保持作者确认的0.79不变；本次未推断新的标注票数或计算。
+
+[E，文献归属] Table 1的316/731、68/500来自RealSWE分类，而非原基准论文发布的feature标签；目前只有列标题的原基准引用，来源容易误读。
+核验：https://arxiv.org/html/2608.27831v1#A2.SS1 ，Table 7。建议在对应数字附近放kim2026realswe引用即可，无需恢复长图注。当前Pro列为v1，建议标版本。
+
+[F，复现材料] 仓库筛选artifact仍标retrospective audit，human_review_completed=0、pending=69，旧七库的新增条件复核为deferred。正文给出69→11流程，但现有审计记录尚不能证明已完整执行统一人工审查。应完成/同步审计表，不能仅修改这些状态来代替实际审查。
+
+[G，既有未解决威胁] 公开Issue–PR训练数据污染仍只有隐藏ZJ批注，Docker网络隔离不处理预训练记忆；本文尚无相应量化检查或显式正文限制。
+
+五、验证限制
+本次是数值、文本与保存证据一致性审计，不重新运行全部Docker测试，不验证人类标注投票，也不启动付费模型。图表所用结果仍依赖现有保留工作流；上述三次独立生成缺口必须另行核验。已编译成功，无undefined reference/citation，改动涉及的第8、14页及Figure 4所在第12页已渲染检查。
+
+后续确认（2026-10-02）：作者确认RQ4的κ=0.79对应1,907个失败观察。正文已将annotated the testcases明确为annotated the 1,907 failure observations。问题[D]已解决；未重新计算κ。

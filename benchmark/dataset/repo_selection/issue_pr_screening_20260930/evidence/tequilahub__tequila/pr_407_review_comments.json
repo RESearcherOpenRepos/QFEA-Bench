@@ -1,0 +1,1119 @@
+[
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113426767",
+    "pull_request_review_id": 2877432497,
+    "id": 2113426767,
+    "node_id": "PRRC_kwDOD3r_AM59-FVP",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "ideally set: `variables=None` as default",
+    "created_at": "2025-05-29T07:57:18Z",
+    "updated_at": "2025-05-29T07:57:19Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113426767",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113426767"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113426767"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113426767/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 445,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 12,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113429492",
+    "pull_request_review_id": 2877437050,
+    "id": 2113429492,
+    "node_id": "PRRC_kwDOD3r_AM59-F_0",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "small if/else for more convenient use: \r\n\r\n```python\r\nnv = len(circuit.extract_variables())\r\nif nv == 0:\r\n    variables = {}\r\nelif variables is None:\r\n    raise TequilaException(\"QCircuit.to_matrix(): no variables provided, but the circuit has {} variables\".format(nv))",
+    "created_at": "2025-05-29T07:59:13Z",
+    "updated_at": "2025-05-29T07:59:14Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113429492",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113429492"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113429492"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113429492/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113490706",
+    "pull_request_review_id": 2877535484,
+    "id": 2113490706,
+    "node_id": "PRRC_kwDOD3r_AM59-U8S",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Copy that.",
+    "created_at": "2025-05-29T08:39:11Z",
+    "updated_at": "2025-05-29T08:39:11Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113490706",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113490706"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113490706"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113490706/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 445,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113426767,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 12,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113491155",
+    "pull_request_review_id": 2877536616,
+    "id": 2113491155,
+    "node_id": "PRRC_kwDOD3r_AM59-VDT",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Copy, adding it in now.",
+    "created_at": "2025-05-29T08:39:29Z",
+    "updated_at": "2025-05-29T08:39:29Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113491155",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113491155"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113491155"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113491155/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113502863",
+    "pull_request_review_id": 2877554055,
+    "id": 2113502863,
+    "node_id": "PRRC_kwDOD3r_AM59-X6P",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Just to confirm, like so?\r\n```py\r\ndef to_matrix(self, variables=None):\r\n        import quimb.gates\r\n        import quimb.tensor as qtn\r\n        from tequila import compile_circuit\r\n\r\n        num_variables = len(self.extract_variables())\r\n\r\n        if variables is None:\r\n            raise TequilaException(\r\n                f\"QCircuit.to_matrix(): no variables provided, but the circuit has {num_variables} variables\"\r\n            )\r\n\r\n        elif len(variables) != num_variables:\r\n            raise TequilaException(\r\n                f\"QCircuit.to_matrix(): expected {num_variables} variables, but got {len(variables)}\"\r\n            )\r\n    \r\n        else:\r\n            self = self.map_variables(variables)\r\n\r\n        compiled_circuit = compile_circuit(self)\r\n        ...\r\n```",
+    "created_at": "2025-05-29T08:46:11Z",
+    "updated_at": "2025-05-29T09:06:04Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113502863",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113502863"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2113502863"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2113502863/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114084784",
+    "pull_request_review_id": 2878494942,
+    "id": 2114084784,
+    "node_id": "PRRC_kwDOD3r_AM5-Al-w",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Shall I push this? ^",
+    "created_at": "2025-05-29T14:22:55Z",
+    "updated_at": "2025-05-29T14:22:55Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114084784",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114084784"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114084784"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114084784/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114132701",
+    "pull_request_review_id": 2878571878,
+    "id": 2114132701,
+    "node_id": "PRRC_kwDOD3r_AM5-Axrd",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Almost :-) \r\n\r\n`if variables is None:` would be fine if num_variables==0\r\n`elif len(variables) != num_variables:` wouldn't enforce this (often inconvenient, i.e. if subcircuits are used)\r\n\r\n`self = self.map_variables(variables)` would also avoid this (inplace change of the circuit)\r\nideally change them in the compiled circuit, then the original circuit is not changed.\r\n\r\n",
+    "created_at": "2025-05-29T14:48:46Z",
+    "updated_at": "2025-05-29T14:48:46Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114132701",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114132701"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114132701"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114132701/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114141908",
+    "pull_request_review_id": 2878587117,
+    "id": 2114141908,
+    "node_id": "PRRC_kwDOD3r_AM5-Az7U",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Copy, so\r\n```py\r\ndef to_matrix(self, variables=None):\r\n        import quimb.gates\r\n        import quimb.tensor as qtn\r\n        from tequila import compile_circuit\r\n\r\n        num_variables = len(self.extract_variables())\r\n\r\n        if num_variables == 0:\r\n            variables = {}\r\n        elif variables is None:\r\n            raise TequilaException(\r\n                f\"QCircuit.to_matrix(): no variables provided, but the circuit has {num_variables} variables\"\r\n            )\r\n\r\n        compiled_circuit = compile_circuit(self)\r\n        compiled_circuit = compiled_circuit.map_variables(variables)\r\n        ...\r\n```",
+    "created_at": "2025-05-29T14:53:36Z",
+    "updated_at": "2025-05-29T14:55:35Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114141908",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114141908"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114141908"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114141908/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114187794",
+    "pull_request_review_id": 2878664717,
+    "id": 2114187794,
+    "node_id": "PRRC_kwDOD3r_AM5-A_IS",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Wondering if it'd be better to do\r\n```py\r\ndef to_matrix(self, variables=None):\r\n        import quimb.gates\r\n        import quimb.tensor as qtn\r\n        from tequila import compile_circuit\r\n\r\n        num_variables = len(self.extract_variables())\r\n\r\n        compiled_circuit = compile_circuit(self)\r\n\r\n        if num_variables != 0:\r\n            if variables is None:\r\n                raise TequilaException(\r\n                    f\"QCircuit.to_matrix(): no variables provided, but the circuit has {num_variables} variables\"\r\n                )\r\n            compiled_circuit = compiled_circuit.map_variables(variables)\r\n        ...\r\n```",
+    "created_at": "2025-05-29T15:18:13Z",
+    "updated_at": "2025-05-29T15:19:57Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114187794",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114187794"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114187794"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114187794/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114315250",
+    "pull_request_review_id": 2878886494,
+    "id": 2114315250,
+    "node_id": "PRRC_kwDOD3r_AM5-BePy",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "LGTY?",
+    "created_at": "2025-05-29T16:27:16Z",
+    "updated_at": "2025-05-29T16:27:16Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114315250",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114315250"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114315250"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114315250/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114564784",
+    "pull_request_review_id": 2879307262,
+    "id": 2114564784,
+    "node_id": "PRRC_kwDOD3r_AM5-CbKw",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": ":+1: \r\nFirst one looks perfect. Second should work as well",
+    "created_at": "2025-05-29T18:57:18Z",
+    "updated_at": "2025-05-29T18:57:18Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114564784",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114564784"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114564784"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114564784/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114566487",
+    "pull_request_review_id": 2879309841,
+    "id": 2114566487,
+    "node_id": "PRRC_kwDOD3r_AM5-CblX",
+    "diff_hunk": "@@ -441,6 +442,48 @@ def wrap_gate(gate: QGateImpl):\n         else:\n             return QCircuit(gates=[gate])\n \n+    def to_matrix(self, variables):\n+        import quimb.gates\n+        import quimb.tensor as qtn\n+        from tequila import compile_circuit\n+\n+        compiled_circuit = compile_circuit(self)\n+        compiled_circuit = compiled_circuit.map_variables(variables)",
+    "path": "src/tequila/circuit/circuit.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "5285323087abe26786815c5803f2443afb0fa4cc",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'll keep first one then :)\r\n\r\nUno momento...",
+    "created_at": "2025-05-29T18:58:32Z",
+    "updated_at": "2025-05-29T18:58:32Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114566487",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114566487"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2114566487"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2114566487/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 474,
+    "original_line": 451,
+    "side": "RIGHT",
+    "in_reply_to_id": 2113429492,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 77,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117492752",
+    "pull_request_review_id": 2883630618,
+    "id": 2117492752,
+    "node_id": "PRRC_kwDOD3r_AM5-NmAQ",
+    "diff_hunk": "@@ -0,0 +1,22 @@\n+import numpy as np\n+from numpy.testing import assert_almost_equal\n+from tequila import QCircuit\n+\n+\n+test_case = np.load(\"tests/data/circuit_3qubit_to_matrix_test.npy\")\n+\n+def test_circuit_to_matrix():\n+    \"\"\"\n+    Test the conversion of a 3-qubit circuit to a unitary matrix.\n+    \"\"\"\n+    circuit = QCircuit(3)\n+\n+    circuit.h(0)\n+    circuit.cx(0, 1)\n+    circuit.cx(1, 2)\n+\n+    # Convert the circuit to a unitary matrix\n+    unitary_matrix = circuit.to_matrix()\n+\n+    # Compare with the expected result\n+    assert_almost_equal(unitary_matrix, test_case, decimal=8)",
+    "path": "tests/test_circuit_unitary.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "27065820db1825a8e1366884c024074e1199fd87",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Should have 1-2 more tests (testing Rx,Ry,Rz and Rp with general Paulistring) with parameters\r\n\r\nFor all 4 gates we have: Rp(a) = cos(a/2) -isin(a/2) P , with P=X,Y,Z, or general Paulistring\r\nso that is relatively straightforward to test. \r\n\r\nuseful here, that to_matrix already exists for the generators. E.g. you can build it like this:\r\n```python\r\nP = tq.paulis.X(0) + tq.paulis.Y(1)\r\nU = tq.gates.ExpPauli(paulistring=U, angle=\"a\")\r\n\r\nPM = P.to_matrix()\r\nN = 2**P.n_qubits\r\nfor a in [1.0, 2.0, -1.0]:\r\n    UM1 = U.to_matrix({\"a\":a}\r\n    UM2 = np.cos(a/2)*numpy.eye(N) - 1.0j* np.sin(a/2)*PM\r\n    assert_almost_equal(UM1,Um2)\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
+    "created_at": "2025-05-31T07:39:41Z",
+    "updated_at": "2025-05-31T07:40:09Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2117492752",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117492752"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2117492752"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117492752/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 22,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 22,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117693928",
+    "pull_request_review_id": 2883882861,
+    "id": 2117693928,
+    "node_id": "PRRC_kwDOD3r_AM5-OXHo",
+    "diff_hunk": "@@ -0,0 +1,22 @@\n+import numpy as np\n+from numpy.testing import assert_almost_equal\n+from tequila import QCircuit\n+\n+\n+test_case = np.load(\"tests/data/circuit_3qubit_to_matrix_test.npy\")\n+\n+def test_circuit_to_matrix():\n+    \"\"\"\n+    Test the conversion of a 3-qubit circuit to a unitary matrix.\n+    \"\"\"\n+    circuit = QCircuit(3)\n+\n+    circuit.h(0)\n+    circuit.cx(0, 1)\n+    circuit.cx(1, 2)\n+\n+    # Convert the circuit to a unitary matrix\n+    unitary_matrix = circuit.to_matrix()\n+\n+    # Compare with the expected result\n+    assert_almost_equal(unitary_matrix, test_case, decimal=8)",
+    "path": "tests/test_circuit_unitary.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "27065820db1825a8e1366884c024074e1199fd87",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Like so?\r\n```py\r\ndef test_circuit_to_matrix_with_params():\r\n    P = tq.paulis.X(0) + tq.paulis.Y(1)\r\n    U = tq.gates.ExpPauli(paulistring=\"X(0)Y(1)\", angle=\"a\")\r\n\r\n    PM = P.to_matrix()\r\n    N = 2**P.n_qubits\r\n\r\n    for a in [1.0, 2.0, -1.0]:\r\n        UM1 = U.to_matrix({\"a\":a})\r\n        UM2 = np.cos(a/2) * np.eye(N) + 1.0j * np.sin(a/2) * PM\r\n        assert_almost_equal(UM1, UM2)\r\n```",
+    "created_at": "2025-05-31T10:36:28Z",
+    "updated_at": "2025-05-31T10:36:28Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2117693928",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117693928"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2117693928"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2117693928/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 22,
+    "side": "RIGHT",
+    "in_reply_to_id": 2117492752,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 22,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118169584",
+    "pull_request_review_id": 2884461602,
+    "id": 2118169584,
+    "node_id": "PRRC_kwDOD3r_AM5-QLPw",
+    "diff_hunk": "@@ -0,0 +1,22 @@\n+import numpy as np\n+from numpy.testing import assert_almost_equal\n+from tequila import QCircuit\n+\n+\n+test_case = np.load(\"tests/data/circuit_3qubit_to_matrix_test.npy\")\n+\n+def test_circuit_to_matrix():\n+    \"\"\"\n+    Test the conversion of a 3-qubit circuit to a unitary matrix.\n+    \"\"\"\n+    circuit = QCircuit(3)\n+\n+    circuit.h(0)\n+    circuit.cx(0, 1)\n+    circuit.cx(1, 2)\n+\n+    # Convert the circuit to a unitary matrix\n+    unitary_matrix = circuit.to_matrix()\n+\n+    # Compare with the expected result\n+    assert_almost_equal(unitary_matrix, test_case, decimal=8)",
+    "path": "tests/test_circuit_unitary.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "27065820db1825a8e1366884c024074e1199fd87",
+    "user": {
+      "login": "ACE07-Sev",
+      "id": 73689800,
+      "node_id": "MDQ6VXNlcjczNjg5ODAw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73689800?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ACE07-Sev",
+      "html_url": "https://github.com/ACE07-Sev",
+      "followers_url": "https://api.github.com/users/ACE07-Sev/followers",
+      "following_url": "https://api.github.com/users/ACE07-Sev/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ACE07-Sev/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ACE07-Sev/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ACE07-Sev/subscriptions",
+      "organizations_url": "https://api.github.com/users/ACE07-Sev/orgs",
+      "repos_url": "https://api.github.com/users/ACE07-Sev/repos",
+      "events_url": "https://api.github.com/users/ACE07-Sev/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ACE07-Sev/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Kindly lmk if this is what you mean.",
+    "created_at": "2025-05-31T19:00:44Z",
+    "updated_at": "2025-05-31T19:00:44Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2118169584",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118169584"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2118169584"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118169584/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 22,
+    "side": "RIGHT",
+    "in_reply_to_id": 2117492752,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 22,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118723556",
+    "pull_request_review_id": 2885121224,
+    "id": 2118723556,
+    "node_id": "PRRC_kwDOD3r_AM5-SSfk",
+    "diff_hunk": "@@ -0,0 +1,22 @@\n+import numpy as np\n+from numpy.testing import assert_almost_equal\n+from tequila import QCircuit\n+\n+\n+test_case = np.load(\"tests/data/circuit_3qubit_to_matrix_test.npy\")\n+\n+def test_circuit_to_matrix():\n+    \"\"\"\n+    Test the conversion of a 3-qubit circuit to a unitary matrix.\n+    \"\"\"\n+    circuit = QCircuit(3)\n+\n+    circuit.h(0)\n+    circuit.cx(0, 1)\n+    circuit.cx(1, 2)\n+\n+    # Convert the circuit to a unitary matrix\n+    unitary_matrix = circuit.to_matrix()\n+\n+    # Compare with the expected result\n+    assert_almost_equal(unitary_matrix, test_case, decimal=8)",
+    "path": "tests/test_circuit_unitary.py",
+    "commit_id": "9ab6ffd5975fa21eca028e833af5cc14aa5ccabb",
+    "original_commit_id": "27065820db1825a8e1366884c024074e1199fd87",
+    "user": {
+      "login": "kottmanj",
+      "id": 7647650,
+      "node_id": "MDQ6VXNlcjc2NDc2NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647650?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kottmanj",
+      "html_url": "https://github.com/kottmanj",
+      "followers_url": "https://api.github.com/users/kottmanj/followers",
+      "following_url": "https://api.github.com/users/kottmanj/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kottmanj/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kottmanj/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kottmanj/subscriptions",
+      "organizations_url": "https://api.github.com/users/kottmanj/orgs",
+      "repos_url": "https://api.github.com/users/kottmanj/repos",
+      "events_url": "https://api.github.com/users/kottmanj/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kottmanj/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "yes",
+    "created_at": "2025-06-01T05:13:36Z",
+    "updated_at": "2025-06-01T05:13:36Z",
+    "html_url": "https://github.com/tequilahub/tequila/pull/407#discussion_r2118723556",
+    "pull_request_url": "https://api.github.com/repos/tequilahub/tequila/pulls/407",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118723556"
+      },
+      "html": {
+        "href": "https://github.com/tequilahub/tequila/pull/407#discussion_r2118723556"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/tequilahub/tequila/pulls/407"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/tequilahub/tequila/pulls/comments/2118723556/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 22,
+    "side": "RIGHT",
+    "in_reply_to_id": 2117492752,
+    "author_association": "COLLABORATOR",
+    "original_position": 22,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

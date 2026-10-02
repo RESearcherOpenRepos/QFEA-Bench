@@ -1,0 +1,107 @@
+{
+  "id": 18,
+  "sample_id": "pennylane_5895_5920",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "0dacfd48cc696be2733a499bcb08b496f4050c3c",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/fermionic_matrix_representation": 2,
+      "interface/missing_key_lookup": 1,
+      "interface/serialization_roundtrip": 2,
+      "general_semantics/numeric_tolerance_filtering": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiWord::test_to_mat",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 135,
+          "expected": "FermiWord produces the expected matrix for its creation-annihilation action"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiSentence::test_to_mat",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 637,
+          "expected": "FermiSentence produces the expected weighted operator matrix"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiWord::test_missing",
+      "label": "interface/missing_key_lookup",
+      "assertions": [
+        {
+          "line": 40,
+          "expected": "A missing orbital-position key is absent from the key view"
+        },
+        {
+          "line": 41,
+          "expected": "Indexing that key returns an empty string"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiWord::test_pickling",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Pickling and unpickling preserves a FermiWord"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiSentence::test_simplify",
+      "label": "general_semantics/numeric_tolerance_filtering",
+      "assertions": [
+        {
+          "line": 611,
+          "expected": "Default tolerance retains all terms"
+        },
+        {
+          "line": 613,
+          "expected": "Moderate tolerance removes the smallest coefficient"
+        },
+        {
+          "line": 615,
+          "expected": "Larger tolerance retains only the largest coefficient"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermionic.py::TestFermiSentence::test_pickling",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 625,
+          "expected": "Pickling and unpickling preserves a FermiSentence"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/0dacfd48cc696be2733a499bcb08b496f4050c3c/tests/fermi/test_fermionic.py"
+  ],
+  "rationale": "Explicit fermionic matrices check quantum operator action. Missing-key lookup and pickle round trips are container interface contracts; coefficient-threshold simplification is ordinary numeric filtering."
+}

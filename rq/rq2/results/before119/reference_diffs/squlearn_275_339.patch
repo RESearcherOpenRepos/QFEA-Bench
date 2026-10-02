@@ -1,0 +1,1320 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 8383679..a296659 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,7 +26,7 @@ classifiers = [
+ keywords = ["quantum", "machine learning", "qml"]
+ dependencies = [
+     "bayesian-optimization>=1.4.3,<2",
+-    "dill>=0.3.4",
++    "dill>=0.3.5",
+     "mapomatic>=0.10.0",
+     "networkx>=3.0",
+     "numpy>=1.20",
+diff --git a/src/squlearn/encoding_circuit/encoding_circuit_base.py b/src/squlearn/encoding_circuit/encoding_circuit_base.py
+index ecd6ef6..97ce0f5 100644
+--- a/src/squlearn/encoding_circuit/encoding_circuit_base.py
++++ b/src/squlearn/encoding_circuit/encoding_circuit_base.py
+@@ -97,7 +97,7 @@ class EncodingCircuitBase(ABC):
+     ) -> QuantumCircuit:
+         """
+         Return the encoding circuit as a qiskit QuantumCircuit.
+-        
++
+         Checks the matching of the encoding slots with the provided features.
+ 
+         Args:
+diff --git a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py
+index a13317c..14320eb 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py
++++ b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py
+@@ -331,6 +331,9 @@ class FidelityKernel(KernelMatrixBase):
+ 
+     def _initialize_kernel(self, num_features: int) -> None:
+         """Initializes the quantum kernel."""
++
++        self._quantum_framework = self._executor.quantum_framework
++
+         if not self._is_initialized:
+             super()._initialize_kernel(num_features=num_features)
+ 
+@@ -411,3 +414,11 @@ class FidelityKernel(KernelMatrixBase):
+                 else:
+                     raise RuntimeError("Invalid quantum framework!")
+             self._is_initialized = True
++
++    def __setstate__(self, state):
++        """
++        Set _is_initialized to False to ensure re-initialization to avoid issues with pickling
++        """
++        self.__dict__.update(state)
++        if self._quantum_framework != self._executor.quantum_framework:
++            self._is_initialized = False
+diff --git a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
+index b1caa4a..c9145e8 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
++++ b/src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py
+@@ -348,6 +348,11 @@ class FidelityKernelStatevector:
+             else:
+                 x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                 y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
++        else:
++            raise RuntimeError(
++                "Quantum framework not supported for FidelityKernelStatevector: "
++                f"{self._executor.quantum_framework}"
++            )
+ 
+         if len(x_sv.shape) == 1:
+             x_sv = np.array([x_sv])
+diff --git a/src/squlearn/kernel/lowlevel_kernel/kernel_util.py b/src/squlearn/kernel/lowlevel_kernel/kernel_util.py
+index 5965a94..0a3d670 100644
+--- a/src/squlearn/kernel/lowlevel_kernel/kernel_util.py
++++ b/src/squlearn/kernel/lowlevel_kernel/kernel_util.py
+@@ -6,6 +6,31 @@ from sklearn.gaussian_process.kernels import Kernel
+ from .kernel_matrix_base import KernelMatrixBase
+ 
+ 
++class CustomKernel(Kernel):
++    def __init__(self, kernel_matrix: KernelMatrixBase):
++        self.kernel_matrix = kernel_matrix
++        super().__init__()
++
++    def __call__(self, X, Y=None, eval_gradient=False):
++        if Y is None:
++            Y = X
++        kernel_matrix = self.kernel_matrix.evaluate(X, Y)
++        if eval_gradient:
++            raise NotImplementedError("Gradient not yet implemented for this kernel.")
++        else:
++            return kernel_matrix
++
++    def diag(self, X):
++        return np.diag(self.kernel_matrix.evaluate(X))
++
++    @property
++    def requires_vector_input(self):
++        return True
++
++    def is_stationary(self):
++        return self.kernel_matrix.is_stationary()
++
++
+ def kernel_wrapper(kernel_matrix: KernelMatrixBase):
+     """
+     Wrapper for sQUlearn's KernelMatrixBase to scikit-learn kernel objects.
+@@ -15,28 +40,4 @@ def kernel_wrapper(kernel_matrix: KernelMatrixBase):
+             Quantum kernel matrix which is to be wrapped into scikit-learn kernel
+     """
+ 
+-    class CustomKernel(Kernel):
+-        def __init__(self, kernel_matrix: KernelMatrixBase):
+-            self.kernel_matrix = kernel_matrix
+-            super().__init__()
+-
+-        def __call__(self, X, Y=None, eval_gradient=False):
+-            if Y is None:
+-                Y = X
+-            kernel_matrix = self.kernel_matrix.evaluate(X, Y)
+-            if eval_gradient:
+-                raise NotImplementedError("Gradient not yet implemented for this kernel.")
+-            else:
+-                return kernel_matrix
+-
+-        def diag(self, X):
+-            return np.diag(self.kernel_matrix.evaluate(X))
+-
+-        @property
+-        def requires_vector_input(self):
+-            return True
+-
+-        def is_stationary(self):
+-            return self.kernel_matrix.is_stationary()
+-
+     return CustomKernel(kernel_matrix)
+diff --git a/src/squlearn/kernel/qgpc.py b/src/squlearn/kernel/qgpc.py
+index 2a58a81..575d8ce 100644
+--- a/src/squlearn/kernel/qgpc.py
++++ b/src/squlearn/kernel/qgpc.py
+@@ -2,13 +2,14 @@
+ 
+ from sklearn.gaussian_process import GaussianProcessClassifier
+ 
+-from squlearn.util.data_preprocessing import extract_num_features
++from ..util.serialization import SerializableModelMixin
++from ..util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.kernel_util import kernel_wrapper
+ 
+ 
+-class QGPC(GaussianProcessClassifier):
++class QGPC(GaussianProcessClassifier, SerializableModelMixin):
+     """
+     Quantum Gaussian process classification (QGPC), that extends the scikit-learn
+     `sklearn.gaussian_process.GaussianProcessClassifier
+@@ -167,14 +168,3 @@ class QGPC(GaussianProcessClassifier):
+         if quantum_kernel_params:
+             self._quantum_kernel.set_params(**{key: params[key] for key in quantum_kernel_params})
+         return self
+-
+-    @property
+-    def quantum_kernel(self) -> KernelMatrixBase:
+-        """Returns quantum kernel"""
+-        return self._quantum_kernel
+-
+-    @quantum_kernel.setter
+-    def quantum_kernel(self, quantum_kernel: KernelMatrixBase):
+-        """Sets quantum kernel"""
+-        self._quantum_kernel = quantum_kernel
+-        self.kernel = kernel_wrapper(quantum_kernel)
+diff --git a/src/squlearn/kernel/qgpr.py b/src/squlearn/kernel/qgpr.py
+index 7b020a7..49bc5b3 100644
+--- a/src/squlearn/kernel/qgpr.py
++++ b/src/squlearn/kernel/qgpr.py
+@@ -23,9 +23,10 @@ else:
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
+ from .lowlevel_kernel.regularization import regularize_full_kernel
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QGPR(BaseEstimator, RegressorMixin):
++class QGPR(BaseEstimator, RegressorMixin, SerializableModelMixin):
+     """
+     Quantum Gaussian Process Regression (QGPR).
+ 
+diff --git a/src/squlearn/kernel/qkrr.py b/src/squlearn/kernel/qkrr.py
+index 28a45a4..76a17fb 100644
+--- a/src/squlearn/kernel/qkrr.py
++++ b/src/squlearn/kernel/qkrr.py
+@@ -8,7 +8,7 @@ from typing import Optional, Union
+ from sklearn.base import BaseEstimator, RegressorMixin
+ from sklearn import __version__
+ 
+-from squlearn.util.data_preprocessing import extract_num_features
++from ..util.data_preprocessing import extract_num_features
+ 
+ if version.parse(__version__) >= version.parse("1.6"):
+     from sklearn.utils.validation import validate_data
+@@ -19,9 +19,10 @@ else:
+ 
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QKRR(BaseEstimator, RegressorMixin):
++class QKRR(BaseEstimator, RegressorMixin, SerializableModelMixin):
+     r"""
+     Quantum Kernel Ridge Regression.
+ 
+diff --git a/src/squlearn/kernel/qsvc.py b/src/squlearn/kernel/qsvc.py
+index f014d5e..e04b7e8 100644
+--- a/src/squlearn/kernel/qsvc.py
++++ b/src/squlearn/kernel/qsvc.py
+@@ -6,9 +6,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVC(SVC):
++class QSVC(SVC, SerializableModelMixin):
+     """
+     Quantum Support Vector Classification
+ 
+diff --git a/src/squlearn/kernel/qsvr.py b/src/squlearn/kernel/qsvr.py
+index 30c413b..4fbd94d 100644
+--- a/src/squlearn/kernel/qsvr.py
++++ b/src/squlearn/kernel/qsvr.py
+@@ -7,9 +7,10 @@ from typing import Union, Optional
+ from squlearn.util.data_preprocessing import extract_num_features
+ 
+ from .lowlevel_kernel.kernel_matrix_base import KernelMatrixBase
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class QSVR(SVR):
++class QSVR(SVR, SerializableModelMixin):
+     """
+     Quantum Support Vector Regression
+ 
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index a57b369..fb76333 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -26,6 +26,7 @@ from ..observables.observable_base import ObservableBase
+ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..optimizers.optimizer_base import OptimizerBase, SGDMixin
+ from ..util import Executor
++from ..util.serialization import SerializableModelMixin
+ 
+ from .loss.qnn_loss_base import QNNLossBase
+ 
+@@ -33,7 +34,7 @@ from .lowlevel_qnn import LowLevelQNN
+ from .util.training import ShotControlBase
+ 
+ 
+-class BaseQNN(BaseEstimator, ABC):
++class BaseQNN(BaseEstimator, SerializableModelMixin, ABC):
+     """Base Class for Quantum Neural Networks.
+ 
+     Args:
+@@ -351,6 +352,9 @@ class BaseQNN(BaseEstimator, ABC):
+             self._param = self.param_ini.copy()
+             self._param_op = self.param_op_ini.copy()
+             self._initialize_lowlevel_qnn(num_features)
++        elif self._qnn is None and self._is_fitted:
++            num_features = extract_num_features(X)
++            self._initialize_lowlevel_qnn(num_features)
+ 
+         if self.shot_control is not None:
+             self.shot_control.reset_shots()
+diff --git a/src/squlearn/qrc/base_qrc.py b/src/squlearn/qrc/base_qrc.py
+index 62312ed..b11c03d 100644
+--- a/src/squlearn/qrc/base_qrc.py
++++ b/src/squlearn/qrc/base_qrc.py
+@@ -25,9 +25,10 @@ from ..encoding_circuit.encoding_circuit_base import EncodingCircuitBase
+ from ..util import Executor
+ from ..qnn.lowlevel_qnn.lowlevel_qnn_base import LowLevelQNNBase
+ from ..qnn.lowlevel_qnn import LowLevelQNN
++from ..util.serialization import SerializableModelMixin
+ 
+ 
+-class BaseQRC(BaseEstimator, ABC):
++class BaseQRC(BaseEstimator, SerializableModelMixin, ABC):
+     """Base class for Quantum Reservoir Computing (QRC) models.
+ 
+     Args:
+diff --git a/src/squlearn/util/executor.py b/src/squlearn/util/executor.py
+index 955d843..f2daae4 100644
+--- a/src/squlearn/util/executor.py
++++ b/src/squlearn/util/executor.py
+@@ -310,7 +310,7 @@ class Executor:
+             wires=4
+         )
+         executor = Executor(dev)
+-    
++
+     **Example: Qulacs based initialization of the Executor**
+ 
+     .. code-block:: python
+diff --git a/src/squlearn/util/qulacs/qulacs_circuit.py b/src/squlearn/util/qulacs/qulacs_circuit.py
+index a2e484c..20570e6 100644
+--- a/src/squlearn/util/qulacs/qulacs_circuit.py
++++ b/src/squlearn/util/qulacs/qulacs_circuit.py
+@@ -796,3 +796,38 @@ class QulacsCircuit:
+             return list_operators
+ 
+         return observable_func
++
++    def __getstate__(self):
++        """Remove qulacs caches and objects to avoid pickling issues"""
++        state = self.__dict__.copy()
++        # Remove caches to avoid pickling issues
++        state["_circuit_func_cache"] = {}
++        state["_observable_func_cache"] = None
++        state["_outer_jacobi_circuit_cache"] = {}
++        state["_outer_jacobi_observable_cache"] = {}
++
++        # Remove qulacs instructions to avoid pickling issues
++        state["_circuit_gate_list"] = []
++        state["_circuit_qubit_list"] = []
++        state["_circuit_param_list"] = []
++        state["_circuit_param_func_list"] = []
++        state["_circuit_param_func_grad_list"] = []
++        state["_circuit_param_names"] = []
++        state["_circuit_symbols_tuple"] = ()
++        state["_observable_pauli_list"] = []
++        state["_observable_param_func_list"] = []
++        state["_observable_param_func_grad_list"] = []
++        state["_observable_used_parameters"] = []
++        state["_observable_symbols_tuple"] = ()
++        state["_observable_param_names"] = []
++
++        return state
++
++    def __setstate__(self, state):
++        """Rebuild the circuit and observable instructions from the state"""
++        self.__dict__.update(state)
++        # Rebuild circuit instructions
++        self._build_circuit_instructions(self._qiskit_circuit)
++        # Rebuild observable instructions if needed
++        if self._is_qiskit_observable:
++            self.build_observable_instructions(self._qiskit_observable)
+diff --git a/src/squlearn/util/serialization/__init__.py b/src/squlearn/util/serialization/__init__.py
+new file mode 100644
+index 0000000..abbcb33
+--- /dev/null
++++ b/src/squlearn/util/serialization/__init__.py
+@@ -0,0 +1,3 @@
++from squlearn.util.serialization.serializable_model_mixin import SerializableModelMixin
++
++__all__ = ["SerializableModelMixin"]
+diff --git a/src/squlearn/util/serialization/model_pickler.py b/src/squlearn/util/serialization/model_pickler.py
+new file mode 100644
+index 0000000..8b9d7a5
+--- /dev/null
++++ b/src/squlearn/util/serialization/model_pickler.py
+@@ -0,0 +1,71 @@
++import numpy as np
++import dill
++import sympy as sp
++
++from qiskit.quantum_info import SparsePauliOp
++
++from ..executor import Executor
++
++EXECUTOR_ID = "squlearn.util.executor"
++
++
++class ModelPickler(dill.Pickler):
++    """
++    Custom Pickler to handle the `Executor` and `SparsePauliOp` object.
++    When an `Executor` is encountered, it will not be serialized directly.
++    Instead, it will return a marker that can be used to reconstruct the `Executor` later.
++    """
++
++    def __init__(self, file):
++        super().__init__(file)
++
++    def persistent_id(self, obj):
++        """
++        This method is called when an object is being serialized.
++        If the object is an instance of `Executor`, it returns a marker that can be used to reconstruct the `Executor` later.
++        Otherwise, it returns None, allowing the default serialization behavior to take place.
++        """
++
++        if isinstance(obj, Executor):
++            return (EXECUTOR_ID, None)
++
++        if isinstance(obj, SparsePauliOp):
++            try:
++                # Qiskit stores coefficients in a private array `_coeffs`
++                coeffs = getattr(obj, "_coeffs", None)
++                if coeffs is not None:
++
++                    if isinstance(coeffs, np.ndarray) and coeffs.dtype == object:
++                        # Convert each coefficient to a SymPy object that is picklable in contrast
++                        # To the default qiskit object
++                        for i in range(len(coeffs)):
++                            if hasattr(coeffs[i], "_symbol_expr"):
++                                coeffs[i]._symbol_expr = sp.sympify(coeffs[i]._symbol_expr)
++            except Exception:
++                # If anything goes wrong, fall back to default serialization.
++                pass
++
++        return None
++
++
++class ModelUnpickler(dill.Unpickler):
++    """
++    Custom Unpickler to handle the `Executor` object.
++    When a marker for an `Executor` is encountered, it will return the `Executor` instance that was provided during initialization.
++    """
++
++    def __init__(self, file, executor: Executor):
++        super().__init__(file)
++        self._executor = executor
++
++    def persistent_load(self, pid):
++        """
++        This method is called when an object is being deserialized.
++        If the persistent ID indicates that it is an `Executor`, it returns the `Executor` instance.
++        Otherwise, it calls the superclass method to handle the default deserialization behavior.
++        """
++
++        type_tag, _ = pid
++        if type_tag == EXECUTOR_ID:
++            return self._executor
++        return super().persistent_load(pid)
+diff --git a/src/squlearn/util/serialization/serializable_model_mixin.py b/src/squlearn/util/serialization/serializable_model_mixin.py
+new file mode 100644
+index 0000000..7db4791
+--- /dev/null
++++ b/src/squlearn/util/serialization/serializable_model_mixin.py
+@@ -0,0 +1,64 @@
++from contextlib import contextmanager
++from io import IOBase
++from typing import IO, Type, TypeVar, Union
++from .model_pickler import ModelPickler, ModelUnpickler
++from ..executor import Executor
++
++T = TypeVar("T", bound="SerializableModelMixin")
++
++
++@contextmanager
++def open_maybe(path_or_buf: Union[str, IO[bytes]], mode="rb"):
++    """
++    Context manager to handle opening a file or using an existing file-like object.
++    Args:
++        path_or_buf (Union[str, IO[bytes]]): A file path as a string or an IOBase object.
++        mode (str): The mode in which to open the file, default is "rb"
++    Yields:
++        An opened file object or the provided IOBase object.
++    Raises:
++        TypeError: If the provided path_or_buf is neither a string nor an IOBase object
++    """
++
++    if isinstance(path_or_buf, str):
++        f = open(path_or_buf, mode)
++        try:
++            yield f
++        finally:
++            f.close()
++    elif isinstance(path_or_buf, IOBase):
++        # already a proper stream
++        yield path_or_buf
++    else:
++        raise TypeError(f"Expected file path or IOBase, got {type(path_or_buf)}")
++
++
++class SerializableModelMixin:
++    """A mixin class that provides serialization and deserialization capabilities for model objects.
++    This class uses `ExecutorPickler` and `ExecutorUnpickler` to handle the serialization of model objects
++    while ensuring that the `Executor` instance is properly injected during deserialization.
++    """
++
++    def dump(self, target: Union[str, IO[bytes]]) -> None:
++        """
++        Serializes the model object to a file or file-like object.
++        Args:
++            target (Union[str, IO[bytes]]): The target file path or file-like object where the model will be serialized.
++        """
++
++        with open_maybe(target, "wb") as f:
++            ModelPickler(f).dump(self)
++
++    @classmethod
++    def load(cls: Type[T], source: Union[str, IO[bytes]], executor: Executor) -> T:
++        """
++        Deserializes the model object from a file or file-like object, injecting the provided `Executor`.
++        Args:
++            source (Union[str, IO[bytes]]): The source file path or file-like object from which the model will be deserialized.
++            executor (Executor): The `Executor` instance to be injected into the deserialized model.
++        Returns:
++            The deserialized model object with the injected `Executor`.
++        """
++
++        with open_maybe(source, "rb") as f:
++            return ModelUnpickler(f, executor).load()
+diff --git a/tests/kernel/ml/test_qgpc.py b/tests/kernel/ml/test_qgpc.py
+index 4263498..bddb5be 100644
+--- a/tests/kernel/ml/test_qgpc.py
++++ b/tests/kernel/ml/test_qgpc.py
+@@ -1,5 +1,6 @@
+ """Tests for QGPC"""
+ 
++import io
+ import pytest
+ import numpy as np
+ from unittest.mock import MagicMock
+@@ -26,7 +27,7 @@ class TestQGPC:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qgpc_fidelity(self) -> QGPC:
+         """QGPC module with FidelityKernel."""
+         np.random.seed(42)
+@@ -40,7 +41,7 @@ class TestQGPC:
+         )
+         return QGPC(quantum_kernel=kernel)
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qgpc_pqk(self) -> QGPC:
+         """QGPC module wit ProjectedQuantumKernel."""
+         np.random.seed(42)
+@@ -243,3 +244,26 @@ class TestQGPC:
+         assert qgpc_instance.get_params()["max_iter_predict"] == 100
+         qgpc_instance.set_params(max_iter_predict=50)
+         assert qgpc_instance.get_params()["max_iter_predict"] == 50
++
++    @pytest.mark.parametrize("qgpc", ["qgpc_fidelity", "qgpc_pqk"])
++    def test_serialization(self, qgpc, request, data):
++        """Tests concerning the serialization of the QGPC."""
++        instance = request.getfixturevalue(qgpc)
++        X, y = data
++        instance.fit(X, y)
++
++        buffer = io.BytesIO()
++        instance.dump(buffer)
++
++        predict_before = instance.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QGPC.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QGPC)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded.fit(X, y)
++        predict_after2 = instance_loaded.predict(X)
++        assert np.allclose(predict_before, predict_after2, atol=1e-6)
+diff --git a/tests/kernel/ml/test_qgpr.py b/tests/kernel/ml/test_qgpr.py
+index 6bd840c..b5870fe 100644
+--- a/tests/kernel/ml/test_qgpr.py
++++ b/tests/kernel/ml/test_qgpr.py
+@@ -1,11 +1,13 @@
+ """Tests for QGPR"""
+ 
++import io
+ import pytest
+ import numpy as np
+ from unittest.mock import MagicMock
+ 
+ from sklearn.datasets import make_regression
+ from sklearn.preprocessing import MinMaxScaler
++from sympy import E
+ 
+ from squlearn import Executor
+ from squlearn.encoding_circuit import YZ_CX_EncodingCircuit
+@@ -25,7 +27,7 @@ class TestQGPR:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qgpr_fidelity(self) -> QGPR:
+         """QGPR module with FidelityKernel."""
+         np.random.seed(42)
+@@ -34,7 +36,7 @@ class TestQGPR:
+         kernel = FidelityKernel(encoding_circuit=encoding_circuit, executor=executor)
+         return QGPR(quantum_kernel=kernel, sigma=1.0e-6)
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qgpr_pqk(self) -> QGPR:
+         """QGPR module with ProjectedQuantumKernel."""
+         np.random.seed(42)
+@@ -254,3 +256,26 @@ class TestQGPR:
+         qgpr_instance.predict(X)
+ 
+         assert qgpr_instance._quantum_kernel._regularize_matrix.call_count == 3
++
++    @pytest.mark.parametrize("qgpr", ["qgpr_fidelity", "qgpr_pqk"])
++    def test_serialization(self, qgpr, request, data):
++        """Tests serialization of QGPR."""
++        instance = request.getfixturevalue(qgpr)
++        X, y = data
++        instance.fit(X, y)
++
++        buffer = io.BytesIO()
++        instance.dump(buffer)
++
++        predict_before = instance.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QGPR.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QGPR)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded.fit(X, y)
++        predict_after2 = instance_loaded.predict(X)
++        assert np.allclose(predict_before, predict_after2, atol=1e-6)
+diff --git a/tests/kernel/ml/test_qkrr.py b/tests/kernel/ml/test_qkrr.py
+index e5e770e..68de3eb 100644
+--- a/tests/kernel/ml/test_qkrr.py
++++ b/tests/kernel/ml/test_qkrr.py
+@@ -1,5 +1,6 @@
+ """Tests for QKRR"""
+ 
++import io
+ import pytest
+ import numpy as np
+ from unittest.mock import MagicMock
+@@ -25,7 +26,7 @@ class TestQKRR:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qkrr_fidelity(self) -> QKRR:
+         """QKRR module with FidelityKernel."""
+         np.random.seed(42)
+@@ -39,7 +40,7 @@ class TestQKRR:
+         )
+         return QKRR(quantum_kernel=kernel, alpha=1.0e-6)
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qkrr_pqk(self) -> QKRR:
+         """QKRR module with ProjectedQuantumKernel."""
+         np.random.seed(42)
+@@ -218,3 +219,26 @@ class TestQKRR:
+         qkrr_instance.predict(X)
+ 
+         assert qkrr_instance._quantum_kernel._regularize_matrix.call_count == 2
++
++    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
++    def test_serialization(self, qkrr, request, data):
++        """Tests serialization of QKRR."""
++        instance = request.getfixturevalue(qkrr)
++        X, y = data
++        instance.fit(X, y)
++
++        buffer = io.BytesIO()
++        instance.dump(buffer)
++
++        predict_before = instance.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QKRR.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QKRR)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded.fit(X, y)
++        predict_after2 = instance_loaded.predict(X)
++        assert np.allclose(predict_before, predict_after2, atol=1e-6)
+diff --git a/tests/kernel/ml/test_qsvc.py b/tests/kernel/ml/test_qsvc.py
+index 2d17a2a..48128f1 100644
+--- a/tests/kernel/ml/test_qsvc.py
++++ b/tests/kernel/ml/test_qsvc.py
+@@ -1,5 +1,6 @@
+ """Tests for QSVC"""
+ 
++import io
+ import pytest
+ import numpy as np
+ from unittest.mock import MagicMock
+@@ -26,7 +27,7 @@ class TestQSVC:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qsvc_fidelity(self) -> QSVC:
+         """QSVC module with FidelityKernel."""
+         np.random.seed(42)
+@@ -40,7 +41,7 @@ class TestQSVC:
+         )
+         return QSVC(kernel)
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qsvc_pqk(self) -> QSVC:
+         """QSVC module wit ProjectedQuantumKernel."""
+         np.random.seed(42)
+@@ -245,3 +246,26 @@ class TestQSVC:
+         qsvc_instance.predict(X)
+ 
+         assert qsvc_instance._quantum_kernel._regularize_matrix.call_count == 2
++
++    @pytest.mark.parametrize("qsvc", ["qsvc_fidelity", "qsvc_pqk"])
++    def test_serialization(self, qsvc, request, data):
++        """Tests serialization of QSVC."""
++        instance = request.getfixturevalue(qsvc)
++        X, y = data
++        instance.fit(X, y)
++
++        buffer = io.BytesIO()
++        instance.dump(buffer)
++
++        predict_before = instance.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QSVC.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QSVC)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded.fit(X, y)
++        predict_after2 = instance_loaded.predict(X)
++        assert np.allclose(predict_before, predict_after2, atol=1e-6)
+diff --git a/tests/kernel/ml/test_qsvr.py b/tests/kernel/ml/test_qsvr.py
+index d689924..df0ca34 100644
+--- a/tests/kernel/ml/test_qsvr.py
++++ b/tests/kernel/ml/test_qsvr.py
+@@ -1,5 +1,6 @@
+ """Tests for QSVR"""
+ 
++import io
+ import pytest
+ import numpy as np
+ from unittest.mock import MagicMock
+@@ -26,7 +27,7 @@ class TestQSVR:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qsvr_fidelity(self) -> QSVR:
+         """QSVR module with FidelityKernel."""
+         np.random.seed(42)
+@@ -40,7 +41,7 @@ class TestQSVR:
+         )
+         return QSVR(kernel, C=1, epsilon=0.1)
+ 
+-    @pytest.fixture(scope="module")
++    @pytest.fixture
+     def qsvr_pqk(self) -> QSVR:
+         """QSVR module wit ProjectedQuantumKernel."""
+         np.random.seed(42)
+@@ -242,3 +243,26 @@ class TestQSVR:
+         qsvr_instance.predict(X)
+ 
+         assert qsvr_instance._quantum_kernel._regularize_matrix.call_count == 2
++
++    @pytest.mark.parametrize("qsvr", ["qsvr_fidelity", "qsvr_pqk"])
++    def test_serialization(self, qsvr, request, data):
++        """Tests serialization of QSVR."""
++        instance = request.getfixturevalue(qsvr)
++        X, y = data
++        instance.fit(X, y)
++
++        buffer = io.BytesIO()
++        instance.dump(buffer)
++
++        predict_before = instance.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QSVR.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QSVR)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded.fit(X, y)
++        predict_after2 = instance_loaded.predict(X)
++        assert np.allclose(predict_before, predict_after2, atol=1e-6)
+diff --git a/tests/qnn/test_qnnc.py b/tests/qnn/test_qnnc.py
+index 46fcf26..c8f3933 100644
+--- a/tests/qnn/test_qnnc.py
++++ b/tests/qnn/test_qnnc.py
+@@ -1,5 +1,6 @@
+ """Tests for QNNClassifier"""
+ 
++import io
+ import pytest
+ 
+ import numpy as np
+@@ -25,11 +26,13 @@ class TestQNNClassifier:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
+-    def qnn_classifier(self) -> QNNClassifier:
++    def get_qnn_classifier(self, framework: str = None) -> QNNClassifier:
+         """QNNClassifier module."""
+         random_device = np.random.default_rng(seed=30)
+-        executor = Executor()
++        if framework is None:
++            executor = Executor()
++        else:
++            executor = Executor(framework)
+         pqc = ChebyshevPQC(num_qubits=2, num_features=2, num_layers=1)
+         operator = SummedPaulis(num_qubits=2)
+         loss = CrossEntropyLoss()
+@@ -51,7 +54,7 @@ class TestQNNClassifier:
+         param_op_ini = random_device.random(sum(op.num_parameters for op in operator))
+         return QNNClassifier(pqc, operator, executor, loss, optimizer, param_ini, param_op_ini)
+ 
+-    def test_predict_unfitted(self, qnn_classifier, data):
++    def test_predict_unfitted(self, data):
+         """Tests concerning the unfitted QNNClassifier.
+ 
+         Tests include
+@@ -59,11 +62,13 @@ class TestQNNClassifier:
+             - whether a RuntimeError is raised
+         """
+         X, _ = data
++        qnn_classifier = self.get_qnn_classifier()
+         assert not qnn_classifier._is_fitted
+         with pytest.raises(RuntimeError, match="The model is not fitted."):
+             qnn_classifier.predict(X)
+ 
+-    def test_fit(self, qnn_classifier, data):
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_fit(self, data, framework):
+         """Tests concerning the fit function of the QNNClassifier.
+ 
+         Tests include
+@@ -72,12 +77,13 @@ class TestQNNClassifier:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_classifier = self.get_qnn_classifier(framework)
+         qnn_classifier.fit(X, y)
+         assert qnn_classifier._is_fitted
+         assert not np.allclose(qnn_classifier.param, qnn_classifier.param_ini)
+         assert not np.allclose(qnn_classifier.param_op, qnn_classifier.param_op_ini)
+ 
+-    def test_list_input(self, qnn_classifier, data):
++    def test_list_input(self, data):
+         """Test concerning the fit function with list y.
+ 
+         Tests include
+@@ -86,6 +92,7 @@ class TestQNNClassifier:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_classifier = self.get_qnn_classifier()
+         qnn_classifier.fit(X.tolist(), y.tolist())
+         assert qnn_classifier._is_fitted
+         assert not np.allclose(qnn_classifier.param, qnn_classifier.param_ini)
+@@ -106,7 +113,7 @@ class TestQNNClassifier:
+         assert not np.allclose(qnn_classifier_2out.param, qnn_classifier_2out.param_ini)
+         assert not np.allclose(qnn_classifier_2out.param_op, qnn_classifier_2out.param_op_ini)
+ 
+-    def test_partial_fit(self, qnn_classifier, data):
++    def test_partial_fit(self, data):
+         """Tests concerning the partial_fit function of the QNNClassifier.
+ 
+         Tests include
+@@ -114,7 +121,7 @@ class TestQNNClassifier:
+             - whether `_param` is different after a call to partial_fit and a call to fit
+         """
+         X, y = data
+-
++        qnn_classifier = self.get_qnn_classifier()
+         qnn_classifier.fit(X, y)
+         param_1 = qnn_classifier.param
+         qnn_classifier.partial_fit(X, y)
+@@ -125,7 +132,7 @@ class TestQNNClassifier:
+         assert np.allclose(param_1, param_3)
+         assert not np.allclose(param_2, param_3)
+ 
+-    def test_fit_minibtach(self, qnn_classifier, data):
++    def test_fit_minibtach(self, data):
+         """Tests concerning fit with mini-batch GD.
+ 
+         Tests include
+@@ -134,7 +141,7 @@ class TestQNNClassifier:
+             - whether `_param_op` is updated
+         """
+         X, y = data
+-
++        qnn_classifier = self.get_qnn_classifier()
+         qnn_classifier._optimizer = Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1})
+         qnn_classifier.set_params(
+             batch_size=2,
+@@ -170,13 +177,15 @@ class TestQNNClassifier:
+         assert not np.allclose(qnn_classifier_2out.param, qnn_classifier_2out.param_ini)
+         assert not np.allclose(qnn_classifier_2out.param_op, qnn_classifier_2out.param_op_ini)
+ 
+-    def test_predict(self, qnn_classifier, data):
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_predict(self, data, framework):
+         """Tests concerning the predict function of the QNNClassifier.
+ 
+         Tests include
+             - whether the prediction output is correct
+         """
+         X, y = data
++        qnn_classifier = self.get_qnn_classifier(framework)
+         qnn_classifier._param = np.linspace(0.1, 0.7, 7)
+         qnn_classifier._param_op = np.linspace(0.1, 0.3, 3)
+         qnn_classifier._label_binarizer = LabelBinarizer()
+@@ -188,7 +197,7 @@ class TestQNNClassifier:
+         assert y_pred.shape == y.shape
+         assert np.allclose(y_pred, np.ones_like(y))
+ 
+-    def test_set_params_and_fit(self, qnn_classifier, data):
++    def test_set_params_and_fit(self, data):
+         """
+         Tests fit after changing parameters that alter the number of parameters of the pqc.
+ 
+@@ -198,9 +207,36 @@ class TestQNNClassifier:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_classifier = self.get_qnn_classifier()
+         qnn_classifier.set_params(num_layers=3)
+         qnn_classifier.fit(X, y)
+ 
+         assert qnn_classifier._is_fitted
+         assert len(qnn_classifier.param) != len(qnn_classifier.param_ini)
+         assert not np.allclose(qnn_classifier.param_op, qnn_classifier.param_op_ini)
++
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_serialization(self, request, data, framework):
++        """Tests concerning the serialization of the QNNClassifier."""
++        X, y = data
++        qnn_classifier = self.get_qnn_classifier(framework)
++        qnn_classifier.fit(X, y)
++
++        buffer = io.BytesIO()
++        qnn_classifier.dump(buffer)
++
++        predict_before = qnn_classifier.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QNNClassifier.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QNNClassifier)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded._is_fitted = False
++        instance_loaded.fit(X, y)
++
++        assert instance_loaded._is_fitted
++        assert np.allclose(instance_loaded.param, qnn_classifier.param)
++        assert np.allclose(instance_loaded.param_op, qnn_classifier.param_op)
+diff --git a/tests/qnn/test_qnnr.py b/tests/qnn/test_qnnr.py
+index fd72758..e4c6ce9 100644
+--- a/tests/qnn/test_qnnr.py
++++ b/tests/qnn/test_qnnr.py
+@@ -1,6 +1,6 @@
+ """Tests for QNNRegressor"""
+ 
+-import random
++import io
+ import pytest
+ 
+ import numpy as np
+@@ -26,11 +26,13 @@ class TestQNNRegressor:
+         X = scl.fit_transform(X, y)
+         return X, y
+ 
+-    @pytest.fixture(scope="module")
+-    def qnn_regressor(self) -> QNNRegressor:
++    def get_qnn_regressor(self, framework: str = None) -> QNNRegressor:
+         """QNNRegressor module."""
+         random_device = np.random.default_rng(seed=30)
+-        executor = Executor()
++        if framework is None:
++            executor = Executor()
++        else:
++            executor = Executor(framework)
+         pqc = ChebyshevRx(num_qubits=2, num_layers=1)
+         operator = SummedPaulis(num_qubits=2)
+         loss = SquaredLoss()
+@@ -52,7 +54,7 @@ class TestQNNRegressor:
+         param_op_ini = random_device.random(sum(op.num_parameters for op in operator))
+         return QNNRegressor(pqc, operator, executor, loss, optimizer, param_ini, param_op_ini)
+ 
+-    def test_predict_unfitted(self, qnn_regressor, data):
++    def test_predict_unfitted(self, data):
+         """Tests concerning the unfitted QNNRegressor.
+ 
+         Tests include
+@@ -60,11 +62,13 @@ class TestQNNRegressor:
+             - whether a RuntimeError is raised
+         """
+         X, _ = data
++        qnn_regressor = self.get_qnn_regressor()
+         assert not qnn_regressor._is_fitted
+         with pytest.raises(RuntimeError, match="The model is not fitted."):
+             qnn_regressor.predict(X)
+ 
+-    def test_fit(self, qnn_regressor, data):
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_fit(self, data, framework):
+         """Tests concerning the fit function of the QNNRegressor.
+ 
+         Tests include
+@@ -73,12 +77,13 @@ class TestQNNRegressor:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_regressor = self.get_qnn_regressor(framework)
+         qnn_regressor.fit(X, y)
+         assert qnn_regressor._is_fitted
+         assert not np.allclose(qnn_regressor.param, qnn_regressor.param_ini)
+         assert not np.allclose(qnn_regressor.param_op, qnn_regressor.param_op_ini)
+ 
+-    def test_list_input(self, qnn_regressor, data):
++    def test_list_input(self, data):
+         """Test concerning the fit function with list y.
+ 
+         Tests include
+@@ -87,6 +92,7 @@ class TestQNNRegressor:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_regressor = self.get_qnn_regressor()
+         qnn_regressor.fit(X.tolist(), y.tolist())
+         assert qnn_regressor._is_fitted
+         assert not np.allclose(qnn_regressor.param, qnn_regressor.param_ini)
+@@ -107,7 +113,7 @@ class TestQNNRegressor:
+         assert not np.allclose(qnn_regressor_2out.param, qnn_regressor_2out.param_ini)
+         assert not np.allclose(qnn_regressor_2out.param_op, qnn_regressor_2out.param_op_ini)
+ 
+-    def test_partial_fit(self, qnn_regressor, data):
++    def test_partial_fit(self, data):
+         """Tests concerning the partial_fit function of the QNNRegressor.
+ 
+         Tests include
+@@ -115,7 +121,7 @@ class TestQNNRegressor:
+             - whether `_param` is different after a call to partial_fit and a call to fit
+         """
+         X, y = data
+-
++        qnn_regressor = self.get_qnn_regressor()
+         qnn_regressor.fit(X, y)
+         param_1 = qnn_regressor.param
+         qnn_regressor.partial_fit(X, y)
+@@ -126,7 +132,7 @@ class TestQNNRegressor:
+         assert np.allclose(param_1, param_3)
+         assert not np.allclose(param_2, param_3)
+ 
+-    def test_fit_minibtach(self, qnn_regressor, data):
++    def test_fit_minibtach(self, data):
+         """Tests concerning fit with mini-batch GD.
+ 
+         Tests include
+@@ -135,7 +141,7 @@ class TestQNNRegressor:
+             - whether `_param_op` is updated
+         """
+         X, y = data
+-
++        qnn_regressor = self.get_qnn_regressor()
+         qnn_regressor._optimizer = Adam({"maxiter_total": 10, "maxiter": 2, "lr": 0.1})
+         qnn_regressor.set_params(
+             batch_size=2,
+@@ -170,13 +176,15 @@ class TestQNNRegressor:
+         assert not np.allclose(qnn_regressor_2out.param, qnn_regressor_2out.param_ini)
+         assert not np.allclose(qnn_regressor_2out.param_op, qnn_regressor_2out.param_op_ini)
+ 
+-    def test_predict(self, qnn_regressor, data):
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_predict(self, data, framework):
+         """Tests concerning the predict function of the QNNRegressor.
+ 
+         Tests include
+             - whether the prediction output is correct
+         """
+         X, y = data
++        qnn_regressor = self.get_qnn_regressor(framework)
+         qnn_regressor._param = np.linspace(0.1, 0.4, 4)
+         qnn_regressor._param_op = np.linspace(0.1, 0.3, 3)
+         qnn_regressor._is_fitted = True
+@@ -189,7 +197,7 @@ class TestQNNRegressor:
+             np.array([0.50619332, 0.4905991, 0.51004432, 0.48826691, 0.5372742, 0.48826651]),
+         )
+ 
+-    def test_set_params_and_fit(self, qnn_regressor, data):
++    def test_set_params_and_fit(self, data):
+         """
+         Tests fit after changing parameters that alter the number of parameters of the pqc.
+ 
+@@ -199,9 +207,37 @@ class TestQNNRegressor:
+             - whether `_param_op` is updated
+         """
+         X, y = data
++        qnn_regressor = self.get_qnn_regressor()
+         qnn_regressor.set_params(num_layers=3)
+         qnn_regressor.fit(X, y)
+ 
+         assert qnn_regressor._is_fitted
+         assert len(qnn_regressor.param) != len(qnn_regressor.param_ini)
+         assert not np.allclose(qnn_regressor.param_op, qnn_regressor.param_op_ini)
++
++    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
++    def test_serialization(self, request, data, framework):
++        """Tests concerning the serialization of the QNNRegressor."""
++
++        X, y = data
++        qnn_regressor = self.get_qnn_regressor(framework)
++        qnn_regressor.fit(X, y)
++
++        buffer = io.BytesIO()
++        qnn_regressor.dump(buffer)
++
++        predict_before = qnn_regressor.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QNNRegressor.load(buffer, Executor("qiskit"))
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QNNRegressor)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
++
++        instance_loaded._is_fitted = False
++        instance_loaded.fit(X, y)
++
++        assert instance_loaded._is_fitted
++        assert np.allclose(instance_loaded.param, qnn_regressor.param)
++        assert np.allclose(instance_loaded.param_op, qnn_regressor.param_op)
+diff --git a/tests/qrc/test_qrc_classifier.py b/tests/qrc/test_qrc_classifier.py
+index 6f49a8a..b8dfec9 100644
+--- a/tests/qrc/test_qrc_classifier.py
++++ b/tests/qrc/test_qrc_classifier.py
+@@ -1,12 +1,13 @@
+ """Tests for QRCClassifier"""
+ 
++import io
+ import pytest
+ 
+ import numpy as np
+ from sklearn.datasets import make_classification
+ from sklearn.preprocessing import MinMaxScaler
+ 
+-from squlearn import Executor
++from squlearn import Executor, qrc
+ from squlearn.encoding_circuit import HubregtsenEncodingCircuit
+ from squlearn.qrc.qrc_classifier import QRCClassifier
+ 
+@@ -53,3 +54,29 @@ class TestQRCClassifier:
+             "kernel": np.array([0, 1, 0, 0, 0, 1]),
+         }
+         assert np.allclose(values, referece_values[ml_model], atol=1e-7)
++
++    @pytest.mark.parametrize(
++        "ml_model",
++        [
++            "linear",
++            "mlp",
++            "kernel",
++        ],
++    )
++    def test_serialization(self, data, ml_model):
++        """Tests concerning the serialization of the QRCClassifier."""
++        X, y = data
++        qrc_classifier = self.qrc_classifier(ml_model)
++        qrc_classifier.fit(X, y)
++
++        buffer = io.BytesIO()
++        qrc_classifier.dump(buffer)
++
++        predict_before = qrc_classifier.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QRCClassifier.load(buffer, Executor())
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QRCClassifier)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
+diff --git a/tests/qrc/test_qrc_regressor.py b/tests/qrc/test_qrc_regressor.py
+index a85edc0..52b2dad 100644
+--- a/tests/qrc/test_qrc_regressor.py
++++ b/tests/qrc/test_qrc_regressor.py
+@@ -1,5 +1,6 @@
+ """Tests for QRCRegressor"""
+ 
++import io
+ import pytest
+ 
+ import numpy as np
+@@ -60,3 +61,29 @@ class TestQRCRegressor:
+         }
+ 
+         assert np.allclose(values, referece_values[ml_model], atol=1e-7)
++
++    @pytest.mark.parametrize(
++        "ml_model",
++        [
++            "linear",
++            "mlp",
++            "kernel",
++        ],
++    )
++    def test_serialization(self, data, ml_model):
++        """Tests concerning the serialization of the QRCRegressor."""
++        X, y = data
++        qrc_regressor = self.qrc_regressor(ml_model)
++        qrc_regressor.fit(X, y)
++
++        buffer = io.BytesIO()
++        qrc_regressor.dump(buffer)
++
++        predict_before = qrc_regressor.predict(X)
++
++        buffer.seek(0)
++        instance_loaded = QRCRegressor.load(buffer, Executor())
++        predict_after = instance_loaded.predict(X)
++
++        assert isinstance(instance_loaded, QRCRegressor)
++        assert np.allclose(predict_before, predict_after, atol=1e-6)
+diff --git a/tests/util/serialization/test_model_pickler.py b/tests/util/serialization/test_model_pickler.py
+new file mode 100644
+index 0000000..8aec2bc
+--- /dev/null
++++ b/tests/util/serialization/test_model_pickler.py
+@@ -0,0 +1,86 @@
++import io
++import dill
++import pytest
++
++from squlearn.util.executor import Executor
++from squlearn.util.serialization.serializable_model_mixin import SerializableModelMixin
++
++
++class DummyExecutorHolder(SerializableModelMixin):
++    def __init__(self, executor):
++        self.executor = executor
++
++
++class DummyUnpickler(dill.Unpickler):
++    def persistent_load(self, pid):
++        return None
++
++
++@pytest.fixture
++def executor_obj():
++    return Executor("pennylane")
++
++
++def test_executor_removed_by_pickler(executor_obj):
++    dummy = DummyExecutorHolder(executor_obj)
++
++    buffer = io.BytesIO()
++    dummy.dump(buffer)
++
++    # raw load with dill, which should ignore the persistent IDs
++    buffer.seek(0)
++    dummpy_pickler = DummyUnpickler(buffer)
++    raw = dummpy_pickler.load()
++
++    assert hasattr(raw, "executor")
++    assert raw.executor is None
++
++
++def test_executor_reinjected_by_unpickler(executor_obj):
++    dummy = DummyExecutorHolder(executor_obj)
++
++    # Dump via ExecutorPickler
++    buffer = io.BytesIO()
++    dummy.dump(buffer)
++
++    # unpickle with ExecutorUnpickler => executor should be injected
++    buffer.seek(0)
++    loaded = dummy.load(buffer, executor_obj)
++
++    assert hasattr(loaded, "executor")
++    assert loaded.executor is executor_obj
++
++
++def test_multiple_executor_references(executor_obj):
++    class Holder(SerializableModelMixin):
++        def __init__(self, executor):
++            self.level1 = DummyExecutorHolder(executor)
++            self.level2 = DummyExecutorHolder(executor)
++
++    holder = Holder(executor_obj)
++
++    buffer = io.BytesIO()
++    holder.dump(buffer)
++
++    # raw load all executor references should be None
++    buffer.seek(0)
++    dummy_pickler = DummyUnpickler(buffer)
++    raw = dummy_pickler.load()
++    assert raw.level1.executor is None
++    assert raw.level2.executor is None
++
++    # load with ExecutorUnpickler, which should reinject the executor
++    buffer.seek(0)
++
++    loaded = holder.load(buffer, executor_obj)
++    assert loaded.level1.executor is executor_obj
++    assert loaded.level2.executor is executor_obj
++
++
++def test_invalid_path_or_buf():
++    with pytest.raises(TypeError):
++        SerializableModelMixin.load(123, Executor("pennylane"))  # Invalid type for source
++    with pytest.raises(TypeError):
++        SerializableModelMixin.dump(123)  # Invalid type for target
++    with pytest.raises(TypeError):
++        SerializableModelMixin.dump(None)  # None is not a valid path or buffer

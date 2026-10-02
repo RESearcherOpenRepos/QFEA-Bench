@@ -1,0 +1,207 @@
+{
+  "id": 85,
+  "sample_id": "qiskit_nature_881_903",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "729723bd4be61d1eb1b952613dbea04bfbce77d7",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 11,
+    "subtype_test_counts": {
+      "interface/lazy_circuit_configuration": 2,
+      "interface/input_validation": 2,
+      "quantum_semantics/hartree_fock_state_preparation": 5,
+      "quantum_semantics/hartree_fock_tapering": 2,
+      "quantum_semantics/vscf_state_preparation": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2_lazy_attribute_setting",
+      "label": "interface/lazy_circuit_configuration",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "HartreeFock built after attribute assignments equals the four-qubit JW reference circuit."
+        }
+      ],
+      "rationale": "The selected new case exercises delayed configuration through public attributes."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_raises_on_unsupported_mapper",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 57,
+          "expected": "Building HartreeFock with BravyiKitaevSuperFastMapper raises NotImplementedError."
+        }
+      ],
+      "rationale": "The selected test checks unsupported-mapper rejection."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_6_lazy_attribute_setting",
+      "label": "interface/lazy_circuit_configuration",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "VSCF built after attribute assignments equals the eager six-qubit reference."
+        }
+      ],
+      "rationale": "The selected new case exercises delayed configuration."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring",
+      "label": "quantum_semantics/hartree_fock_state_preparation",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "One alpha and one beta electron produce occupation bits 1010."
+        }
+      ],
+      "rationale": "The bit pattern is the HF occupation state."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_bitstring_invalid_input",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 48,
+          "expected": "Too many particles or invalid orbital count raise ValueError."
+        }
+      ],
+      "rationale": "The selected test checks invalid inputs."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_hf_bitstring_mapped",
+      "label": "quantum_semantics/hartree_fock_tapering",
+      "assertions": [
+        {
+          "line": 149,
+          "expected": "Mapped HF water occupation bits match the specified symmetry sector and untapered variant."
+        }
+      ],
+      "rationale": "The bitstrings follow parity mapping and Z2 tapering."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_2_py_h2",
+      "label": "quantum_semantics/hartree_fock_state_preparation",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Parity two-qubit-reduced H2 HF circuit sets the expected qubit."
+        }
+      ],
+      "rationale": "The reference circuit prepares the physical HF state."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_bk_h2",
+      "label": "quantum_semantics/hartree_fock_state_preparation",
+      "assertions": [
+        {
+          "line": 93,
+          "expected": "Bravyi-Kitaev H2 HF circuit sets qubits 0,1,2."
+        }
+      ],
+      "rationale": "The reference circuit checks mapped HF occupation."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_jw_h2",
+      "label": "quantum_semantics/hartree_fock_state_preparation",
+      "assertions": [
+        {
+          "line": 69,
+          "expected": "Jordan-Wigner H2 HF circuit sets qubits 0 and 2."
+        }
+      ],
+      "rationale": "The reference circuit checks mapped HF occupation."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_4_py_h2",
+      "label": "quantum_semantics/hartree_fock_state_preparation",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Parity H2 HF circuit sets qubits 0 and 1."
+        }
+      ],
+      "rationale": "The reference circuit checks mapped HF occupation."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_hartree_fock.py::TestHartreeFock::test_qubits_6_py_lih",
+      "label": "quantum_semantics/hartree_fock_tapering",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "LiH HF circuit under parity reduction and Z2 tapering matches six-qubit reference."
+        }
+      ],
+      "rationale": "The mapped occupation state depends on symmetry reductions."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_bitstring",
+      "label": "quantum_semantics/vscf_state_preparation",
+      "assertions": [
+        {
+          "line": 32,
+          "expected": "VSCF modal occupation bitstring is big-endian 1010."
+        }
+      ],
+      "rationale": "The bit pattern encodes the vibrational reference state."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_4",
+      "label": "quantum_semantics/vscf_state_preparation",
+      "assertions": [
+        {
+          "line": 41,
+          "expected": "Four-qubit VSCF circuit prepares the specified modal state."
+        }
+      ],
+      "rationale": "The expected circuit encodes modal occupation."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/circuit/library/initial_states/test_vscf.py::TestVSCF::test_qubits_5",
+      "label": "quantum_semantics/vscf_state_preparation",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "Five-qubit VSCF circuit prepares the specified modal state."
+        }
+      ],
+      "rationale": "The expected circuit encodes modal occupation."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/729723bd4be61d1eb1b952613dbea04bfbce77d7/test/second_q/circuit/library/initial_states/test_hartree_fock.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/729723bd4be61d1eb1b952613dbea04bfbce77d7/test/second_q/circuit/library/initial_states/test_vscf.py"
+  ],
+  "rationale": "Read each of 14 selected exact-patch tests, including parameterized occupation, mapper, and excitation variants."
+}

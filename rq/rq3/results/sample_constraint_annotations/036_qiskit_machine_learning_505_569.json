@@ -1,0 +1,223 @@
+{
+  "id": 36,
+  "sample_id": "qiskit_machine_learning_505_569",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "12830368e6ad721f12b7b51bf0eca2938533fd43",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 9,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "interface/circuit_configuration": 5,
+      "interface/constructor_defaults": 2,
+      "interface/input_validation": 1,
+      "interface/copy_preservation": 2,
+      "quantum_semantics/state_preparation_correctness": 1,
+      "interface/circuit_parameter_contract": 1,
+      "quantum_semantics/circuit_decomposition": 2,
+      "general_semantics/model_training_performance": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_ansatz_setter",
+      "label": "interface/circuit_configuration",
+      "assertions": [
+        {
+          "line": 127,
+          "expected": "Changing ansatz reconciles QNNCircuit, feature-map and ansatz qubit counts."
+        }
+      ],
+      "rationale": "The setter case checks public component properties after replacement."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_before_build",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 34,
+          "expected": "Constructing QNNCircuit by two qubits exposes default ZZFeatureMap and RealAmplitudes."
+        }
+      ],
+      "rationale": "No quantum output is asserted; the public constructor configuration is."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_fails",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 45,
+          "expected": "Incompatible QNNCircuit arguments raise QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "Both selected failure branches check public input rejection."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_construction_for_input_missmatch",
+      "label": "interface/circuit_configuration",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "Explicit four-qubit construction resizes the supplied components."
+        }
+      ],
+      "rationale": "This mismatched-input case checks reported qubit counts after reconciliation."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_copy",
+      "label": "interface/copy_preservation",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "Copy preserves feature-map, ansatz and qubit count."
+        }
+      ],
+      "rationale": "Copy behavior is checked through public component properties."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_construction",
+      "label": "interface/circuit_configuration",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Feature-map construction creates matching three-qubit ansatz."
+        }
+      ],
+      "rationale": "The selected feature-map path checks component types and sizes."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_feature_map_setter",
+      "label": "interface/circuit_configuration",
+      "assertions": [
+        {
+          "line": 144,
+          "expected": "Feature-map setter reconfigures to one qubit with a ZFeatureMap."
+        }
+      ],
+      "rationale": "The setter case checks a distinct one-qubit default after mutation."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_construction",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 62,
+          "expected": "One-qubit construction uses ZFeatureMap and RealAmplitudes."
+        }
+      ],
+      "rationale": "The one-qubit default differs from the two-qubit default in test 2."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/circuit/library/test_qnn_circuit.py::TestQNNCircuit::test_num_qubit_setter",
+      "label": "interface/circuit_configuration",
+      "assertions": [
+        {
+          "line": 115,
+          "expected": "Qubit-count setter updates both component circuits to four qubits."
+        }
+      ],
+      "rationale": "The test inspects public counts after changing num_qubits."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_bind_after_composition",
+      "label": "quantum_semantics/state_preparation_correctness",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Composed and bound RawFeatureVector prepares |00>."
+        }
+      ],
+      "rationale": "Statevector equivalence is a quantum-state assertion."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_construction",
+      "label": "interface/circuit_parameter_contract",
+      "assertions": [
+        {
+          "line": 44,
+          "expected": "RawFeatureVector for two qubits exposes four parameters and rejects bad dimension."
+        }
+      ],
+      "rationale": "The constructor case checks public parameter count and exception behavior."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_copy",
+      "label": "interface/copy_preservation",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "Copied RawFeatureVector retains qubit and feature dimensions."
+        }
+      ],
+      "rationale": "No prepared state is inspected in this copy case."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_fully_bound",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "Fully bound state-preparation circuit decomposes to the reference circuit."
+        }
+      ],
+      "rationale": "The reference includes the expected quantum operations."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_partially_bound",
+      "label": "quantum_semantics/circuit_decomposition",
+      "assertions": [
+        {
+          "line": 87,
+          "expected": "Partially bound state-preparation circuit decomposes to the reference."
+        }
+      ],
+      "rationale": "The parameterized circuit is compared with the expected quantum operation sequence."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/circuit/library/test_raw_feature_vector.py::TestRawFeatureVector::test_usage_in_vqc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 121,
+          "expected": "VQC using RawFeatureVector scores above 0.5."
+        }
+      ],
+      "rationale": "The asserted outcome is predictive score, not a state or circuit equality."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/12830368e6ad721f12b7b51bf0eca2938533fd43/test/circuit/library/test_qnn_circuit.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/12830368e6ad721f12b7b51bf0eca2938533fd43/test/circuit/library/test_raw_feature_vector.py"
+  ],
+  "rationale": "Reviewed all nine QNNCircuit constructor/setter variants and each RawFeatureVector regression test individually."
+}

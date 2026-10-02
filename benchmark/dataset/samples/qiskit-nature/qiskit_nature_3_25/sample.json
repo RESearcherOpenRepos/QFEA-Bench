@@ -1,0 +1,145 @@
+{
+  "instance": {
+    "id": 58,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_3_25",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/3",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/25",
+    "base_commit": "34d460f06c9bad858aa413f2821becb2c5b33752",
+    "patch": "e8e7b736e0dad78206af87ed4c524933a5e5292a"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines FermionicOp label algebra, including fermionic composition signs and reduction semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/__init__.py",
+      "qiskit_nature/operators/second_quantization/__init__.py",
+      "qiskit_nature/operators/second_quantization/fermionic_op.py",
+      "qiskit_nature/operators/second_quantization/multiply.py",
+      "qiskit_nature/operators/second_quantization/particle_op.py",
+      "qiskit_nature/operators/second_quantization/star_algebra.py",
+      "qiskit_nature/operators/second_quantization/tolerances.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature's second-quantized fermionic workflows still depend on older primitive-style operator building blocks, which makes it awkward to construct and manipulate fermionic operators directly from compact labels. Users should have a modern FermionicOp abstraction that can be created from label data, supports the core fermionic operator algebra directly, and is available from the high-level qiskit_nature.operators package.",
+    "requirements": [
+      "The repository must expose a FermionicOp class from qiskit_nature.operators.",
+      "FermionicOp must accept valid fermionic labels and multi-term label-coefficient input data.",
+      "FermionicOp must reject invalid label input with a QiskitNatureError.",
+      "FermionicOp must support scalar multiplication and operator addition over label-based terms.",
+      "FermionicOp must support fermionic operator composition with the @ operator and preserve the expected fermionic sign behavior.",
+      "FermionicOp.reduce must merge duplicate labels and keep the resulting coefficients consistent with fermionic operator algebra.",
+      "Existing nearby FermionicOperator transformation and mapping behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "FermionicOp",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "constructor: data",
+        "Output": "",
+        "Description": "Represents a label-based fermionic operator and supports scalar multiplication, addition, and composition through Python operator syntax."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.reduce",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "self, atol=None, rtol=None",
+        "Output": "FermionicOp",
+        "Description": "Merges duplicate fermionic labels and removes coefficients that are numerically zero within the configured tolerances."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_3_25",
+      "image_id": "sha256:95f05ded636e3664f06080ff6a01df47ababac07dbc061b0e659ec6ba76b50f6",
+      "image_size": "1368559791"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "qiskit-aqua==0.9.5",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "pyscf==2.2.1"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_invalid",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 38
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_transform",
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_freezing_core",
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_bksf_mapping",
+          "test/test_fermionic_transformation.py::TestFermionicTransformation::test_jordan_wigner",
+          "test/test_fermionic_transformation.py::TestFermionicTransformation::test_parity"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 38
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_invalid",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 selected selectors failed with ImportError because FermionicOp is absent from qiskit_nature.operators on base.",
+        "duration_seconds": 39
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_transform",
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_freezing_core",
+          "test/test_fermionic_operator.py::TestFermionicOperator::test_bksf_mapping",
+          "test/test_fermionic_transformation.py::TestFermionicTransformation::test_jordan_wigner",
+          "test/test_fermionic_transformation.py::TestFermionicTransformation::test_parity"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 39
+      }
+    }
+  }
+}

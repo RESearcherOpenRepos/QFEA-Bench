@@ -1,0 +1,302 @@
+{
+  "id": 71,
+  "sample_id": "qiskit_nature_665_756",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "c765c724a0f1e862104ab639ae27c963da86ae44",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 12,
+    "p2p_tests": 9,
+    "subtype_test_counts": {
+      "interface/input_validation": 1,
+      "interface/mapping_access": 3,
+      "general_semantics/tensor_arithmetic": 9,
+      "general_semantics/symbolic_operator_arithmetic": 5,
+      "quantum_semantics/fermionic_operator_algebra": 1,
+      "quantum_semantics/spin_operator_algebra": 1,
+      "quantum_semantics/operator_hermiticity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "PolynomialTensor rejects key/rank, axis-size, and register-length mismatches."
+        }
+      ],
+      "rationale": "Constructor validation is the sole purpose of this test."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 121,
+          "expected": "Key lookup returns the stored coefficient array."
+        }
+      ],
+      "rationale": "The assertion checks mapping-style access."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 127,
+          "expected": "Length equals the number of stored tensor keys."
+        }
+      ],
+      "rationale": "The assertion checks mapping-style length."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+      "label": "interface/mapping_access",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Iteration yields stored tensor keys in mapping order."
+        }
+      ],
+      "rationale": "The assertion checks the public iterator contract."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplication by zero scales every coefficient to zero."
+        }
+      ],
+      "rationale": "The numeric tensor scaling is primary; unsupported operand error is secondary."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplication by 0.75 scales every tensor coefficient."
+        }
+      ],
+      "rationale": "The numeric tensor scaling is primary."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplication by 1.5 scales every tensor coefficient."
+        }
+      ],
+      "rationale": "The numeric tensor scaling is primary."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplication by 2.25 scales every tensor coefficient."
+        }
+      ],
+      "rationale": "The numeric tensor scaling is primary."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplication by 3 scales every tensor coefficient."
+        }
+      ],
+      "rationale": "The numeric tensor scaling is primary."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Addition combines common tensor keys and coefficients."
+        }
+      ],
+      "rationale": "The test checks generic array addition; operand errors are secondary."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 171,
+          "expected": "Conjugation applies complex conjugation to stored arrays."
+        }
+      ],
+      "rationale": "The expected transformation is ordinary complex-array arithmetic."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 176,
+          "expected": "Transpose permutes stored coefficient-array axes."
+        }
+      ],
+      "rationale": "The expected transformation is ordinary tensor arithmetic."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 177,
+          "expected": "Fermionic scalar multiplication scales coefficients."
+        }
+      ],
+      "rationale": "The selected operation is generic scalar arithmetic."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 196,
+          "expected": "Fermionic addition combines labeled coefficients."
+        }
+      ],
+      "rationale": "No fermionic sign rule appears in the selected addition."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 304,
+          "expected": "Fermionic adjoint exchanges ladder actions and produces the expected signs."
+        }
+      ],
+      "rationale": "The expected adjoint signs depend on fermion operator algebra."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 212,
+          "expected": "SpinOp scalar multiplication scales coefficients."
+        }
+      ],
+      "rationale": "The selected operation is generic scalar arithmetic."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [
+        {
+          "line": 231,
+          "expected": "Adding X and iY produces the spin raising operator."
+        }
+      ],
+      "rationale": "The raising relation is a spin-algebra identity."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+      "label": "general_semantics/tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "SpinOp adjoint conjugates and transposes its coefficient array."
+        }
+      ],
+      "rationale": "The expected operation is generic complex tensor adjoint."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "VibrationalOp scalar multiplication doubles term coefficients."
+        }
+      ],
+      "rationale": "The selected operation is generic scalar arithmetic."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "VibrationalOp addition combines identical terms."
+        }
+      ],
+      "rationale": "The selected operation is generic term aggregation."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "Vibrational ladder combinations are recognized as Hermitian or not under tolerance."
+        }
+      ],
+      "rationale": "The test checks a physical operator property."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/c765c724a0f1e862104ab639ae27c963da86ae44/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c765c724a0f1e862104ab639ae27c963da86ae44/test/second_q/operators/test_polynomial_tensor.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c765c724a0f1e862104ab639ae27c963da86ae44/test/second_q/operators/test_spin_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/c765c724a0f1e862104ab639ae27c963da86ae44/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Read all 21 selected tests at the exact sample commit; each case is labeled by its explicit assertion rather than operator class name."
+}

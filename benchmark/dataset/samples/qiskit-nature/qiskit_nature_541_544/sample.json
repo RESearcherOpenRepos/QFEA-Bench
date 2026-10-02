@@ -1,0 +1,116 @@
+{
+  "instance": {
+    "id": 66,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_541_544",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/541",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/544",
+    "base_commit": "3a44a3424501152f7870d1718e45cfc2fd2375c2",
+    "patch": "9ed79a56cf4205f3bb1e1ca8310414c021cb71a1"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task exposes FermionicOp terms as structured action/index pairs, a representation helper over existing operator semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/second_quantization/fermionic_op.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "FermionicOp can expose its terms through string-oriented helpers, but that format is awkward for programmatic access to creation and annihilation actions and their mode indices. Users need a supported way to iterate over the individual FermionicOp terms as structured action/index pairs together with each coefficient.",
+    "requirements": [
+      "FermionicOp must provide a public terms iterator for individual operator terms.",
+      "Each yielded term must contain structured tuples of fermionic action symbols and integer mode indices together with the term coefficient.",
+      "Dense-format labels must be converted into the same structured sparse term representation used internally.",
+      "Existing FermionicOp initialization, register-length inference, scalar multiplication, and addition behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "FermionicOp.terms",
+        "Path": "qiskit_nature/operators/second_quantization/fermionic_op.py",
+        "Input": "self",
+        "Output": "Iterator[tuple[tuple[tuple[str, int], ...], complex]]",
+        "Description": "Iterates over the FermionicOp terms, yielding each term as action/index pairs and its coefficient."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_nature_541_544",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:f45ec4012492ee3b886e4945e3441fbb19b9ff2c8f3d8009cf11364ca19361cf",
+      "image_size": "1082681037"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms"
+        ],
+        "result": "passed",
+        "summary": "1 passed in 1.66s",
+        "duration_seconds": 5.61
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 1.52s",
+        "duration_seconds": 5.23
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms"
+        ],
+        "result": "failed",
+        "summary": "1 failed in 1.77s; AttributeError: 'FermionicOp' object has no attribute 'terms'",
+        "duration_seconds": 7.92
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_from_tuple_label",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add"
+        ],
+        "result": "passed",
+        "summary": "5 passed in 1.56s",
+        "duration_seconds": 7.81
+      }
+    }
+  }
+}

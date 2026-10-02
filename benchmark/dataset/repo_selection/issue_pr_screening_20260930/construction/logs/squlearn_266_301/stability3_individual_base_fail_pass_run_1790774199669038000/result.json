@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.0209348349999345,
+  "items": [
+    "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.009078625000029206,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.003548000000137108,
+      "wasxfail": null,
+      "longrepr": "self = <tests.kernel.ml.test_qgpr.TestQGPR object at 0x7fffe1ced3c0>\nqgpr = 'qgpr_pqk_without_num_features'\nrequest = <FixtureRequest for <Function test_predict_without_num_features[qgpr_pqk_without_num_features]>>\ndata = (array([[0.9       , 0.53624539],\n       [0.1       , 0.1023651 ],\n       [0.1931607 , 0.19189144],\n       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,\n         7.85663467,  88.31795591]))\n\n    @pytest.mark.parametrize(\n        \"qgpr\", [\"qgpr_fidelity_without_num_features\", \"qgpr_pqk_without_num_features\"]\n    )\n    def test_predict_without_num_features(self, qgpr, request, data):\n        \"\"\"Tests concerning the predict function of the QGPR.\n    \n        Tests include\n            - whether the output is of the same shape as the reference\n            - whether the type of the output is np.ndarray\n        \"\"\"\n>       qgpr_instance = request.getfixturevalue(qgpr)\n\ntests/kernel/ml/test_qgpr.py:105: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:630: in getfixturevalue\n    fixturedef = self._get_active_fixturedef(argname)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef\n    fixturedef.execute(request=subrequest)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1232: in execute\n    result: FixtureValue = ihook.pytest_fixture_setup(\n/usr/local/lib/python3.10/site-packages/pluggy/_hooks.py:512: in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n/usr/local/lib/python3.10/site-packages/pluggy/_manager.py:120: in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n/usr/local/lib/python3.10/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup\n    return (yield)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup\n    result = call_fixture_func(fixturefunc, request, kwargs)\n/usr/local/lib/python3.10/site-packages/_pytest/fixtures.py:1005: in call_fixture_func\n    fixture_result = fixturefunc(**kwargs)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <tests.kernel.ml.test_qgpr.TestQGPR object at 0x7ffffe284a30>\n\n    @pytest.fixture(scope=\"module\")\n    def qgpr_pqk_without_num_features(self) -> QGPR:\n        \"\"\"QGPR module with ProjectedQuantumKernel.\"\"\"\n        np.random.seed(42)\n        executor = Executor()\n>       encoding_circuit = YZ_CX_EncodingCircuit(num_qubits=3, num_layers=2)\nE       TypeError: YZ_CX_EncodingCircuit.__init__() missing 1 required positional argument: 'num_features'\n\ntests/kernel/ml/test_qgpr.py:62: TypeError"
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qgpr.py::TestQGPR::test_predict_without_num_features[qgpr_pqk_without_num_features]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.00045195899997452216,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

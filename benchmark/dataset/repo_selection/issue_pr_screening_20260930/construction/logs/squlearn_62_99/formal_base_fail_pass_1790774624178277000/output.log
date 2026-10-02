@@ -1,0 +1,562 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  6a41d14 Add `get_params` and `set_params`  for qnns (#99)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6a41d14
+
+HEAD is now at a744a78 add readme to index (#104)
+FFFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________ TestBaseQNN.test_set_params_num_qubits_single_op _______________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe637be20>
+qnn_single_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+
+    def test_set_params_num_qubits_single_op(self, qnn_single_op: MockBaseQNN):
+        """
+        Test `set_params` with `num_qubits` for single operator.
+    
+        Args:
+            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+>       qnn_single_op.set_params(num_qubits=5)
+
+tests/qnn/test_base_qnn.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+params = {'num_qubits': 5}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'num_qubits' for estimator MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+E                           loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffe5d52e30>,
+E                           operator=SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Pauli...
+E                           param_ini=array([ 0.30670429,  1.35207467,  0.64568133,  0.28200936,  0.01      ,
+E                       1.34      ,  2.67      ,  4.        ,  5.82655809, -1.46471707,
+E                       3.66592495,  0.36310427,  0.01      ,  1.34      ,  2.67      ,
+E                       4.        , -6.02911343,  4.17982425,  3.49542082,  4.64970979,
+E                       3.00724774,  1.8796687 , -0.24203231,  1.7626168 ]),
+E                           param_op_ini=array([1., 1., 1.]),
+E                           pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shot_adjusting', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+------------------------------ Captured log setup ------------------------------
+INFO     executor:executor.py:330 Executor initialized with backend: statevector_simulator
+INFO     executor:executor.py:331 Executor initialized with service: None
+INFO     executor:executor.py:337 Executor initialized with session: None
+INFO     executor:executor.py:338 Executor initialized with estimator: None
+INFO     executor:executor.py:339 Executor initialized with sampler: None
+INFO     executor:executor.py:340 Executor initialized with quantum instance: None
+INFO     executor:executor.py:343 Executor intial shots: 1
+_______________ TestBaseQNN.test_set_params_num_qubits_multi_op ________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe63793f0>
+qnn_multi_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>)
+
+    def test_set_params_num_qubits_multi_op(self, qnn_multi_op):
+        """
+        Test `set_params` with `num_qubits` for mutiple operators.
+    
+        Args:
+            qnn_multi_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+>       qnn_multi_op.set_params(num_qubits=5)
+
+tests/qnn/test_base_qnn.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>)
+params = {'num_qubits': 5}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'num_qubits' for estimator MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+E                           loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffe3970a30>,
+E                           operator=[SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Paul...
+E                           param_ini=array([ 0.30670429,  1.35207467,  0.64568133,  0.28200936,  0.01      ,
+E                       1.34      ,  2.67      ,  4.        ,  5.82655809, -1.46471707,
+E                       3.66592495,  0.36310427,  0.01      ,  1.34      ,  2.67      ,
+E                       4.        , -6.02911343,  4.17982425,  3.49542082,  4.64970979,
+E                       3.00724774,  1.8796687 , -0.24203231,  1.7626168 ]),
+E                           param_op_ini=array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]),
+E                           pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shot_adjusting', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+------------------------------ Captured log setup ------------------------------
+INFO     executor:executor.py:330 Executor initialized with backend: statevector_simulator
+INFO     executor:executor.py:331 Executor initialized with service: None
+INFO     executor:executor.py:337 Executor initialized with session: None
+INFO     executor:executor.py:338 Executor initialized with estimator: None
+INFO     executor:executor.py:339 Executor initialized with sampler: None
+INFO     executor:executor.py:340 Executor initialized with quantum instance: None
+INFO     executor:executor.py:343 Executor intial shots: 1
+___________________ TestBaseQNN.test_set_params_feature_map ____________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe6378430>
+qnn_single_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+
+    def test_set_params_feature_map(self, qnn_single_op):
+        """
+        Test `set_params` for pqc parameters.
+    
+        Args:
+            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+>       qnn_single_op.set_params(num_layers=3, closed=True)
+
+tests/qnn/test_base_qnn.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+params = {'num_layers': 3, 'closed': True}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'num_layers' for estimator MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+E                           loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffe5d52e30>,
+E                           operator=SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Pauli...
+E                           param_ini=array([ 0.30670429,  1.35207467,  0.64568133,  0.28200936,  0.01      ,
+E                       1.34      ,  2.67      ,  4.        ,  5.82655809, -1.46471707,
+E                       3.66592495,  0.36310427,  0.01      ,  1.34      ,  2.67      ,
+E                       4.        , -6.02911343,  4.17982425,  3.49542082,  4.64970979,
+E                       3.00724774,  1.8796687 , -0.24203231,  1.7626168 ]),
+E                           param_op_ini=array([1., 1., 1.]),
+E                           pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shot_adjusting', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+_________________ TestBaseQNN.test_set_params_single_operator __________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe637abf0>
+qnn_single_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+
+    def test_set_params_single_operator(self, qnn_single_op):
+        """
+        Test `set_params` for single operator parameters.
+    
+        Args:
+            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+>       qnn_single_op.set_params(X="S", Z="N")
+
+tests/qnn/test_base_qnn.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>)
+params = {'X': 'S', 'Z': 'N'}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'X' for estimator MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffabfca30>,
+E                           loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffe5d52e30>,
+E                           operator=SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Pauli...
+E                           param_ini=array([ 0.30670429,  1.35207467,  0.64568133,  0.28200936,  0.01      ,
+E                       1.34      ,  2.67      ,  4.        ,  5.82655809, -1.46471707,
+E                       3.66592495,  0.36310427,  0.01      ,  1.34      ,  2.67      ,
+E                       4.        , -6.02911343,  4.17982425,  3.49542082,  4.64970979,
+E                       3.00724774,  1.8796687 , -0.24203231,  1.7626168 ]),
+E                           param_op_ini=array([1., 1., 1.]),
+E                           pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5d53340>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shot_adjusting', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+__________________ TestBaseQNN.test_set_params_multi_operator __________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe637a920>
+qnn_multi_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>)
+
+    def test_set_params_multi_operator(self, qnn_multi_op):
+        """
+        Test `set_params` for multiple operator parameters.
+    
+        Args:
+            qnn_multi_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+>       qnn_multi_op.set_params(op0__X="S", op3__Z="N")
+
+tests/qnn/test_base_qnn.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>)
+params = {'op0__X': 'S', 'op3__Z': 'N'}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'op0' for estimator MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3970790>,
+E                           loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffe3970a30>,
+E                           operator=[SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Paul...
+E                           param_ini=array([ 0.30670429,  1.35207467,  0.64568133,  0.28200936,  0.01      ,
+E                       1.34      ,  2.67      ,  4.        ,  5.82655809, -1.46471707,
+E                       3.66592495,  0.36310427,  0.01      ,  1.34      ,  2.67      ,
+E                       4.        , -6.02911343,  4.17982425,  3.49542082,  4.64970979,
+E                       3.00724774,  1.8796687 , -0.24203231,  1.7626168 ]),
+E                           param_op_ini=array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]),
+E                           pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe39709d0>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shot_adjusting', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+___________________ TestQNNRegressor.test_set_params_and_fit ___________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe5d39900>
+qnn_regressor = QNNRegressor(executor=<squlearn.util.executor.Executor object at 0x7fffdab6cfd0>,
+             loss=<squlearn.qnn.loss....19967378]),
+             pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffdab6d2d0>)
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+
+    def test_set_params_and_fit(self, qnn_regressor, data):
+        """
+        Tests fit after changing parameters that alter the number of parameters of the pqc.
+    
+        Tests include
+            - whether `_is_fitted` is True
+            - whether `_param` is updated
+            - whether `_param_op` is updated
+        """
+        X, y = data
+>       qnn_regressor.set_params(num_layers=3)
+
+tests/qnn/test_qnnr.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QNNRegressor(executor=<squlearn.util.executor.Executor object at 0x7fffdab6cfd0>,
+             loss=<squlearn.qnn.loss....19967378]),
+             pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffdab6d2d0>)
+params = {'num_layers': 3}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'num_layers' for estimator QNNRegressor(executor=<squlearn.util.executor.Executor object at 0x7fffdab6cfd0>,
+E                            loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffdab6d330>,
+E                            operator=SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Paul...
+E                      0.15599452, 0.05808361, 0.86617615, 0.60111501, 0.70807258,
+E                      0.02058449, 0.96990985, 0.83244264, 0.21233911, 0.18182497,
+E                      0.18340451, 0.30424224, 0.52475643, 0.43194502, 0.29122914,
+E                      0.61185289, 0.13949386, 0.29214465, 0.36636184]),
+E                            param_op_ini=array([0.45606998, 0.78517596, 0.19967378]),
+E                            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffdab6d2d0>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+------------------------------ Captured log setup ------------------------------
+INFO     executor:executor.py:330 Executor initialized with backend: statevector_simulator
+INFO     executor:executor.py:331 Executor initialized with service: None
+INFO     executor:executor.py:337 Executor initialized with session: None
+INFO     executor:executor.py:338 Executor initialized with estimator: None
+INFO     executor:executor.py:339 Executor initialized with sampler: None
+INFO     executor:executor.py:340 Executor initialized with quantum instance: None
+INFO     executor:executor.py:343 Executor intial shots: 1
+__________________ TestQNNClassifier.test_set_params_and_fit ___________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe5d52980>
+qnn_classifier = QNNClassifier(executor=<squlearn.util.executor.Executor object at 0x7fffda437430>,
+              loss=<squlearn.qnn.lo...19967378]),
+              pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffda437730>)
+data = (array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))
+
+    def test_set_params_and_fit(self, qnn_classifier, data):
+        """
+        Tests fit after changing parameters that alter the number of parameters of the pqc.
+    
+        Tests include
+            - whether `_is_fitted` is True
+            - whether `_param` is updated
+            - whether `_param_op` is updated
+        """
+        X, y = data
+>       qnn_classifier.set_params(num_layers=3)
+
+tests/qnn/test_qnnc.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QNNClassifier(executor=<squlearn.util.executor.Executor object at 0x7fffda437430>,
+              loss=<squlearn.qnn.lo...19967378]),
+              pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffda437730>)
+params = {'num_layers': 3}
+
+    def set_params(self, **params):
+        """Set the parameters of this estimator.
+    
+        The method works on simple estimators as well as on nested objects
+        (such as :class:`~sklearn.pipeline.Pipeline`). The latter have
+        parameters of the form ``<component>__<parameter>`` so that it's
+        possible to update each component of a nested object.
+    
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+    
+        Returns
+        -------
+        self : estimator instance
+            Estimator instance.
+        """
+        if not params:
+            # Simple optimization to gain speed (inspect is slow)
+            return self
+        valid_params = self.get_params(deep=True)
+    
+        nested_params = defaultdict(dict)  # grouped by prefix
+        for key, value in params.items():
+            key, delim, sub_key = key.partition("__")
+            if key not in valid_params:
+                local_valid_params = self._get_param_names()
+>               raise ValueError(
+                    f"Invalid parameter {key!r} for estimator {self}. "
+                    f"Valid parameters are: {local_valid_params!r}."
+                )
+E               ValueError: Invalid parameter 'num_layers' for estimator QNNClassifier(executor=<squlearn.util.executor.Executor object at 0x7fffda437430>,
+E                             loss=<squlearn.qnn.loss.SquaredLoss object at 0x7fffda437790>,
+E                             operator=SummedOp([PauliOp(Pauli('IIII'), coeff=1.0*p[0]), PauliOp(Pauli('IIIZ'), coeff=1.0*p[1]), PauliOp(Pauli('IIZI'), coeff=1.0*p[1]), PauliOp(Pauli('IZII'), coeff=1.0*p[1]), PauliOp(Pauli('ZIII'), coeff=1.0*p[1]), Pau...
+E                      0.15599452, 0.05808361, 0.86617615, 0.60111501, 0.70807258,
+E                      0.02058449, 0.96990985, 0.83244264, 0.21233911, 0.18182497,
+E                      0.18340451, 0.30424224, 0.52475643, 0.43194502, 0.29122914,
+E                      0.61185289, 0.13949386, 0.29214465, 0.36636184]),
+E                             param_op_ini=array([0.45606998, 0.78517596, 0.19967378]),
+E                             pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffda437730>). Valid parameters are: ['batch_size', 'epochs', 'executor', 'loss', 'operator', 'opt_param_op', 'optimizer', 'param_ini', 'param_op_ini', 'parameter_seed', 'pqc', 'shuffle', 'variance'].
+
+/usr/local/lib/python3.10/site-packages/sklearn/base.py:230: ValueError
+------------------------------ Captured log setup ------------------------------
+INFO     executor:executor.py:330 Executor initialized with backend: statevector_simulator
+INFO     executor:executor.py:331 Executor initialized with service: None
+INFO     executor:executor.py:337 Executor initialized with session: None
+INFO     executor:executor.py:338 Executor initialized with estimator: None
+INFO     executor:executor.py:339 Executor initialized with sampler: None
+INFO     executor:executor.py:340 Executor initialized with quantum instance: None
+INFO     executor:executor.py:343 Executor intial shots: 1
+=========================== short test summary info ============================
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_feature_map
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_single_operator
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_multi_operator
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit - Va...
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit - V...
+7 failed, 128188 warnings in 5.04s

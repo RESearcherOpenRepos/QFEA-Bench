@@ -1,0 +1,102 @@
+{
+  "id": 48,
+  "sample_id": "qiskit_nature_129_341",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "357fe78db796414292a51bd720e813cf57cbc170",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/fermionic_matrix_representation": 1,
+      "interface/return_representation": 1,
+      "general_semantics/symbolic_operator_arithmetic": 1,
+      "quantum_semantics/fermionic_operator_algebra": 2,
+      "quantum_semantics/fermionic_hermiticity": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix",
+      "label": "quantum_semantics/fermionic_matrix_representation",
+      "assertions": [
+        {
+          "line": 366,
+          "expected": "Creation and annihilation matrices include the expected occupation-basis signs."
+        }
+      ],
+      "rationale": "The full test covers identity, number, emptiness and sparse terms, then checks H2 energy and two-particle ground state."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Multi-term FermionicOp constructor exposes the supplied labels through to_list."
+        }
+      ],
+      "rationale": "The case inspects public label-list representation."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 161,
+          "expected": "FermionicOp addition combines terms and coefficients as supplied."
+        }
+      ],
+      "rationale": "No operator product or sign identity is checked in this addition case."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 224,
+          "expected": "Fermionic multi-term multiplication yields the expected signed ladder expression."
+        }
+      ],
+      "rationale": "Composition of fermionic operators invokes anticommutation."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 286,
+          "expected": "Fermionic reduction produces the expected simplified ladder terms."
+        }
+      ],
+      "rationale": "The retained reduction test depends on fermionic term identities."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/fermionic_hermiticity",
+      "assertions": [
+        {
+          "line": 310,
+          "expected": "Fermionic expressions have the expected Hermiticity values."
+        }
+      ],
+      "rationale": "This retained case checks adjoint semantics."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/357fe78db796414292a51bd720e813cf57cbc170/test/operators/second_quantization/test_fermionic_op.py"
+  ],
+  "rationale": "Reviewed matrix action and H2 spectrum in the F2P test, then each of the five neighboring P2P contracts."
+}

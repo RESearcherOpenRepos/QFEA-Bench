@@ -1,0 +1,140 @@
+{
+  "instance": {
+    "id": 74,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_6_624",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/6",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/624",
+    "base_commit": "c89e2cc151dc832b8d7ceee720abfe5af8147753",
+    "patch": "7964402599ae7096b58936ee59dbec49697ee2c3"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements a logarithmic spin-to-qubit mapper with local Hilbert-space embedding semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/mappers/second_quantization/__init__.py",
+      "qiskit_nature/mappers/second_quantization/logarithmic_mapper.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Spin-operator workflows are missing a logarithmic local encoding mapper. Users should be able to convert SpinOp instances into qubit operators with a dedicated LogarithmicMapper, including configurable embedding behavior for spins whose local Hilbert space does not exactly fill a power-of-two qubit register.",
+    "requirements": [
+      "The repository must expose a LogarithmicMapper from qiskit_nature.mappers.second_quantization for mapping SpinOp instances to qubit operators.",
+      "LogarithmicMapper must map SpinOp inputs to PauliSumOp outputs using the logarithmic spin-to-qubit encoding across the dedicated single-spin and multi-spin cases covered by the mapper tests.",
+      "LogarithmicMapper must support configurable padding for embedded spin matrices when the local spin dimension is smaller than the allocated qubit space.",
+      "LogarithmicMapper must support choosing whether embedded matrices are placed in the upper or lower diagonal block of the larger qubit-space matrix.",
+      "Existing LinearMapper spin-to-qubit mapping behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "LogarithmicMapper",
+        "Path": "qiskit_nature/mappers/second_quantization/logarithmic_mapper.py",
+        "Input": "constructor: padding: float = 1, embed_upper: bool = True",
+        "Output": "",
+        "Description": "Constructs a logarithmic spin-to-qubit mapper with configurable padding and upper-vs-lower embedding behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "LogarithmicMapper.map",
+        "Path": "qiskit_nature/mappers/second_quantization/logarithmic_mapper.py",
+        "Input": "self, second_q_op: SpinOp",
+        "Output": "PauliSumOp",
+        "Description": "Maps a SpinOp into a qubit operator using the logarithmic encoding."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_6_624",
+      "image_id": "sha256:7ba11bd66cb464e1d84fa79ec2863b934d84bb726ffb6dcdb3bda6ba4eeb69e5",
+      "image_size": "1209455391"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24",
+        "setuptools<66",
+        "wheel<0.38",
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "not_applicable",
+        "file_list": [
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7"
+        ],
+        "summary": "7 passed in 1.23s",
+        "duration_seconds": 20.0
+      },
+      "pass_pass": {
+        "result": "not_applicable",
+        "file_list": [
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_1",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_2",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_3",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_4",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_5"
+        ],
+        "summary": "5 passed in 1.39s",
+        "duration_seconds": 23.3
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+          "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7"
+        ],
+        "summary": "7 errors in 1.22s; base cannot import LogarithmicMapper from qiskit_nature.mappers.second_quantization",
+        "duration_seconds": 21.41
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_1",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_2",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_3",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_4",
+          "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_5"
+        ],
+        "summary": "5 passed in 1.35s",
+        "duration_seconds": 19.39
+      }
+    }
+  }
+}

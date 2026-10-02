@@ -1,0 +1,347 @@
+[
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227033381",
+    "pull_request_review_id": 3049543774,
+    "id": 2227033381,
+    "node_id": "PRRC_kwDOMkVQrc6EvdUl",
+    "diff_hunk": "@@ -302,6 +302,9 @@ def diagonalize_fermionic_hamiltonian(\n                 raw_bitstrings, raw_probs, current_occupancies, n_alpha, n_beta, rand_seed=rng\n             )\n \n+        if bitstrings.size == 0:\n+            raise ValueError(\"No valid bitstrings for subsample.\")",
+    "path": "qiskit_addon_sqd/fermion.py",
+    "commit_id": "76722d5db67c7f3b4976b40c758b89462924bf77",
+    "original_commit_id": "44ffe581d2123f8a4b01fe906bcf3fc32b60df7f",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Actually, let's move this check to inside the `if current_occupancies is None:` block, after line 297. I believe this is the only place it can be triggered. Then I think we can improve the error message, to something like\r\n>The input bit array did not contain any valid bitstrings. Either pass a bit array that contains at least one valid bitstring (with the correct right and left Hamming weights), or specify a value for initial_occupancies.",
+    "created_at": "2025-07-24T00:39:55Z",
+    "updated_at": "2025-07-24T00:42:50Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2227033381",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227033381"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2227033381"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227033381/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 305,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 306,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227035608",
+    "pull_request_review_id": 3049543774,
+    "id": 2227035608,
+    "node_id": "PRRC_kwDOMkVQrc6Evd3Y",
+    "diff_hunk": "@@ -216,6 +217,53 @@ def test_diagonalize_fermionic_hamiltonian_max_dim(self):\n         self.assertEqual(sci_dim_b, 10)\n         self.assertAlmostEqual(result.sci_state.spin_square(), expected_spin_square)\n \n+    def test_diagonalize_fermionic_hamiltonian_empty_string(self):\n+        \"\"\"Test diagonalize_fermionic_hamiltonian when no valid bitstrings for subsampling.\"\"\"\n+        # Build N2 molecule\n+        mol = pyscf.gto.Mole()\n+        mol.build(\n+            atom=[[\"N\", (0, 0, 0)], [\"N\", (1.0, 0, 0)]],\n+            basis=\"sto-6g\",\n+            symmetry=\"Dooh\",\n+        )\n+\n+        # Define active space\n+        n_frozen = 2\n+        active_space = range(n_frozen, mol.nao_nr())\n+\n+        # Get molecular integrals\n+        scf = pyscf.scf.RHF(mol).run()\n+        norb = len(active_space)\n+        n_electrons = int(sum(scf.mo_occ[active_space]))\n+        n_alpha = (n_electrons + mol.spin) // 2\n+        n_beta = (n_electrons - mol.spin) // 2\n+        nelec = (n_alpha, n_beta)\n+        cas = pyscf.mcscf.CASCI(scf, norb, nelec)\n+        mo = cas.sort_mo(active_space, base=0)\n+        hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\n+        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), norb)\n+\n+        # Generate invalid samples from ground state\n+        strings = [\"00\" * norb for _ in range(100)]\n+\n+        bit_array = BitArray.from_samples(strings, num_bits=2 * norb)\n+\n+        # Diagonalize\n+        with pytest.raises(ValueError) as e_info:\n+            _ = diagonalize_fermionic_hamiltonian(",
+    "path": "test/test_fermion.py",
+    "commit_id": "76722d5db67c7f3b4976b40c758b89462924bf77",
+    "original_commit_id": "44ffe581d2123f8a4b01fe906bcf3fc32b60df7f",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Let's also test that an error is _not_ raised if you pass a value for `initial_occupancies`.",
+    "created_at": "2025-07-24T00:42:41Z",
+    "updated_at": "2025-07-24T00:42:50Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2227035608",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227035608"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2227035608"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2227035608/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 254,
+    "original_line": 253,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 45,
+    "position": 46,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229085589",
+    "pull_request_review_id": 3052509593,
+    "id": 2229085589,
+    "node_id": "PRRC_kwDOMkVQrc6E3SWV",
+    "diff_hunk": "@@ -295,6 +295,12 @@ def diagonalize_fermionic_hamiltonian(\n             bitstrings, probs = postselect_by_hamming_right_and_left(\n                 raw_bitstrings, raw_probs, hamming_right=n_alpha, hamming_left=n_beta\n             )\n+            if bitstrings.size == 0:\n+                raise ValueError(\n+                    \"The input bit array did not contain any valid bitstrings.\"",
+    "path": "qiskit_addon_sqd/fermion.py",
+    "commit_id": "76722d5db67c7f3b4976b40c758b89462924bf77",
+    "original_commit_id": "14266bf92ac67e9a9720f1557f575faea962bb33",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n                    \"The input bit array did not contain any valid bitstrings. \"\r\n```",
+    "created_at": "2025-07-24T17:05:54Z",
+    "updated_at": "2025-07-24T17:06:20Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229085589",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229085589"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229085589"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229085589/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 300,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229086013",
+    "pull_request_review_id": 3052509593,
+    "id": 2229086013,
+    "node_id": "PRRC_kwDOMkVQrc6E3Sc9",
+    "diff_hunk": "@@ -216,6 +217,67 @@ def test_diagonalize_fermionic_hamiltonian_max_dim(self):\n         self.assertEqual(sci_dim_b, 10)\n         self.assertAlmostEqual(result.sci_state.spin_square(), expected_spin_square)\n \n+    def test_diagonalize_fermionic_hamiltonian_empty_string(self):",
+    "path": "test/test_fermion.py",
+    "commit_id": "76722d5db67c7f3b4976b40c758b89462924bf77",
+    "original_commit_id": "14266bf92ac67e9a9720f1557f575faea962bb33",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n    def test_diagonalize_fermionic_hamiltonian_no_valid_bitstrings(self):\r\n```",
+    "created_at": "2025-07-24T17:06:11Z",
+    "updated_at": "2025-07-24T17:06:20Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229086013",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229086013"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229086013"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229086013/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 220,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 12,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229109612",
+    "pull_request_review_id": 3052546959,
+    "id": 2229109612,
+    "node_id": "PRRC_kwDOMkVQrc6E3YNs",
+    "diff_hunk": "@@ -295,6 +295,12 @@ def diagonalize_fermionic_hamiltonian(\n             bitstrings, probs = postselect_by_hamming_right_and_left(\n                 raw_bitstrings, raw_probs, hamming_right=n_alpha, hamming_left=n_beta\n             )\n+            if bitstrings.size == 0:",
+    "path": "qiskit_addon_sqd/fermion.py",
+    "commit_id": "76722d5db67c7f3b4976b40c758b89462924bf77",
+    "original_commit_id": "d14a28eabc198031e90a3be4126adef39f48c148",
+    "user": {
+      "login": "kevinsung",
+      "id": 4296166,
+      "node_id": "MDQ6VXNlcjQyOTYxNjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4296166?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/kevinsung",
+      "html_url": "https://github.com/kevinsung",
+      "followers_url": "https://api.github.com/users/kevinsung/followers",
+      "following_url": "https://api.github.com/users/kevinsung/following{/other_user}",
+      "gists_url": "https://api.github.com/users/kevinsung/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/kevinsung/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/kevinsung/subscriptions",
+      "organizations_url": "https://api.github.com/users/kevinsung/orgs",
+      "repos_url": "https://api.github.com/users/kevinsung/repos",
+      "events_url": "https://api.github.com/users/kevinsung/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/kevinsung/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n            if not bitstrings.size:\r\n```",
+    "created_at": "2025-07-24T17:18:47Z",
+    "updated_at": "2025-07-24T17:18:58Z",
+    "html_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229109612",
+    "pull_request_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229109612"
+      },
+      "html": {
+        "href": "https://github.com/Qiskit/qiskit-addon-sqd/pull/232#discussion_r2229109612"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/232"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/pulls/comments/2229109612/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 298,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

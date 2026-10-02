@@ -1,0 +1,25 @@
+{
+  "model": "gemini/gemini-3-flash-preview",
+  "prediction_model_name": "gemini-3-flash-preview",
+  "api_key": "$GoogleVertaxAI_API_KEY",
+  "base_url": "https://aiplatform.googleapis.com/v1/projects/$GoogleProjectID/locations/global/publishers/google",
+  "temperature": 0.0,
+  "max_output_tokens": 16384,
+  "litellm_extra_body": {
+    "generationConfig": {
+      "thinkingConfig": {
+        "thinkingLevel": "minimal",
+        "includeThoughts": false
+      }
+    }
+  },
+  "run": {
+    "max_iterations": 100,
+    "max_retries": 3
+  },
+  "tools": {
+    "terminal": {
+      "timeout_seconds": 120
+    }
+  }
+}

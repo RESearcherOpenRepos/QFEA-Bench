@@ -1,0 +1,95 @@
+"""Two sample slots, adopting the running workflow without restarting it."""
+import concurrent.futures, datetime, fcntl, json, os, signal, subprocess, threading, time
+from pathlib import Path
+import run as base
+B,ROOT=base.B,base.ROOT
+jobs=base.read(B/'jobs.json')
+state_lock=threading.Lock();validation_lock=threading.Lock();health_lock=threading.Lock()
+joblocks={j['id']:threading.Lock() for j in jobs}
+states={};completed_groups=set();errors=[];abort_event=threading.Event()
+def update(j,sid,phase,**kwargs):
+ with state_lock:
+  states[j['id']+'/'+sid]={'agent':j['agent'],'instance':sid,'phase':phase,**kwargs}
+  report('running')
+def report(phase):
+ data={'time':datetime.datetime.now().isoformat(),'phase':phase,'concurrency':2,'samples':list(states.values()),'completed_samples':sum(s['phase']=='sample_complete' for s in states.values()),'total_samples':8,'completed_groups':sorted(completed_groups),'errors':errors}
+ base.save(B/'status.json',data);print(json.dumps(data),flush=True)
+def alive(pid):
+ try:
+  os.kill(pid,0)
+  r=subprocess.run(['ps','-p',str(pid),'-o','stat='],capture_output=True,text=True,timeout=10)
+  return r.returncode==0 and r.stdout.strip() and not r.stdout.strip().startswith('Z')
+ except ProcessLookupError:return False
+
+def task(j,sid):
+ if abort_event.is_set():raise concurrent.futures.CancelledError('Queue paused after workflow failure')
+ out=Path(j['out']);gen=out/'generation';gen.mkdir(exist_ok=True);(out/'attempts').mkdir(exist_ok=True)
+ proc=None;image=None;baseline=set();adopted=None
+ try:
+  if not (out/(sid+'.collected.json')).exists():
+   assert not (B/'user_pause.json').exists(),'User pause'
+   marker=out/(sid+'.launch.json')
+   inst=base.read(j['stages'][sid]);image=inst['image_name'] if j['agent']=='openhands' else inst['env']['deployment']['image']
+   if marker.exists():
+    record=base.read(marker)
+    # Only the explicitly recorded handoff workflow may be adopted.
+    handoff=base.read(B/'parallel_handoff.json')
+    adoptions=handoff.get('adopted_workflows',[handoff['adopted']])
+    assert any(j['id']==a['job_id'] and sid==a['instance_id'] and record['pid']==a['pid'] for a in adoptions),'Existing attempt requires review'
+    adopted=record['pid'];update(j,sid,'generating',pid=adopted,adopted=True)
+   else:
+    with health_lock:base.health()
+    baseline=base.containers(image);attempt=out/'attempts'/sid
+    assert j['agent']=='openhands','Unexpected new Mini workflow'
+    cmd=[str(ROOT/'external/OpenHands-benchmarks/.venv/bin/python'),'benchmark/evaluation/openhands/scripts/run_openhands.py','--dataset',j['stages'][sid],'--output-dir',str(attempt.relative_to(ROOT)),'--model-config',str(out/'model.json'),'--num-workers','1','--n-critic-runs','1','--no-finish-max-attempts','1','--max-retries','0']
+    with marker.open('x') as f:json.dump({'status':'reserved','command':cmd,'started_at':datetime.datetime.now().isoformat()},f)
+    with (out/(sid+'.agents.log')).open('w') as log:proc=subprocess.Popen(cmd,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT)
+    base.save(marker,{'status':'launched','pid':proc.pid,'command':cmd,'started_at':datetime.datetime.now().isoformat()})
+    update(j,sid,'generating',pid=proc.pid)
+   last=time.monotonic()
+   while (alive(adopted) if adopted else proc.poll() is None):
+    time.sleep(10)
+    if time.monotonic()-last>=60:
+     with health_lock:base.health()
+     last=time.monotonic()
+   if proc is not None:assert proc.returncode==0,(sid,proc.returncode)
+   with joblocks[j['id']]:base.collect(j,sid);base.accounting(j)
+  update(j,sid,'waiting_validation')
+  # Shared evaluator uses Docker and result files: serialize validation/collection per group.
+  with validation_lock,joblocks[j['id']]:
+   update(j,sid,'validating');d=base.evaluate(j)
+   row=next(r for r in d['results'] if r['instance_id']==sid)
+  update(j,sid,'sample_complete',resolved=row['resolved'],validation_runs=len(row.get('eval_runs',[])))
+  return j['id'],sid
+ except Exception as exc:
+  abort_event.set()
+  if proc is not None and proc.poll() is None:
+   proc.terminate()
+   try:proc.wait(timeout=15)
+   except subprocess.TimeoutExpired:proc.kill()
+  update(j,sid,'needs_attention',error=str(exc));raise
+
+def main():
+ os.chdir(ROOT);assert os.environ.get('SILICONFLOW_API_KEY')
+ lock=(B/'parallel.lock').open('w');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ awake=subprocess.Popen(['caffeinate','-im','-w',str(os.getpid())])
+ try:
+  with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+   futures={pool.submit(task,j,sid):(j,sid) for j in jobs for sid in j['ids']}
+   done={j['id']:set() for j in jobs}
+   for future in concurrent.futures.as_completed(futures):
+    j,sid=futures[future]
+    try:
+     jid,sid=future.result();done[jid].add(sid)
+     if done[jid]==set(j['ids']):
+      with validation_lock,joblocks[jid]:base.finish(j,base.read(Path(j['out'])/'results_siliconflow.json'))
+      completed_groups.add(jid)
+    except Exception as exc:
+     errors.append({'agent':j['agent'],'instance':sid,'error':str(exc)})
+     # Cancel queued paid workflows; already-running work is preserved and collected.
+     for f in futures:
+      if not f.running() and not f.done():f.cancel()
+    with state_lock:report('running')
+  with state_lock:report('needs_attention' if errors else 'completed')
+ finally:awake.terminate()
+if __name__=='__main__':main()

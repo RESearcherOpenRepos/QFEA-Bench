@@ -1,0 +1,149 @@
+{
+  "id": 14,
+  "sample_id": "pennylane_2492_3742",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "cc280749fbda71556d169d06d2e5387c25dd2b89",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "general_semantics/kernel_matrix_construction": 4,
+      "interface/kernel_callback_invocation": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelMatrix::test_simple_kernel[1]",
+      "label": "general_semantics/kernel_matrix_construction",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "A one-element kernel batch produces the expected square matrix stack"
+        },
+        {
+          "line": 99,
+          "expected": "A one-element kernel batch produces the expected rectangular matrix stack"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelMatrix::test_simple_kernel[4]",
+      "label": "general_semantics/kernel_matrix_construction",
+      "assertions": [
+        {
+          "line": 98,
+          "expected": "A four-element kernel batch produces the expected square matrix stack"
+        },
+        {
+          "line": 99,
+          "expected": "A four-element kernel batch produces the expected rectangular matrix stack"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelMatrix::test_square_kernel_single_datapoint",
+      "label": "general_semantics/kernel_matrix_construction",
+      "assertions": [
+        {
+          "line": 109,
+          "expected": "The normalized singleton matrix skips callback evaluation"
+        },
+        {
+          "line": 110,
+          "expected": "A normalized singleton kernel has identity value"
+        },
+        {
+          "line": 112,
+          "expected": "An unnormalized singleton matrix evaluates its diagonal callback"
+        },
+        {
+          "line": 113,
+          "expected": "The unnormalized singleton matrix retains the expected scalar value"
+        },
+        {
+          "line": 117,
+          "expected": "Batched singleton evaluation makes one callback call"
+        },
+        {
+          "line": 118,
+          "expected": "Batched singleton outputs stack along the leading dimension"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelMatrix::test_laplace_kernel[4]",
+      "label": "general_semantics/kernel_matrix_construction",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "A batched Laplace kernel produces the expected square matrix values"
+        },
+        {
+          "line": 138,
+          "expected": "A batched Laplace kernel produces the expected rectangular matrix values"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelPolarity::test_correct_calls",
+      "label": "interface/kernel_callback_invocation",
+      "assertions": [
+        {
+          "line": 285,
+          "expected": "Polarity calls the kernel once off diagonal and then for both diagonal entries in order"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelPolarity::test_correct_calls_normalized",
+      "label": "interface/kernel_callback_invocation",
+      "assertions": [
+        {
+          "line": 299,
+          "expected": "Normalized polarity skips diagonal callback calls"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelTargetAlignment::test_correct_calls",
+      "label": "interface/kernel_callback_invocation",
+      "assertions": [
+        {
+          "line": 351,
+          "expected": "Target alignment calls the kernel for off-diagonal and diagonal entries in order"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "tests/kernels/test_kernels.py::TestKernelTargetAlignment::test_correct_calls_normalized",
+      "label": "interface/kernel_callback_invocation",
+      "assertions": [
+        {
+          "line": 365,
+          "expected": "Normalized target alignment skips diagonal callback calls"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/cc280749fbda71556d169d06d2e5387c25dd2b89/tests/kernels/test_kernels.py"
+  ],
+  "rationale": "These tests use scalar mock and Laplace kernels with ordinary numeric inputs. Matrix values, batching, and normalized diagonals are general kernel-array semantics; polarity and target-alignment tests assert the public callback invocation sequence."
+}

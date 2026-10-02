@@ -1,0 +1,137 @@
+{
+  "side": "patched",
+  "suite": "pass_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 83.65333570500002,
+  "items": [
+    "tests/test_chemistry.py::test_h2_hamiltonian_psi4",
+    "tests/test_chemistry.py::test_prepare_reference[JordanWigner]",
+    "tests/test_chemistry.py::test_prepare_reference[BravyiKitaev]",
+    "tests/test_chemistry.py::test_prepare_reference[BravyiKitaevTree]",
+    "tests/test_chemistry.py::test_orbital_transformation"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/test_chemistry.py::test_h2_hamiltonian_psi4",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0004682920000504964,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_h2_hamiltonian_psi4",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.00044337500003166497,
+      "wasxfail": null,
+      "longrepr": "@pytest.mark.skipif(condition=not HAS_PYSCF, reason=\"you don't have pyscf\")\n    def test_h2_hamiltonian_psi4():\n>       do_test_h2_hamiltonian(qc_interface=qc.QuantumChemistryPySCF)\n\ntests/test_chemistry.py:140: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_chemistry.py:143: in do_test_h2_hamiltonian\n    parameters = tequila.quantumchemistry.chemistry_tools.ParametersQC(geometry=\"data/h2.xyz\", basis_set=\"sto-3g\")\n<string>:10: in __init__\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = ParametersQC(basis_set='sto-3g', geometry='data/h2.xyz', description='', multiplicity=1, charge=0, name='data/h2', frozen_core=True)\nargs = (), kwargs = {}\n\n    def __post_init__(self, *args, **kwargs):\n    \n        if self.name is None and self.geometry is None:\n            raise TequilaException(\n                \"no geometry or name given to molecule\\nprovide geometry=filename.xyz or geometry=`h 0.0 0.0 0.0\\\\n...`\\nor name=whatever with file whatever.xyz being present\")\n        # auto naming\n        if self.name is None:\n            if \".xyz\" in self.geometry:\n                self.name = self.geometry.split(\".xyz\")[0]\n                if self.description is None:\n                    coord, description = self.read_xyz_from_file()\n                    self.description = description\n            else:\n                atoms = self.get_atoms()\n                atom_names = sorted(list(set(atoms)), key=lambda x: self.get_atom_number(x), reverse=True)\n                if self.name is None:\n                    drop_ones = lambda x: \"\" if x == 1 else x\n                    self.name = \"\".join([\"{}{}\".format(x, drop_ones(atoms.count(x))) for x in atom_names])\n            self.name = self.name.lower()\n    \n        if self.geometry is None:\n            self.geometry = self.name + \".xyz\"\n    \n        if \".xyz\" in self.geometry and not os.path.isfile(self.geometry):\n>           raise TequilaException(\"could not find file for molecular coordinates {}\".format(self.geometry))\nE           tequila.utils.exceptions.TequilaException: could not find file for molecular coordinates data/h2.xyz\n\nsrc/tequila/quantumchemistry/chemistry_tools.py:323: TequilaException"
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_h2_hamiltonian_psi4",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0012765000000172222,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[JordanWigner]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.000409624999974767,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[JordanWigner]",
+      "phase": "call",
+      "outcome": "passed",
+      "duration": 0.676279126000054,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[JordanWigner]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0007375000000138243,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaev]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00040087500008212373,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaev]",
+      "phase": "call",
+      "outcome": "passed",
+      "duration": 0.5790043759999435,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaev]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0005695419999938167,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaevTree]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.000328041999978268,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaevTree]",
+      "phase": "call",
+      "outcome": "passed",
+      "duration": 0.788515208999911,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_prepare_reference[BravyiKitaevTree]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0006971250001015505,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_orbital_transformation",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00032566699997005344,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_orbital_transformation",
+      "phase": "call",
+      "outcome": "passed",
+      "duration": 77.03787891000002,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_chemistry.py::test_orbital_transformation",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0015790840000136086,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

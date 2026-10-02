@@ -1,0 +1,279 @@
+{
+  "id": 34,
+  "sample_id": "qiskit_machine_learning_401_470",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "670bc12ac7b696acdf4b1ea3e9f4242953a8555d",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 15,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "quantum_semantics/estimator_expectation_values": 9,
+      "interface/property_mutability": 2,
+      "interface/input_validation": 2,
+      "interface/constructor_defaults": 1,
+      "general_semantics/model_training_performance": 3,
+      "quantum_semantics/qnn_expectation_gradient": 1,
+      "interface/unfitted_state_error": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_default_observables",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 361,
+          "expected": "Default Z observable yields the reference expectation values and gradients."
+        }
+      ],
+      "rationale": "The helper checks numeric circuit expectation references when observables is omitted."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_1",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "One-input, one-observable circuit yields its reference expectation and gradients."
+        }
+      ],
+      "rationale": "The one-by-one case compares quantum numeric values, not only output shape."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_1_2",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 277,
+          "expected": "One-input, two-observable circuit yields both expected values and gradients."
+        }
+      ],
+      "rationale": "Two distinct Pauli observables are checked through the helper."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 256,
+          "expected": "Two-input, one-observable circuit yields its expected values and gradients."
+        }
+      ],
+      "rationale": "The two-qubit Pauli observable determines the numeric references."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_2",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 302,
+          "expected": "Two-input, two-observable circuit yields both expected values and gradients."
+        }
+      ],
+      "rationale": "The reference distinguishes ZZ and XX observable outputs."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_input_parameters",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 318,
+          "expected": "Circuit without input parameters yields expected values and weight derivatives."
+        }
+      ],
+      "rationale": "The helper checks numeric expectation and gradient references, including absent input gradient."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_parameters",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "Circuit without input or weight parameters yields its expected constant observable value."
+        }
+      ],
+      "rationale": "The no-parameter case checks the numeric quantum expectation plus None gradients."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_no_weight_parameters",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 334,
+          "expected": "Circuit without weight parameters yields expected values and input derivatives."
+        }
+      ],
+      "rationale": "The selected configuration checks a distinct gradient availability and numeric reference."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 396,
+          "expected": "EstimatorQNN getters return assigned circuit, observables and parameters."
+        }
+      ],
+      "rationale": "This case explicitly checks public getters and input-gradient setter."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_single_observable",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 377,
+          "expected": "A single passed observable produces the expected expectation and derivative values."
+        }
+      ],
+      "rationale": "The direct-observable form still checks quantum numeric references in the helper."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_incorrect_observable",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 117,
+          "expected": "VQR rejects an incompatible observable with ValueError."
+        }
+      ],
+      "rationale": "The selected case asserts an exception for the public constructor argument."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_properties",
+      "label": "interface/constructor_defaults",
+      "assertions": [
+        {
+          "line": 105,
+          "expected": "VQR exposes its default ZZFeatureMap, RealAmplitudes and two-qubit count."
+        }
+      ],
+      "rationale": "The assertions inspect public object type and qubit-count defaults."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_5__None__True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 100,
+          "expected": "Estimator-backed VQR score exceeds 0.5."
+        }
+      ],
+      "rationale": "The first selected estimator run asserts fitted regression score."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_vqr_estimator_qnn.py::TestVQR::test_vqr_6__None__False_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 100,
+          "expected": "Estimator-backed VQR with the other input-gradient option scores above 0.5."
+        }
+      ],
+      "rationale": "This selected estimator variant has a separate score assertion."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_vqr.py::TestVQR::test_incorrect_observable",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 140,
+          "expected": "Legacy VQR path rejects incompatible observable input."
+        }
+      ],
+      "rationale": "The test expects ValueError for the existing constructor path."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+      "label": "quantum_semantics/qnn_expectation_gradient",
+      "assertions": [
+        {
+          "line": 153,
+          "expected": "OpflowQNN expectation values and derivatives match their quantum reference."
+        }
+      ],
+      "rationale": "The retained P2P opflow case compares numeric circuit results, beyond mere dimensions."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "Neural-network input-gradient property can be read and changed."
+        }
+      ],
+      "rationale": "The selected P2P case checks the public setting."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained",
+      "label": "interface/unfitted_state_error",
+      "assertions": [
+        {
+          "line": 224,
+          "expected": "Unfitted regressor property access raises QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "The selected P2P lifecycle case checks required pre-fit errors."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "QSVR score matches 0.38365."
+        }
+      ],
+      "rationale": "The final P2P case checks ordinary regression performance."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/algorithms/regressors/test_neural_network_regressor.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/algorithms/regressors/test_qsvr.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/algorithms/regressors/test_vqr.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/algorithms/regressors/test_vqr_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/neural_networks/test_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/neural_networks/test_neural_network.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/670bc12ac7b696acdf4b1ea3e9f4242953a8555d/test/neural_networks/test_opflow_qnn.py"
+  ],
+  "rationale": "Reviewed each EstimatorQNN parameter/observable configuration and the helper numeric comparisons, plus VQR and retained P2P tests."
+}

@@ -1,0 +1,77 @@
+{
+  "id": 6,
+  "sample_id": "openfermion_37_114",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "5491510d216f5f2cab751084194f4c233d04167e",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "general_semantics/noncommutative_series": 1,
+      "interface/input_validation": 2,
+      "general_semantics/algebraic_identity": 1,
+      "quantum_semantics/fermionic_commutation": 2,
+      "quantum_semantics/pauli_commutation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/utils/_bch_expansion_test.py::BCHTest::test_bch",
+      "label": "general_semantics/noncommutative_series",
+      "assertions": [{"line": 89, "expected": "For five seeded pairs of ordinary 6-by-6 NumPy matrices, truncated BCH expansion matches an independently coded nested-commutator baseline through order 5"}]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/utils/_bch_expansion_test.py::BCHTest::test_verification",
+      "label": "interface/input_validation",
+      "assertions": [
+        {"line": 93, "expected": "BCH expansion rejects operands of different types with ValueError"},
+        {"line": 97, "expected": "BCH expansion rejects a string truncation order with ValueError"}
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_operator_utils_test.py::CommutatorTest::test_commutes_identity",
+      "label": "general_semantics/algebraic_identity",
+      "assertions": [{"line": 171, "expected": "The commutator of an identity element with another operator is zero"}]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_operator_utils_test.py::CommutatorTest::test_commutes_no_intersection",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [{"line": 176, "expected": "The chosen fermionic terms have a zero commutator after normal ordering"}]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_operator_utils_test.py::CommutatorTest::test_commutator_hopping_operators",
+      "label": "quantum_semantics/fermionic_commutation",
+      "assertions": [{"line": 186, "expected": "The commutator of the chosen hopping operators normal-orders to a mode-1-to-3 hopping term with coefficient 3"}]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_operator_utils_test.py::CommutatorTest::test_ndarray_input",
+      "label": "quantum_semantics/pauli_commutation",
+      "assertions": [{"line": 217, "expected": "The Pauli matrices satisfy [X,Y] = 2iZ when passed as NumPy arrays"}]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_operator_utils_test.py::CommutatorTest::test_commutator_not_same_type",
+      "label": "interface/input_validation",
+      "assertions": [{"line": 228, "expected": "The commutator rejects a FermionOperator and a QubitOperator together with TypeError"}]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/5491510d216f5f2cab751084194f4c233d04167e/src/openfermion/utils/_bch_expansion_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/5491510d216f5f2cab751084194f4c233d04167e/src/openfermion/utils/_operator_utils_test.py"
+  ],
+  "rationale": "The BCH numerical comparison uses generic NumPy matrices and a general nested-commutator identity. Identity commutation is universal algebra, even though the test supplies a FermionOperator. The remaining operator-result tests require fermionic or Pauli-specific relations."
+}

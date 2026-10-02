@@ -1,0 +1,61 @@
+[
+  {
+    "sha": "595826586fa00e3fa20dc8a62e5a7eaa7db75ee6",
+    "filename": "examples/qnn/example_minibatch.ipynb",
+    "status": "modified",
+    "additions": 9,
+    "deletions": 15,
+    "changes": 24,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/bba12a11d6da20111508276a06ad2ea57c5fc7cf/examples%2Fqnn%2Fexample_minibatch.ipynb",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/bba12a11d6da20111508276a06ad2ea57c5fc7cf/examples%2Fqnn%2Fexample_minibatch.ipynb",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/examples%2Fqnn%2Fexample_minibatch.ipynb?ref=bba12a11d6da20111508276a06ad2ea57c5fc7cf"
+  },
+  {
+    "sha": "fc798bbccf3c96782c90be4348c9bac213e89615",
+    "filename": "src/squlearn/qnn/base_qnn.py",
+    "status": "modified",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fbase_qnn.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fbase_qnn.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Fbase_qnn.py?ref=bba12a11d6da20111508276a06ad2ea57c5fc7cf",
+    "patch": "@@ -127,6 +127,10 @@ def __init__(\n                 self.optimizer.set_callback(self.callback)\n             elif self.callback == \"pbar\":\n                 self._pbar = None\n+                if isinstance(self.optimizer, SGDMixin) and self.batch_size:\n+                    self._total_iterations = self.epochs\n+                else:\n+                    self._total_iterations = self.optimizer.options.get(\"maxiter\", 100)\n \n                 def pbar_callback(*args):\n                     self._pbar.update(1)"
+  },
+  {
+    "sha": "2ffafd69ab02eb0ad96beac3d5a770bd3bdfe3a8",
+    "filename": "src/squlearn/qnn/qnnc.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 3,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fqnnc.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fqnnc.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Fqnnc.py?ref=bba12a11d6da20111508276a06ad2ea57c5fc7cf",
+    "patch": "@@ -251,7 +251,5 @@ def partial_fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None)\n     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:\n         \"\"\"Internal fit function.\"\"\"\n         if self.callback == \"pbar\":\n-            self._pbar = tqdm(\n-                total=self.optimizer.options.get(\"maxiter\", 100), desc=\"fit\", file=sys.stdout\n-            )\n+            self._pbar = tqdm(total=self._total_iterations, desc=\"fit\", file=sys.stdout)\n         self.partial_fit(X, y, weights)"
+  },
+  {
+    "sha": "b745616f32a0be4b61677c51b856319fcb29dbdd",
+    "filename": "src/squlearn/qnn/qnnr.py",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 3,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fqnnr.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Fqnnr.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Fqnnr.py?ref=bba12a11d6da20111508276a06ad2ea57c5fc7cf",
+    "patch": "@@ -225,7 +225,5 @@ def partial_fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None)\n     def _fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:\n         \"\"\"Internal fit function.\"\"\"\n         if self.callback == \"pbar\":\n-            self._pbar = tqdm(\n-                total=self.optimizer.options.get(\"maxiter\", 100), desc=\"fit\", file=sys.stdout\n-            )\n+            self._pbar = tqdm(total=self._total_iterations, desc=\"fit\", file=sys.stdout)\n         self.partial_fit(X, y, weights)"
+  },
+  {
+    "sha": "712dcb21e958f0f23316744a6f3204be31217121",
+    "filename": "src/squlearn/qnn/training.py",
+    "status": "modified",
+    "additions": 8,
+    "deletions": 3,
+    "changes": 11,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Ftraining.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/bba12a11d6da20111508276a06ad2ea57c5fc7cf/src%2Fsqulearn%2Fqnn%2Ftraining.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Ftraining.py?ref=bba12a11d6da20111508276a06ad2ea57c5fc7cf",
+    "patch": "@@ -474,9 +474,14 @@ def solve_mini_batch(\n                     x=param,\n                     grad=grad,\n                 )\n-        print(\n-            f\"Epoch {epoch+1: >5}/{epochs: >5}:\\taverage_loss = {accumulated_loss/n_samples:.5f}\"\n-        )\n+        if optimizer.callback:\n+            if opt_param_op:\n+                optimizer.callback(\n+                    epoch,\n+                    np.concatenate((param, param_op), axis=None),\n+                    np.concatenate(grad, axis=None),\n+                    accumulated_loss / n_samples,\n+                )\n \n     if opt_param_op:\n         return param, param_op"
+  }
+]

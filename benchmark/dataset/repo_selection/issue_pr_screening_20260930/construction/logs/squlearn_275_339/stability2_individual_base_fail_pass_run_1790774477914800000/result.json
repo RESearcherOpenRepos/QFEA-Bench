@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 4.345818460000373,
+  "items": [
+    "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.011233625000386382,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.20126400099979946,
+      "wasxfail": null,
+      "longrepr": "self = <tests.kernel.ml.test_qsvc.TestQSVC object at 0x7fffe1ecd4b0>\nqsvc = 'qsvc_fidelity'\nrequest = <FixtureRequest for <Function test_serialization[qsvc_fidelity]>>\ndata = (array([[0.12394968, 0.81758165],\n       [0.9       , 0.1       ],\n       [0.69982171, 0.21117187],\n       [0.82821029, 0.21911751],\n       [0.30850417, 0.9       ],\n       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))\n\n    @pytest.mark.parametrize(\"qsvc\", [\"qsvc_fidelity\", \"qsvc_pqk\"])\n    def test_serialization(self, qsvc, request, data):\n        \"\"\"Tests serialization of QSVC.\"\"\"\n        instance = request.getfixturevalue(qsvc)\n        X, y = data\n        instance.fit(X, y)\n    \n        buffer = io.BytesIO()\n>       instance.dump(buffer)\nE       AttributeError: 'QSVC' object has no attribute 'dump'\n\ntests/kernel/ml/test_qsvc.py:258: AttributeError"
+    },
+    {
+      "nodeid": "tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0005489999998644635,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

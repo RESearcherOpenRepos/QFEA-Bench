@@ -1,0 +1,114 @@
+{
+  "id": 62,
+  "sample_id": "qiskit_nature_465_472",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "95167df7f543b5bfda357127e8d56492801c30b0",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 1,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "interface/input_format_equivalence": 1,
+      "general_semantics/graph_topology": 4,
+      "general_semantics/graph_adjacency_matrix": 1,
+      "interface/input_validation": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_networkx",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 156,
+          "expected": "A networkx path is accepted and converted into an isomorphic unit-weight lattice."
+        }
+      ],
+      "rationale": "The selected case specifically exercises the new accepted graph input type."
+    },
+    {
+      "test_number": 2,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_init",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 63,
+          "expected": "Existing PyGraph lattice retains its weighted graph, nodes, and edges."
+        }
+      ],
+      "rationale": "The core assertions compare graph structure and weights."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_from_nodes_and_edges",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "Construction from node and edge lists yields an isomorphic lattice graph."
+        }
+      ],
+      "rationale": "The explicit comparison concerns connectivity and weights."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_to_adjacency_matrix",
+      "label": "general_semantics/graph_adjacency_matrix",
+      "assertions": [
+        {
+          "line": 139,
+          "expected": "Weighted and unweighted adjacency matrices contain the expected entries."
+        }
+      ],
+      "rationale": "The values follow graph adjacency arithmetic."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_nonnumeric_weight_raises",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "A graph with a nonnumeric edge weight raises ValueError."
+        }
+      ],
+      "rationale": "The assertion is an input rejection contract."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_copy",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "Copy preserves graph nodes, edges, and weights up to isomorphism."
+        }
+      ],
+      "rationale": "This tests graph content preservation."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/lattices/test_lattice.py::TestLattice::test_edges_removed",
+      "label": "general_semantics/graph_topology",
+      "assertions": [
+        {
+          "line": 182,
+          "expected": "Removing an edge before lattice construction preserves the remaining connectivity."
+        }
+      ],
+      "rationale": "The test compares resulting graph topology."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/95167df7f543b5bfda357127e8d56492801c30b0/test/problems/second_quantization/lattice/lattices/test_lattice.py"
+  ],
+  "rationale": "Read the task and each of the 7 selected test cases at the exact patch; each record has one primary constraint."
+}

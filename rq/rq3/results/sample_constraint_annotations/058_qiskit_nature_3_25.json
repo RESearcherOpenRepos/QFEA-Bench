@@ -1,0 +1,173 @@
+{
+  "id": 58,
+  "sample_id": "qiskit_nature_3_25",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "e8e7b736e0dad78206af87ed4c524933a5e5292a",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "interface/return_representation": 1,
+      "interface/input_validation": 1,
+      "general_semantics/symbolic_operator_arithmetic": 3,
+      "quantum_semantics/fermionic_operator_algebra": 1,
+      "quantum_semantics/fermionic_basis_rotation": 1,
+      "quantum_semantics/active_space_projection": 1,
+      "quantum_semantics/spectral_equivalence": 1,
+      "quantum_semantics/fermion_qubit_mapping": 1,
+      "quantum_semantics/fermion_qubit_parity_mapping": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 44,
+          "expected": "Multi-term FermionicOp constructor exposes input labels and coefficients."
+        }
+      ],
+      "rationale": "The test only checks public to_list representation."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_invalid",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 48,
+          "expected": "Invalid fermionic labels raise QiskitNatureError."
+        }
+      ],
+      "rationale": "The selected constructor case explicitly expects a public validation error."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 59,
+          "expected": "Scalar multiplication scales FermionicOp term coefficients."
+        }
+      ],
+      "rationale": "The selected mul case checks ordinary coefficient arithmetic."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "Adding FermionicOp containers combines supplied labels and coefficients."
+        }
+      ],
+      "rationale": "No fermionic product sign is involved in the selected add case."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+      "label": "quantum_semantics/fermionic_operator_algebra",
+      "assertions": [
+        {
+          "line": 121,
+          "expected": "Fermionic operator composition yields expected signed ladder terms."
+        }
+      ],
+      "rationale": "The selected multi-term matmul depends on fermionic anticommutation."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 160,
+          "expected": "Reducing duplicate fermionic labels aggregates coefficients."
+        }
+      ],
+      "rationale": "This reduce case does not reorder or contract ladder operators."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/test_fermionic_operator.py::TestFermionicOperator::test_transform",
+      "label": "quantum_semantics/fermionic_basis_rotation",
+      "assertions": [
+        {
+          "line": 89,
+          "expected": "Fast h1/h2 orbital-basis transform matches independent tensor transform."
+        }
+      ],
+      "rationale": "Both one- and two-electron integral transformations are checked."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/test_fermionic_operator.py::TestFermionicOperator::test_freezing_core",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Freezing specified fermion modes yields the reference inactive-space energy shift."
+        }
+      ],
+      "rationale": "Two molecular systems test physical orbital-freezing energy corrections."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/test_fermionic_operator.py::TestFermionicOperator::test_bksf_mapping",
+      "label": "quantum_semantics/spectral_equivalence",
+      "assertions": [
+        {
+          "line": 147,
+          "expected": "BKSF mapped spectrum overlaps JW spectrum by the prescribed half."
+        }
+      ],
+      "rationale": "The test compares physical eigenvalue spectra under two fermion-to-qubit mappings."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/test_fermionic_transformation.py::TestFermionicTransformation::test_jordan_wigner",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 84,
+          "expected": "Jordan-Wigner transformation exposes four qubits, 15 Pauli terms and expected HF energy metadata."
+        }
+      ],
+      "rationale": "Delegated helpers check mapping dimensions and reference HF energy, though not every Pauli coefficient."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/test_fermionic_transformation.py::TestFermionicTransformation::test_parity",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Parity transformation exposes four qubits, 15 Pauli terms and expected HF energy metadata."
+        }
+      ],
+      "rationale": "This distinct mapping choice is validated through helper qubit-count, term-count and energy assertions."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/e8e7b736e0dad78206af87ed4c524933a5e5292a/test/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/e8e7b736e0dad78206af87ed4c524933a5e5292a/test/test_fermionic_operator.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/e8e7b736e0dad78206af87ed4c524933a5e5292a/test/test_fermionic_transformation.py"
+  ],
+  "rationale": "Reviewed six new label/arithmetic cases and five retained transformation/mapping cases, including assertions hidden in transformation helper methods."
+}

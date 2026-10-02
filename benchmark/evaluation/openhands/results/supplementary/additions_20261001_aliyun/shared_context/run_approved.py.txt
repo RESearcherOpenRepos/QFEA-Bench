@@ -1,0 +1,94 @@
+"""Run the authorized 9 interrupted retries and 12 unstarted workflows once."""
+import concurrent.futures,datetime,hashlib,json,os,shutil,signal,subprocess,time,traceback
+import run_batch as batch
+from benchmark.evaluation.common.run_io import write_batch_prediction_files
+B=batch.OUT;ROOT=batch.ROOT
+JOBS=json.loads((B/'approved_jobs.json').read_text());JOBS.sort(key=lambda j:(j['agent']!='minisweagent',j['model']))
+
+def merge(job):
+ p=ROOT/job['out'];g=p/'generation';new=p/'approved_generation'
+ fresh=json.loads((new/'preds.json').read_text())['predictions'];old=json.loads((g/'preds.json').read_text())['predictions']
+ assert set(fresh)==set(job['approved_ids']) and set(fresh).isdisjoint(old)
+ audit=json.loads((p/'approved_recovery_audit.json').read_text())
+ for sid,digest in audit['retained_prediction_hashes'].items():assert hashlib.sha256(json.dumps(old[sid],sort_keys=True).encode()).hexdigest()==digest
+ for sid in fresh:
+  f=new/sid/(sid+'.traj.json')
+  if f.exists():
+   txt=f.read_text().lower();assert 'input/output error' not in txt and 'read-only file system' not in txt,(sid,'storage failure recurred')
+   if job['agent']=='minisweagent':assert json.loads(f.read_text())['info'].get('exit_status')!='CalledProcessError',(sid,'container startup failed')
+  if (g/sid).exists():shutil.move(str(g/sid),str(p/'approved_recovery_archive'/('partial_'+sid)))
+  if (new/sid).exists():shutil.copytree(new/sid,g/sid)
+ ids=json.loads((p/'sample_ids.json').read_text());combined=old|fresh;assert set(combined)==set(ids)
+ write_batch_prediction_files(g,[combined[sid] for sid in ids])
+ if job['agent']=='openhands':
+  for name in ['output.jsonl','output.critic_attempt_1.jsonl']:
+   rows=batch.read_jsonl(g/name)+batch.read_jsonl(new/name)
+   assert len(rows)==13 and {r['instance_id'] for r in rows}==set(ids)
+   (g/name).write_text(''.join(json.dumps(r)+'\n' for r in rows))
+ if job['agent']=='minisweagent':batch.save(p/'platform_repair_done.json',{'instance_ids':sorted(batch.ARM_IDS),'note':'ARM platform startup recovered; valid completed model workflows retained.'})
+ batch.save(p/'approved_merged.json',{'retained':len(old),'executed':len(fresh),'authorized_paid_retries':job['paid_retry_ids']})
+ batch.save(p/'valid_generation_done.json',{'completed_at':datetime.datetime.now().isoformat(),'approved_recovery':True})
+
+def health(write_probe=False):
+ args=['docker','image','inspect','benchmark-minisweagent-qiskit_addon_sqd_148_230:latest','--format','{{.Id}}']
+ if write_probe:
+  code="import tempfile,os; f=tempfile.TemporaryFile(); f.write(b'qfea-health'); f.flush(); os.fsync(f.fileno()); f.seek(0); assert f.read()==b'qfea-health'; f.close()"
+  args=['docker','run','--rm','--network','none','--platform','linux/arm64','benchmark-minisweagent-qiskit_addon_sqd_148_230:latest','python','-c',code]
+ r=subprocess.run(args,capture_output=True,text=True,timeout=20)
+ if r.returncode:raise RuntimeError(r.stderr.strip())
+
+def main():
+ os.chdir(ROOT)
+ assert not (B/'billing_hold.json').exists(), 'Account rejection recorded: recover the affected workflows explicitly before restarting this coordinator.'
+ authorization=json.loads((B/'retry_approval_pending.json').read_text());assert authorization['status']=='approved_by_user'
+ awake=subprocess.Popen(['caffeinate','-im','-w',str(os.getpid())])
+ active={};waiting=[];pending=[];state={};future=None;current=None;last_health=0;last_write=0
+ for j in JOBS:
+  p=ROOT/j['out']
+  if (p/'final_verification.json').exists():state[j['id']]={'phase':'completed'}
+  elif (p/'approved_merged.json').exists():waiting.append(j)
+  elif (p/'approved_launch.json').exists():
+   pid=json.loads((p/'approved_launch.json').read_text())['pid'];active[j['id']]=(j,batch.AdoptedProcess(pid,p/'approved_generation',len(j['approved_ids'])),None)
+  else:pending.append(j)
+ pool=concurrent.futures.ThreadPoolExecutor(max_workers=1)
+ try:
+  while pending or active or waiting or future:
+   now=time.monotonic()
+   if now-last_health>=20:
+    try:health(now-last_write>=60)
+    except Exception as exc:
+     for j,proc,log in active.values():
+      if proc.poll() is None:os.kill(proc.pid,signal.SIGSTOP)
+     batch.save(B/'approved_health_failure.json',{'time':datetime.datetime.now().isoformat(),'error':str(exc),'suspended_pids':[proc.pid for j,proc,log in active.values()]})
+     batch.save(B/'status.json',{'phase':'blocked_storage','jobs':state,'error':str(exc)});raise
+    last_health=now
+    if now-last_write>=60:last_write=now
+   occupied={j['model'] for j,_,_ in active.values()}
+   for j in pending[:]:
+    if len(active)>=3 or j['model'] in occupied:continue
+    p=ROOT/j['out'];assert not (p/'approved_launch.json').exists()
+    log=(p/'approved_agents.log').open('w');proc=subprocess.Popen(j['approved_command'],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT)
+    batch.save(p/'approved_launch.json',{'pid':proc.pid,'started_at':datetime.datetime.now().isoformat(),'command':j['approved_command'],'authorization':authorization['authorization']})
+    active[j['id']]=(j,proc,log);pending.remove(j);occupied.add(j['model']);print('START',j['id'],proc.pid,flush=True)
+   for key,(j,proc,log) in list(active.items()):
+    state[key]={'phase':'approved_running','pid':proc.pid};rc=proc.poll()
+    if rc is None:continue
+    if log:log.close()
+    del active[key];batch.save(ROOT/j['out']/'approved_generation_done.json',{'returncode':rc})
+    if rc:state[key]={'phase':'runner_failed','returncode':rc};print('RUNNER_FAILED',key,rc,flush=True);continue
+    try:merge(j)
+    except Exception as exc:traceback.print_exc();state[key]={'phase':'merge_failed','error':str(exc)};continue
+    state[key]={'phase':'waiting_for_validation'};waiting.append(j)
+   if future is not None and future.done():
+    try:state[current['id']]={'phase':'completed',**future.result()};print('COMPLETED',current['id'],state[current['id']],flush=True)
+    except Exception as exc:traceback.print_exc();state[current['id']]={'phase':'collection_failed','error':str(exc)}
+    future=None
+   if future is None and waiting:
+    current=waiting.pop(0);state[current['id']]={'phase':'validating'};future=pool.submit(batch.finish,current)
+   for j in pending:state[j['id']]={'phase':'queued_approved'}
+   batch.save(B/'status.json',{'updated_at':datetime.datetime.now().isoformat(),'jobs':state,'queued':[j['id'] for j in pending],'approved_paid_retries':9,'first_attempts':12,'keep_awake_pid':awake.pid})
+   time.sleep(10)
+ finally:
+  pool.shutdown(wait=True)
+  awake.terminate()
+if __name__=='__main__':main()

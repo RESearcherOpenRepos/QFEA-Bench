@@ -1,0 +1,49 @@
+"""Report verified subsets without treating provider failures as model outcomes."""
+import datetime,json,shutil
+from pathlib import Path
+B=Path(__file__).resolve().parent;ROOT=B.parents[2];rows=[]
+labels={'autocoderover':'ACR','minisweagent':'Mini-SWE-Agent','openhands':'OpenHands'}
+for model,run in [('deepseek-v4-pro','deepseek_v4_pro_20260610'),('deepseek-v4-flash','deepseek_v4_flash_20260609'),('glm-5.2','glm5_2_openrouter_20260628')]:
+ base=ROOT/'benchmark/evaluation/autocoderover';out=base/'runs'/run/'additions_20261001_aliyun'
+ rows.append({'agent':'autocoderover','model':model,'out':str(out),'target':str(base/'results'/('results_'+run+'.json')),'backup':'results_'+run+'.before_additions.json','completed_workflows':13,'pending_ids':[],'result_source':str(out/'results_additions.json')})
+rows += [dict(j,backup='results.before_additions.json') for j in json.loads((B/'billing_jobs.json').read_text())]
+for row in rows:
+ p=ROOT/row['out'];source=Path(row['result_source']);d=json.loads(source.read_text())
+ assert len(d['results'])==row['completed_workflows']
+ if row['pending_ids']:
+  audit=json.loads((p/'approved_recovery_audit.json').read_text())
+  for result in d['results']:
+   retried=result['instance_id'] in audit['approved_paid_retries']
+   result.update(agent_runs=1+int(retried),valid_agent_runs=1,interrupted_agent_runs=int(retried),generation_provider='aliyun-dashscope')
+  d['run_provenance']['approved_storage_recovery']=audit
+  d['run_provenance']['account_interrupted_attempts']=row['account_rejected']
+  source.write_text(json.dumps(d,indent=2)+'\n')
+ for r in d['results']:
+  assert r['instance_id'] not in row['pending_ids'] and not r.get('eval_infra_failed') and not r.get('timed_out')
+  if r['patch_applied']:assert len(r.get('eval_runs',[]))==3 and r['resolved']==all(e['resolved'] for e in r['eval_runs'])
+ before=json.loads((p/row['backup']).read_text());full=json.loads((ROOT/row['target']).read_text())
+ oldpred=json.loads((p/'preds.json.before_additions').read_text())['predictions'];newpred=json.loads((p.parent/'preds.json').read_text())['predictions']
+ assert len(before['results'])==106 and full['results'][:106]==before['results']
+ assert len(oldpred)==106 and all(newpred[k]==v for k,v in oldpred.items())
+ if row['pending_ids']:assert full==before and newpred==oldpred
+ else:assert len(full['results'])==119 and len(newpred)==119
+ row.update(valid_results=len(d['results']),confirmed_resolved=d['summary']['resolved'],actual_validation_runs=sum(len(r.get('eval_runs',[])) for r in d['results']),main_results=len(full['results']),F2P=d['summary']['fail_pass']['summary'],P2P=d['summary']['pass_pass']['summary'])
+ for key in ['command','approved_command']:row.pop(key,None)
+report={'updated_at':datetime.datetime.now().isoformat(),'status':'blocked_by_aliyun_account','provider_error':'Access denied, please make sure your account is in good standing.','provider_error_reference':'https://help.aliyun.com/zh/model-studio/error-code#overdue-payment','completed_valid_workflows':sum(r['completed_workflows'] for r in rows),'expected_workflows':117,'pending_workflows':sum(len(r['pending_ids']) for r in rows),'actual_validation_runs':sum(r['actual_validation_runs'] for r in rows),'original_106_preserved':True,'cohorts':rows}
+(B/'comparison_billing.json').write_text(json.dumps(report,indent=2)+'\n')
+lines=['# Alibaba Cloud: 13 additional samples × three agents × three models','',
+'Generation is blocked by an Alibaba account rejection that references overdue payment. Model controllers were stopped. Provider-interrupted and unfinished workflows are excluded from results; incomplete rows below are not final 13-instance resolved rates.','',
+'| Agent | Model | Valid workflows | Verified results | Confirmed resolved | Pending | Main rows |','|---|---|---|---|---|---|---|']
+for r in rows:lines.append('| '+' | '.join(map(str,[labels[r['agent']],r['model'],f"{r['completed_workflows']}/13",r['valid_results'],r['confirmed_resolved'],len(r['pending_ids']),r['main_results']]))+' |')
+lines += ['',f"{report['completed_valid_workflows']}/117 valid workflows are complete; {report['pending_workflows']} remain pending. Completed applicable patches have {report['actual_validation_runs']} actual F2P/P2P validations in total. A resolved result requires all three validations to pass.",
+'', 'Five complete cohorts have been merged to 119 rows. Four incomplete cohorts remain separate, with main result files retaining 106 rows. All original 106 result and prediction entries were verified unchanged.',
+'', 'The nine Docker-interrupted retries were explicitly authorized by the user. Eight completed; OpenHands–Pro / squlearn_112_154 was rejected by the provider before observed model progress. The previous Docker interruptions and the new account interruptions remain separately recorded. These are not silently counted as single physical attempts.',
+'', 'Account interruption affected Mini–Pro / tequila_406_409 and OpenHands–Flash/GLM / tequila_403_407 after model progress. Other rejected or unfinished requests are documented below. Agent telemetry may be incomplete on exceptions; zero summary tokens do not prove no earlier model calls.',
+'', 'Actual billed cost is unavailable. Selected-workflow token estimates exclude interrupted attempts and are not total billing.',
+'', 'Pending generation:']
+for r in rows:
+ if r['pending_ids']:lines.append(f"- {labels[r['agent']]} / {r['model']}: "+', '.join(r['pending_ids']))
+lines += ['', 'Verified result files:']+[f"- [{labels[r['agent']]} / {r['model']}](<{r['result_source']}>)" for r in rows]
+(B/'REPORT.md').write_text('\n'.join(lines)+'\n')
+print(json.dumps({k:v for k,v in report.items() if k!='cohorts'},indent=2))
+for r in rows:print(labels[r['agent']],r['model'],r['confirmed_resolved'],'resolved;',r['valid_results'],'verified;',len(r['pending_ids']),'pending')

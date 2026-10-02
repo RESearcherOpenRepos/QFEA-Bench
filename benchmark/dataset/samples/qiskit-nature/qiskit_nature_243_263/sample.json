@@ -1,0 +1,166 @@
+{
+  "instance": {
+    "id": 53,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_243_263",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/243",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/263",
+    "base_commit": "e6a2dfd3c5039cb1c00c10540c2d76ca026f281c",
+    "patch": "3a5a0294032145a54ac53ee2e1fb8358aa291f1d"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task organizes electronic integrals across bases and converts them into second-quantized fermionic operators."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/properties/grouped_property.py",
+      "qiskit_nature/properties/property.py",
+      "qiskit_nature/properties/second_quantization/__init__.py",
+      "qiskit_nature/properties/second_quantization/electronic/__init__.py",
+      "qiskit_nature/properties/second_quantization/electronic/integrals/__init__.py",
+      "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+      "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+      "qiskit_nature/properties/second_quantization/electronic/integrals/one_body_electronic_integrals.py",
+      "qiskit_nature/properties/second_quantization/electronic/integrals/two_body_electronic_integrals.py",
+      "qiskit_nature/properties/second_quantization/electronic/types.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature needs a modular electronic driver-result representation so that electronic integrals can be grouped into reusable property objects instead of being handled only as ad hoc raw arrays. Users should be able to organize one-body and two-body electronic integrals inside an IntegralProperty, query them by basis and body rank, transform their basis consistently, and generate the corresponding second-quantized operator.",
+    "requirements": [
+      "Provide a reusable IntegralProperty abstraction for electronic integrals in Qiskit Nature's property framework.",
+      "IntegralProperty must store electronic integrals grouped by electronic basis and number of body terms.",
+      "IntegralProperty must allow querying stored integrals by basis and body rank and return None when a requested entry is unavailable.",
+      "Applying an electronic basis transform to IntegralProperty must update or extend the stored integrals consistently for the transformed basis.",
+      "IntegralProperty.second_q_ops() must build the expected fermionic operator from the stored electronic integrals."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "IntegralProperty",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+        "Input": "constructor: name, electronic_integrals, shift=None",
+        "Output": "",
+        "Description": "Groups electronic integrals into a reusable electronic property that can be transformed and converted into second-quantized operators."
+      },
+      {
+        "Type": "Method",
+        "Name": "IntegralProperty.add_electronic_integral",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+        "Input": "self, integral",
+        "Output": "None",
+        "Description": "Adds an electronic-integral object into the property's internal storage keyed by basis and body rank."
+      },
+      {
+        "Type": "Method",
+        "Name": "IntegralProperty.get_electronic_integral",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+        "Input": "self, basis, num_body_terms",
+        "Output": "Optional[ElectronicIntegrals]",
+        "Description": "Returns the stored electronic integrals for a requested basis and body rank when available."
+      },
+      {
+        "Type": "Method",
+        "Name": "IntegralProperty.transform_basis",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+        "Input": "self, transform",
+        "Output": "None",
+        "Description": "Transforms the stored electronic integrals into the target electronic basis and keeps them accessible through the property."
+      },
+      {
+        "Type": "Method",
+        "Name": "IntegralProperty.second_q_ops",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/integrals/integral_property.py",
+        "Input": "self",
+        "Output": "List[FermionicOp]",
+        "Description": "Builds the second-quantized operator represented by the currently stored electronic integrals."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_243_263",
+      "image_id": "sha256:92fb8f9b7a29c9d309b6abe7fddc6df4f8c0afda86d38dfe946baddba2896ab6",
+      "image_size": "1104451649"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_get_electronic_int",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_transform_basis",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_second_q_ops"
+        ],
+        "summary": "4 selected selectors passed.",
+        "duration_seconds": 13.07
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_spin",
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_second_q_op",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_spin",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_second_q_op"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 19.94
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_get_electronic_int",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_transform_basis",
+          "test/properties/second_quantization/electronic/integrals/test_integral_property.py::TestIntegralProperty::test_second_q_ops"
+        ],
+        "summary": "4 selected selectors failed because IntegralProperty is not exported from qiskit_nature.properties.second_quantization.electronic.integrals on base.",
+        "duration_seconds": 15.05
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_spin",
+          "test/properties/second_quantization/electronic/integrals/test_one_body_electronic_integrals.py::TestOneBodyElectronicIntegrals::test_to_second_q_op",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_init",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_spin",
+          "test/properties/second_quantization/electronic/integrals/test_two_body_electronic_integrals.py::TestTwoBodyElectronicIntegrals::test_to_second_q_op"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 20.24
+      }
+    }
+  }
+}

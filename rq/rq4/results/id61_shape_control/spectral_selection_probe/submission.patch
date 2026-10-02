@@ -1,0 +1,361 @@
+diff --git a/qiskit_nature/operators/second_quantization/__init__.py b/qiskit_nature/operators/second_quantization/__init__.py
+index 60c50a7..b9c825f 100644
+--- a/qiskit_nature/operators/second_quantization/__init__.py
++++ b/qiskit_nature/operators/second_quantization/__init__.py
+@@ -23,18 +23,21 @@ Second-Quantization Operators
+    :toctree: ../stubs/
+ 
+    FermionicOp
++   QuadraticHamiltonian
+    SpinOp
+    SecondQuantizedOp
+    VibrationalOp
+ """
+ 
+ from .fermionic_op import FermionicOp
++from .quadratic_hamiltonian import QuadraticHamiltonian
+ from .second_quantized_op import SecondQuantizedOp
+ from .spin_op import SpinOp
+ from .vibrational_op import VibrationalOp
+ 
+ __all__ = [
+     "FermionicOp",
++    "QuadraticHamiltonian",
+     "SecondQuantizedOp",
+     "SpinOp",
+     "VibrationalOp",
+diff --git a/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py b/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py
+new file mode 100644
+index 0000000..2cd6bd9
+--- /dev/null
++++ b/qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py
+@@ -0,0 +1,329 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2022.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""The Quadratic Hamiltonian operator."""
++
++from __future__ import annotations
++
++from typing import Optional, Tuple
++
++import numpy as np
++
++from qiskit_nature.operators.second_quantization.fermionic_op import FermionicOp
++
++
++class QuadraticHamiltonian:
++    r"""A quadratic fermionic Hamiltonian.
++
++    A quadratic fermionic Hamiltonian is an operator of the form:
++
++    .. math::
++
++        \sum_{p, q} M_{pq} c_p^\dagger c_q
++        + \frac{1}{2} \sum_{p, q} \Delta_{pq} c_p^\dagger c_q^\dagger
++        + \frac{1}{2} \sum_{p, q} \Delta_{pq}^* c_q c_p
++        + \text{constant}
++
++    where :math:`M` is a Hermitian matrix and :math:`\Delta` is an antisymmetric matrix.
++
++    This class stores the matrix blocks :math:`M` and :math:`\Delta` directly and provides
++    methods to convert to a :class:`FermionicOp`, compute the Majorana form, and compute
++    the diagonalizing Bogoliubov transform.
++    """
++
++    def __init__(
++        self,
++        hermitian_part: Optional[np.ndarray] = None,
++        antisymmetric_part: Optional[np.ndarray] = None,
++        constant: float = 0.0,
++        num_modes: Optional[int] = None,
++        validate: bool = True,
++        rtol: float = 1e-5,
++        atol: float = 1e-8,
++    ):
++        r"""
++        Args:
++            hermitian_part: The Hermitian matrix :math:`M` containing the coefficients of the
++                particle-number-conserving terms :math:`c_p^\dagger c_q`.
++            antisymmetric_part: The antisymmetric matrix :math:`\Delta` containing the coefficients
++                of the pairing terms :math:`c_p^\dagger c_q^\dagger` and :math:`c_q c_p`.
++            constant: An additive constant term.
++            num_modes: The number of fermionic modes. Required when neither ``hermitian_part``
++                nor ``antisymmetric_part`` is provided.
++            validate: If ``True``, validate that ``hermitian_part`` is Hermitian,
++                ``antisymmetric_part`` is antisymmetric, and their shapes are consistent.
++            rtol: Relative tolerance for validation checks.
++            atol: Absolute tolerance for validation checks.
++
++        Raises:
++            ValueError: If neither matrix block nor ``num_modes`` is specified.
++            ValueError: If validation is enabled and the inputs are inconsistent.
++        """
++        if hermitian_part is None and antisymmetric_part is None:
++            if num_modes is None:
++                raise ValueError(
++                    "Either hermitian_part, antisymmetric_part, or num_modes must be specified."
++                )
++            hermitian_part = np.zeros((num_modes, num_modes), dtype=complex)
++            antisymmetric_part = np.zeros((num_modes, num_modes), dtype=complex)
++        elif hermitian_part is None:
++            n = antisymmetric_part.shape[0]
++            hermitian_part = np.zeros((n, n), dtype=complex)
++        elif antisymmetric_part is None:
++            n = hermitian_part.shape[0]
++            antisymmetric_part = np.zeros((n, n), dtype=complex)
++
++        if validate:
++            self._validate(hermitian_part, antisymmetric_part, num_modes, rtol, atol)
++
++        self._hermitian_part = np.asarray(hermitian_part, dtype=complex)
++        self._antisymmetric_part = np.asarray(antisymmetric_part, dtype=complex)
++        self._constant = float(constant)
++        self._num_modes = self._hermitian_part.shape[0]
++
++    @staticmethod
++    def _validate(
++        hermitian_part: np.ndarray,
++        antisymmetric_part: np.ndarray,
++        num_modes: Optional[int],
++        rtol: float,
++        atol: float,
++    ) -> None:
++        """Validate the inputs.
++
++        Args:
++            hermitian_part: The Hermitian matrix.
++            antisymmetric_part: The antisymmetric matrix.
++            num_modes: The expected number of modes.
++            rtol: Relative tolerance.
++            atol: Absolute tolerance.
++
++        Raises:
++            ValueError: If validation fails.
++        """
++        if hermitian_part.shape[0] != hermitian_part.shape[1]:
++            raise ValueError(
++                f"hermitian_part must be square, got shape {hermitian_part.shape}."
++            )
++        if antisymmetric_part.shape[0] != antisymmetric_part.shape[1]:
++            raise ValueError(
++                f"antisymmetric_part must be square, got shape {antisymmetric_part.shape}."
++            )
++        if hermitian_part.shape != antisymmetric_part.shape:
++            raise ValueError(
++                "hermitian_part and antisymmetric_part must have the same shape, "
++                f"got {hermitian_part.shape} and {antisymmetric_part.shape}."
++            )
++        if num_modes is not None and hermitian_part.shape[0] != num_modes:
++            raise ValueError(
++                f"num_modes ({num_modes}) does not match matrix shape "
++                f"({hermitian_part.shape[0]})."
++            )
++        if not np.allclose(hermitian_part, hermitian_part.conj().T, rtol=rtol, atol=atol):
++            raise ValueError("hermitian_part must be Hermitian.")
++        if not np.allclose(
++            antisymmetric_part, -antisymmetric_part.T, rtol=rtol, atol=atol
++        ):
++            raise ValueError("antisymmetric_part must be antisymmetric.")
++
++    @property
++    def hermitian_part(self) -> np.ndarray:
++        """Returns the matrix of particle-number-conserving coefficients."""
++        return self._hermitian_part
++
++    @property
++    def antisymmetric_part(self) -> np.ndarray:
++        """Returns the matrix of pairing coefficients."""
++        return self._antisymmetric_part
++
++    @property
++    def constant(self) -> float:
++        """Returns the additive constant term."""
++        return self._constant
++
++    @property
++    def num_modes(self) -> int:
++        """Returns the number of fermionic modes represented by the Hamiltonian."""
++        return self._num_modes
++
++    @property
++    def conserves_particle_number(self) -> bool:
++        """Reports whether the antisymmetric block is zero and particle number is conserved."""
++        return np.allclose(self._antisymmetric_part, 0.0)
++
++    def to_fermionic_op(self) -> FermionicOp:
++        r"""Converts the quadratic Hamiltonian into an equivalent :class:`FermionicOp`.
++
++        The conversion follows:
++
++        .. math::
++
++            H = \sum_{p,q} M_{pq} c_p^\dagger c_q
++                + \frac{1}{2} \sum_{p,q} \Delta_{pq} c_p^\dagger c_q^\dagger
++                + \frac{1}{2} \sum_{p,q} \Delta_{pq}^* c_q c_p
++                + \text{constant}
++
++        Returns:
++            The equivalent FermionicOp.
++        """
++        n = self._num_modes
++        data: list[tuple[str, complex]] = []
++
++        # Constant term
++        if not np.isclose(self._constant, 0.0):
++            data.append(("", self._constant))
++
++        # One-body terms: M_{pq} c_p^\dagger c_q
++        for p in range(n):
++            for q in range(n):
++                val = self._hermitian_part[p, q]
++                if not np.isclose(val, 0.0):
++                    data.append((f"+_{p} -_{q}", val))
++
++        # Pairing terms: (1/2) * Delta_{pq} c_p^\dagger c_q^\dagger
++        for p in range(n):
++            for q in range(n):
++                val = self._antisymmetric_part[p, q]
++                if not np.isclose(val, 0.0):
++                    data.append((f"+_{p} +_{q}", 0.5 * val))
++
++        # Pairing terms: (1/2) * Delta_{pq}^* c_q c_p
++        for p in range(n):
++            for q in range(n):
++                val = self._antisymmetric_part[p, q]
++                if not np.isclose(val, 0.0):
++                    data.append((f"-_{q} -_{p}", 0.5 * np.conj(val)))
++
++        if not data:
++            return FermionicOp(("", 0.0), register_length=n, display_format="sparse")
++
++        return FermionicOp(data, register_length=n, display_format="sparse")
++
++    def majorana_form(self) -> Tuple[np.ndarray, float]:
++        r"""Returns the real antisymmetric Majorana matrix and its associated constant term.
++
++        The quadratic Hamiltonian can be rewritten in the Majorana basis as:
++
++        .. math::
++
++            H = \frac{i}{2} \sum_{j,k} A_{jk} \gamma_j \gamma_k + \text{constant}
++
++        where :math:`A` is a real antisymmetric matrix and the :math:`\gamma_j` are
++        Majorana operators.
++
++        Returns:
++            A tuple ``(majorana_matrix, constant)`` where ``majorana_matrix`` is the real
++            antisymmetric :math:`2n \times 2n` matrix :math:`A` and ``constant`` is the
++            updated constant term.
++        """
++        n = self._num_modes
++        M = self._hermitian_part
++        Delta = self._antisymmetric_part
++
++        # Build the 2n x 2n Majorana matrix A
++        # The mapping is:
++        #   gamma_{2p} = c_p + c_p^\dagger
++        #   gamma_{2p+1} = i(c_p - c_p^\dagger)
++        #
++        # The Hamiltonian in terms of Majorana operators:
++        #   H = (i/2) * sum_{j,k} A_{jk} gamma_j gamma_k + const'
++        #
++        # A is built from M and Delta.
++        # A = [[Im(M + Delta),  Re(M + Delta)],
++        #      [-Re(M - Delta), Im(M - Delta)]]
++
++        A = np.zeros((2 * n, 2 * n), dtype=float)
++
++        # Block (0,0): Im(M) + Im(Delta)
++        A[:n, :n] = M.imag + Delta.imag
++        # Block (0,1): Re(M) + Re(Delta)
++        A[:n, n:] = M.real + Delta.real
++        # Block (1,0): -Re(M) + Re(Delta)
++        A[n:, :n] = -M.real + Delta.real
++        # Block (1,1): Im(M) - Im(Delta)
++        A[n:, n:] = M.imag - Delta.imag
++
++        # The constant gets an additional contribution from the trace of M
++        constant = self._constant + 0.5 * np.trace(M).real
++
++        return A, constant
++
++    def diagonalizing_bogoliubov_transform(
++        self,
++    ) -> Tuple[np.ndarray, np.ndarray, float]:
++        r"""Returns the transformation that diagonalizes the quadratic Hamiltonian,
++        the sorted orbital energies, and the transformed constant.
++
++        The diagonal form is:
++
++        .. math::
++
++            H = \sum_{j} \varepsilon_j b_j^\dagger b_j + \text{constant}'
++
++        where :math:`b_j^\dagger, b_j` are the Bogoliubov quasiparticle operators
++        and :math:`\varepsilon_j` are the orbital energies sorted in non-decreasing order.
++
++        The diagonalization is performed by constructing the Bogoliubov-de Gennes (BdG)
++        Hamiltonian:
++
++        .. math::
++
++            H_{\text{BdG}} = \begin{pmatrix} M & \Delta \\ -\Delta^* & -M^T \end{pmatrix}
++
++        and computing its eigenvalues. The eigenvalues come in pairs :math:`\pm \varepsilon_j`,
++        and the orbital energies are the non-negative elements.
++
++        Returns:
++            A tuple ``(transformation_matrix, orbital_energies, transformed_constant)``
++            where:
++
++            - ``transformation_matrix`` is a :math:`2n \times 2n` unitary matrix :math:`W`
++              that relates the original fermionic operators to the Bogoliubov quasiparticle
++              operators.
++            - ``orbital_energies`` is a 1-D array of length :math:`n` containing the sorted
++              non-negative orbital energies.
++            - ``transformed_constant`` is the constant term after diagonalization.
++        """
++        n = self._num_modes
++        M = self._hermitian_part
++        Delta = self._antisymmetric_part
++
++        # Build the Bogoliubov-de Gennes Hamiltonian
++        # H_BdG = [[M, Delta], [-Delta.conj(), -M.T]]
++        # Note: Delta is antisymmetric, so -Delta.conj() = Delta.conj().T
++        h_bdg = np.zeros((2 * n, 2 * n), dtype=complex)
++        h_bdg[:n, :n] = M
++        h_bdg[:n, n:] = Delta
++        h_bdg[n:, :n] = -Delta.conj()
++        h_bdg[n:, n:] = -M.T
++
++        # Diagonalize the BdG Hamiltonian
++        # eigvals are sorted ascending
++        eigvals, eigvecs = np.linalg.eigh(h_bdg)
++
++        # The eigenvalues come in pairs ±epsilon.
++        # eigvals from eigh are sorted ascending, so the first n are negative (or zero)
++        # and the last n are positive (or zero).
++        orbital_energies = eigvals[n:]
++
++        # The transformation matrix is the eigenvector matrix
++        transformation_matrix = eigvecs[:, n:].T
++
++        # The transformed constant is:
++        # constant' = constant + (1/2) * Tr(M) - (1/2) * sum(orbital_energies)
++        transformed_constant = (
++            self._constant
++            + 0.5 * np.trace(M).real
++            - 0.5 * np.sum(orbital_energies).real
++        )
++
++        return transformation_matrix, orbital_energies, transformed_constant

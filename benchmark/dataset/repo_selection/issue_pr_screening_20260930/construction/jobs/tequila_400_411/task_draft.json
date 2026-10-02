@@ -1,0 +1,31 @@
+{
+  "oracle_files": [
+    "src/tequila/circuit/gates.py"
+  ],
+  "task": {
+    "problem_statement": "Higher-order qubit excitations currently fall back to a large Pauli decomposition. Users need optimized decompositions for excitations beyond singles and doubles while preserving the action on the quantum state, including arbitrary complex input states.",
+    "requirements": [
+      "Compile higher-order qubit excitations with smaller circuit depth than their Pauli decomposition.",
+      "Preserve the state transformation of the Pauli decomposition for triple and five-fold excitations, including normalized complex input states and numerical rotation angles.",
+      "Preserve existing elementary-gate decomposition behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "QubitExcitation",
+        "Path": "src/tequila/circuit/gates.py",
+        "Input": "angle, target, control=None, assume_real=False, compile_options=\"optimize\"",
+        "Output": "QCircuit",
+        "Description": "Constructs a qubit excitation; target indices form excitation pairs and compile_options=\"pauli\" selects the reference decomposition."
+      },
+      {
+        "Type": "Function",
+        "Name": "compile_circuit",
+        "Path": "src/tequila/circuit/__init__.py",
+        "Input": "U, *args, **kwargs",
+        "Output": "QCircuit",
+        "Description": "Compiles a circuit and exposes its depth and simulation-compatible action."
+      }
+    ]
+  }
+}

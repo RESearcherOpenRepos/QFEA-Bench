@@ -1,0 +1,85 @@
+[
+  {
+    "sha": "6ad8d2edcbdbb2fb642ac96b38003c6165321fc1",
+    "filename": "examples/qnn/example_qcnn_encoding_circuit.ipynb",
+    "status": "modified",
+    "additions": 260,
+    "deletions": 49,
+    "changes": 309,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/examples%2Fqnn%2Fexample_qcnn_encoding_circuit.ipynb",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/examples%2Fqnn%2Fexample_qcnn_encoding_circuit.ipynb",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/examples%2Fqnn%2Fexample_qcnn_encoding_circuit.ipynb?ref=f8a666878adc1633aba081994b2bed76ce4190c2"
+  },
+  {
+    "sha": "8b40f6604861062070f51ce4527198ea85ad40f7",
+    "filename": "src/squlearn/encoding_circuit/circuit_library/qcnn_encoding_circuit.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fencoding_circuit%2Fcircuit_library%2Fqcnn_encoding_circuit.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fencoding_circuit%2Fcircuit_library%2Fqcnn_encoding_circuit.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fencoding_circuit%2Fcircuit_library%2Fqcnn_encoding_circuit.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -220,12 +220,12 @@ def __pooling(\n                 quantum_circuit = QuantumCircuit(2)\n             quantum_circuit.rz(-np.pi / 2, 0)\n             quantum_circuit.cx(0, 1)\n-            quantum_circuit.rz(param[0], 1)\n-            quantum_circuit.ry(param[1], 0)\n+            quantum_circuit.ry(param[0], 0)\n             if measurement:\n                 quantum_circuit.measure(1, 0)\n                 quantum_circuit.x(0).c_if(0, 1)\n             else:\n+                quantum_circuit.rz(param[1], 1)\n                 quantum_circuit.cx(1, 0)\n             quantum_circuit.ry(param[2], 0)\n "
+  },
+  {
+    "sha": "ef62a90181a0a62514559524ad69b71fa4f02ff0",
+    "filename": "src/squlearn/encoding_circuit/transpiled_encoding_circuit.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 1,
+    "changes": 4,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fencoding_circuit%2Ftranspiled_encoding_circuit.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fencoding_circuit%2Ftranspiled_encoding_circuit.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fencoding_circuit%2Ftranspiled_encoding_circuit.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -8,6 +8,8 @@\n \n from .encoding_circuit_base import EncodingCircuitBase\n \n+from ..util.decompose_to_std import decompose_to_std\n+\n \n class TranspiledEncodingCircuit(EncodingCircuitBase):\n     \"\"\"\n@@ -50,7 +52,7 @@ def __init__(\n         self._x = ParameterVector(\"x\", self._encoding_circuit.num_features)\n         self._p = ParameterVector(\"p\", self._encoding_circuit.num_parameters)\n \n-        self._circuit = self._encoding_circuit.get_circuit(self._x, self._p)\n+        self._circuit = decompose_to_std(self._encoding_circuit.get_circuit(self._x, self._p))\n \n         if self._transpile_func is not None:\n             self._transpiled_circuit = self._transpile_func(self._circuit, self._backend)"
+  },
+  {
+    "sha": "5a3ec95ebc2a4089c5ee58b532ce948b57dc735c",
+    "filename": "src/squlearn/qnn/lowlevel_qnn_pennylane.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 1,
+    "changes": 3,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Fqnn%2Flowlevel_qnn_pennylane.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -16,6 +16,7 @@\n from ..util import Executor\n from ..util.data_preprocessing import adjust_features, adjust_parameters, to_tuple\n from ..util.pennylane.pennylane_circuit import PennyLaneCircuit\n+from ..util.decompose_to_std import decompose_to_std\n \n \n class DirectEvaluation:\n@@ -127,7 +128,7 @@ def _initialize_pennylane_circuit(self):\n         # Parameter vectors for the PQC and the observable\n         self._x = ParameterVector(\"x\", self._pqc.num_features)\n         self._param = ParameterVector(\"param\", self._pqc.num_parameters)\n-        self._qiskit_circuit = self._pqc.get_circuit(self._x, self._param)\n+        self._qiskit_circuit = decompose_to_std(self._pqc.get_circuit(self._x, self._param))\n \n         # Pre-process the observable\n         if isinstance(self._observable, ObservableBase):"
+  },
+  {
+    "sha": "7093f4169338f8d9fc076b36a4514793a747a43d",
+    "filename": "src/squlearn/util/decompose_to_std.py",
+    "status": "added",
+    "additions": 40,
+    "deletions": 0,
+    "changes": 40,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Fdecompose_to_std.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Fdecompose_to_std.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fdecompose_to_std.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -0,0 +1,40 @@\n+from qiskit.circuit.library import standard_gates\n+from qiskit.circuit import QuantumCircuit\n+from typing import Union\n+\n+\n+def decompose_to_std(\n+    circuit: QuantumCircuit, gate_list: Union[None, list] = None\n+) -> QuantumCircuit:\n+    \"\"\"\n+    Function to decompose the circuit to standard gates.\n+\n+    Args:\n+        circuit (QuantumCircuit): The Circuit, which is supposed to be decomposed.\n+        gate_list (Union[None,list]): List of gates, which are considered as standard gates.\n+            If the gate is not in the list, it will be decomposed. If the list is empty,\n+            all gates from `qiskit.circuit.library.standard_gates` and\n+            `[\"cx\",\"cy\",\"cz\",\"measure\"]` are considered as standard gates.\n+\n+    Returns:\n+        QuantumCircuit: The decomposed circuit.\n+    \"\"\"\n+    if not gate_list:\n+        gate_list = [*dir(standard_gates), \"cx\", \"cy\", \"cz\", \"measure\"]\n+    decompose_names = [\n+        instruction.operation.name\n+        for instruction in circuit.data\n+        if instruction.operation.name not in gate_list\n+    ]\n+    circuit_new = circuit.decompose(decompose_names)\n+\n+    while decompose_names and circuit != circuit_new:\n+        circuit = circuit_new\n+        decompose_names = [\n+            instruction.operation.name\n+            for instruction in circuit.data\n+            if instruction.operation.name not in gate_list\n+        ]\n+        circuit_new = circuit.decompose(decompose_names)\n+\n+    return circuit_new"
+  },
+  {
+    "sha": "a9a6258804b2813791a5c9b2c8944a00d02cfa4a",
+    "filename": "src/squlearn/util/optree/optree_evaluate.py",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 9,
+    "changes": 11,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Foptree%2Foptree_evaluate.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Foptree%2Foptree_evaluate.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Foptree%2Foptree_evaluate.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -11,6 +11,7 @@\n from qiskit.quantum_info import SparsePauliOp, PauliList, Pauli\n from qiskit.primitives.backend_estimator import _pauli_expval_with_variance\n from qiskit.primitives.base import SamplerResult\n+from ...util.decompose_to_std import decompose_to_std\n \n from .optree import (\n     OpTreeNodeBase,\n@@ -941,19 +942,11 @@ def change_order(n, reorder_list):\n             if i[1] == n:\n                 return i[0]\n \n-    def maximum_decompose(circ):\n-        \"\"\"Helper function to decompose circuits.\"\"\"\n-        circ_dec = circ.decompose()\n-        while circ_dec != circ:\n-            circ_dec = circ_dec.decompose()\n-            circ = circ.decompose()\n-        return circ_dec\n-\n     if circ_in.num_clbits == 0:\n         return circ_in.measure_all(inplace=False)\n     else:\n         qubits = [i for i in range(circ_in.num_qubits)]\n-        circ_in = maximum_decompose(circ_in)\n+        circ_in = decompose_to_std(circ_in)\n         for instruction, qargs, cargs in circ_in.data:\n             if instruction.name == \"measure\":\n                 for qubit in qargs:"
+  },
+  {
+    "sha": "f4da4e853725d4f320c5c319ff1778931c706f97",
+    "filename": "src/squlearn/util/pennylane/pennylane_circuit.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 1,
+    "changes": 7,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/f8a666878adc1633aba081994b2bed76ce4190c2/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fpennylane%2Fpennylane_circuit.py?ref=f8a666878adc1633aba081994b2bed76ce4190c2",
+    "patch": "@@ -17,6 +17,7 @@\n \n from .pennylane_gates import qiskit_pennylane_gate_dict\n from ..executor import Executor\n+from ..decompose_to_std import decompose_to_std\n \n \n def _get_sympy_interface():\n@@ -143,7 +144,11 @@ def __init__(\n             self._executor = Executor(\"pennylane\")\n \n         # Transpile circuit to supported basis gates and expand blocks automatically\n-        self._qiskit_circuit = transpile(circuit, basis_gates=qiskit_pennylane_gate_dict.keys())\n+        self._qiskit_circuit = transpile(\n+            decompose_to_std(circuit),\n+            basis_gates=qiskit_pennylane_gate_dict.keys(),\n+            optimization_level=0,\n+        )\n \n         self._qiskit_observable = observable\n         self._num_qubits = self._qiskit_circuit.num_qubits"
+  }
+]

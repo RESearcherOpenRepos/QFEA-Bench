@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "4fcc76b78baf9852771e3f429a6fa5598c481af2",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 11,
+    "deletions": 4,
+    "changes": 15,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/e2561097a4763d9b785ed78e47959f3f6e4c3c81/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/e2561097a4763d9b785ed78e47959f3f6e4c3c81/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=e2561097a4763d9b785ed78e47959f3f6e4c3c81",
+    "patch": "@@ -725,8 +725,15 @@ def bitstring_matrix_to_ci_strs(\n     norb = bitstring_matrix.shape[1] // 2\n     num_configs = bitstring_matrix.shape[0]\n \n-    ci_str_left = np.zeros(num_configs)\n-    ci_str_right = np.zeros(num_configs)\n+    if norb < 64:\n+        dtype: type = int\n+    else:\n+        # If 64 orbitals or more, use Python unbounded integer type\n+        dtype = object\n+        bitstring_matrix = bitstring_matrix.astype(object)\n+\n+    ci_str_left = np.zeros(num_configs, dtype=dtype)\n+    ci_str_right = np.zeros(num_configs, dtype=dtype)\n     bts_matrix_left = bitstring_matrix[:, :norb]\n     bts_matrix_right = bitstring_matrix[:, norb:]\n \n@@ -736,8 +743,8 @@ def bitstring_matrix_to_ci_strs(\n         ci_str_left[:] += bts_matrix_left[:, i] * 2 ** (norb - 1 - i)\n         ci_str_right[:] += bts_matrix_right[:, i] * 2 ** (norb - 1 - i)\n \n-    ci_strs_right = np.unique(ci_str_right.astype(\"longlong\"))\n-    ci_strs_left = np.unique(ci_str_left.astype(\"longlong\"))\n+    ci_strs_right = np.unique(ci_str_right)\n+    ci_strs_left = np.unique(ci_str_left)\n \n     if not open_shell:\n         ci_strs_left = ci_strs_right = np.union1d(ci_strs_left, ci_strs_right)"
+  },
+  {
+    "sha": "47b33ea924db161ceff5df874326ca9c3ac25122",
+    "filename": "releasenotes/notes/int-bug-0ca0ac92297b3a9c.yaml",
+    "status": "added",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/e2561097a4763d9b785ed78e47959f3f6e4c3c81/releasenotes%2Fnotes%2Fint-bug-0ca0ac92297b3a9c.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/e2561097a4763d9b785ed78e47959f3f6e4c3c81/releasenotes%2Fnotes%2Fint-bug-0ca0ac92297b3a9c.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fint-bug-0ca0ac92297b3a9c.yaml?ref=e2561097a4763d9b785ed78e47959f3f6e4c3c81",
+    "patch": "@@ -0,0 +1,4 @@\n+---\n+fixes:\n+  - |\n+    Fixed a bug in :func:`qiskit_addon_sqd.fermion.bitstring_matrix_to_ci_strs` in which the conversion of bitstrings to CI strings could be incorrect when the number of orbitals is greater than 53."
+  },
+  {
+    "sha": "134708ff358c73d9b5a90cf74ab1efb24e338aa6",
+    "filename": "test/test_fermion.py",
+    "status": "modified",
+    "additions": 19,
+    "deletions": 1,
+    "changes": 20,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/e2561097a4763d9b785ed78e47959f3f6e4c3c81/test%2Ftest_fermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/e2561097a4763d9b785ed78e47959f3f6e4c3c81/test%2Ftest_fermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/test%2Ftest_fermion.py?ref=e2561097a4763d9b785ed78e47959f3f6e4c3c81",
+    "patch": "@@ -21,7 +21,7 @@\n from pyscf.fci import cistring, spin_square\n from qiskit.primitives import BitArray\n from qiskit_addon_sqd.counts import generate_bit_array_uniform\n-from qiskit_addon_sqd.fermion import diagonalize_fermionic_hamiltonian\n+from qiskit_addon_sqd.fermion import bitstring_matrix_to_ci_strs, diagonalize_fermionic_hamiltonian\n \n \n def _sci_vec_to_fci_vec(\n@@ -118,3 +118,21 @@ def test_diagonalize_fermionic_hamiltonian(self):\n         self.assertLess(sci_dim, 0.5 * fci_dim)\n         self.assertAlmostEqual(result.energy + nuclear_repulsion_energy, exact_energy, places=2)\n         self.assertAlmostEqual(result.sci_state.spin_square(), expected_spin_square)\n+\n+    def test_bitstring_matrix_to_ci_strs(self):\n+        norb = 57\n+        bitstring = \"001111101111111110110001011101100001010000100101100001010\"\n+        assert len(bitstring) == norb\n+        bitstrings = np.array([[b == \"1\" for b in bitstring + bitstring]])\n+        result = bitstring_matrix_to_ci_strs(bitstrings)\n+        result_string = format(result[0][0], f\"0{norb}b\")\n+        assert result_string == bitstring\n+\n+    def test_bitstring_matrix_to_ci_strs_large(self):\n+        norb = 64\n+        bitstring = \"0011111011111111101100010111011000010100001001011000010101111111\"\n+        assert len(bitstring) == norb\n+        bitstrings = np.array([[b == \"1\" for b in bitstring + bitstring]])\n+        result = bitstring_matrix_to_ci_strs(bitstrings)\n+        result_string = format(result[0][0], f\"0{norb}b\")\n+        assert result_string == bitstring"
+  }
+]

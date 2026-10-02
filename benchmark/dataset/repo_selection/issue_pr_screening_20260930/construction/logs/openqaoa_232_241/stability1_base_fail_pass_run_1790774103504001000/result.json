@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 5.833138793999979,
+  "items": [
+    "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0006614169999465958,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.0055049589998361625,
+      "wasxfail": null,
+      "longrepr": "self = <test_operators.TestingOperators testMethod=test_hamiltonian_as_matrix>\n\n    def test_hamiltonian_as_matrix(self):\n        \"\"\"Test if the method produces\n        the correct matrix corresponding to given Hamiltonian.\n    \n        \"\"\"\n        P_list = ['XIIZ', 'YIII', 'IZXI', 'IXIY', 'IIIZ', 'IIXI', 'ZZII']\n        coeff_list = list(range(1, 8))\n    \n        Pauli_list = []\n        for P in P_list:\n            P = np.array(list(P))\n            non_I = np.where(P != 'I')[0]\n            Pauli_list.append(PauliOp(P[non_I], tuple(non_I)))\n    \n        H = Hamiltonian(Pauli_list, coeff_list, 0)\n    \n        solution = np.array([[12. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j,\n                              0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 2. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 4.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [9. + 0.j, 0. + 0.j, 12. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 9. + 0.j, 0. + 0.j, 2. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j,\n                              3. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              1. - 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -12. + 0.j,\n                              0. + 0.j, 3. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, -1. - 2.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j, 3. + 0.j, 0. + 0.j,\n                              -2. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 1. - 2.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j, 0. + 0.j, 3. + 0.j,\n                              0. + 0.j, -12. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, -1. - 2.j],\n                             [1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, -12. + 0.j, 0. + 0.j, 9. + 0.j,\n                              0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, -2. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 9. + 0.j, 0. + 0.j, -12. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 1. + 2.j, 0. + 0.j,\n                              0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j, 0. + 0.j, 0. + 0.j,\n                              12. + 0.j, 0. + 0.j, 3. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, -1. + 2.j,\n                              0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, 2. + 0.j, 0. + 0.j, 3. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. - 4.j,\n                              3. + 0.j, 0. + 0.j, 12. + 0.j, 0. + 0.j],\n                             [0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j, 0. + 0.j,\n                              0. + 0.j, -1. + 2.j, 0. + 0.j, 0. + 0.j, 0. + 4.j, 0. + 0.j,\n                              0. + 0.j, 3. + 0.j, 0. + 0.j, 2. + 0.j]])\n    \n        assert np.allclose(solution,\n>                   H.as_matrix.toarray()), 'as_matrix method not correct'\nE       AttributeError: 'Hamiltonian' object has no attribute 'as_matrix'\n\ntests/test_operators.py:1383: AttributeError"
+    },
+    {
+      "nodeid": "tests/test_operators.py::TestingOperators::test_hamiltonian_as_matrix",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0005172500000298896,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

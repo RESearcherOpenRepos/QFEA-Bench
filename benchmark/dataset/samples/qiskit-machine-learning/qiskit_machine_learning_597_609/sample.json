@@ -1,0 +1,153 @@
+{
+  "instance": {
+    "id": 39,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_597_609",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/597",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/609",
+    "base_commit": "410d212df67f60d6d8eff88e0109bb01de03d9a8",
+    "patch": "10aa219e627f62b8df59d83eceb59fbdc81c8b45"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task lets QNN classes infer parameters from QNNCircuit, so correctness is mainly circuit-wrapper compatibility."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+      "qiskit_machine_learning/neural_networks/sampler_qnn.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository already provides SamplerQNN and EstimatorQNN implementations that operate on parameterized circuits, and it also provides QNNCircuit as a higher-level wrapper around feature-map and ansatz circuits. However, users still had to manually pass separate input and weight parameter lists when constructing SamplerQNN or EstimatorQNN, even when those parameters were already tracked by a QNNCircuit. The QNN interfaces should accept QNNCircuit directly and infer the required parameter lists from it.",
+    "requirements": [
+      "SamplerQNN must accept a QNNCircuit as its circuit argument and derive input_params from the QNNCircuit input parameters.",
+      "SamplerQNN must derive weight_params from the QNNCircuit weight parameters when a QNNCircuit is provided.",
+      "EstimatorQNN must accept a QNNCircuit as its circuit argument and derive input_params from the QNNCircuit input parameters.",
+      "EstimatorQNN must derive weight_params from the QNNCircuit weight parameters when a QNNCircuit is provided.",
+      "Constructing either QNN from an equivalent manually composed circuit with explicit parameters or from a QNNCircuit must produce matching parameter properties.",
+      "Forward and backward evaluations for the QNNCircuit-based construction must match the equivalent manually composed circuit construction."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QNNCircuit",
+        "Path": "qiskit_machine_learning/circuit/library/qnn_circuit.py",
+        "Input": "constructor: num_qubits: int | None = None, feature_map=None, ansatz=None",
+        "Output": "",
+        "Description": "Circuit wrapper exposing feature-map input parameters and ansatz weight parameters for QNN construction."
+      },
+      {
+        "Type": "Class",
+        "Name": "SamplerQNN",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "constructor: circuit: QuantumCircuit | QNNCircuit, sampler=None, input_params=None, weight_params=None, sparse: bool = False, interpret=None, output_shape=None, gradient=None, input_gradients: bool = False",
+        "Output": "",
+        "Description": "Sampler-based neural network whose constructor accepts QNNCircuit, infers input_params and weight_params from it, and exposes sparse, output_shape, num_inputs, num_weights, and input_gradients behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "SamplerQNN.forward",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "forward pass output",
+        "Description": "Evaluates the sampler neural network forward pass for explicit circuits and QNNCircuit-based construction."
+      },
+      {
+        "Type": "Method",
+        "Name": "SamplerQNN.backward",
+        "Path": "qiskit_machine_learning/neural_networks/sampler_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "input gradients and weight gradients",
+        "Description": "Evaluates the sampler neural network backward pass for explicit circuits and QNNCircuit-based construction."
+      },
+      {
+        "Type": "Class",
+        "Name": "EstimatorQNN",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "constructor: circuit: QuantumCircuit | QNNCircuit, estimator=None, observables=None, input_params=None, weight_params=None, gradient=None, input_gradients: bool = False",
+        "Output": "",
+        "Description": "Estimator-based neural network whose constructor accepts QNNCircuit, infers input_params and weight_params from it, and exposes circuit, observables, and input_gradients behavior."
+      },
+      {
+        "Type": "Method",
+        "Name": "EstimatorQNN.forward",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "forward pass output",
+        "Description": "Evaluates the estimator neural network forward pass for explicit circuits and QNNCircuit-based construction."
+      },
+      {
+        "Type": "Method",
+        "Name": "EstimatorQNN.backward",
+        "Path": "qiskit_machine_learning/neural_networks/estimator_qnn.py",
+        "Input": "self, input_data=None, weights=None",
+        "Output": "input gradients and weight gradients",
+        "Description": "Evaluates the estimator neural network backward pass for explicit circuits and QNNCircuit-based construction."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_597_609",
+      "image_id": "sha256:b4c8ffe593e3e69102f8399fdc36671022970033988a25e4a50969d2bde00f5c",
+      "image_size": "1415300908"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_qnn_qc_circui_construction",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_qnn_qc_circui_construction"
+        ],
+        "summary": "2 passed in 8.63s",
+        "duration_seconds": 16
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_no_parameters",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters"
+        ],
+        "summary": "4 passed in 5.23s",
+        "duration_seconds": 12
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_qnn_qc_circui_construction",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_qnn_qc_circui_construction"
+        ],
+        "summary": "2 selected pytest items failed because base QNNCircuit construction leaves inferred input_params empty, causing parameter mismatches and input-shape errors; 2 failed in 8.63s",
+        "duration_seconds": 18
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+          "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_no_parameters",
+          "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters"
+        ],
+        "summary": "4 passed in 6.42s",
+        "duration_seconds": 16
+      }
+    }
+  }
+}

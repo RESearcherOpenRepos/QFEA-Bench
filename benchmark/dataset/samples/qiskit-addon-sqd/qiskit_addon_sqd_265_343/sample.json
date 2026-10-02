@@ -1,0 +1,116 @@
+{
+  "instance": {
+    "id": 111,
+    "repo": "Qiskit/qiskit-addon-sqd",
+    "instance_id": "qiskit_addon_sqd_265_343",
+    "status": "completed",
+    "issue_url": "https://github.com/Qiskit/qiskit-addon-sqd/issues/265",
+    "issue_state": "closed",
+    "pr_url": "https://github.com/Qiskit/qiskit-addon-sqd/pull/343",
+    "base_commit": "f65e80ab3a0137fba99c3dc474dd9f804d87ba1b",
+    "patch": "297f65ab5bf3fd5e7a80f74106b209b6dbb7b0bb"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "\u4e3a Executor \u91c7\u6837\u8f93\u51fa\u589e\u52a0 NumPy bitstring \u5230\u7ecf\u9a8c\u6982\u7387\u4e0e SQD \u5bf9\u89d2\u5316\u7684\u5b8c\u6574\u8f93\u5165\u8def\u5f84\uff1b\u65b0\u589e\u6d4b\u8bd5\u5bf9 H2 \u6c42\u89e3\u80fd\u91cf\u4e0e CASCI \u7ed3\u679c\u65ad\u8a00\uff0c\u6539\u52a8\u5bf9\u5e94\u5355\u4e00\u9700\u6c42\u3002\u91cf\u5b50\u76f8\u5173\u6027\u4e3a\u5e94\u7528\u8868\u793a/\u6267\u884c\u63a5\u53e3\u5c42\u3002"
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_addon_sqd/fermion.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The fermionic sample-based diagonalization interface requires Qiskit BitArray samples. Users with samples already stored in NumPy boolean arrays need to pass them directly into the same quantum-chemistry workflow.",
+    "requirements": [
+      "Accept a two-dimensional NumPy boolean array of sampled bitstrings as the solver input.",
+      "Interpret those samples consistently with the existing bitstring convention and recover the molecular ground-state energy.",
+      "Preserve existing BitArray input, determinant conversion, and subspace-size controls."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "diagonalize_fermionic_hamiltonian",
+        "Path": "qiskit_addon_sqd/fermion.py",
+        "Input": "one_body_tensor, two_body_tensor, bit_array, samples_per_batch, norb, nelec, *, max_iterations=100, seed=None, ...",
+        "Output": "SCIResult",
+        "Description": "Accepts BitArray or a NumPy boolean sample array; result.energy is the electronic energy before adding nuclear repulsion."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/arm64",
+      "image": "benchmark-qiskit_addon_sqd_265_343:latest",
+      "image_id": "sha256:def10d5ebb21392a48d450bc61bcbccc18663384b86d7ed2d4125de45797a6ee",
+      "image_size": "1247530814",
+      "validation_note": "Final layer adds sample metadata only; four formal commands tested the identical code, dependencies and evaluator entry point."
+    },
+    "environment": {
+      "python_version": "3.10.21",
+      "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "glibc": [
+        "glibc",
+        "2.41"
+      ],
+      "platform": "linux/arm64",
+      "shared_between_base_and_patched": true,
+      "dependency_lock": "requirements.resolved.txt",
+      "notes": [
+        "amd64 JAX wheel requires AVX unavailable under local emulation; native ARM validation is recorded separately from original amd64 samples."
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings"
+        ],
+        "summary": "1 failed in 1.65s",
+        "duration_seconds": 3.232
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_basic",
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_no_valid_bitstrings",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs_large"
+        ],
+        "summary": "5 passed in 3.71s",
+        "duration_seconds": 6.032
+      }
+    },
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings"
+        ],
+        "summary": "1 passed in 1.96s",
+        "duration_seconds": 4.269
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_basic",
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_max_dim",
+          "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_no_valid_bitstrings",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs",
+          "test/test_fermion.py::TestFermion::test_bitstring_matrix_to_ci_strs_large"
+        ],
+        "summary": "5 passed in 3.99s",
+        "duration_seconds": 5.927
+      }
+    }
+  },
+  "construction_notes": {
+    "stability": "Three actual trials per side and suite; all exact selected items verified. Base collection failures also checked individually.",
+    "evidence_directory": "repo_selection/issue_pr_screening_20260930/construction/logs/qiskit_addon_sqd_265_343",
+    "selector_exclusions": {}
+  }
+}

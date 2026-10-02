@@ -1,0 +1,85 @@
+diff --git a/src/squlearn/qnn/base_qnn.py b/src/squlearn/qnn/base_qnn.py
+index 29518e2..f18e9ca 100644
+--- a/src/squlearn/qnn/base_qnn.py
++++ b/src/squlearn/qnn/base_qnn.py
+@@ -98,6 +98,80 @@ class BaseQNN(BaseEstimator, ABC):
+ 
+         self._is_fitted = False
+ 
++    def get_params(self, deep: bool = True) -> dict:
++        """Returns hyper-parameters and their values of the QNN.
++
++        Args:
++            deep (bool): If True, also the parameters for
++                         contained objects are returned (default=True).
++
++        Return:
++            Dictionary with hyper-parameters and values.
++        """
++        params = {
++            "batch_size": self.batch_size,
++            "epochs": self.epochs,
++            "executor": self.executor,
++            "loss": self.loss,
++            "operator": self.operator,
++            "opt_param_op": self.opt_param_op,
++            "optimizer": self.optimizer,
++            "param_ini": self.param_ini,
++            "param_op_ini": self.param_op_ini,
++            "pqc": self.pqc,
++            "shuffle": self.shuffle,
++            "variance": self.variance,
++        }
++        return params
++
++    def set_params(self, **params) -> "BaseQNN":
++        """Sets hyper-parameters and reinitializes derived quantities.
++
++        When parameters related to the encoding circuit (pqc) or observables
++        (operator) are changed, the parameter arrays and internal QNN are
++        reinitialized accordingly.
++
++        Args:
++            params: Hyper-parameters and their values.
++
++        Return:
++            The BaseQNN instance with updated parameters.
++        """
++        # Check if pqc or operator related params are being changed
++        param_keys = set(params.keys())
++        pqc_or_op_changed = any(
++            k == "pqc" or k == "operator" or k.startswith("pqc__") or k.startswith("operator__")
++            for k in param_keys
++        )
++
++        # Use sklearn's BaseEstimator.set_params to update attributes
++        super().set_params(**params)
++
++        if pqc_or_op_changed:
++            # Reinitialize PQC parameter arrays
++            self.param_ini = self.pqc.generate_initial_parameters(seed=self.parameter_seed)
++            self.param = self.param_ini.copy()
++
++            # Reinitialize operator parameter arrays
++            if isinstance(self.operator, list):
++                self.param_op_ini = np.concatenate(
++                    [
++                        op.generate_initial_parameters(seed=self.parameter_seed)
++                        for op in self.operator
++                    ]
++                )
++            else:
++                self.param_op_ini = self.operator.generate_initial_parameters(
++                    seed=self.parameter_seed
++                )
++            self.param_op = self.param_op_ini.copy()
++
++            # Recreate internal QNN with updated circuit/operator
++            self._qnn = QNN(self.pqc, self.operator, self.executor)
++            self._is_fitted = False
++
++        return self
++
+     def fit(self, X: np.ndarray, y: np.ndarray, weights: np.ndarray = None) -> None:
+         """Fit a new model to data.
+ 

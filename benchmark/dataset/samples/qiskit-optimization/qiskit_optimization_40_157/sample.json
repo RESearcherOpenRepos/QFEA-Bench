@@ -1,0 +1,202 @@
+{
+  "instance": {
+    "id": 97,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_40_157",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/40",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/157",
+    "base_commit": "6fd93e90d081e8722bec77e0a84fdcf6821282f8",
+    "patch": "2364e6ba3e7d5845591e713b0a53308f7605773a"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a classical linear-inequality-to-penalty converter for QUBO preprocessing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/converters/__init__.py",
+      "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+      "qiskit_optimization/converters/quadratic_program_to_qubo.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Converting linear inequalities to QUBO currently goes through slack variables and equality penalties even for common binary-constraint patterns that can be represented directly as quadratic penalty terms. Users need a converter that recognizes those special linear inequality forms, removes the matching constraints, and adds the correct penalty terms to the objective while leaving non-matching constraints unchanged.",
+    "requirements": [
+      "Add a LinearInequalityToPenalty converter that is importable from qiskit_optimization.converters.",
+      "For binary constraints of the form x <= y and x >= y, convert the inequality into the corresponding quadratic penalty without introducing slack variables.",
+      "For binary constraints of the form sum(x_i) <= 1 and sum(x_i) >= n - 1, convert the inequality into pairwise quadratic penalty terms without introducing slack variables.",
+      "Apply penalty terms with the correct sign for both minimization and maximization objectives, preserving existing objective constant, linear, and quadratic terms.",
+      "Leave linear or quadratic constraints that do not match the supported special patterns in the converted problem.",
+      "Automatically compute a penalty value from objective bounds when no penalty is supplied, and fall back to a default value when fractional constraint coefficients make automatic calculation unreliable.",
+      "Expose a mutable penalty setting and remember the penalty value used during conversion.",
+      "QuadraticProgramToQubo must include the new linear-inequality-to-penalty conversion in its default converter pipeline.",
+      "Interpreting a converted solution must return the original variable vector and reject vectors with the wrong length using QiskitOptimizationError."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "LinearInequalityToPenalty",
+        "Path": "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+        "Input": "constructor: penalty: float | None = None",
+        "Output": "",
+        "Description": "QuadraticProgramConverter that converts supported binary linear inequality patterns into objective penalty terms."
+      },
+      {
+        "Type": "Method",
+        "Name": "LinearInequalityToPenalty.convert",
+        "Path": "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "QuadraticProgram",
+        "Description": "Returns a converted problem with matching special linear inequalities removed and represented as objective penalty terms."
+      },
+      {
+        "Type": "Method",
+        "Name": "LinearInequalityToPenalty.interpret",
+        "Path": "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+        "Input": "self, x",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the original variable vector and raises QiskitOptimizationError when the vector length does not match the source problem."
+      },
+      {
+        "Type": "Method",
+        "Name": "LinearInequalityToPenalty.penalty",
+        "Path": "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+        "Input": "get or set penalty: float | None",
+        "Output": "float | None",
+        "Description": "Gets or sets the penalty coefficient; setting None enables automatic penalty calculation on conversion."
+      },
+      {
+        "Type": "Method",
+        "Name": "LinearInequalityToPenalty._auto_define_penalty",
+        "Path": "qiskit_optimization/converters/linear_inequality_to_penalty.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "float",
+        "Description": "Computes the automatic penalty coefficient from objective bounds or returns the default fallback when fractional constraint coefficients are present."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuadraticProgramToQubo",
+        "Path": "qiskit_optimization/converters/quadratic_program_to_qubo.py",
+        "Input": "constructor: penalty: float | None = None",
+        "Output": "",
+        "Description": "Default QUBO converter whose conversion pipeline includes LinearInequalityToPenalty."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticProgramToQubo.convert",
+        "Path": "qiskit_optimization/converters/quadratic_program_to_qubo.py",
+        "Input": "self, problem: QuadraticProgram",
+        "Output": "QuadraticProgram",
+        "Description": "Converts a QuadraticProgram to QUBO using the default converter pipeline, including special linear inequality penalty conversion."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_40_157",
+      "image_id": "sha256:b99f64641651fb65b09501e98c6a88c30d92e34e9a56b870e4ba2a8c82069311",
+      "image_size": "989805789"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "qiskit-terra @ git+https://github.com/Qiskit/qiskit-terra.git@40d7ee24f1279d8efb628fc84041fec99db800b0",
+        "numpy<1.24",
+        "scipy<1.11",
+        "docplex==2.21.207",
+        "networkx<3",
+        "pytest<8",
+        "ddt",
+        "Cython<3"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_inequality_to_penalty_auto_define_penalty",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty1",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty2",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty3",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty4",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty6",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty7",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty8",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_quadratic_program_to_qubo_inequality_to_penalty"
+        ],
+        "summary": "9 passed in 2.48s",
+        "duration_seconds": 10.77
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_0var_range_inequality",
+          "test/converters/test_converters.py::TestConverters::test_auto_penalty",
+          "test/converters/test_converters.py::TestConverters::test_auto_penalty_warning",
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+          "test/converters/test_converters.py::TestConverters::test_inequality_integer",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_auto",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_continuous",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_integer",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_integer",
+          "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+          "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing",
+          "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing2",
+          "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_maximize_to_minimize",
+          "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_minimize_to_maximize"
+        ],
+        "summary": "15 passed in 1.59s",
+        "duration_seconds": 6.53
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_inequality_to_penalty_auto_define_penalty",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty1",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty2",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty3",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty4",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty6",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty7",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty8",
+          "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_quadratic_program_to_qubo_inequality_to_penalty"
+        ],
+        "summary": "9 collection errors in 2.49s: cannot import LinearInequalityToPenalty from qiskit_optimization.converters",
+        "duration_seconds": 11.5
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/converters/test_converters.py::TestConverters::test_0var_range_inequality",
+          "test/converters/test_converters.py::TestConverters::test_auto_penalty",
+          "test/converters/test_converters.py::TestConverters::test_auto_penalty_warning",
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+          "test/converters/test_converters.py::TestConverters::test_inequality_integer",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_auto",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_continuous",
+          "test/converters/test_converters.py::TestConverters::test_inequality_mode_integer",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_integer",
+          "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+          "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing",
+          "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing2",
+          "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_maximize_to_minimize",
+          "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_minimize_to_maximize"
+        ],
+        "summary": "15 passed in 2.37s",
+        "duration_seconds": 17.48
+      }
+    }
+  }
+}

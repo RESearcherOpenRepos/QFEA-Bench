@@ -1,0 +1,366 @@
+{
+  "id": 76,
+  "sample_id": "qiskit_nature_787_799",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "5460a1d84dd0bebaa95215c34eccc30fdcb5021e",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 20,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/electronic_integral_values": 3,
+      "quantum_semantics/particle_number_conservation": 3,
+      "quantum_semantics/ground_state_energy": 2,
+      "interface/input_validation": 2,
+      "interface/logging_contract": 2,
+      "interface/serialization_roundtrip": 14
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpH2::test_electronic_energy",
+      "label": "quantum_semantics/electronic_integral_values",
+      "assertions": [
+        {
+          "line": 78,
+          "expected": "Restricted H2 FCIDump produces reference nuclear energy and one-/two-electron MO integrals."
+        }
+      ],
+      "rationale": "Inherited base assertion compares physical integral values with the H2 fixture."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpH2::test_particle_number",
+      "label": "quantum_semantics/particle_number_conservation",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "H2 FCIDump yields two spin orbitals per molecular orbital and one alpha/one beta electron."
+        }
+      ],
+      "rationale": "These fields encode the physical electron sector."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpLiH::test_electronic_energy",
+      "label": "quantum_semantics/electronic_integral_values",
+      "assertions": [
+        {
+          "line": 78,
+          "expected": "Restricted LiH FCIDump produces reference MO integral tensors."
+        }
+      ],
+      "rationale": "The LiH fixture supplies distinct physical integrals and core energy."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpLiH::test_particle_number",
+      "label": "quantum_semantics/particle_number_conservation",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "LiH FCIDump yields six molecular orbitals and two alpha/two beta electrons."
+        }
+      ],
+      "rationale": "The test checks the molecule electron sector."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpOH::test_electronic_energy",
+      "label": "quantum_semantics/electronic_integral_values",
+      "assertions": [
+        {
+          "line": 104,
+          "expected": "Unrestricted OH FCIDump produces reference alpha, beta-alpha, and beta-beta integrals."
+        }
+      ],
+      "rationale": "The OH fixture checks spin-resolved physical integral data."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump.py::TestFCIDumpOH::test_particle_number",
+      "label": "quantum_semantics/particle_number_conservation",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "OH FCIDump yields six molecular orbitals, five alpha, and four beta electrons."
+        }
+      ],
+      "rationale": "The asymmetric spin population is the physical assertion."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestMethodsFCIDump::test_lih",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 60,
+          "expected": "LiH FCIDump ground-state workflow matches reference total energy -7.882."
+        }
+      ],
+      "rationale": "The shared _assert_energy helper compares a physical total energy."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestMethodsFCIDump::test_lih_freeze_core",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Freeze-core request without ElectronicBasisTransform raises the specified error."
+        }
+      ],
+      "rationale": "The selected test explicitly asserts prerequisite rejection."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestMethodsFCIDump::test_oh",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {
+          "line": 68,
+          "expected": "OH FCIDump ground-state workflow matches reference total energy -74.387."
+        }
+      ],
+      "rationale": "The shared _assert_energy helper compares a physical total energy."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestMethodsFCIDump::test_oh_freeze_core",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 96,
+          "expected": "OH freeze-core request without ElectronicBasisTransform raises the specified error."
+        }
+      ],
+      "rationale": "The selected test explicitly asserts prerequisite rejection."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestFCIDumpResult::test_result_log",
+      "label": "interface/logging_contract",
+      "assertions": [
+        {
+          "line": 126,
+          "expected": "FCIDump-derived properties support debug logging."
+        }
+      ],
+      "rationale": "The assertion checks public logging behavior."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_methods_fcidump.py::TestFCIDumpResult::test_result_log_with_atoms",
+      "label": "interface/logging_contract",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "FCIDump-derived properties with atom context support debug logging."
+        }
+      ],
+      "rationale": "The assertion checks public logging behavior."
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_h1",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 100,
+          "expected": "Written H2 FCIDump retains one-electron integral values."
+        }
+      ],
+      "rationale": "The selected dumper test checks persisted format content."
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_h2",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 107,
+          "expected": "Written H2 FCIDump retains two-electron integral values."
+        }
+      ],
+      "rationale": "The selected dumper test checks persisted format content."
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_inactive_energy",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Written H2 FCIDump retains its ECORE energy header."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted field."
+    },
+    {
+      "test_number": 16,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_num_electrons",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 80,
+          "expected": "Written H2 FCIDump retains electron count NELEC."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted header field."
+    },
+    {
+      "test_number": 17,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_num_molecular_orbitals",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Written H2 FCIDump retains molecular-orbital count NORB."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted header field."
+    },
+    {
+      "test_number": 18,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_orbital_syms",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 95,
+          "expected": "Written H2 FCIDump retains orbital symmetry list ORBSYM."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted header field."
+    },
+    {
+      "test_number": 19,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_spin_number",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Written H2 FCIDump retains spin number MS2."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted header field."
+    },
+    {
+      "test_number": 20,
+      "split": "F2P",
+      "selector": "test/second_q/formats/fcidump/test_fcidump_dumper.py::TestFCIDumpDumpH2::test_dumped_wave_function_sym",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "Written H2 FCIDump retains wave-function symmetry ISYM."
+        }
+      ],
+      "rationale": "The selected dumper test checks a persisted header field."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaJSON::test_from_json_1",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "First QCSchema JSON fixture round-trips to the expected object."
+        }
+      ],
+      "rationale": "The selected regression case checks JSON data persistence."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaJSON::test_from_json_2",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "Second QCSchema JSON fixture round-trips to the expected object."
+        }
+      ],
+      "rationale": "The selected regression case checks JSON data persistence."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaJSON::test_from_json_3",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "Third QCSchema JSON fixture round-trips to the expected object."
+        }
+      ],
+      "rationale": "The selected regression case checks JSON data persistence."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaJSON::test_from_json_4",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 47,
+          "expected": "Fourth QCSchema JSON fixture round-trips to the expected object."
+        }
+      ],
+      "rationale": "The selected regression case checks JSON data persistence."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaJSON::test_to_json",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 56,
+          "expected": "QCSchema object serializes to expected JSON data."
+        }
+      ],
+      "rationale": "The selected regression case checks output representation."
+    },
+    {
+      "test_number": 26,
+      "split": "P2P",
+      "selector": "test/second_q/formats/test_qcschema.py::TestQCSchemaLegacy::test_legacy_from_hdf5",
+      "label": "interface/serialization_roundtrip",
+      "assertions": [
+        {
+          "line": 110,
+          "expected": "Legacy HDF5 file loads as the expected QCSchema object."
+        }
+      ],
+      "rationale": "The selected regression case checks compatibility of persisted data."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/5460a1d84dd0bebaa95215c34eccc30fdcb5021e/test/second_q/formats/fcidump/test_fcidump.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5460a1d84dd0bebaa95215c34eccc30fdcb5021e/test/second_q/formats/fcidump/test_fcidump_dumper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5460a1d84dd0bebaa95215c34eccc30fdcb5021e/test/second_q/formats/fcidump/test_methods_fcidump.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/5460a1d84dd0bebaa95215c34eccc30fdcb5021e/test/second_q/formats/test_qcschema.py"
+  ],
+  "rationale": "Reviewed all 26 selected exact-patch tests, including inherited methods and parameterized variants. Each label follows its explicit assertion."
+}

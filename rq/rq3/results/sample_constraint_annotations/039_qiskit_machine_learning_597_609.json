@@ -1,0 +1,102 @@
+{
+  "id": 39,
+  "sample_id": "qiskit_machine_learning_597_609",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "10aa219e627f62b8df59d83eceb59fbdc81c8b45",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "interface/input_format_equivalence": 2,
+      "quantum_semantics/estimator_expectation_values": 1,
+      "interface/property_mutability": 2,
+      "interface/output_shape": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_qnn_qc_circui_construction",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 440,
+          "expected": "EstimatorQNN from QNNCircuit matches explicit-circuit forward and backward results."
+        }
+      ],
+      "rationale": "The test first checks inferred input/weight parameters; numeric equality then verifies alternate constructor input produces the same behavior. The constructor-format contract is primary."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_qnn_qc_circui_construction",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 383,
+          "expected": "SamplerQNN from QNNCircuit matches explicit-circuit probabilities and gradients."
+        }
+      ],
+      "rationale": "This distinct sampler case also checks inferred parameters; the direct public input-format equivalence is primary."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_estimator_qnn_2_1",
+      "label": "quantum_semantics/estimator_expectation_values",
+      "assertions": [
+        {
+          "line": 258,
+          "expected": "Existing two-input one-output EstimatorQNN matches quantum numeric references."
+        }
+      ],
+      "rationale": "The helper compares Pauli expectation values and gradients, not just shape."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_estimator_qnn.py::TestEstimatorQNN::test_setters_getters",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "EstimatorQNN public getters expose configured circuit, observables and parameters."
+        }
+      ],
+      "rationale": "The selected properties case checks getter/setter state."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_no_parameters",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 343,
+          "expected": "SamplerQNN without parameters returns the expected forward and gradient shapes or None."
+        }
+      ],
+      "rationale": "The no-input/no-weight cases delegate to a helper checking representation and dimensions."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_sampler_qnn.py::TestSamplerQNN::test_setters_getters",
+      "label": "interface/property_mutability",
+      "assertions": [
+        {
+          "line": 299,
+          "expected": "SamplerQNN getters and input-gradient setter expose configured values."
+        }
+      ],
+      "rationale": "The selected property case checks public accessors."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10aa219e627f62b8df59d83eceb59fbdc81c8b45/test/neural_networks/test_estimator_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/10aa219e627f62b8df59d83eceb59fbdc81c8b45/test/neural_networks/test_sampler_qnn.py"
+  ],
+  "rationale": "Reviewed the two QNNCircuit construction paths separately and each retained P2P selector. F2P includes quantum numeric equality, but it establishes equivalence of two accepted public input forms."
+}

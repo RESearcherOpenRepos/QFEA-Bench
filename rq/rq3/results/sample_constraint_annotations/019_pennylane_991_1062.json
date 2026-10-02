@@ -1,0 +1,101 @@
+{
+  "id": 19,
+  "sample_id": "pennylane_991_1062",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "a7bf5c9ec7db785bd80a6d52a08c0de475382f0d",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "interface/broadcasted_layer_shape": 2,
+      "interface/output_shape": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-2-2-n_qubits0-output_dim0-torch]",
+      "label": "interface/broadcasted_layer_shape",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "Broadcasted inputs propagate gradients to every trainable QNode weight"
+        },
+        {
+          "line": 407,
+          "expected": "The output keeps both leading input dimensions followed by the QNode output dimension"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-5-4-n_qubits1-output_dim1-torch]",
+      "label": "interface/broadcasted_layer_shape",
+      "assertions": [
+        {
+          "line": 406,
+          "expected": "Broadcasted inputs propagate gradients to every trainable QNode weight"
+        },
+        {
+          "line": 407,
+          "expected": "A larger broadcasted input keeps both leading dimensions in its output"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits0-output_dim0-torch]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 375,
+          "expected": "A single input returns a one-dimensional quantum-layer output"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits1-output_dim1-torch]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 375,
+          "expected": "The selected single input returns the expected output dimension"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits0-output_dim0-torch]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 387,
+          "expected": "A two-dimensional batch returns batch-by-output shape"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits1-output_dim1-torch]",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 387,
+          "expected": "The selected batch preserves the requested output dimension"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/a7bf5c9ec7db785bd80a6d52a08c0de475382f0d/tests/qnn/test_qnn_torch.py"
+  ],
+  "rationale": "These tests assert PyTorch layer output dimensions for one, two, and three input dimensions; the new broadcast cases also require trainable parameters to receive gradients but do not compare quantum values or gradient magnitudes."
+}

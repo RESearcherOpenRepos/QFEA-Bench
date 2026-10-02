@@ -1,0 +1,216 @@
+{
+  "id": 98,
+  "sample_id": "qiskit_optimization_41_114",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "969ec9293eee3abdf4ef85be9c91bee939c5212e",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 9,
+    "subtype_test_counts": {
+      "general_semantics/objective_sense_conversion": 1,
+      "general_semantics/empty_problem_conversion": 1,
+      "quantum_semantics/quantum_optimization_result": 4,
+      "general_semantics/optimization_result_interpretation": 4,
+      "general_semantics/integer_binary_conversion": 1,
+      "quantum_semantics/ising_operator_conversion": 1,
+      "general_semantics/equality_penalty_conversion": 1,
+      "interface/unsupported_constraint_sense": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_maximize_to_minimize",
+      "label": "general_semantics/objective_sense_conversion",
+      "assertions": [
+        {
+          "line": 373,
+          "expected": "Maximization objective becomes minimization with negated value."
+        }
+      ],
+      "rationale": "Maximization objective becomes minimization with negated value."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_empty_problem",
+      "label": "general_semantics/empty_problem_conversion",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Empty optimization problem retains zero Ising offset."
+        }
+      ],
+      "rationale": "Empty optimization problem retains zero Ising offset."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_converter_list",
+      "label": "quantum_semantics/quantum_optimization_result",
+      "assertions": [
+        {
+          "line": 63,
+          "via_helper": 166,
+          "helper_selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::validate_results",
+          "expected": "Grover optimizer using a converter returns the same objective as the reference solution."
+        }
+      ],
+      "rationale": "Grover optimization accepts a converter and returns validated optimum."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 198,
+          "expected": "MinimumEigenOptimizer returns the original objective value through converter list."
+        }
+      ],
+      "rationale": "MinimumEigenOptimizer returns the original objective value through converter list."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 240,
+          "expected": "Eigenoptimizer samples and raw samples reflect the original optimal objective."
+        }
+      ],
+      "rationale": "Eigenoptimizer samples and raw samples reflect the original optimal objective."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_integer_to_binary",
+      "label": "general_semantics/integer_binary_conversion",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Integer variable becomes weighted binary variables."
+        }
+      ],
+      "rationale": "Integer variable becomes weighted binary variables."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_optimizationproblem_to_ising",
+      "label": "quantum_semantics/ising_operator_conversion",
+      "assertions": [
+        {
+          "line": 433,
+          "expected": "Optimization problem maps to the expected maximization Ising operator."
+        }
+      ],
+      "rationale": "Optimization problem maps to the expected maximization Ising operator."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+      "label": "general_semantics/equality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 332,
+          "expected": "Binary constraints are absorbed into the penalty and solution maps back."
+        }
+      ],
+      "rationale": "Binary constraints are absorbed into the penalty and solution maps back."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+      "label": "interface/unsupported_constraint_sense",
+      "assertions": [
+        {
+          "line": 311,
+          "expected": "Unsupported constraint sense raises QiskitOptimizationError."
+        }
+      ],
+      "rationale": "Unsupported constraint sense raises QiskitOptimizationError."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple",
+      "label": "quantum_semantics/quantum_optimization_result",
+      "assertions": [
+        {
+          "line": 105,
+          "expected": "Grover minimization reports expected qubit counts and operation counts."
+        }
+      ],
+      "rationale": "Grover minimization reports expected qubit counts and operation counts."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_simple_maximize",
+      "label": "quantum_semantics/quantum_optimization_result",
+      "assertions": [
+        {
+          "line": 66,
+          "via_helper": 121,
+          "helper_selector": "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::validate_results",
+          "expected": "Grover maximization objective is restored from its internal minimization value."
+        }
+      ],
+      "rationale": "Grover maximization returns the validated optimum in original sense."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 189,
+          "expected": "Control eigenoptimizer converter list returns objective four."
+        }
+      ],
+      "rationale": "Control eigenoptimizer converter list returns objective four."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver",
+      "label": "general_semantics/optimization_result_interpretation",
+      "assertions": [
+        {
+          "line": 227,
+          "expected": "Control eigenoptimizer returns the expected maximization objective."
+        }
+      ],
+      "rationale": "Control eigenoptimizer samples retain probabilities and objective values."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/algorithms/test_warm_start_qaoa.py::TestWarmStartQAOAOptimizer::test_simple_qubo",
+      "label": "quantum_semantics/quantum_optimization_result",
+      "assertions": [
+        {
+          "line": 130,
+          "expected": "Warm-start QAOA returns the expected optimum and objective."
+        }
+      ],
+      "rationale": "Warm-start QAOA returns the expected optimum and objective."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/969ec9293eee3abdf4ef85be9c91bee939c5212e/test/algorithms/test_grover_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/969ec9293eee3abdf4ef85be9c91bee939c5212e/test/algorithms/test_min_eigen_optimizer.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/969ec9293eee3abdf4ef85be9c91bee939c5212e/test/algorithms/test_warm_start_qaoa.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/969ec9293eee3abdf4ef85be9c91bee939c5212e/test/converters/test_converters.py"
+  ],
+  "rationale": "Every selected test was inspected individually against its task and assertion."
+}

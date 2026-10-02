@@ -1,0 +1,102 @@
+{
+  "id": 75,
+  "sample_id": "qiskit_nature_715_716",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "2844bba54f0f9355d1d2e0119fa5e461f7e7baaa",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 3,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "general_semantics/numeric_tolerance_comparison": 3,
+      "quantum_semantics/operator_hermiticity": 2,
+      "general_semantics/symbolic_operator_arithmetic": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 377,
+          "expected": "Fermionic operators with matching labels are equivalent only within supplied coefficient tolerance."
+        }
+      ],
+      "rationale": "The focused assertion checks ordinary numeric closeness."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 367,
+          "expected": "Spin operators with matching labels are equivalent only within supplied coefficient tolerance."
+        }
+      ],
+      "rationale": "The focused assertion checks ordinary numeric closeness."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_equiv",
+      "label": "general_semantics/numeric_tolerance_comparison",
+      "assertions": [
+        {
+          "line": 142,
+          "expected": "Vibrational operators with matching labels are equivalent only within supplied coefficient tolerance."
+        }
+      ],
+      "rationale": "The focused assertion checks ordinary numeric closeness."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 367,
+          "expected": "Fermionic ladder combinations satisfy or violate Hermiticity at the specified tolerance."
+        }
+      ],
+      "rationale": "The physical adjoint property is directly tested."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_spin_op.py::TestSpinOp::test_hermiticity",
+      "label": "quantum_semantics/operator_hermiticity",
+      "assertions": [
+        {
+          "line": 357,
+          "expected": "Spin combinations satisfy or violate Hermiticity at the specified tolerance."
+        }
+      ],
+      "rationale": "The physical operator property is directly tested."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_simplify",
+      "label": "general_semantics/symbolic_operator_arithmetic",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Simplification aggregates duplicate vibrational terms to the expected list."
+        }
+      ],
+      "rationale": "The selected test checks generic duplicate-term collection."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/2844bba54f0f9355d1d2e0119fa5e461f7e7baaa/test/second_q/operators/test_fermionic_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/2844bba54f0f9355d1d2e0119fa5e461f7e7baaa/test/second_q/operators/test_spin_op.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/2844bba54f0f9355d1d2e0119fa5e461f7e7baaa/test/second_q/operators/test_vibrational_op.py"
+  ],
+  "rationale": "Read all 6 selected tests at the exact sample commit; each case is labeled by its explicit assertion rather than operator class name."
+}

@@ -1,0 +1,90 @@
+{
+  "id": 4,
+  "sample_id": "openfermion_258_262",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "98134afd34f2591aaac851005ae057cdff8457d2",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 6,
+    "subtype_test_counts": {
+      "quantum_semantics/majorana_operator_convention": 1,
+      "quantum_semantics/hamiltonian_representation_equivalence": 1,
+      "quantum_semantics/spin_operator_algebra": 4,
+      "quantum_semantics/ground_state_energy": 1,
+      "quantum_semantics/operator_locality": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/utils/_special_operators_test.py::MajoranaOperatorTest::test_init",
+      "label": "quantum_semantics/majorana_operator_convention",
+      "assertions": [
+        {"line": 90, "expected": "Tuple (2, 0) and shorthand c2 construct equivalent Majorana operators"},
+        {"line": 91, "expected": "The c2 operator equals the unnormalized sum of creation and annihilation on mode 2"},
+        {"line": 97, "expected": "Tuple (3, 1) and shorthand d3 construct equivalent Majorana operators"},
+        {"line": 98, "expected": "The d3 operator equals i times creation minus i times annihilation on mode 3"}
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_majorana_form",
+      "label": "quantum_semantics/hamiltonian_representation_equivalence",
+      "assertions": [{"line": 167, "expected": "Reconstructing a quadratic Hamiltonian from its Majorana matrix and constant preserves the normal-ordered FermionOperator"}]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_sz_operator",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [{"line": 38, "expected": "The spin-z helper returns the expected half-weighted up-minus-down number operators on two spatial orbitals"}]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_plus_operator",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [{"line": 48, "expected": "The spin-raising helper returns the expected down-to-up transitions on two spatial orbitals"}]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_minus_operator",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [{"line": 59, "expected": "The spin-lowering helper returns the expected up-to-down transitions on three spatial orbitals"}]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/utils/_special_operators_test.py::FermionSpinOperatorsTest::test_s_squared_operator",
+      "label": "quantum_semantics/spin_operator_algebra",
+      "assertions": [{"line": 76, "expected": "The total-spin-squared helper satisfies S² = S−S+ + Sz² + Sz in its fermionic representation"}]
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_quadratic_hamiltonian_test.py::QuadraticHamiltoniansTest::test_ground_energy",
+      "label": "quantum_semantics/ground_state_energy",
+      "assertions": [
+        {"line": 139, "expected": "Ground energy of a particle-number-conserving quadratic Hamiltonian matches sparse-operator diagonalization"},
+        {"line": 142, "expected": "Ground energy of a non-particle-number-conserving quadratic Hamiltonian matches sparse-operator diagonalization"}
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/transforms/_verstraete_cirac_test.py::VerstraeteCirac2dSquareOperatorLocalityTest::test_operator_locality_no_aux",
+      "label": "quantum_semantics/operator_locality",
+      "assertions": [{"line": 90, "expected": "Every qubit term produced by the no-auxiliary Verstraete–Cirac transform acts on at most four qubits"}]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/98134afd34f2591aaac851005ae057cdff8457d2/src/openfermion/utils/_special_operators_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/98134afd34f2591aaac851005ae057cdff8457d2/src/openfermion/ops/_quadratic_hamiltonian_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/98134afd34f2591aaac851005ae057cdff8457d2/src/openfermion/transforms/_verstraete_cirac_test.py"
+  ],
+  "rationale": "test_init has both shorthand-notation and operator-value assertions; the defining Majorana convention is its primary constraint. The locality test uses term length to enforce qubit-operator locality, so its numerical comparison is a quantum constraint rather than generic collection behavior."
+}

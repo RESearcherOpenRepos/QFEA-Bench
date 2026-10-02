@@ -1,0 +1,1459 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1009611340",
+    "pull_request_review_id": 1162165786,
+    "id": 1009611340,
+    "node_id": "PRRC_kwDOE-DJV848LXJM",
+    "diff_hunk": "@@ -138,16 +139,14 @@ def to_driver_basis(basis: str) -> str:\n             return \"sto-3g\"\n         return basis\n \n-    def run(self) -> VibrationalStructureProblem:\n+    def run(self, basis: VibrationalBasis) -> VibrationalStructureProblem:  # type: ignore[override]",
+    "path": "qiskit_nature/second_q/drivers/gaussiand/gaussian_forces_driver.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "27c00f9e5d111636229eb08ffb5d61b319fd2e44",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am not 100% happy with this solution since this makes the function signature of `GaussianForcesDriver` different from the other drivers. However, technically the `GaussianLogDriver.run` method has always been different since it returns an entirely different result object type.\r\n\r\nI would be willing to leave this as is for the 0.5 release and revisit this situation in a future release. A lot could be said about how to deal with this more appropriately also in the electronic stack where the `to_problem` method (called by `run` internally) has additional kwargs like `basis` and `include_dipole`, which `run` does not expose..",
+    "created_at": "2022-10-31T16:19:35Z",
+    "updated_at": "2022-10-31T16:26:17Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1009611340",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1009611340"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1009611340"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1009611340/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 146,
+    "original_line": 146,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 48,
+    "position": 48,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010616742",
+    "pull_request_review_id": 1163619391,
+    "id": 1010616742,
+    "node_id": "PRRC_kwDOE-DJV848PMmm",
+    "diff_hunk": "@@ -215,59 +225,65 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 3,\n+   \"execution_count\": 4,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n      \"name\": \"stdout\",\n      \"output_type\": \"stream\",\n      \"text\": [\n-      \"  NIIIIIII * (1268.0676746875001+0j)\\n\",\n-      \"+ INIIIIII * (3813.8767834375008+0j)\\n\",\n-      \"+ IINIIIII * (705.8633818750001+0j)\\n\",\n-      \"+ II+-IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ II-+IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ IIINIIII * (2120.1145593750007+0j)\\n\",\n-      \"+ IIIINIII * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIINII * (728.9613775000003+0j)\\n\",\n-      \"+ IIIIIINI * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIIIIN * (728.9613775000003+0j)\\n\",\n-      \"+ NINIIIII * (4.942542500000002+0j)\\n\",\n-      \"+ NI+-IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NI-+IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NIINIIII * (14.827627500000007+0j)\\n\",\n-      \"+ INNIIIII * (14.827627500000007+0j)\\n\",\n-      \"+ IN+-IIII * (-264.60522650629+0j)\\n\",\n-      \"+ IN-+IIII * (-264.60522650629+0j)\\n\",\n-      \"+ ININIIII * (44.482882500000024+0j)\\n\",\n-      \"+ NIIINIII * (-10.205891250000004+0j)\\n\",\n-      \"+ INIINIII * (-30.617673750000016+0j)\\n\",\n-      \"+ IININIII * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-NIII * (42.67527310283147+0j)\\n\",\n-      \"+ II-+NIII * (42.67527310283147+0j)\\n\",\n-      \"+ IIINNIII * (-12.582898125000007+0j)\\n\",\n-      \"+ NIIIINII * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIINII * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIINII * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-INII * (128.02581930849442+0j)\\n\",\n-      \"+ II-+INII * (128.02581930849442+0j)\\n\",\n-      \"+ IIININII * (-37.74869437500002+0j)\\n\",\n-      \"+ NIIIIINI * (-10.205891250000004+0j)\\n\",\n-      \"+ INIIIINI * (-30.617673750000016+0j)\\n\",\n-      \"+ IINIIINI * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-IINI * (42.67527310283147+0j)\\n\",\n-      \"+ II-+IINI * (42.67527310283147+0j)\\n\",\n-      \"+ IIINIINI * (-12.582898125000007+0j)\\n\",\n-      \"+ IIIININI * (7.0983500000000035+0j)\\n\",\n-      \"+ IIIIINNI * (21.29505000000001+0j)\\n\",\n-      \"+ NIIIIIIN * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIIIIN * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIIIIN * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ II-+IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ IIINIIIN * (-37.74869437500002+0j)\\n\",\n-      \"+ IIIINIIN * (21.29505000000001+0j)\\n\",\n-      \"+ IIIIININ * (63.88515000000004+0j)\\n\"\n+      \"Vibrational Operator\\n\",\n+      \"number modes=4, number modals=[2, 2, 2, 2], number terms=50\\n\",\n+      \"  (1268.0676746875001+0j) * ( +_0_0 -_0_0 )\\n\",\n+      \"+ (3813.8767834375008+0j) * ( +_0_1 -_0_1 )\\n\",\n+      \"+ (705.8633818750002+0j) * ( +_1_0 -_1_0 )\\n\",",
+    "path": "docs/tutorials/02_vibrational_structure.ipynb",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is there a reason the coeff is first now whereas it was not before. With the terms first they would nicely align and maybe makes things a little easier to see/read - leave the coeff as the more ragged part (though arguably the numeric format might be improved too but I think its ok as-is) - maybe to align with the way the qubit op does things perhaps.",
+    "created_at": "2022-11-01T16:09:56Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010616742",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010616742"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010616742"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010616742/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 237,
+    "original_start_line": 237,
+    "start_side": "RIGHT",
+    "line": 239,
+    "original_line": 239,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 101,
+    "position": 101,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010631675",
+    "pull_request_review_id": 1163619391,
+    "id": 1010631675,
+    "node_id": "PRRC_kwDOE-DJV848PQP7",
+    "diff_hunk": "@@ -0,0 +1,58 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2022.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"Translator methods for the Watson Hamiltonian.\"\"\"\n+\n+from __future__ import annotations\n+\n+from collections import defaultdict\n+\n+from qiskit_nature.second_q.hamiltonians import VibrationalEnergy\n+from qiskit_nature.second_q.problems import VibrationalStructureProblem, VibrationalBasis\n+from qiskit_nature.second_q.properties import OccupiedModals\n+\n+from .watson import WatsonHamiltonian\n+\n+\n+def watson_to_problem(\n+    watson: WatsonHamiltonian,\n+    basis: VibrationalBasis,\n+) -> VibrationalStructureProblem:\n+    \"\"\"Builds out a :class:`.VibrationalStructureProblem` from a :class:`.WatsonHamiltonian`.\n+\n+    .. note::\n+\n+        In the process of constructing the :class:`.VibrationalStructureProblem`, the coefficients\n+        stored in the :class:`.WatsonHamiltonian` need to be mapped to a second-quantization basis.\n+        For more details about this, please refer to the documentation of\n+        :meth:`.VibrationalBasis.map`.\n+\n+    Args:\n+        watson: the :class:`.WatsonHamiltonian` object from which to build the problem.\n+        basis: the :class:`.VibrationalBasis` into which to map the hamiltonian coefficients.",
+    "path": "qiskit_nature/second_q/formats/watson_translator.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The args normally pickup the type automatically and append it after the arg name in the docs where its a link too. I did not look at the result but maybe with the class ref here it ends up as just bit too much?",
+    "created_at": "2022-11-01T16:24:02Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010631675",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010631675"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010631675"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010631675/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 40,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 41,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 41,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010638665",
+    "pull_request_review_id": 1163619391,
+    "id": 1010638665,
+    "node_id": "PRRC_kwDOE-DJV848PR9J",
+    "diff_hunk": "@@ -14,144 +14,95 @@\n \n from __future__ import annotations\n \n-from typing import cast, Generator, Optional\n-\n import qiskit_nature  # pylint: disable=unused-import\n-from qiskit_nature.second_q.operators import VibrationalOp\n-\n-from qiskit_nature.second_q.properties.bases import VibrationalBasis\n-from qiskit_nature.second_q.properties.integrals import VibrationalIntegrals\n+from qiskit_nature.second_q.operators import VibrationalIntegrals, VibrationalOp\n \n from .hamiltonian import Hamiltonian\n \n \n class VibrationalEnergy(Hamiltonian):\n-    \"\"\"The VibrationalEnergy property.\n+    r\"\"\"The vibrational energy Hamiltonian.\n+\n+    This class implements the following Hamiltonian:\n+\n+    .. math::\n+        \\sum_{l=1}^L \\sum_{k_l,h_l}^{N_l}\n+            \\langle \\phi_{k_l} | T(Q_l) + V^{[l]}(Q_l) | \\phi_{h_l} \\rangle a^\\dagger_{k_l} a_{h_l}\n+        + \\sum_{l<m}^L \\sum_{k_l,h_l}^{N_l} \\sum_{k_m,h_m}^{N_m}\n+            \\langle \\phi_{k_l} \\phi_{k_m} | V^{[l,m]}(Q_l, Q_m) | \\phi_{h_l} \\phi_{h_m} \\rangle\n+            a^\\dagger_{k_l} a^\\dagger_{k_m} a_{h_l} a_{h_m}\n+        + \\ldots\n+\n+    where :math:`Q` denotes a vibrational mode, :math:`T` denotes the kinetic term, and :math:`V`\n+    denotes the potential terms acting on multiple modes. The subscripts :math:`k` and :math:`h` are\n+    indexing the modals which each mode :math:`l` gets expanded into.\n \n-    This is the main property of any vibrational structure problem. It constructs the Hamiltonian\n-    whose eigenvalue is the target of a later used Quantum algorithm.\n+    For a detailed explanation please refer to reference [1].\n+\n+    Attributes:\n+        vibrational_integrals: the :class:`qiskit_nature.second_q.operators.VibrationalIntegrals`.",
+    "path": "qiskit_nature/second_q/hamiltonians/vibrational_energy.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n        vibrational_integrals (VibrationalIntegrals): The container with the integral coefficients\r\n```\r\nThe type on the attributes is supplied in brackets thus.\r\n\r\nAlso ahead of Attributes we have been putting text like this:\r\n\r\n>    The following attributes can be set via the initializer but can also be read and\r\n>    updated once the VibrationalEnergy object has been constructed.\r\n\r\nOtherwise the class description seems to run directly into the formatted attribute without any context.",
+    "created_at": "2022-11-01T16:29:45Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010638665",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010638665"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010638665"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010638665/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 43,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 39,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010642984",
+    "pull_request_review_id": 1163619391,
+    "id": 1010642984,
+    "node_id": "PRRC_kwDOE-DJV848PTAo",
+    "diff_hunk": "@@ -14,144 +14,95 @@\n \n from __future__ import annotations\n \n-from typing import cast, Generator, Optional\n-\n import qiskit_nature  # pylint: disable=unused-import\n-from qiskit_nature.second_q.operators import VibrationalOp\n-\n-from qiskit_nature.second_q.properties.bases import VibrationalBasis\n-from qiskit_nature.second_q.properties.integrals import VibrationalIntegrals\n+from qiskit_nature.second_q.operators import VibrationalIntegrals, VibrationalOp\n \n from .hamiltonian import Hamiltonian\n \n \n class VibrationalEnergy(Hamiltonian):\n-    \"\"\"The VibrationalEnergy property.\n+    r\"\"\"The vibrational energy Hamiltonian.\n+\n+    This class implements the following Hamiltonian:\n+\n+    .. math::\n+        \\sum_{l=1}^L \\sum_{k_l,h_l}^{N_l}\n+            \\langle \\phi_{k_l} | T(Q_l) + V^{[l]}(Q_l) | \\phi_{h_l} \\rangle a^\\dagger_{k_l} a_{h_l}\n+        + \\sum_{l<m}^L \\sum_{k_l,h_l}^{N_l} \\sum_{k_m,h_m}^{N_m}\n+            \\langle \\phi_{k_l} \\phi_{k_m} | V^{[l,m]}(Q_l, Q_m) | \\phi_{h_l} \\phi_{h_m} \\rangle\n+            a^\\dagger_{k_l} a^\\dagger_{k_m} a_{h_l} a_{h_m}\n+        + \\ldots\n+\n+    where :math:`Q` denotes a vibrational mode, :math:`T` denotes the kinetic term, and :math:`V`\n+    denotes the potential terms acting on multiple modes. The subscripts :math:`k` and :math:`h` are\n+    indexing the modals which each mode :math:`l` gets expanded into.\n \n-    This is the main property of any vibrational structure problem. It constructs the Hamiltonian\n-    whose eigenvalue is the target of a later used Quantum algorithm.\n+    For a detailed explanation please refer to reference [1].\n+\n+    Attributes:\n+        vibrational_integrals: the :class:`qiskit_nature.second_q.operators.VibrationalIntegrals`.\n+        truncation_order: the maximum order of multi-body terms to include in the operator.",
+    "path": "qiskit_nature/second_q/hamiltonians/vibrational_energy.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n        truncation_order (Optional[int]): the maximum order of multi-body terms to include in the operator.\r\n```\r\nI think thats right for the type - sometimes None is only in constructor for some default set there but that seems not the case here were this can be None which is handled specifically later.",
+    "created_at": "2022-11-01T16:34:15Z",
+    "updated_at": "2022-11-01T17:17:59Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010642984",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010642984"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010642984"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010642984/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 40,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010651303",
+    "pull_request_review_id": 1163619391,
+    "id": 1010651303,
+    "node_id": "PRRC_kwDOE-DJV848PVCn",
+    "diff_hunk": "@@ -14,144 +14,95 @@\n \n from __future__ import annotations\n \n-from typing import cast, Generator, Optional\n-\n import qiskit_nature  # pylint: disable=unused-import\n-from qiskit_nature.second_q.operators import VibrationalOp\n-\n-from qiskit_nature.second_q.properties.bases import VibrationalBasis\n-from qiskit_nature.second_q.properties.integrals import VibrationalIntegrals\n+from qiskit_nature.second_q.operators import VibrationalIntegrals, VibrationalOp\n \n from .hamiltonian import Hamiltonian\n \n \n class VibrationalEnergy(Hamiltonian):\n-    \"\"\"The VibrationalEnergy property.\n+    r\"\"\"The vibrational energy Hamiltonian.\n+\n+    This class implements the following Hamiltonian:\n+\n+    .. math::\n+        \\sum_{l=1}^L \\sum_{k_l,h_l}^{N_l}\n+            \\langle \\phi_{k_l} | T(Q_l) + V^{[l]}(Q_l) | \\phi_{h_l} \\rangle a^\\dagger_{k_l} a_{h_l}\n+        + \\sum_{l<m}^L \\sum_{k_l,h_l}^{N_l} \\sum_{k_m,h_m}^{N_m}\n+            \\langle \\phi_{k_l} \\phi_{k_m} | V^{[l,m]}(Q_l, Q_m) | \\phi_{h_l} \\phi_{h_m} \\rangle\n+            a^\\dagger_{k_l} a^\\dagger_{k_m} a_{h_l} a_{h_m}\n+        + \\ldots\n+\n+    where :math:`Q` denotes a vibrational mode, :math:`T` denotes the kinetic term, and :math:`V`\n+    denotes the potential terms acting on multiple modes. The subscripts :math:`k` and :math:`h` are\n+    indexing the modals which each mode :math:`l` gets expanded into.\n \n-    This is the main property of any vibrational structure problem. It constructs the Hamiltonian\n-    whose eigenvalue is the target of a later used Quantum algorithm.\n+    For a detailed explanation please refer to reference [1].\n+\n+    Attributes:\n+        vibrational_integrals: the :class:`qiskit_nature.second_q.operators.VibrationalIntegrals`.\n+        truncation_order: the maximum order of multi-body terms to include in the operator.\n+\n+    References:\n+        [1]: P. Ollitrault et al. `arXiv:2003.12578 <https://arxiv.org/abs/2003.12578>`_.\n     \"\"\"\n \n     def __init__(\n         self,\n-        vibrational_integrals: list[VibrationalIntegrals],\n+        vibrational_integrals: VibrationalIntegrals,\n         *,\n-        truncation_order: Optional[int] = None,\n-        basis: Optional[VibrationalBasis] = None,\n+        truncation_order: int | None = None,\n     ) -> None:\n-        # pylint: disable=line-too-long\n         \"\"\"\n         Args:\n-            vibrational_integrals: a list of\n-                :class:`~qiskit_nature.second_q.properties.integrals.VibrationalIntegrals`.\n-            truncation_order: an optional truncation order for the highest number of body terms to\n-                include in the constructed Hamiltonian.\n-            basis: the\n-                :class:`~qiskit_nature.second_q.properties.bases.VibrationalBasis`\n-                through which to map the integrals into second quantization. This attribute **MUST**\n-                be set before the second-quantized operator can be constructed.\n+            vibrational_integrals: the container with the integral coefficients.\n+            truncation_order: the maximum order of multi-body terms to include in the operator.\n         \"\"\"\n-        self._vibrational_integrals: dict[int, VibrationalIntegrals] = {}\n-        for integral in vibrational_integrals:\n-            self.add_vibrational_integral(integral)\n-        self._truncation_order = truncation_order\n-        self._basis: VibrationalBasis = basis\n-\n-    @property\n-    def basis(self) -> VibrationalBasis:\n-        \"\"\"Returns the basis.\"\"\"\n-        return self._basis\n-\n-    @basis.setter\n-    def basis(self, basis: VibrationalBasis) -> None:\n-        \"\"\"Sets the basis.\"\"\"\n-        self._basis = basis\n+        self.vibrational_integrals = vibrational_integrals\n+        self.truncation_order = truncation_order\n \n     @property\n-    def truncation_order(self) -> int:\n-        \"\"\"Returns the truncation order.\"\"\"\n-        return self._truncation_order\n-\n-    @truncation_order.setter\n-    def truncation_order(self, truncation_order: int) -> None:\n-        \"\"\"Sets the truncation order.\"\"\"\n-        self._truncation_order = truncation_order\n-\n-    def __str__(self) -> str:\n-        string = [\"VibrationalEnergy:\"]\n-        string += [f\"\\t{line}\" for line in str(self.basis).split(\"\\n\")]\n-        for ints in self._vibrational_integrals.values():\n-            string += [f\"\\t{ints}\"]\n-        return \"\\n\".join(string)\n-\n-    def __iter__(self) -> Generator[VibrationalIntegrals, None, None]:\n-        \"\"\"Returns the generator-iterator method.\"\"\"\n-        return self._generator()\n-\n-    def _generator(self) -> Generator[VibrationalIntegrals, None, None]:\n-        \"\"\"A generator-iterator method [1] iterating over all internal ``VibrationalIntegrals``.\n-\n-        [1]: https://docs.python.org/3/reference/expressions.html#generator-iterator-methods\n-        \"\"\"\n-        for ints in self._vibrational_integrals.values():\n-            yield ints\n+    def register_length(self) -> int | None:\n+        return None\n \n-    def add_vibrational_integral(self, integral: VibrationalIntegrals) -> None:\n-        # pylint: disable=line-too-long\n-        \"\"\"Adds a\n-        :class:`~qiskit_nature.second_q.properties.integrals.VibrationalIntegrals`\n-        instance to the internal storage.\n+    @classmethod\n+    def from_raw_integrals(cls, integrals: dict[tuple[int, ...], complex]) -> VibrationalEnergy:\n+        \"\"\"Constructs a hamiltonian instance from raw integrals.\n \n-        Internally, the\n-        :class:`~qiskit_nature.second_q.properties.integrals.VibrationalIntegrals`\n-        are stored in a dictionary sorted by their number of body terms. This simplifies access\n-        based on these properties (see ``get_vibrational_integral``) and avoids duplicate,\n-        inconsistent entries.\n+        This function simply calls\n+        :meth:`qiskit_nature.second_q.operators.VibrationalIntegrals.from_raw_integrals`.\n+        See its documentation for more details.\n \n         Args:\n-            integral: the\n-                :class:`~qiskit_nature.second_q.properties.integrals.VibrationalIntegrals`\n-                to add.\n-        \"\"\"\n-        self._vibrational_integrals[integral._num_body_terms] = integral\n-\n-    def get_vibrational_integral(self, num_body_terms: int) -> Optional[VibrationalIntegrals]:\n-        \"\"\"Gets an\n-        :class:`~qiskit_nature.second_q.properties.integrals.VibrationalIntegrals`\n-        given the number of body terms.\n-\n-        Args:\n-            num_body_terms: the number of body terms of the queried integrals.\n+            integrals: a mapping of matrix index tuples to coefficients.\n \n         Returns:\n-            The queried integrals object (or None if unavailable).\n+            The resulting ``VibrationalEnergy`` instance.\n         \"\"\"\n-        return self._vibrational_integrals.get(num_body_terms, None)\n-\n-    @property\n-    def register_length(self) -> int:\n-        return sum(self.basis._num_modals_per_mode)\n+        return cls(VibrationalIntegrals.from_raw_integrals(integrals))\n \n     def second_q_op(self) -> VibrationalOp:\n         \"\"\"Returns the second quantized vibrational energy operator.\n \n         Returns:\n             A `dict` of `VibrationalOp` objects.\n         \"\"\"\n-        ops = []\n-        for num_body, ints in self._vibrational_integrals.items():\n-            if self._truncation_order is not None and num_body > self._truncation_order:\n-                break\n-            ints.basis = self.basis\n-            ops.append(ints.to_second_q_op())\n-\n-        return cast(VibrationalOp, sum(ops))\n+        truncated_integrals = self.vibrational_integrals\n+        if self.truncation_order is not None:",
+    "path": "qiskit_nature/second_q/hamiltonians/vibrational_energy.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "A comment: This is None or some positive value normally right - 0 or less will end up with an empty dict. I think thats ok right - it would be zero op - maybe its what one should expect but nothing will fail logic wise it seems.",
+    "created_at": "2022-11-01T16:42:41Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010651303",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010651303"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010651303"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010651303/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 95,
+    "original_line": 95,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 178,
+    "position": 182,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010653553",
+    "pull_request_review_id": 1163619391,
+    "id": 1010653553,
+    "node_id": "PRRC_kwDOE-DJV848PVlx",
+    "diff_hunk": "@@ -0,0 +1,79 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2022.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"A container class for vibrational operator coefficients.\"\"\"\n+\n+from __future__ import annotations\n+\n+from typing import Mapping\n+\n+import qiskit_nature.optionals as _optionals\n+\n+from .polynomial_tensor import PolynomialTensor\n+\n+if _optionals.HAS_SPARSE:\n+    # pylint: disable=import-error\n+    from sparse import as_coo\n+else:\n+\n+    def as_coo(*args):\n+        \"\"\"Empty as_coo function\n+        Replacement if sparse.as_coo is not present.\n+        \"\"\"\n+        del args\n+\n+\n+@_optionals.HAS_SPARSE.require_in_instance\n+class VibrationalIntegrals(PolynomialTensor):\n+    \"\"\"A container class for vibrational operator coefficients (a.k.a. vibrational integrals).\n+\n+    This class simply derives the :class:`qiskit_nature.second_q.operators.PolynomialTensor`\n+    implementation and provides an efficient factory method from a raw set of integrals.\n+    Being a subclass of the ``PolynomialTensor``, the same arithmetic operations are supported as by\n+    that class.\n+    \"\"\"\n+\n+    @classmethod\n+    def from_raw_integrals(\n+        cls, integrals: Mapping[tuple[int, ...], complex]\n+    ) -> VibrationalIntegrals:\n+        \"\"\"Constructs a ``VibrationalIntegrals`` instance from the provided coefficients.\n+\n+        The provided coefficients must already be mapped to a second-quantization basis. See the\n+        documentation of :class:`qiskit_nature.second_q.problems.VibrationalBasis` for more details.\n+\n+        Args:\n+            integrals: a mapping of matrix index tuples to coefficients. This is effectively a\n+                sparse representation of the coefficients. Each key in the mapping should be a tuple\n+                of integers of the form ``(mode, modal_1, modal_2, ...)``. That means that each key\n+                is expected to have its length be a multiple of three. See also the documentation of\n+                :meth:`qiskit_nature.second_q.problems.VibrationalBasis.map` for more details.\n+\n+        Returns:\n+            The constructed instance.\n+        \"\"\"\n+        max_n_body = max(len(key) for key in integrals) // 3\n+        ret = cls(\n+            {\n+                (\"_+-\" * n_body): as_coo(\n+                    {k: v for k, v in integrals.items() if len(k) == 3 * n_body}\n+                )\n+                for n_body in range(1, max_n_body + 1)\n+            },\n+            validate=False,\n+        )\n+        return ret\n+\n+    @property\n+    def register_length(self) -> int | None:\n+        # for now, we simply return None here.\n+        return None",
+    "path": "qiskit_nature/second_q/operators/vibrational_integrals.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is there no definition in this case? It says \"for now\" so maybe this will change?",
+    "created_at": "2022-11-01T16:45:04Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010653553",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010653553"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010653553"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010653553/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 79,
+    "original_line": 79,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 79,
+    "position": 79,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010664489",
+    "pull_request_review_id": 1163619391,
+    "id": 1010664489,
+    "node_id": "PRRC_kwDOE-DJV848PYQp",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am trying to figure all these checks. It seems that the last one could also cater to the other 2 above. The first checks the characters but it seems they need to be in right order too, and in given triplet of these characters. You could probably do the last check as a regex that says it needs to match to a \"_+-\" 1 or more times. I guess it depends whether the error message with the key suffices - it seems only \"_+-\" repeated 1 or more times is valid (maybe it needs 0 for the empty key for a constant).",
+    "created_at": "2022-11-01T16:55:21Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010664489",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010664489"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010664489"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010664489/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 290,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 96,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010668018",
+    "pull_request_review_id": 1163619391,
+    "id": 1010668018,
+    "node_id": "PRRC_kwDOE-DJV848PZHy",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\"\n+                )\n \n     @classmethod\n     def from_polynomial_tensor(cls, tensor: PolynomialTensor) -> VibrationalOp:\n-        ...\n+        cls._validate_polynomial_tensor_key(tensor.keys())\n+\n+        data: dict[str, _TCoeff] = {}\n+\n+        def _reshape_index(index):\n+            new_index = []\n+            for idx in range(0, len(index), 3):\n+                new_index.extend([index[idx], index[idx + 1], index[idx], index[idx + 2]])\n+            return new_index\n+\n+        for key in tensor:\n+            if key == \"\":\n+                # TODO: deal with complexity",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is this TODO for the future or needs to be done now. Maybe it means \"deal with complex type\" - the routine does not seem that much for me to really read it as \"complexity\" ",
+    "created_at": "2022-11-01T16:57:24Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010668018",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010668018"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010668018"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010668018/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 298,
+    "original_line": 298,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 117,
+    "position": 105,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010673205",
+    "pull_request_review_id": 1163619391,
+    "id": 1010673205,
+    "node_id": "PRRC_kwDOE-DJV848PaY1",
+    "diff_hunk": "@@ -0,0 +1,129 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2021, 2022.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"The Vibrational basis base class.\"\"\"\n+\n+from __future__ import annotations\n+\n+from abc import ABC, abstractmethod\n+from collections import Counter\n+from functools import lru_cache\n+from itertools import chain, cycle, permutations, product\n+from typing import Generator\n+\n+import numpy as np\n+\n+\n+class VibrationalBasis(ABC):\n+    \"\"\"The Vibrational basis base class.\n+\n+    This class defines the interface which any vibrational basis must implement. A basis must be\n+    applied to the vibrational integrals in order to map them into a second-quantization form.\n+\n+    Attributes:\n+        num_modals: the number of modals into which each mode gets expanded in second-quantization.\n+        threshold: the threshold below which integral values will be dropped.\n+    \"\"\"",
+    "path": "qiskit_nature/second_q/problems/vibrational_basis.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Types needed and the prefix text",
+    "created_at": "2022-11-01T17:02:11Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010673205",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010673205"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010673205"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010673205/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 32,
+    "original_start_line": 32,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 39,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 35,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010677793",
+    "pull_request_review_id": 1163619391,
+    "id": 1010677793,
+    "node_id": "PRRC_kwDOE-DJV848Pbgh",
+    "diff_hunk": "@@ -37,76 +35,35 @@\n class VibrationalStructureProblem(BaseProblem):\n     \"\"\"Vibrational Structure Problem\"\"\"\n \n-    def __init__(\n-        self,\n-        hamiltonian: VibrationalEnergy,\n-        num_modes: int,\n-        num_modals: Union[int, List[int]] = None,\n-        *,\n-        truncation_order: int = None,\n-    ):\n+    def __init__(self, hamiltonian: VibrationalEnergy) -> None:\n         \"\"\"\n         Args:\n             hamiltonian: the Hamiltonian of this problem.\n-            num_modes: the number of modes.\n-            num_modals: the number of modals per mode.\n-            truncation_order: order at which an n-body expansion is truncated\n-\n-        Raises:\n-            TypeError: if the provided ``hamiltonian`` is not of type :class:`.VibrationalEnergy`.\n         \"\"\"\n         super().__init__(hamiltonian)\n         self.properties: VibrationalPropertiesContainer = VibrationalPropertiesContainer()\n-        self.num_modes = num_modes\n-        self._num_modals = num_modals if num_modals is not None else []\n-        self.truncation_order = truncation_order\n-        self.basis: HarmonicBasis = None\n+        self.basis: VibrationalBasis = None",
+    "path": "qiskit_nature/second_q/problems/vibrational_structure_problem.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think `properties` is part of BaseProblem right and should be documented as an Attribute there - the `basis` is not and should be documented here I think.",
+    "created_at": "2022-11-01T17:05:54Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010677793",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010677793"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010677793"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010677793/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 54,
+    "original_start_line": 44,
+    "start_side": "RIGHT",
+    "line": 55,
+    "original_line": 55,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 43,
+    "position": 55,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010678916",
+    "pull_request_review_id": 1163619391,
+    "id": 1010678916,
+    "node_id": "PRRC_kwDOE-DJV848PbyE",
+    "diff_hunk": "@@ -37,76 +35,35 @@\n class VibrationalStructureProblem(BaseProblem):\n     \"\"\"Vibrational Structure Problem\"\"\"\n \n-    def __init__(\n-        self,\n-        hamiltonian: VibrationalEnergy,\n-        num_modes: int,\n-        num_modals: Union[int, List[int]] = None,\n-        *,\n-        truncation_order: int = None,\n-    ):\n+    def __init__(self, hamiltonian: VibrationalEnergy) -> None:\n         \"\"\"\n         Args:\n             hamiltonian: the Hamiltonian of this problem.\n-            num_modes: the number of modes.\n-            num_modals: the number of modals per mode.\n-            truncation_order: order at which an n-body expansion is truncated\n-\n-        Raises:\n-            TypeError: if the provided ``hamiltonian`` is not of type :class:`.VibrationalEnergy`.\n         \"\"\"\n         super().__init__(hamiltonian)\n         self.properties: VibrationalPropertiesContainer = VibrationalPropertiesContainer()\n-        self.num_modes = num_modes\n-        self._num_modals = num_modals if num_modals is not None else []\n-        self.truncation_order = truncation_order\n-        self.basis: HarmonicBasis = None\n+        self.basis: VibrationalBasis = None\n \n     @property\n     def hamiltonian(self) -> VibrationalEnergy:\n         return cast(VibrationalEnergy, self._hamiltonian)\n \n     @property\n-    def num_modals(self) -> List[int]:\n-        \"\"\"Returns the number of modals, always expanded as a list.\"\"\"\n-        if isinstance(self._num_modals, int):\n-            num_modals = [self._num_modals] * self.num_modes\n-        else:\n-            num_modals = self._num_modals\n-        return num_modals\n-\n-    @num_modals.setter\n-    def num_modals(self, num_modals: Union[int, List[int]]) -> None:\n-        \"\"\"Sets the number of modals.\"\"\"\n-        self._num_modals = num_modals\n-\n-    def second_q_ops(self) -> tuple[SecondQuantizedOp, dict[str, SecondQuantizedOp]]:\n-        \"\"\"Returns the second quantized operators associated with this problem.\n-\n-        Returns:\n-            A tuple, with the first object being the main operator and the second being a dictionary\n-            of auxiliary operators.\n-        \"\"\"\n-        # TODO: expose this as an argument in __init__\n-        self.basis = HarmonicBasis(self.num_modals)\n-\n-        self.hamiltonian.truncation_order = self.truncation_order\n-        self.hamiltonian.basis = self.basis\n-\n-        for prop in self.properties:\n-            prop.basis = self.basis  # type: ignore[attr-defined]\n-\n-        return super().second_q_ops()\n+    def num_modals(self):",
+    "path": "qiskit_nature/second_q/problems/vibrational_structure_problem.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Missing a return typehint",
+    "created_at": "2022-11-01T17:06:49Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010678916",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010678916"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010678916"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010678916/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 52,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 80,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010680417",
+    "pull_request_review_id": 1163619391,
+    "id": 1010680417,
+    "node_id": "PRRC_kwDOE-DJV848PcJh",
+    "diff_hunk": "@@ -14,50 +14,29 @@\n \n from __future__ import annotations\n \n-from typing import Optional, Mapping\n+from typing import Mapping, Sequence\n \n import qiskit_nature  # pylint: disable=unused-import\n from qiskit_nature.second_q.operators import VibrationalOp\n \n-from .bases import VibrationalBasis\n-\n \n class OccupiedModals:\n     \"\"\"The OccupiedModals property.\"\"\"\n \n-    def __init__(\n-        self,\n-        basis: Optional[VibrationalBasis] = None,\n-    ) -> None:\n+    def __init__(self, num_modals: Sequence[int]) -> None:\n         \"\"\"\n         Args:\n-            basis: the\n-                :class:`~qiskit_nature.second_q.properties.bases.VibrationalBasis`\n-                through which to map the integrals into second quantization. This attribute **MUST**\n-                be set before the second-quantized operator can be constructed.\n+            num_modals: the number of modals for each mode.\n         \"\"\"\n-        self._basis: VibrationalBasis = basis\n-\n-    @property\n-    def basis(self) -> VibrationalBasis:\n-        \"\"\"Returns the basis.\"\"\"\n-        return self._basis\n-\n-    @basis.setter\n-    def basis(self, basis: VibrationalBasis) -> None:\n-        \"\"\"Sets the basis.\"\"\"\n-        self._basis = basis\n+        self.num_modals = num_modals",
+    "path": "qiskit_nature/second_q/properties/occupied_modals.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Attribute: docs for this I think - unless you want a read-only property versus something that can be updated (written) too.",
+    "created_at": "2022-11-01T17:07:58Z",
+    "updated_at": "2022-11-01T17:09:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010680417",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010680417"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010680417"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010680417/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 38,
+    "original_line": 38,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 40,
+    "position": 48,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010723748",
+    "pull_request_review_id": 1163782727,
+    "id": 1010723748,
+    "node_id": "PRRC_kwDOE-DJV848Pmuk",
+    "diff_hunk": "@@ -215,59 +225,65 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 3,\n+   \"execution_count\": 4,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n      \"name\": \"stdout\",\n      \"output_type\": \"stream\",\n      \"text\": [\n-      \"  NIIIIIII * (1268.0676746875001+0j)\\n\",\n-      \"+ INIIIIII * (3813.8767834375008+0j)\\n\",\n-      \"+ IINIIIII * (705.8633818750001+0j)\\n\",\n-      \"+ II+-IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ II-+IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ IIINIIII * (2120.1145593750007+0j)\\n\",\n-      \"+ IIIINIII * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIINII * (728.9613775000003+0j)\\n\",\n-      \"+ IIIIIINI * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIIIIN * (728.9613775000003+0j)\\n\",\n-      \"+ NINIIIII * (4.942542500000002+0j)\\n\",\n-      \"+ NI+-IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NI-+IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NIINIIII * (14.827627500000007+0j)\\n\",\n-      \"+ INNIIIII * (14.827627500000007+0j)\\n\",\n-      \"+ IN+-IIII * (-264.60522650629+0j)\\n\",\n-      \"+ IN-+IIII * (-264.60522650629+0j)\\n\",\n-      \"+ ININIIII * (44.482882500000024+0j)\\n\",\n-      \"+ NIIINIII * (-10.205891250000004+0j)\\n\",\n-      \"+ INIINIII * (-30.617673750000016+0j)\\n\",\n-      \"+ IININIII * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-NIII * (42.67527310283147+0j)\\n\",\n-      \"+ II-+NIII * (42.67527310283147+0j)\\n\",\n-      \"+ IIINNIII * (-12.582898125000007+0j)\\n\",\n-      \"+ NIIIINII * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIINII * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIINII * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-INII * (128.02581930849442+0j)\\n\",\n-      \"+ II-+INII * (128.02581930849442+0j)\\n\",\n-      \"+ IIININII * (-37.74869437500002+0j)\\n\",\n-      \"+ NIIIIINI * (-10.205891250000004+0j)\\n\",\n-      \"+ INIIIINI * (-30.617673750000016+0j)\\n\",\n-      \"+ IINIIINI * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-IINI * (42.67527310283147+0j)\\n\",\n-      \"+ II-+IINI * (42.67527310283147+0j)\\n\",\n-      \"+ IIINIINI * (-12.582898125000007+0j)\\n\",\n-      \"+ IIIININI * (7.0983500000000035+0j)\\n\",\n-      \"+ IIIIINNI * (21.29505000000001+0j)\\n\",\n-      \"+ NIIIIIIN * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIIIIN * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIIIIN * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ II-+IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ IIINIIIN * (-37.74869437500002+0j)\\n\",\n-      \"+ IIIINIIN * (21.29505000000001+0j)\\n\",\n-      \"+ IIIIININ * (63.88515000000004+0j)\\n\"\n+      \"Vibrational Operator\\n\",\n+      \"number modes=4, number modals=[2, 2, 2, 2], number terms=50\\n\",\n+      \"  (1268.0676746875001+0j) * ( +_0_0 -_0_0 )\\n\",\n+      \"+ (3813.8767834375008+0j) * ( +_0_1 -_0_1 )\\n\",\n+      \"+ (705.8633818750002+0j) * ( +_1_0 -_1_0 )\\n\",",
+    "path": "docs/tutorials/02_vibrational_structure.ipynb",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Oh there was no particular reason for this. Actually our old `FermionicOp` already did it this way around, but `VibrationalOp` did not. Since we now aligned things again, this is how it turned out.\r\nI guess we could update this slightly, but I would not consider it a blocker for the release.\r\n\r\nPlease resolve the thread, if you agree :+1: ",
+    "created_at": "2022-11-01T17:43:56Z",
+    "updated_at": "2022-11-01T17:43:57Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010723748",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010723748"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010723748"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010723748/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 237,
+    "original_start_line": 237,
+    "start_side": "RIGHT",
+    "line": 239,
+    "original_line": 239,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010616742,
+    "author_association": "MEMBER",
+    "original_position": 101,
+    "position": 101,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010753228",
+    "pull_request_review_id": 1163827903,
+    "id": 1010753228,
+    "node_id": "PRRC_kwDOE-DJV848Pt7M",
+    "diff_hunk": "@@ -0,0 +1,79 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2022.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"A container class for vibrational operator coefficients.\"\"\"\n+\n+from __future__ import annotations\n+\n+from typing import Mapping\n+\n+import qiskit_nature.optionals as _optionals\n+\n+from .polynomial_tensor import PolynomialTensor\n+\n+if _optionals.HAS_SPARSE:\n+    # pylint: disable=import-error\n+    from sparse import as_coo\n+else:\n+\n+    def as_coo(*args):\n+        \"\"\"Empty as_coo function\n+        Replacement if sparse.as_coo is not present.\n+        \"\"\"\n+        del args\n+\n+\n+@_optionals.HAS_SPARSE.require_in_instance\n+class VibrationalIntegrals(PolynomialTensor):\n+    \"\"\"A container class for vibrational operator coefficients (a.k.a. vibrational integrals).\n+\n+    This class simply derives the :class:`qiskit_nature.second_q.operators.PolynomialTensor`\n+    implementation and provides an efficient factory method from a raw set of integrals.\n+    Being a subclass of the ``PolynomialTensor``, the same arithmetic operations are supported as by\n+    that class.\n+    \"\"\"\n+\n+    @classmethod\n+    def from_raw_integrals(\n+        cls, integrals: Mapping[tuple[int, ...], complex]\n+    ) -> VibrationalIntegrals:\n+        \"\"\"Constructs a ``VibrationalIntegrals`` instance from the provided coefficients.\n+\n+        The provided coefficients must already be mapped to a second-quantization basis. See the\n+        documentation of :class:`qiskit_nature.second_q.problems.VibrationalBasis` for more details.\n+\n+        Args:\n+            integrals: a mapping of matrix index tuples to coefficients. This is effectively a\n+                sparse representation of the coefficients. Each key in the mapping should be a tuple\n+                of integers of the form ``(mode, modal_1, modal_2, ...)``. That means that each key\n+                is expected to have its length be a multiple of three. See also the documentation of\n+                :meth:`qiskit_nature.second_q.problems.VibrationalBasis.map` for more details.\n+\n+        Returns:\n+            The constructed instance.\n+        \"\"\"\n+        max_n_body = max(len(key) for key in integrals) // 3\n+        ret = cls(\n+            {\n+                (\"_+-\" * n_body): as_coo(\n+                    {k: v for k, v in integrals.items() if len(k) == 3 * n_body}\n+                )\n+                for n_body in range(1, max_n_body + 1)\n+            },\n+            validate=False,\n+        )\n+        return ret\n+\n+    @property\n+    def register_length(self) -> int | None:\n+        # for now, we simply return None here.\n+        return None",
+    "path": "qiskit_nature/second_q/operators/vibrational_integrals.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I actually am not yet 100% sure how to deal with this in the best way. Determining this number correctly could potentially require a lot of heavy lifting and iteration over all stored values which I kind of want to avoid.\r\nI also do not want to artifically inject the `num_modals` information into this class, just for this purpose. Since `None` is valid per the type hints and this information is not relied on anywhere, I put this here as such (the same in `VibrationalEnergy` actually). If I come up with an idea on how to do this until the end of the week, I will include it. Otherwise I will file an issue with an enhancement request to make this property available :+1: ",
+    "created_at": "2022-11-01T18:14:09Z",
+    "updated_at": "2022-11-01T18:14:10Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010753228",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010753228"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010753228"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010753228/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 79,
+    "original_line": 79,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010653553,
+    "author_association": "MEMBER",
+    "original_position": 79,
+    "position": 79,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010754506",
+    "pull_request_review_id": 1163829754,
+    "id": 1010754506,
+    "node_id": "PRRC_kwDOE-DJV848PuPK",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes I guess I could do it all in one check. It depends on how specific we want the error messages to be. :thinking: \r\nIf you have no preference, I will reduce it to a single regex-based check tomorrow :+1: ",
+    "created_at": "2022-11-01T18:15:41Z",
+    "updated_at": "2022-11-01T18:15:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010754506",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010754506"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010754506"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010754506/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 290,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010664489,
+    "author_association": "MEMBER",
+    "original_position": 96,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010755662",
+    "pull_request_review_id": 1163831553,
+    "id": 1010755662,
+    "node_id": "PRRC_kwDOE-DJV848PuhO",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\"\n+                )\n \n     @classmethod\n     def from_polynomial_tensor(cls, tensor: PolynomialTensor) -> VibrationalOp:\n-        ...\n+        cls._validate_polynomial_tensor_key(tensor.keys())\n+\n+        data: dict[str, _TCoeff] = {}\n+\n+        def _reshape_index(index):\n+            new_index = []\n+            for idx in range(0, len(index), 3):\n+                new_index.extend([index[idx], index[idx + 1], index[idx], index[idx + 2]])\n+            return new_index\n+\n+        for key in tensor:\n+            if key == \"\":\n+                # TODO: deal with complexity",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This is for the future. The same todo exists in the other operator classes. This goes back to that discussion we once had around how we could deal with stack-wide `complex` vs `float` dtypes and if/where this would really be necessary\r\n\r\nI guess I should open a separate issue to track this. I will look into summarizing our previous discussions around this later this week, too :+1: ",
+    "created_at": "2022-11-01T18:17:10Z",
+    "updated_at": "2022-11-01T18:17:20Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010755662",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010755662"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010755662"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010755662/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 298,
+    "original_line": 298,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010668018,
+    "author_association": "MEMBER",
+    "original_position": 117,
+    "position": 105,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010775499",
+    "pull_request_review_id": 1163860418,
+    "id": 1010775499,
+    "node_id": "PRRC_kwDOE-DJV848PzXL",
+    "diff_hunk": "@@ -215,59 +225,65 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 3,\n+   \"execution_count\": 4,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n      \"name\": \"stdout\",\n      \"output_type\": \"stream\",\n      \"text\": [\n-      \"  NIIIIIII * (1268.0676746875001+0j)\\n\",\n-      \"+ INIIIIII * (3813.8767834375008+0j)\\n\",\n-      \"+ IINIIIII * (705.8633818750001+0j)\\n\",\n-      \"+ II+-IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ II-+IIII * (-46.025705898886045+0j)\\n\",\n-      \"+ IIINIIII * (2120.1145593750007+0j)\\n\",\n-      \"+ IIIINIII * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIINII * (728.9613775000003+0j)\\n\",\n-      \"+ IIIIIINI * (238.31540750000005+0j)\\n\",\n-      \"+ IIIIIIIN * (728.9613775000003+0j)\\n\",\n-      \"+ NINIIIII * (4.942542500000002+0j)\\n\",\n-      \"+ NI+-IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NI-+IIII * (-88.20174216876333+0j)\\n\",\n-      \"+ NIINIIII * (14.827627500000007+0j)\\n\",\n-      \"+ INNIIIII * (14.827627500000007+0j)\\n\",\n-      \"+ IN+-IIII * (-264.60522650629+0j)\\n\",\n-      \"+ IN-+IIII * (-264.60522650629+0j)\\n\",\n-      \"+ ININIIII * (44.482882500000024+0j)\\n\",\n-      \"+ NIIINIII * (-10.205891250000004+0j)\\n\",\n-      \"+ INIINIII * (-30.617673750000016+0j)\\n\",\n-      \"+ IININIII * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-NIII * (42.67527310283147+0j)\\n\",\n-      \"+ II-+NIII * (42.67527310283147+0j)\\n\",\n-      \"+ IIINNIII * (-12.582898125000007+0j)\\n\",\n-      \"+ NIIIINII * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIINII * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIINII * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-INII * (128.02581930849442+0j)\\n\",\n-      \"+ II-+INII * (128.02581930849442+0j)\\n\",\n-      \"+ IIININII * (-37.74869437500002+0j)\\n\",\n-      \"+ NIIIIINI * (-10.205891250000004+0j)\\n\",\n-      \"+ INIIIINI * (-30.617673750000016+0j)\\n\",\n-      \"+ IINIIINI * (-4.194299375000002+0j)\\n\",\n-      \"+ II+-IINI * (42.67527310283147+0j)\\n\",\n-      \"+ II-+IINI * (42.67527310283147+0j)\\n\",\n-      \"+ IIINIINI * (-12.582898125000007+0j)\\n\",\n-      \"+ IIIININI * (7.0983500000000035+0j)\\n\",\n-      \"+ IIIIINNI * (21.29505000000001+0j)\\n\",\n-      \"+ NIIIIIIN * (-30.61767375000002+0j)\\n\",\n-      \"+ INIIIIIN * (-91.85302125000007+0j)\\n\",\n-      \"+ IINIIIIN * (-12.582898125000007+0j)\\n\",\n-      \"+ II+-IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ II-+IIIN * (128.02581930849442+0j)\\n\",\n-      \"+ IIINIIIN * (-37.74869437500002+0j)\\n\",\n-      \"+ IIIINIIN * (21.29505000000001+0j)\\n\",\n-      \"+ IIIIININ * (63.88515000000004+0j)\\n\"\n+      \"Vibrational Operator\\n\",\n+      \"number modes=4, number modals=[2, 2, 2, 2], number terms=50\\n\",\n+      \"  (1268.0676746875001+0j) * ( +_0_0 -_0_0 )\\n\",\n+      \"+ (3813.8767834375008+0j) * ( +_0_1 -_0_1 )\\n\",\n+      \"+ (705.8633818750002+0j) * ( +_1_0 -_1_0 )\\n\",",
+    "path": "docs/tutorials/02_vibrational_structure.ipynb",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I wouldn't consider it a blocker either - my thought was that would read easier since the terms would align. But its something that can be looked at later.",
+    "created_at": "2022-11-01T18:40:28Z",
+    "updated_at": "2022-11-01T18:40:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010775499",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010775499"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010775499"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010775499/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 237,
+    "original_start_line": 237,
+    "start_side": "RIGHT",
+    "line": 239,
+    "original_line": 239,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010616742,
+    "author_association": "MEMBER",
+    "original_position": 101,
+    "position": 101,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010783606",
+    "pull_request_review_id": 1163872071,
+    "id": 1010783606,
+    "node_id": "PRRC_kwDOE-DJV848P1V2",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "If the last message says it needs to be a sequence of 0/1 or more \"_+-\" strings I think its clear enough what is expected and you can look at the key value returned and figure it. Maybe with the regex and the match result it can indicate where the match fails too, but that's more work.",
+    "created_at": "2022-11-01T18:50:23Z",
+    "updated_at": "2022-11-01T18:50:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010783606",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010783606"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1010783606"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1010783606/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 290,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010664489,
+    "author_association": "MEMBER",
+    "original_position": 96,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1011975994",
+    "pull_request_review_id": 1165545151,
+    "id": 1011975994,
+    "node_id": "PRRC_kwDOE-DJV848UYc6",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\"\n+                )\n \n     @classmethod\n     def from_polynomial_tensor(cls, tensor: PolynomialTensor) -> VibrationalOp:\n-        ...\n+        cls._validate_polynomial_tensor_key(tensor.keys())\n+\n+        data: dict[str, _TCoeff] = {}\n+\n+        def _reshape_index(index):\n+            new_index = []\n+            for idx in range(0, len(index), 3):\n+                new_index.extend([index[idx], index[idx + 1], index[idx], index[idx + 2]])\n+            return new_index\n+\n+        for key in tensor:\n+            if key == \"\":\n+                # TODO: deal with complexity",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok so complex type - I did not think you meant \"complexity\" - ie complicated/involved etc where solutions include breakdown of function, modularity etc.",
+    "created_at": "2022-11-02T15:50:42Z",
+    "updated_at": "2022-11-02T15:50:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1011975994",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1011975994"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1011975994"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1011975994/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 298,
+    "original_line": 298,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010668018,
+    "author_association": "MEMBER",
+    "original_position": 117,
+    "position": 105,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1012023672",
+    "pull_request_review_id": 1165613925,
+    "id": 1012023672,
+    "node_id": "PRRC_kwDOE-DJV848UkF4",
+    "diff_hunk": "@@ -265,11 +272,61 @@ def _validate_keys(self, keys: Collection[str]) -> None:\n \n     @classmethod\n     def _validate_polynomial_tensor_key(cls, keys: Collection[str]) -> None:\n-        ...\n+        allowed_chars = {\"+\", \"-\", \"_\"}\n+\n+        for key in keys:\n+            if set(key) != allowed_chars:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But this key contains other characters.\"\n+                )\n+            if len(key) % 3:\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\\n\"\n+                    \"But the length of this key is not a multiple of 3.\"\n+                )\n+            if key != \"_+-\" * (len(key) // 3):\n+                raise QiskitNatureError(\n+                    f\"The key {key} is invalid. PolynomialTensor keys must be multiples of the \"\n+                    \"`_+-` character sequence, for them to be expandable into a VibrationalOp.\"\n+                )\n \n     @classmethod\n     def from_polynomial_tensor(cls, tensor: PolynomialTensor) -> VibrationalOp:\n-        ...\n+        cls._validate_polynomial_tensor_key(tensor.keys())\n+\n+        data: dict[str, _TCoeff] = {}\n+\n+        def _reshape_index(index):\n+            new_index = []\n+            for idx in range(0, len(index), 3):\n+                new_index.extend([index[idx], index[idx + 1], index[idx], index[idx + 2]])\n+            return new_index\n+\n+        for key in tensor:\n+            if key == \"\":\n+                # TODO: deal with complexity",
+    "path": "qiskit_nature/second_q/operators/vibrational_op.py",
+    "commit_id": "a90b49e129f4f25bed31cbdb6371270b20d393ff",
+    "original_commit_id": "b871526d9559877e304c3cb8bacd8513ccea0d11",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ah yes, that comment is phrased a bit poorly in that regard..",
+    "created_at": "2022-11-02T16:28:00Z",
+    "updated_at": "2022-11-02T16:28:00Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1012023672",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1012023672"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/921#discussion_r1012023672"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/921"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1012023672/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 298,
+    "original_line": 298,
+    "side": "RIGHT",
+    "in_reply_to_id": 1010668018,
+    "author_association": "MEMBER",
+    "original_position": 117,
+    "position": 105,
+    "subject_type": "line"
+  }
+]

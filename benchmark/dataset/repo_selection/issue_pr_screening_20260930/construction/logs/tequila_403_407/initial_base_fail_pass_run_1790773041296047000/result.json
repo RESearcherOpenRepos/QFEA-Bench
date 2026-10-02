@@ -1,0 +1,62 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 3.507959127000049,
+  "items": [
+    "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+    "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00031437500001629815,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.0012107919999380101,
+      "wasxfail": null,
+      "longrepr": "@pytest.mark.skipif(condition=not HAS_QUIMB, reason=\"quimb not installed\")\n    def test_circuit_to_matrix():\n        \"\"\"\n        Test the conversion of a 3-qubit circuit to a unitary matrix.\n        \"\"\"\n        circuit = tq.gates.H(target=0) + tq.gates.CNOT(target=1,control=0) + tq.gates.CNOT(target=2,control=1)\n    \n        # Convert the circuit to a unitary matrix\n>       unitary_matrix = circuit.to_matrix()\nE       AttributeError: 'QCircuit' object has no attribute 'to_matrix'\n\ntests/test_circuit_unitary.py:74: AttributeError"
+    },
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0003634579999243215,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00016349999998510611,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.0010682910000241463,
+      "wasxfail": null,
+      "longrepr": "@pytest.mark.skipif(condition=not HAS_QUIMB, reason=\"quimb not installed\")\n    def test_circuit_to_matrix_with_params():\n        PM = np.kron(tq.paulis.Y(0).to_matrix(), tq.paulis.X(0).to_matrix())\n        U = tq.gates.ExpPauli(paulistring=\"X(0)Y(1)\", angle=\"a\")\n    \n        N = 2**2\n    \n        for a in [1.0, 2.0, -1.0]:\n>           UM1 = U.to_matrix({\"a\":a})\nE           AttributeError: 'QCircuit' object has no attribute 'to_matrix'\n\ntests/test_circuit_unitary.py:87: AttributeError"
+    },
+    {
+      "nodeid": "tests/test_circuit_unitary.py::test_circuit_to_matrix_with_params",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.00021187499999086867,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

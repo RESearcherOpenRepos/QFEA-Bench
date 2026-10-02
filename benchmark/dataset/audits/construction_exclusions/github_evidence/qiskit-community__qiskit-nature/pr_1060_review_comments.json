@@ -1,0 +1,1183 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106898618",
+    "pull_request_review_id": 1299158535,
+    "id": 1106898618,
+    "node_id": "PRRC_kwDOE-DJV85B-e66",
+    "diff_hunk": "@@ -192,6 +201,116 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        \"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        By default, any ``Tensor`` instance will return the same string here. This returned template\n+        depends on the dimension of the wrapped matrix. It will repeat ``{}_{{}}`` for every\n+        dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template only makes sense in the context of what is done inside of\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in two\n+        steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        .. note::\n+\n+           The string formatting in Python is a very powerful tool `[1]`_. Note, that in the use\n+           case here, we only ever supply positional arguments in the ``.format(...)`` calls which\n+           means that you cannot use names to identify replacement fields in your label templates.\n+           However, you can modify their replacement order using numeric values (like shown below).",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "2a3d77908ffe81ac5a534df4b4734564c09ea05a",
+    "user": {
+      "login": "ElePT",
+      "id": 57907331,
+      "node_id": "MDQ6VXNlcjU3OTA3MzMx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57907331?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ElePT",
+      "html_url": "https://github.com/ElePT",
+      "followers_url": "https://api.github.com/users/ElePT/followers",
+      "following_url": "https://api.github.com/users/ElePT/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ElePT/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ElePT/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ElePT/subscriptions",
+      "organizations_url": "https://api.github.com/users/ElePT/orgs",
+      "repos_url": "https://api.github.com/users/ElePT/repos",
+      "events_url": "https://api.github.com/users/ElePT/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ElePT/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Even though you explain it very well below (and I think that the example is great), the first time you reed this note you don't really know why you are talking about string formatting all of a sudden. I would add earlier in the explanation sth like \"This feature allows you to switch between physics and chemistry ordered terms\" or point out that supplying positional arguments restricts you to physics ordering. ",
+    "created_at": "2023-02-15T09:52:19Z",
+    "updated_at": "2023-02-15T13:27:45Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106898618",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106898618"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106898618"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106898618/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 270,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 128,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106927747",
+    "pull_request_review_id": 1299158535,
+    "id": 1106927747,
+    "node_id": "PRRC_kwDOE-DJV85B-mCD",
+    "diff_hunk": "@@ -192,6 +201,116 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        \"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        By default, any ``Tensor`` instance will return the same string here. This returned template",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "2a3d77908ffe81ac5a534df4b4734564c09ea05a",
+    "user": {
+      "login": "ElePT",
+      "id": 57907331,
+      "node_id": "MDQ6VXNlcjU3OTA3MzMx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57907331?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ElePT",
+      "html_url": "https://github.com/ElePT",
+      "followers_url": "https://api.github.com/users/ElePT/followers",
+      "following_url": "https://api.github.com/users/ElePT/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ElePT/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ElePT/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ElePT/subscriptions",
+      "organizations_url": "https://api.github.com/users/ElePT/orgs",
+      "repos_url": "https://api.github.com/users/ElePT/repos",
+      "events_url": "https://api.github.com/users/ElePT/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ElePT/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n        If no custom template is provided, all instances of``Tensor``will resort to the default template. This template\r\n```",
+    "created_at": "2023-02-15T10:17:44Z",
+    "updated_at": "2023-02-15T13:27:45Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106927747",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106927747"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106927747"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106927747/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 209,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 67,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106935125",
+    "pull_request_review_id": 1299158535,
+    "id": 1106935125,
+    "node_id": "PRRC_kwDOE-DJV85B-n1V",
+    "diff_hunk": "@@ -192,6 +201,116 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        \"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        By default, any ``Tensor`` instance will return the same string here. This returned template\n+        depends on the dimension of the wrapped matrix. It will repeat ``{}_{{}}`` for every\n+        dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template only makes sense in the context of what is done inside of\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in two\n+        steps:",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "2a3d77908ffe81ac5a534df4b4734564c09ea05a",
+    "user": {
+      "login": "ElePT",
+      "id": 57907331,
+      "node_id": "MDQ6VXNlcjU3OTA3MzMx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57907331?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ElePT",
+      "html_url": "https://github.com/ElePT",
+      "followers_url": "https://api.github.com/users/ElePT/followers",
+      "following_url": "https://api.github.com/users/ElePT/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ElePT/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ElePT/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ElePT/subscriptions",
+      "organizations_url": "https://api.github.com/users/ElePT/orgs",
+      "repos_url": "https://api.github.com/users/ElePT/repos",
+      "events_url": "https://api.github.com/users/ElePT/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ElePT/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n        The format of this template allows to construct a :class:`.SparseLabelOp` from the``Tensor``\\s stored  \r\n        in a :class:`.PolynomialTensor`. This operation is performed when calling\r\n        :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in two\r\n        steps:\r\n```",
+    "created_at": "2023-02-15T10:24:13Z",
+    "updated_at": "2023-02-15T13:27:45Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106935125",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106935125"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1106935125"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1106935125/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 221,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 223,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 81,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1107168169",
+    "pull_request_review_id": 1299559783,
+    "id": 1107168169,
+    "node_id": "PRRC_kwDOE-DJV85B_gup",
+    "diff_hunk": "@@ -192,6 +201,116 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        \"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        By default, any ``Tensor`` instance will return the same string here. This returned template\n+        depends on the dimension of the wrapped matrix. It will repeat ``{}_{{}}`` for every\n+        dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template only makes sense in the context of what is done inside of\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in two\n+        steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        .. note::\n+\n+           The string formatting in Python is a very powerful tool `[1]`_. Note, that in the use\n+           case here, we only ever supply positional arguments in the ``.format(...)`` calls which\n+           means that you cannot use names to identify replacement fields in your label templates.\n+           However, you can modify their replacement order using numeric values (like shown below).",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "2a3d77908ffe81ac5a534df4b4734564c09ea05a",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "That is a good point. I will try to come up with a phrasing which hints at this but does not restrict it to this particular example (because there are also more general use cases one can think of)",
+    "created_at": "2023-02-15T14:04:22Z",
+    "updated_at": "2023-02-15T14:04:22Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1107168169",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1107168169"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1107168169"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1107168169/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 270,
+    "side": "RIGHT",
+    "in_reply_to_id": 1106898618,
+    "author_association": "MEMBER",
+    "original_position": 128,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112331173",
+    "pull_request_review_id": 1306349085,
+    "id": 1112331173,
+    "node_id": "PRRC_kwDOE-DJV85CTNOl",
+    "diff_hunk": "@@ -100,13 +105,17 @@ def __init__(self, array: Number | ARRAY_TYPE | Tensor) -> None:\n                 :`sparse.SparseArray`: a sparse matrix\n                 :`numbers.Number`: any numeric singular value\n                 :`Tensor`: another Tensor whose ``array`` attribute will be extracted\n+            label_template: the template string used during the translation procedure implemented in\n+                :meth:`.SparseLabelOp.from_polynomial_tensor`. When ``None``, this will fall back to\n+                the default template string documented separately for the :attr:`label_template`.",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n                the default template string - see the :attr:`label_template` property for more information.\r\n```\r\nCan we change it to something like this. The \"separately\" bit confused me to start with. Its part of this classes' doc., in the property referred to.",
+    "created_at": "2023-02-20T21:25:49Z",
+    "updated_at": "2023-02-20T22:13:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112331173",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112331173"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112331173"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112331173/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 110,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112334337",
+    "pull_request_review_id": 1306349085,
+    "id": 1112334337,
+    "node_id": "PRRC_kwDOE-DJV85CTOAB",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> If no custom template is provided\r\n\r\nThis is specifically `None` in the init right\r\n\r\n>all instances of ``Tensor`` will resort to the default\r\n\r\nSince the label template is part of the constructor it applies just to the single instance right. The \"all instances\" makes it feel more like a class level behavior.\r\n",
+    "created_at": "2023-02-20T21:30:36Z",
+    "updated_at": "2023-02-20T22:14:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112334337",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112334337"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112334337"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112334337/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 209,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 67,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112336102",
+    "pull_request_review_id": 1306349085,
+    "id": 1112336102,
+    "node_id": "PRRC_kwDOE-DJV85CTObm",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> for every dimension.\r\n\r\nThis is independent of the size of the dimension right - might be worth saying that. All the examples below use 2 which also looks like how many curly bracket blocks there are per dimensions ie {} and {{}} connected with an underscore. There is no relationship at all right. Maybe making one of the examples size 3, so they are not all the same, would be enough?",
+    "created_at": "2023-02-20T21:34:00Z",
+    "updated_at": "2023-02-20T22:15:09Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112336102",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112336102"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112336102"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112336102/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 211,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 69,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112344236",
+    "pull_request_review_id": 1306349085,
+    "id": 1112344236,
+    "node_id": "PRRC_kwDOE-DJV85CTQas",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "In this `{}_{{}}` the first `{}` is a substitution point the latter is wanted to be curly brackets hence doubling them up to escape them, Eg just a \"+\" used to with that format string will result in \"+_{}\" where the first {} is replaced by + and the {{}} becomes simply {}. I don't know whether such more detailed explanation might help - I can see it having figured things out - assuming I figured things correctly!",
+    "created_at": "2023-02-20T21:49:03Z",
+    "updated_at": "2023-02-20T22:14:25Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112344236",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112344236"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112344236"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112344236/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 211,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112336102,
+    "author_association": "MEMBER",
+    "original_position": 69,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112345175",
+    "pull_request_review_id": 1306349085,
+    "id": 1112345175,
+    "node_id": "PRRC_kwDOE-DJV85CTQpX",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "So its at this point now, where the first part got substituted earlier, that the latter part, which was just treated as curly brackets before, is now used as a substitution point for the index,",
+    "created_at": "2023-02-20T21:51:26Z",
+    "updated_at": "2023-02-20T22:13:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112345175",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112345175"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112345175"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112345175/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 251,
+    "original_line": 251,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 104,
+    "position": 109,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112351235",
+    "pull_request_review_id": 1306349085,
+    "id": 1112351235,
+    "node_id": "PRRC_kwDOE-DJV85CTSID",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        Here is a concrete example which enables you to use chemistry-ordered two-body terms:\n+\n+        .. code-block:: python\n+\n+           eri_chem = ...  # chemistry-ordered 2-body integrals (a 4-dimensional array)\n+           tensor = Tensor(eri_chem)\n+           tensor.label_template = \"+_{{0}} +_{{2}} -_{{3}} -_{{1}}\"\n+           poly = PolynomialTensor({\"++--\": tensor})",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Given the ++-- appear to be in the same order as the key I imagine this would work just as well ` \"{}_{{0}} {}_{{2}} {}_{{3}} {}_{{1}}`? Does the key and the order of the characters in such a string where they have been preformatted have to be the same - is there any correlation?",
+    "created_at": "2023-02-20T21:59:03Z",
+    "updated_at": "2023-02-20T22:13:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112351235",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112351235"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112351235"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112351235/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 277,
+    "original_start_line": 272,
+    "start_side": "RIGHT",
+    "line": 278,
+    "original_line": 278,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 131,
+    "position": 136,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112360923",
+    "pull_request_review_id": 1306349085,
+    "id": 1112360923,
+    "node_id": "PRRC_kwDOE-DJV85CTUfb",
+    "diff_hunk": "@@ -332,14 +458,25 @@ def compose(self, other: Tensor, qargs: None = None, front: bool = False) -> Ten\n         r\"\"\"Returns the matrix multiplication with another ``Tensor``.\n \n         Args:\n-            other: the other Tensor.\n+            other: the other ``Tensor``.\n             qargs: UNUSED.\n             front: If ``True``, composition uses right matrix multiplication, otherwise left\n                 multiplication is used (the default).\n \n         Returns:\n             The tensor resulting from the composition.\n+\n+        Raises:\n+            NotImplementedError: when composing ``Tensor`` instances whose :attr:`label_template`\n+                attributes are not falling back to the default.\n         \"\"\"\n+        if self._label_template is not None or other._label_template is not None:\n+            raise NotImplementedError(\n+                \"Composing Tensor objects with label_template attributes other than None is not \"",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Maybe this should say `other than the default value is not` - although I guess if one explicitly supplies a template identical to the default it does nor work either. I guess I am pushing back a little on None since the label_template attribute (property) never returns None. Maybe if this said `Tensors created with a label_template parameter value other than the default value of None`.\r\n\r\nSimilar for the other error messages below",
+    "created_at": "2023-02-20T22:11:40Z",
+    "updated_at": "2023-02-20T22:13:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112360923",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112360923"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1112360923"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1112360923/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 475,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 215,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113293726",
+    "pull_request_review_id": 1307767034,
+    "id": 1113293726,
+    "node_id": "PRRC_kwDOE-DJV85CW4Oe",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Having read the rest of the docstring, do you think adding a more detailed example like this one is necessary earlier on?",
+    "created_at": "2023-02-21T16:22:01Z",
+    "updated_at": "2023-02-21T16:22:02Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113293726",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113293726"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113293726"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113293726/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 211,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112336102,
+    "author_association": "MEMBER",
+    "original_position": 69,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113296582",
+    "pull_request_review_id": 1307771206,
+    "id": 1113296582,
+    "node_id": "PRRC_kwDOE-DJV85CW47G",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        Here is a concrete example which enables you to use chemistry-ordered two-body terms:\n+\n+        .. code-block:: python\n+\n+           eri_chem = ...  # chemistry-ordered 2-body integrals (a 4-dimensional array)\n+           tensor = Tensor(eri_chem)\n+           tensor.label_template = \"+_{{0}} +_{{2}} -_{{3}} -_{{1}}\"\n+           poly = PolynomialTensor({\"++--\": tensor})",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "No they don't need to be the same. One could for example map a `+-+-` with a `{0}_{{0}} {2}_{{2}} {3}_{{3}} {1}_{{1}}` template to yield the same result as a `++--` key with the example above.\r\n\r\nI wanted to keep the example just a little bit more simpler which is why I hard-coded the `+` and `-` keys in this example.\r\n\r\nDo you think I should change this?",
+    "created_at": "2023-02-21T16:24:06Z",
+    "updated_at": "2023-02-21T16:24:06Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113296582",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113296582"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113296582"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113296582/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 277,
+    "original_start_line": 272,
+    "start_side": "RIGHT",
+    "line": 278,
+    "original_line": 278,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112351235,
+    "author_association": "MEMBER",
+    "original_position": 131,
+    "position": 136,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113345299",
+    "pull_request_review_id": 1307842678,
+    "id": 1113345299,
+    "node_id": "PRRC_kwDOE-DJV85CXE0T",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "After the default template example its says this `There, the template is processed in two steps:` Maybe rather than `processed` it could say `formatted` to be more explicit - or `processed using the Python formatter` since the template is really designed with that in mind right. What is done it to to set things up such that any substitution points for the second step need to be escaped to allow the template to be partially transformed with a first formatting step. Hence the {{ }} part of the string which will apply to the second step, i.e. the curly brackets are escaped. It might be helpful to state this intent. Though one can see the {}_{{}} default from the examples its not so clear, or at least it wasn't to me until I went through carefully, what the overall intent was behind it looking like that. Maybe just giving enough of a context there about the 2 step process before going into the steps might be helpful.",
+    "created_at": "2023-02-21T17:05:16Z",
+    "updated_at": "2023-02-21T17:05:17Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113345299",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113345299"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113345299"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113345299/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 211,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112336102,
+    "author_association": "MEMBER",
+    "original_position": 69,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113380527",
+    "pull_request_review_id": 1307893571,
+    "id": 1113380527,
+    "node_id": "PRRC_kwDOE-DJV85CXNav",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        Here is a concrete example which enables you to use chemistry-ordered two-body terms:\n+\n+        .. code-block:: python\n+\n+           eri_chem = ...  # chemistry-ordered 2-body integrals (a 4-dimensional array)\n+           tensor = Tensor(eri_chem)\n+           tensor.label_template = \"+_{{0}} +_{{2}} -_{{3}} -_{{1}}\"\n+           poly = PolynomialTensor({\"++--\": tensor})",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think part of it for me was that the first example, after the two step process above, has formatting which will apply only at the second step - since while you could do the template as I showed above, and let the first formatting plug the +/- in, the +/- have instead been manually plugged in there, such that all the first formatting step will do is unescape the curly brackets. Maybe its easier to see overall since its closer to the final formatted form, as you say simpler and for sure its a viable example. Perhaps if it stated there that this is the case for this example. Maybe having the first formatting substitutions, aside from the default template, would be unusual - makes one wonder then if it would not even be more simple for a user to give `\"+_{0} +_{2} -_{3} -_{1}\"` where it could bypass the first format pass altogether.",
+    "created_at": "2023-02-21T17:35:53Z",
+    "updated_at": "2023-02-21T17:38:04Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113380527",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113380527"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113380527"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113380527/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 277,
+    "original_start_line": 272,
+    "start_side": "RIGHT",
+    "line": 278,
+    "original_line": 278,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112351235,
+    "author_association": "MEMBER",
+    "original_position": 131,
+    "position": 136,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113937839",
+    "pull_request_review_id": 1308670623,
+    "id": 1113937839,
+    "node_id": "PRRC_kwDOE-DJV85CZVev",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        Here is a concrete example which enables you to use chemistry-ordered two-body terms:\n+\n+        .. code-block:: python\n+\n+           eri_chem = ...  # chemistry-ordered 2-body integrals (a 4-dimensional array)\n+           tensor = Tensor(eri_chem)\n+           tensor.label_template = \"+_{{0}} +_{{2}} -_{{3}} -_{{1}}\"\n+           poly = PolynomialTensor({\"++--\": tensor})",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I see. I will try to improve the example according to this.\r\n\r\nNote, however, that your example `+_{0} +_{2} -_{3} -_{1}` will **not** work because the first formatting is applied unconditionally. I will point this out more explicitly as well.",
+    "created_at": "2023-02-22T07:38:31Z",
+    "updated_at": "2023-02-22T07:38:31Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113937839",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113937839"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1113937839"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1113937839/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 277,
+    "original_start_line": 272,
+    "start_side": "RIGHT",
+    "line": 278,
+    "original_line": 278,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112351235,
+    "author_association": "MEMBER",
+    "original_position": 131,
+    "position": 136,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1114480251",
+    "pull_request_review_id": 1309466518,
+    "id": 1114480251,
+    "node_id": "PRRC_kwDOE-DJV85CbZ57",
+    "diff_hunk": "@@ -192,6 +201,117 @@ def ndim(self) -> int:\n         \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n         return len(self._array.shape)\n \n+    @property\n+    def label_template(self) -> str:\n+        r\"\"\"The template string used during the translation implemented in\n+        :meth:`.SparseLabelOp.from_polynomial_tensor`.\n+\n+        If no custom template is provided, all instances of ``Tensor`` will resort to the default\n+        template. This template depends on the dimension of the wrapped matrix. It will repeat\n+        ``{}_{{}}`` for every dimension. This is explained best with an example:\n+\n+        .. code-block:: python\n+\n+            print(Tensor(np.eye(2)).label_template)\n+            # \"{}_{{}} {}_{{}}\"\n+\n+            print(Tensor(np.ones((2, 2, 2, 2)).label_template)\n+            # \"{}_{{}} {}_{{}} {}_{{}} {}_{{}}\"\n+\n+        The format of this template allows to construct a :class:`.SparseLabelOp` from the\n+        ``Tensor``\\s stored in a :class:`.PolynomialTensor`. This operation is performed when\n+        calling :meth:`.SparseLabelOp.from_polynomial_tensor`. There, the template is processed in\n+        two steps:\n+\n+        1. First, the template is formatted using the key under which the ``Tensor`` object was\n+           stored inside of the :class:`.PolynomialTensor` object. For example:\n+\n+           .. code-block:: python\n+\n+               poly = PolynomialTensor(\n+                  {\n+                      \"+-\": Tensor(np.eye(2)),\n+                      \"++--\": Tensor(np.ones((2, 2, 2, 2))),\n+                  }\n+              )\n+\n+               # the label_template will get expanded like so:\n+               for key, tensor in poly.items():\n+                  sparse_label_template = tensor.label_template.format(*key)\n+                  print(key, \"->\", sparse_label_template)\n+\n+              # \"+-\" -> \"+_{} -_{}\"\n+              # \"++--\" -> \"+_{} +_{} -_{} -_{}\"\n+\n+        2. Next, these templates are used to build the actual labels of the :class:`.SparseLabelOp`\n+           being constructed. For that, the indices encountered during :meth:`coord_iter` are used\n+           for example like so:\n+\n+           .. code-block:: python\n+\n+              sparse_label_template = \"+_{} -_{}\"\n+              for value, index in Tensor(np.eye(2)).coord_iter():\n+                  sparse_label = sparse_label_template.format(*index)\n+                  print(sparse_label, value)\n+\n+              # \"+_0 -_0\", 1\n+              # \"+_0 -_1\", 0\n+              # \"+_1 -_1\", 1\n+              # \"+_1 -_0\", 0\n+\n+        Given that you now understand how the ``label_template`` attribute is being used, this\n+        allows you to modify how the ``Tensor`` objects stored inside a :class:`.PolynomialTensor`\n+        are processed when they are being translated into a :class:`.SparseLabelOp`.\n+\n+        Here is a concrete example which enables you to use chemistry-ordered two-body terms:\n+\n+        .. code-block:: python\n+\n+           eri_chem = ...  # chemistry-ordered 2-body integrals (a 4-dimensional array)\n+           tensor = Tensor(eri_chem)\n+           tensor.label_template = \"+_{{0}} +_{{2}} -_{{3}} -_{{1}}\"\n+           poly = PolynomialTensor({\"++--\": tensor})",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "a45f258f01b575c4979324204b01eaff61a00be3",
+    "original_commit_id": "9852813964b0691120fd965520ea5a4895475263",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes, I realized it would not work, but its simpler to see/deal with (at least for me without the escaped curlies) which I why I ended with `where it could bypass the first format pass altogether.` - but there is no mechanism, as you had it to do that (i.e skip the first format step), and maybe that would make things overall more complicated to deal with versus the escaped curlies.",
+    "created_at": "2023-02-22T15:08:54Z",
+    "updated_at": "2023-02-22T15:08:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1114480251",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1114480251"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1060#discussion_r1114480251"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1060"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1114480251/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 277,
+    "original_start_line": 272,
+    "start_side": "RIGHT",
+    "line": 278,
+    "original_line": 278,
+    "side": "RIGHT",
+    "in_reply_to_id": 1112351235,
+    "author_association": "MEMBER",
+    "original_position": 131,
+    "position": 136,
+    "subject_type": "line"
+  }
+]

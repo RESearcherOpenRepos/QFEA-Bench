@@ -1,0 +1,145 @@
+{
+  "instance": {
+    "id": 10,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_46_61",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/46",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/61",
+    "base_commit": "03ce7e4c8f1c948b3b1834d48900166f5bc2ec41",
+    "patch": "2945f996a6c0a49324590f8bbe959f4bd6a4b80c"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a fermionic tensor container and basis-rotation support, with validation centered on data-structure behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/ops/__init__.py",
+      "src/openfermion/ops/_polynomial_tensor.py",
+      "src/openfermion/ops/_interaction_operator.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion should support a more general tensor representation for fermionic operators so code can work with coefficient tensors for different creation and annihilation patterns, while still preserving existing interaction-operator iteration behavior and basis-rotation support.",
+    "requirements": [
+      "Provide a PolynomialTensor representation for fermionic operator coefficients keyed by the creation and annihilation pattern of each tensor block.",
+      "Expose PolynomialTensor from openfermion.ops.",
+      "Allow PolynomialTensor basis rotations to work for spinful tensors by expanding an orbital rotation matrix across spin sectors when needed.",
+      "Reject addition, subtraction, and multiplication between PolynomialTensor instances when their tensor-key layouts do not match.",
+      "Keep existing InteractionOperator unique-iteration behavior unchanged."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "PolynomialTensor",
+        "Path": "src/openfermion/ops/_polynomial_tensor.py",
+        "Input": "constructor: constant, n_body_tensors",
+        "Output": "PolynomialTensor",
+        "Description": "Represents fermionic coefficient tensors keyed by creation and annihilation pattern tuples."
+      },
+      {
+        "Type": "Method",
+        "Name": "__add__",
+        "Path": "src/openfermion/ops/_polynomial_tensor.py",
+        "Input": "self, addend",
+        "Output": "PolynomialTensor",
+        "Description": "Returns the sum of two PolynomialTensor instances and raises TypeError when their tensor-key layouts are incompatible."
+      },
+      {
+        "Type": "Method",
+        "Name": "__sub__",
+        "Path": "src/openfermion/ops/_polynomial_tensor.py",
+        "Input": "self, subtrahend",
+        "Output": "PolynomialTensor",
+        "Description": "Returns the difference of two PolynomialTensor instances and raises TypeError when their tensor-key layouts are incompatible."
+      },
+      {
+        "Type": "Method",
+        "Name": "__mul__",
+        "Path": "src/openfermion/ops/_polynomial_tensor.py",
+        "Input": "self, multiplier",
+        "Output": "PolynomialTensor",
+        "Description": "Returns the elementwise product of two PolynomialTensor instances and raises TypeError when their tensor-key layouts are incompatible."
+      },
+      {
+        "Type": "Method",
+        "Name": "rotate_basis",
+        "Path": "src/openfermion/ops/_polynomial_tensor.py",
+        "Input": "self, rotation_matrix",
+        "Output": "",
+        "Description": "Rotates every stored tensor block into a new basis and expands orbital rotations across spin sectors for spinful tensors."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_46_61",
+      "image_id": "sha256:ffab0a15e039294e4eb911c850133f06f393875d5e180352a1ef26c664b92caa",
+      "image_size": "463027277"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7",
+        "six"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_add",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_sub",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_mult",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_rotate_basis_identical"
+        ],
+        "summary": "4 passed, 7 warnings in 0.66s",
+        "duration_seconds": 4.8
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_four_point_iter",
+          "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_eight_point_iter"
+        ],
+        "summary": "2 passed, 7 warnings in 0.64s",
+        "duration_seconds": 4.82
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_add",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_sub",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_mult",
+          "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_rotate_basis_identical"
+        ],
+        "summary": "ERROR: not found: /workspace/repo/src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_rotate_basis_identical",
+        "duration_seconds": 4.85
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_four_point_iter",
+          "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_eight_point_iter"
+        ],
+        "summary": "2 passed, 7 warnings in 0.63s",
+        "duration_seconds": 4.77
+      }
+    }
+  }
+}

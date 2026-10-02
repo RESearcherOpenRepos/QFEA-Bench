@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "1c7f13b025a0d364dc592ece358f330430f6db64",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 2,
+    "changes": 5,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/471bae14ac11c80bb2a05959b526be92e2b6b867/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/471bae14ac11c80bb2a05959b526be92e2b6b867/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=471bae14ac11c80bb2a05959b526be92e2b6b867",
+    "patch": "@@ -231,16 +231,17 @@ def optimize_orbitals(\n         )\n \n         # Generate the one and two-body reduced density matrices from latest wavefunction amplitudes\n-        dm1, dm2_chem = myci.make_rdm12(amplitudes, num_orbitals, (num_up, num_up))\n+        dm1, dm2_chem = myci.make_rdm12(amplitudes, num_orbitals, (num_up, num_dn))\n         dm2 = np.asarray(dm2_chem.transpose(0, 2, 3, 1), order=\"C\")\n+        dm1a, dm1b = myci.make_rdm1s(amplitudes, num_orbitals, (num_up, num_dn))\n \n         # TODO: Expose the momentum parameter as an input option\n         # Optimize the basis rotations\n         _optimize_orbitals_sci(\n             k_flat, learning_rate, 0.9, num_steps_grad, dm1, dm2, hcore, eri_phys\n         )\n \n-    return e_qsci, k_flat, [np.diagonal(dm1), np.diagonal(dm1)]\n+    return e_qsci, k_flat, [np.diagonal(dm1a), np.diagonal(dm1b)]\n \n \n def rotate_integrals("
+  },
+  {
+    "sha": "e848bce8cc028e342a8ba68d41f6be7a277be81c",
+    "filename": "releasenotes/notes/oo-bug-occs-3c348b86ee03857f.yaml",
+    "status": "added",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/471bae14ac11c80bb2a05959b526be92e2b6b867/releasenotes%2Fnotes%2Foo-bug-occs-3c348b86ee03857f.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/471bae14ac11c80bb2a05959b526be92e2b6b867/releasenotes%2Fnotes%2Foo-bug-occs-3c348b86ee03857f.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Foo-bug-occs-3c348b86ee03857f.yaml?ref=471bae14ac11c80bb2a05959b526be92e2b6b867",
+    "patch": "@@ -0,0 +1,4 @@\n+---\n+fixes:\n+  - |\n+    Fixed a bug in open-shell workflows which would cause :func:`qiskit_addon_sqd.fermion.optimize_orbitals` to crash with a ``malloc`` error."
+  }
+]

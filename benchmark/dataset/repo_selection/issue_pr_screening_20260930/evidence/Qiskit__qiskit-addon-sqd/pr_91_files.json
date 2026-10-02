@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "977423da4d6d66ead2a3fd8ac06c89ba984eea87",
+    "filename": "docs/apidocs/qiskit_addon_sqd.fermion.rst",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 0,
+    "changes": 1,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/4129bca30eedd2d78a57ca37f14798e9d83be5ee/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/4129bca30eedd2d78a57ca37f14798e9d83be5ee/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst?ref=4129bca30eedd2d78a57ca37f14798e9d83be5ee",
+    "patch": "@@ -9,6 +9,7 @@ Fermion (:mod:`qiskit_addon_sqd.fermion`)\n \n .. currentmodule:: qiskit_addon_sqd.fermion\n \n+.. autoclass:: SCIState\n .. autofunction:: bitstring_matrix_to_ci_strs\n .. autofunction:: enlarge_batch_from_transitions\n .. autofunction:: flip_orbital_occupancies"
+  },
+  {
+    "sha": "cb6dbe4757388337d6b1ac69a12fee86e1923044",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 58,
+    "deletions": 7,
+    "changes": 65,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/4129bca30eedd2d78a57ca37f14798e9d83be5ee/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/4129bca30eedd2d78a57ca37f14798e9d83be5ee/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=4129bca30eedd2d78a57ca37f14798e9d83be5ee",
+    "patch": "@@ -16,6 +16,7 @@\n from __future__ import annotations\n \n import warnings\n+from dataclasses import dataclass\n \n import numpy as np\n from jax import Array, config, grad, jit, vmap\n@@ -28,6 +29,46 @@\n config.update(\"jax_enable_x64\", True)  # To deal with large integers\n \n \n+@dataclass(frozen=True)\n+class SCIState:\n+    \"\"\"The amplitudes and determinants describing a quantum state.\"\"\"\n+\n+    amplitudes: np.ndarray\n+    \"\"\"An :math:`M \\\\times N` array where :math:`M =` len(``ci_strs_a``)\n+    and :math:`N` = len(``ci_strs_b``). ``amplitudes[i][j]`` is the\n+    amplitude of the determinant pair (``ci_strs_a[i]``, ``ci_strs_b[j]``).\n+    \"\"\"\n+\n+    ci_strs_a: np.ndarray\n+    \"\"\"The alpha determinants.\"\"\"\n+\n+    ci_strs_b: np.ndarray\n+    \"\"\"The beta determinants.\"\"\"\n+\n+    def __post_init__(self):\n+        \"\"\"Validate dimensions of inputs.\"\"\"\n+        object.__setattr__(\n+            self, \"amplitudes\", np.asarray(self.amplitudes)\n+        )  # Convert to ndarray if not already\n+        if self.amplitudes.shape != (len(self.ci_strs_a), len(self.ci_strs_b)):\n+            raise ValueError(\n+                f\"'amplitudes' shape must be ({len(self.ci_strs_a)}, {len(self.ci_strs_b)}) \"\n+                f\"but got {self.amplitudes.shape}\"\n+            )\n+\n+    def save(self, filename):\n+        \"\"\"Save the SCIState object to an .npz file.\"\"\"\n+        np.savez(\n+            filename, amplitudes=self.amplitudes, ci_strs_a=self.ci_strs_a, ci_strs_b=self.ci_strs_b\n+        )\n+\n+    @classmethod\n+    def load(cls, filename):\n+        \"\"\"Load an SCIState object from an .npz file.\"\"\"\n+        with np.load(filename) as data:\n+            return cls(data[\"amplitudes\"], data[\"ci_strs_a\"], data[\"ci_strs_b\"])\n+\n+\n def solve_fermion(\n     bitstring_matrix: tuple[np.ndarray, np.ndarray] | np.ndarray,\n     /,\n@@ -38,7 +79,7 @@ def solve_fermion(\n     spin_sq: int | None = None,\n     max_davidson: int = 100,\n     verbose: int | None = None,\n-) -> tuple[float, np.ndarray, list[np.ndarray], float]:\n+) -> tuple[float, SCIState, list[np.ndarray], float]:\n     \"\"\"Approximate the ground state given molecular integrals and a set of electronic configurations.\n \n     Args:\n@@ -65,8 +106,8 @@ def solve_fermion(\n \n     Returns:\n         - Minimum energy from SCI calculation\n-        - SCI coefficients\n-        - Average orbital occupancy\n+        - The SCI ground state\n+        - Average occupancy of the alpha and beta orbitals, respectively\n         - Expectation value of spin-squared\n \n     \"\"\"\n@@ -91,7 +132,7 @@ def solve_fermion(\n     myci = fci.selected_ci.SelectedCI()\n     if spin_sq is not None:\n         myci = fci.addons.fix_spin_(myci, ss=spin_sq)\n-    e_sci, coeffs_sci = fci.selected_ci.kernel_fixed_space(\n+    e_sci, sci_vec = fci.selected_ci.kernel_fixed_space(\n         myci,\n         hcore,\n         eri,\n@@ -101,14 +142,24 @@ def solve_fermion(\n         verbose=verbose,\n         max_cycle=max_davidson,\n     )\n+\n     # Calculate the avg occupancy of each orbital\n-    dm1 = myci.make_rdm1s(coeffs_sci, norb, (num_up, num_dn))\n+    dm1 = myci.make_rdm1s(sci_vec, norb, (num_up, num_dn))\n     avg_occupancy = [np.diagonal(dm1[0]), np.diagonal(dm1[1])]\n \n     # Compute total spin\n-    spin_squared = myci.spin_square(coeffs_sci, norb, (num_up, num_dn))[0]\n+    spin_squared = myci.spin_square(sci_vec, norb, (num_up, num_dn))[0]\n+\n+    # Convert the PySCF SCIVector to internal format. We access a private field here,\n+    # so we assert that we expect the SCIVector output from kernel_fixed_space to\n+    # have its _strs field populated with alpha and beta strings.\n+    assert isinstance(sci_vec._strs[0], np.ndarray) and isinstance(sci_vec._strs[1], np.ndarray)\n+    assert sci_vec.shape == (len(sci_vec._strs[0]), len(sci_vec._strs[1]))\n+    sci_state = SCIState(\n+        amplitudes=np.array(sci_vec), ci_strs_a=sci_vec._strs[0], ci_strs_b=sci_vec._strs[1]\n+    )\n \n-    return e_sci, coeffs_sci, avg_occupancy, spin_squared\n+    return e_sci, sci_state, avg_occupancy, spin_squared\n \n \n def optimize_orbitals("
+  },
+  {
+    "sha": "ab98fbf82de7d1203ba0a2c9799e2cde1fcd9b8a",
+    "filename": "releasenotes/notes/wf-amps-d0fd5b930346adaf.yaml",
+    "status": "added",
+    "additions": 4,
+    "deletions": 0,
+    "changes": 4,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/4129bca30eedd2d78a57ca37f14798e9d83be5ee/releasenotes%2Fnotes%2Fwf-amps-d0fd5b930346adaf.yaml",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/4129bca30eedd2d78a57ca37f14798e9d83be5ee/releasenotes%2Fnotes%2Fwf-amps-d0fd5b930346adaf.yaml",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/releasenotes%2Fnotes%2Fwf-amps-d0fd5b930346adaf.yaml?ref=4129bca30eedd2d78a57ca37f14798e9d83be5ee",
+    "patch": "@@ -0,0 +1,4 @@\n+upgrade:\n+  - |\n+    The ground state returned by :func:`qiskit_addon_sqd.fermion.solve_fermion` will now be an instance of :class:`qiskit_addon_sqd.fermion.SCIState`, rather than a PySCF ``SCIVector`` instance.\n+"
+  }
+]

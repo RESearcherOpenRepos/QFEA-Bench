@@ -1,0 +1,48 @@
+# syntax=docker/dockerfile:1.7
+ARG PYTHON_VERSION=3.6
+FROM python:${PYTHON_VERSION}-slim AS python_runtime
+
+FROM debian:trixie-slim
+COPY --from=python_runtime /usr/local /usr/local
+COPY --from=python_runtime /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/local/lib/
+COPY --from=python_runtime /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/local/lib/
+COPY --from=python_runtime /usr/lib/x86_64-linux-gnu/libffi.so.7 /usr/local/lib/
+
+WORKDIR /workspace
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PATH=/usr/local/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+ENV REPO_DIR=/workspace/repo
+
+ARG REPOSITORY_URL=https://github.com/quantumlib/OpenFermion.git
+ARG DEPENDENCY_COMMIT=9dc86d3ca034dac3b0a6e02b67f87038fb962ed0
+ARG SYSTEM_PACKAGES="git ca-certificates"
+
+RUN set -eux; \
+    if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
+        sed -i "s|http://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|http://deb.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|https://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|https://deb.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g" /etc/apt/sources.list.d/debian.sources; \
+    elif [ -f /etc/apt/sources.list ]; then \
+        sed -i "s|http://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|http://security.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|https://deb.debian.org/debian|http://mirrors.tuna.tsinghua.edu.cn/debian|g; s|https://security.debian.org/debian-security|http://mirrors.tuna.tsinghua.edu.cn/debian-security|g" /etc/apt/sources.list; \
+    fi; \
+    apt-get -o Acquire::Retries=5 update \
+    && apt-get install -y --no-install-recommends ${SYSTEM_PACKAGES} \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip \
+    for attempt in 1 2 3; do \
+        git clone --filter=blob:none "${REPOSITORY_URL}" "${REPO_DIR}" && break; \
+        if [ "$attempt" = "3" ]; then exit 1; fi; \
+        rm -rf "${REPO_DIR}"; \
+        sleep 3; \
+    done \
+    && cd "${REPO_DIR}" \
+    && git fetch origin "${DEPENDENCY_COMMIT}" \
+    && git checkout --force "${DEPENDENCY_COMMIT}" \
+    && python -m pip install --upgrade pip setuptools wheel \
+    && python -m pip install "numpy<1.20" "scipy<1.3" "networkx<3" "h5py<3.2" "future" "pytest<7" "six" "pubchempy" \
+    && python -m pip install --no-deps -e .

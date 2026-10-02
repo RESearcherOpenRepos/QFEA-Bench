@@ -1,0 +1,72 @@
+{
+  "id": 28,
+  "sample_id": "qiskit_machine_learning_328_348",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "a56158452e32354dfbc1f4835a0b362446af4eba",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 2,
+    "subtype_test_counts": {
+      "interface/sparse_input_compatibility": 2,
+      "general_semantics/model_training_performance": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_sparse_arrays",
+      "label": "interface/sparse_input_compatibility",
+      "assertions": [
+        {
+          "line": 385,
+          "expected": "Fitting and scoring with sparse features and labels reaches a score above 0.5",
+          "via_helper": "_test_sparse_arrays (called at line 368)"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_sparse_arrays",
+      "label": "interface/sparse_input_compatibility",
+      "assertions": [
+        {
+          "line": 398,
+          "expected": "Fitting and scoring with sparse features and labels reaches a score above 0.5",
+          "via_helper": "_test_sparse_arrays (called at line 386)"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_categorical_data_2__True___squared_error__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 361,
+          "expected": "String-label classifier achieves a score above 0.5"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_vqc_5__None___statevector__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "VQC achieves a score above 0.5"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/a56158452e32354dfbc1f4835a0b362446af4eba/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/a56158452e32354dfbc1f4835a0b362446af4eba/test/algorithms/classifiers/test_vqc.py"
+  ],
+  "rationale": "The two new tests delegate to helper assertions after supplying sparse features and labels under several losses/backends, so they primarily check accepted input representation. Existing cases directly assert classifier score thresholds."
+}

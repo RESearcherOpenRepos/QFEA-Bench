@@ -1,0 +1,161 @@
+{
+  "instance": {
+    "id": 93,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_973_1018",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/973",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/1018",
+    "base_commit": "71c4c22a783ff39e1adc4f3f48943a3a1179c411",
+    "patch": "575c24e18f6da34c5e3bdd055f322621ee2ddfdc"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task moves parity-map two-qubit reduction into mapper semantics using particle-number-derived tapering values."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/algorithms/excited_states_solvers/qeom.py",
+      "qiskit_nature/second_q/mappers/parity_mapper.py",
+      "qiskit_nature/second_q/mappers/qubit_converter.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The second-quantized mapper stack already supports parity mapping and the legacy QubitConverter can perform two-qubit reduction for parity-mapped electronic problems. However, the ParityMapper itself does not own that reduction, even though this hard-coded symmetry only applies to parity mapping. Users need to configure parity mapping with particle numbers directly on the mapper and obtain the reduced qubit operator through the standard mapper workflow.",
+    "requirements": [
+      "ParityMapper must accept optional particle-number information at construction time and expose it as mutable mapper state.",
+      "When particle numbers are available, parity mapping must apply the built-in two-qubit reduction after producing the parity-mapped qubit operator.",
+      "When particle numbers are absent, parity mapping must preserve the existing unreduced mapping behavior.",
+      "The tapering values used by the reduction must be derived from the alpha and beta particle counts and must update when the mapper's particle numbers change.",
+      "Two-qubit reduction must be skipped with the existing warning behavior when the mapped operator is too small to reduce.",
+      "QubitConverter must interoperate with ParityMapper's mapper-level reduction without applying unintended reductions when converter-level two-qubit reduction is disabled.",
+      "QEOM and excited-state solver workflows must accept both direct mappers and QubitConverter instances, including a ParityMapper configured for two-qubit reduction."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "ParityMapper",
+        "Path": "qiskit_nature/second_q/mappers/parity_mapper.py",
+        "Input": "constructor: num_particles: tuple[int, int] | None = None",
+        "Output": "",
+        "Description": "Parity fermion-to-qubit mapper with optional mapper-level particle numbers that enable two-qubit reduction."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParityMapper.num_particles",
+        "Path": "qiskit_nature/second_q/mappers/parity_mapper.py",
+        "Input": "self",
+        "Output": "tuple[int, int] | None",
+        "Description": "Gets or sets the mapper's particle numbers and updates the reduction tapering values."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParityMapper.map",
+        "Path": "qiskit_nature/second_q/mappers/fermionic_mapper.py",
+        "Input": "self, second_q_ops, register_length=None",
+        "Output": "PauliSumOp or mapped collection",
+        "Description": "Maps fermionic operators through parity mapping and applies mapper-level two-qubit reduction when particle numbers are configured."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParityMapper._two_qubit_reduce",
+        "Path": "qiskit_nature/second_q/mappers/parity_mapper.py",
+        "Input": "self, operator",
+        "Output": "SparsePauliOp",
+        "Description": "Applies the parity-specific two-qubit tapering using the mapper's tapering values."
+      },
+      {
+        "Type": "Method",
+        "Name": "QubitConverter.convert",
+        "Path": "qiskit_nature/second_q/mappers/qubit_converter.py",
+        "Input": "self, second_q_op, num_particles=None, sector_locator=None",
+        "Output": "PauliSumOp",
+        "Description": "Converts second-quantized operators while respecting converter-level reduction settings and mapper-level ParityMapper state."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_973_1018",
+      "image_id": "sha256:913bd16893c6918eaa32479797b0e8251020db84b10373263173338732f28a2a",
+      "image_size": "1161648772"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.23.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "pyscf"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_with_two_qubit_reduction",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_paritymapper_two_qubit_reduction",
+          "test/second_q/algorithms/excited_state_solvers/test_excited_states_solvers.py::TestNumericalQEOMESCCalculation::test_solve_with_vqe_mes_03_PM_TQR"
+        ],
+        "summary": "3 passed in 14.72s.",
+        "duration_seconds": 20.18
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+          "test/second_q/mappers/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_mapping_basic",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry"
+        ],
+        "summary": "8 passed in 2.02s",
+        "duration_seconds": 4.87
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_with_two_qubit_reduction",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_paritymapper_two_qubit_reduction",
+          "test/second_q/algorithms/excited_state_solvers/test_excited_states_solvers.py::TestNumericalQEOMESCCalculation::test_solve_with_vqe_mes_03_PM_TQR"
+        ],
+        "summary": "Collection failed because the base ParityMapper does not accept the num_particles constructor argument; 1 error in 7.12s.",
+        "duration_seconds": 19.26
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/mappers/test_jordan_wigner_mapper.py::TestJordanWignerMapper::test_mapping",
+          "test/second_q/mappers/test_bravyi_kitaev_mapper.py::TestBravyiKitaevMapper::test_mapping",
+          "test/second_q/mappers/test_bksf_mapper.py::TestBravyiKitaevSuperFastMapper::test_h2",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_allows_two_qubit_reduction",
+          "test/second_q/mappers/test_parity_mapper.py::TestParityMapper::test_mapping_for_single_op",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_mapping_basic",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_two_qubit_reduction_and_z2_symmetry",
+          "test/second_q/mappers/test_qubit_converter.py::TestQubitConverter::test_z2_symmetry"
+        ],
+        "summary": "8 passed in 1.99s",
+        "duration_seconds": 6.89
+      }
+    }
+  }
+}

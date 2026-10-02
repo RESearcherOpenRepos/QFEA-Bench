@@ -1,0 +1,116 @@
+{
+  "instance": {
+    "id": 18,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_5895_5920",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/5895",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/5920",
+    "base_commit": "497721a3bb0a2defa07c6ac1f9de8a56cb73bb55",
+    "patch": "0dacfd48cc696be2733a499bcb08b496f4050c3c"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds matrix helpers for fermionic data structures, with validation focused on representation and orbital sizing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/fermi/fermionic.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PennyLane has fermionic data structures that can be manipulated symbolically, but users also need to obtain their concrete matrix representations for downstream simulation and verification workflows. Fermionic words and fermionic sentences should support converting themselves into matrices using the standard fermion-to-qubit mapping while respecting the number of orbitals requested by the caller.",
+    "requirements": [
+      "FermiWord objects must provide a matrix representation of the fermionic operator they encode.",
+      "FermiSentence objects must provide a matrix representation equal to the weighted sum of the matrices of their fermionic terms.",
+      "When the number of orbitals is not provided, the matrix dimension must be inferred from the largest orbital index present in the object.",
+      "When the caller provides a number of orbitals, the returned matrix must use that orbital count.",
+      "If the requested number of orbitals is smaller than the number required by the fermionic object, a clear ValueError must be raised."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "FermiWord.to_mat",
+        "Path": "pennylane/fermi/fermionic.py",
+        "Input": "self, n_orbitals=None",
+        "Output": "matrix-like array",
+        "Description": "Returns the matrix representation of a fermionic word, inferring or validating the orbital count."
+      },
+      {
+        "Type": "Method",
+        "Name": "FermiSentence.to_mat",
+        "Path": "pennylane/fermi/fermionic.py",
+        "Input": "self, n_orbitals=None",
+        "Output": "matrix-like array",
+        "Description": "Returns the matrix representation of a fermionic sentence as a weighted operator sum, inferring or validating the orbital count."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_5895_5920",
+      "image_id": "sha256:d2322dad8cbbf600b8fcb886a34370a3a31c433205ae59c2f9bc99ce58391891",
+      "image_size": "1288430640"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pennylane-lightning==0.37.0",
+        "autoray>=0.6.11,<0.7"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_to_mat",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_to_mat"
+        ],
+        "summary": "2 passed in 0.21s",
+        "duration_seconds": 8.76
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_missing",
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_pickling",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_simplify",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_pickling"
+        ],
+        "summary": "4 passed in 0.13s",
+        "duration_seconds": 7.71
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_to_mat",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_to_mat"
+        ],
+        "summary": "2 failed with AttributeError: FermiWord/FermiSentence objects have no attribute to_mat in 0.38s",
+        "duration_seconds": 9.55
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_missing",
+          "tests/fermi/test_fermionic.py::TestFermiWord::test_pickling",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_simplify",
+          "tests/fermi/test_fermionic.py::TestFermiSentence::test_pickling"
+        ],
+        "summary": "4 passed in 0.15s",
+        "duration_seconds": 7.74
+      }
+    }
+  }
+}

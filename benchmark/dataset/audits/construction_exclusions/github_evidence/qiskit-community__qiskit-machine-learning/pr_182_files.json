@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "d4ea82a85d8af9caa783c297ebc81e3d7dd89221",
+    "filename": "qiskit_machine_learning/circuit/library/raw_feature_vector.py",
+    "status": "modified",
+    "additions": 15,
+    "deletions": 15,
+    "changes": 30,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/6925f40199b489cafb8959af03b471f74cdeb1a3/qiskit_machine_learning%2Fcircuit%2Flibrary%2Fraw_feature_vector.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/6925f40199b489cafb8959af03b471f74cdeb1a3/qiskit_machine_learning%2Fcircuit%2Flibrary%2Fraw_feature_vector.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/qiskit_machine_learning%2Fcircuit%2Flibrary%2Fraw_feature_vector.py?ref=6925f40199b489cafb8959af03b471f74cdeb1a3",
+    "patch": "@@ -12,7 +12,7 @@\n \n \"\"\"The raw feature vector circuit.\"\"\"\n \n-from typing import Optional\n+from typing import Optional, List\n import numpy as np\n from qiskit.exceptions import QiskitError\n from qiskit.circuit import QuantumRegister, QuantumCircuit, ParameterVector, Instruction\n@@ -27,7 +27,11 @@ class RawFeatureVector(BlueprintCircuit):\n     placeholder instruction that can only be synthesized/defined when all parameters are bound.\n \n     In ML, this circuit can be used to load the training data into qubit amplitudes. It does not\n-    apply an kernel transformation. (Therefore, it is a \"raw\" feature vector.)\n+    apply an kernel transformation (therefore, it is a \"raw\" feature vector).\n+\n+    Since initialization is implemented via a ``QuantumCircuit.initialize()`` call, this circuit\n+    can't be used with gradient based optimizers, one can see a warning that gradients can't be\n+    computed.\n \n     Examples:\n \n@@ -65,15 +69,14 @@ class RawFeatureVector(BlueprintCircuit):\n     def __init__(self, feature_dimension: Optional[int]) -> None:\n         \"\"\"\n         Args:\n-            feature_dimension: The feature dimension and number of qubits.\n+            feature_dimension: The feature dimension from which the number of\n+                                qubits is inferred as ``n_qubits = log2(feature_dim)``\n \n         \"\"\"\n         super().__init__()\n \n-        self._num_qubits = None\n         self._ordered_parameters = ParameterVector(\"x\")\n-\n-        if feature_dimension:\n+        if feature_dimension is not None:\n             self.feature_dimension = feature_dimension\n \n     def _build(self):\n@@ -103,7 +106,7 @@ def num_qubits(self) -> int:\n         Returns:\n             The number of qubits.\n         \"\"\"\n-        return self._num_qubits if self._num_qubits is not None else 0\n+        return super().num_qubits\n \n     @num_qubits.setter\n     def num_qubits(self, num_qubits: int) -> None:\n@@ -112,11 +115,12 @@ def num_qubits(self, num_qubits: int) -> None:\n         Args:\n             The new number of qubits.\n         \"\"\"\n-        if self._num_qubits != num_qubits:\n+        if self.num_qubits != num_qubits:\n             # invalidate the circuit\n             self._invalidate()\n-            self._num_qubits = num_qubits\n-            self.add_register(QuantumRegister(self.num_qubits, \"q\"))\n+            self.qregs: List[QuantumRegister] = []\n+            if num_qubits is not None and num_qubits > 0:\n+                self.qregs = [QuantumRegister(num_qubits, name=\"q\")]\n \n     @property\n     def feature_dimension(self) -> int:\n@@ -141,14 +145,10 @@ def feature_dimension(self, feature_dimension: int) -> None:\n         if int(num_qubits) != num_qubits:\n             raise ValueError(\"feature_dimension must be a power of 2!\")\n \n-        if self._num_qubits is None or num_qubits != self._num_qubits:\n+        if num_qubits != self.num_qubits:\n             self._invalidate()\n             self.num_qubits = int(num_qubits)\n \n-    def _invalidate(self):\n-        super()._invalidate()\n-        self._num_qubits = None\n-\n \n class ParameterizedInitialize(Instruction):\n     \"\"\"A normalized parameterized initialize instruction.\"\"\""
+  },
+  {
+    "sha": "7ee68115ec1d4b71c8b6a904772035b1cf97451a",
+    "filename": "releasenotes/notes/fix-raw-feature-vector-copy-20534d595a0056de.yaml",
+    "status": "added",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/6925f40199b489cafb8959af03b471f74cdeb1a3/releasenotes%2Fnotes%2Ffix-raw-feature-vector-copy-20534d595a0056de.yaml",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/6925f40199b489cafb8959af03b471f74cdeb1a3/releasenotes%2Fnotes%2Ffix-raw-feature-vector-copy-20534d595a0056de.yaml",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/releasenotes%2Fnotes%2Ffix-raw-feature-vector-copy-20534d595a0056de.yaml?ref=6925f40199b489cafb8959af03b471f74cdeb1a3",
+    "patch": "@@ -0,0 +1,6 @@\n+---\n+fixes:\n+  - |\n+    Fix a bug, where :meth:`qiskit_machine_learning.circuit.library.RawFeatureVector.copy` didn't\n+    copy all internal settings which could lead to issues with the copied circuit. As a consequence\n+    :meth:`qiskit_machine_learning.circuit.library.RawFeatureVector.bind_parameters` is also fixed."
+  },
+  {
+    "sha": "9a2e611148610229eb7a7af06375a2ad94ffa3c6",
+    "filename": "test/circuit/library/test_raw_feature_vector.py",
+    "status": "modified",
+    "additions": 18,
+    "deletions": 0,
+    "changes": 18,
+    "blob_url": "https://github.com/qiskit-community/qiskit-machine-learning/blob/6925f40199b489cafb8959af03b471f74cdeb1a3/test%2Fcircuit%2Flibrary%2Ftest_raw_feature_vector.py",
+    "raw_url": "https://github.com/qiskit-community/qiskit-machine-learning/raw/6925f40199b489cafb8959af03b471f74cdeb1a3/test%2Fcircuit%2Flibrary%2Ftest_raw_feature_vector.py",
+    "contents_url": "https://api.github.com/repos/qiskit-community/qiskit-machine-learning/contents/test%2Fcircuit%2Flibrary%2Ftest_raw_feature_vector.py?ref=6925f40199b489cafb8959af03b471f74cdeb1a3",
+    "patch": "@@ -62,6 +62,10 @@ def test_fully_bound(self):\n \n         self.assertEqual(bound.decompose(), ref)\n \n+        # make sure that the bound circuit is a successful copy of the original circuit\n+        self.assertEqual(circuit.num_qubits, bound.num_qubits)\n+        self.assertEqual(circuit.feature_dimension, bound.feature_dimension)\n+\n     def test_partially_bound(self):\n         \"\"\"Test partially binding the circuit works.\"\"\"\n \n@@ -82,6 +86,10 @@ def test_partially_bound(self):\n             ref.initialize([0.2, 0.4, 0.4, 0.8], ref.qubits)\n             self.assertEqual(bound.decompose(), ref)\n \n+            # make sure that the bound circuit is a successful copy of the original circuit\n+            self.assertEqual(circuit.num_qubits, bound.num_qubits)\n+            self.assertEqual(circuit.feature_dimension, bound.feature_dimension)\n+\n     def test_usage_in_vqc(self):\n         \"\"\"Test using the circuit the a single VQC iteration works.\"\"\"\n \n@@ -133,6 +141,16 @@ def test_bind_after_composition(self):\n \n         self.assertTrue(Statevector.from_label(\"00\").equiv(bound))\n \n+    def test_copy(self):\n+        \"\"\"Test copy operation for ``RawFeatureVector``.\"\"\"\n+\n+        circuit = RawFeatureVector(8)\n+        circuit_copy = circuit.copy()\n+\n+        # make sure that the copied circuit has the same number of qubits as the original one\n+        self.assertEqual(circuit.num_qubits, circuit_copy.num_qubits)\n+        self.assertEqual(circuit.feature_dimension, circuit_copy.feature_dimension)\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+  }
+]

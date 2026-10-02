@@ -1,0 +1,11 @@
+# Built evaluator dependency environment; validation evidence is recorded in sample.json.
+# syntax=docker/dockerfile:1
+FROM qfea-python310:trixie-db7a1753878f
+ENV DEBIAN_FRONTEND=noninteractive OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+RUN sed -i "s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g" /etc/apt/sources.list.d/debian.sources && apt-get -o Acquire::Retries=3 update && apt-get install -y --no-install-recommends git gcc g++ gfortran make libgomp1 && rm -rf /var/lib/apt/lists/*
+WORKDIR /workspace/repo
+ADD --chown=0:0 source.tar.gz /workspace/repo
+RUN chown -R root:root /workspace/repo && git checkout --detach 6a41d14c9668fcf736b791ce216e26abc11e8b07 && git cat-file -e a744a781ef9720cc817b8eecfae778495d5064e1^{commit}
+COPY constraints.txt /opt/constraints.txt
+RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip python -m pip install 'pip<25' 'setuptools<81' wheel && python -m pip install -c /opt/constraints.txt -e . pytest && python -m pip freeze > /opt/build-freeze.txt

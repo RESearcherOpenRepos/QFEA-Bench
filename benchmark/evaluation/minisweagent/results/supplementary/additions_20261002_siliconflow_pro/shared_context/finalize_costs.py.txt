@@ -1,0 +1,32 @@
+"""Finalize observed workflow costs using verified provider-specific prices."""
+import copy,datetime,json,shutil
+from pathlib import Path
+B=Path(__file__).resolve().parent
+ROOT=B.parents[2]
+def read(p):return json.loads(Path(p).read_text())
+def save(p,d):Path(p).write_text(json.dumps(d,indent=2)+'\n')
+snapshot=B/'official_pricing_snapshot.txt';text=snapshot.read_text()
+if 'æ¨¡' in text:text=text.encode('latin1').decode('utf-8');snapshot.write_text(text)
+assert '4.5元' in text and '0.15元' in text and '13.5元' in text and '9:00 - 12:00' in text
+pricing={'source':'https://api-docs.deepseek.com/zh-cn/quick_start/pricing','model':'deepseek-v4-pro','currency':'CNY','per_million_tokens':{'uncached_input':4.5,'cached_input':0.15,'output':13.5},'band':'off-peak','time_zone':'Asia/Shanghai','peak_rule':'Weekdays except statutory holidays 09:00–12:00 and 14:00–18:00; all other times off-peak','evidence':'All six official workflows started after 01:56 and completed before 02:41 Asia/Shanghai on 2026-10-02.'}
+save(B/'official_pricing_verified.json',pricing)
+jobs=read(B/'jobs.json');oh=jobs[1];out=Path(oh['out']);cost=read(out/'cost_accounting.json')
+if not (out/'cost_accounting.before_verified_pricing.json').exists():shutil.copy2(out/'cost_accounting.json',out/'cost_accounting.before_verified_pricing.json')
+for row in cost['workflows']:
+ if row['provider']=='deepseek-official':
+  launch=read(out/(row['instance_id']+'.launch.json'));h=datetime.datetime.fromisoformat(launch['started_at']).hour;assert h<9
+  pt=row['input_tokens'];ct=row['output_tokens'];cached=row['cached_input_tokens'];row['estimated_cost_cny']=round(((pt-cached)*4.5+cached*0.15+ct*13.5)/1e6,9);row['pricing_band']='off-peak'
+cost['official_pricing']=pricing;cost['official_cost_estimate_cny']=round(sum(r['estimated_cost_cny'] for r in cost['workflows'] if r['provider']=='deepseek-official'),9);cost['official_cost_estimate']={'currency':'CNY','amount':cost['official_cost_estimate_cny']};cost['unpriced_official_instance_ids']=[];cost['estimated_workflow_cost_cny']=round(sum(r['estimated_cost_cny'] for r in cost['workflows']),9)
+cost['note']='Completed-workflow usage valued at verified provider-specific prices; official calls occurred off-peak. Archived quota-interrupted OpenHands attempts lack token metrics, so their additional cost is unknown, not zero. Actual account bill unavailable.'
+save(out/'cost_accounting.json',cost)
+for p in [out/'results_additions.json',ROOT/oh['target']]:
+ d=read(p);d['run_provenance']['cost_accounting']=copy.deepcopy(cost);d['run_provenance']['provider_cost_estimate_cny']=cost['estimated_workflow_cost_cny'];save(p,d)
+v=read(out/'final_verification.json');v['cost_accounting']=copy.deepcopy(cost);v['provider_cost_estimate_cny']=cost['estimated_workflow_cost_cny'];save(out/'final_verification.json',v)
+mini=read(Path(jobs[0]['out'])/'cost_accounting.json')['estimated_workflow_cost_cny']
+preflights=[]
+for name,rates in [('api_preflight.json',(12,1,24)),('fallback_preflight.json',(12,1,24)),('official_preflight.json',(4.5,0.15,13.5))]:
+ u=read(B/name)['response']['usage'];p=u['prompt_tokens'];c=u['completion_tokens'];hit=(u.get('prompt_tokens_details') or {}).get('cached_tokens',0);value=((p-hit)*rates[0]+hit*rates[1]+c*rates[2])/1e6;preflights.append({'file':name,'estimated_cost_cny':value})
+total={'scope':'Eight completed recovery workflows across Mini-SWE-Agent and OpenHands plus three preflights; excludes previously retained additions and incomplete OpenHands attempts','completed_workflows':8,'mini_siliconflow_cost_cny':mini,'openhands_siliconflow_cost_cny':cost['siliconflow_completed_workflow_cost_cny'],'openhands_official_cost_cny':cost['official_cost_estimate_cny'],'completed_workflow_cost_cny':round(mini+cost['estimated_workflow_cost_cny'],9),'preflights':preflights,'observed_workflows_plus_preflights_cost_cny':round(mini+cost['estimated_workflow_cost_cny']+sum(p['estimated_cost_cny'] for p in preflights),9),'additional_interrupted_attempt_cost':None,'actual_billed_cost':None,'official_pricing':pricing,'note':'This is a token-based estimate for accounted usage, not a full account bill. Mini includes its preserved original 74 steps and continuation. Four quota-interrupted OpenHands attempts lack usable token metrics; their additional cost is unknown.'}
+save(B/'final_cost_summary.json',total)
+with (out/'REPORT.md').open('a') as f:f.write('\nVerified provider-specific cost accounting: '+str(cost['estimated_workflow_cost_cny'])+' CNY for completed OpenHands recovery workflows. Additional archived incomplete-attempt cost is unknown. See cost_accounting.json.\n')
+print(json.dumps(total,indent=2))

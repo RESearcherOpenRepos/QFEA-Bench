@@ -1,0 +1,131 @@
+Removing openqaoa.egg-info/
+Patch applied: true
+Running fail-pass tests...
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________ TestingQAOACircuitParams.test_QAOACircuitParams ________________
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams>
+
+    def test_QAOACircuitParams(self):
+    
+        """
+        QAOACircuitParams accept 2 types of inputs for mixer_block argument on initilisation. This test checks that the same mixer block when presented in Hamiltonian or as a List of RotationGateMap, plus the appropriate mixer coefficients, produces similar internal attributes.
+        """
+    
+        circuit_params = QAOACircuitParams(self.cost_hamil, self.mixer_hamil, p=self.p)
+    
+        circuit_params_gm = QAOACircuitParams(self.cost_hamil, self.mixer_gatemap, p=self.p,
+                                              mixer_coeffs = self.mixer_gatemap_coeffs)
+    
+        # Check same number of mixer gates
+>       self.assertEqual(len(circuit_params.mixer_block), self.p)
+E       AssertionError: 3 != 2
+
+tests/test_parameters.py:67: AssertionError
+_ TestingQAOACircuitParams.test_QAOACircuitParams_mixer_coeffs_selector_gatemap _
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams_mixer_coeffs_selector_gatemap>
+
+    def test_QAOACircuitParams_mixer_coeffs_selector_gatemap(self):
+    
+        """
+        If a mixer gatemap is used for mixer_block, the user is required to input his own mixer coefficients, there should be an error message if the user does not input the appropriate number of mixer coefficients.
+        """
+    
+        verify_mixer_coeffs = [-1, -1, -1]
+    
+        circuit_params = QAOACircuitParams(self.cost_hamil, self.mixer_gatemap, p = self.p,
+                                           mixer_coeffs = self.mixer_gatemap_coeffs)
+    
+>       self.assertEqual(circuit_params.mixer_block_coeffs, verify_mixer_coeffs)
+E       AttributeError: 'QAOACircuitParams' object has no attribute 'mixer_block_coeffs'. Did you mean: 'mixer_block_gatemaps'?
+
+tests/test_parameters.py:110: AttributeError
+_____ TestingQAOACircuitParams.test_QAOACircuitParams_assign_coefficients ______
+
+self = <test_parameters.TestingQAOACircuitParams testMethod=test_QAOACircuitParams_assign_coefficients>
+
+    def test_QAOACircuitParams_assign_coefficients(self):
+    
+        """
+        The method should split the coefficients and gatemaps in the proper order. Regardless of their positions within the hamiltonian or gatemap list.
+        """
+    
+        verify_mixer_coeffs = [-1, -1, -1, -0.5]
+    
+    
+        # TestCase 1: GateMap Mixer
+        mixer_gatemap = [RXGateMap(0), RXGateMap(1), RXGateMap(2), RXXGateMap(0, 2)]
+    
+        circuit_params = QAOACircuitParams(self.cost_hamil, mixer_gatemap, p = self.p,
+                                           mixer_coeffs = [-1, -1, -1, -0.5])
+    
+>       self.assertEqual(circuit_params.cost_single_qubit_coeffs, [0.5])
+E       AttributeError: 'QAOACircuitParams' object has no attribute 'cost_single_qubit_coeffs'
+
+tests/test_parameters.py:131: AttributeError
+=============================== warnings summary ===============================
+openqaoa/qaoa_parameters/extendedparams.py:23
+  /workspace/repo/openqaoa/qaoa_parameters/extendedparams.py:23: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+openqaoa/qaoa_parameters/annealingparams.py:26
+  /workspace/repo/openqaoa/qaoa_parameters/annealingparams.py:26: DeprecationWarning: invalid escape sequence '\D'
+    """
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_mixer_coeffs_selector_gatemap
+FAILED tests/test_parameters.py::TestingQAOACircuitParams::test_QAOACircuitParams_assign_coefficients
+3 failed, 2 warnings in 2.98s
+
+
+Running pass-pass tests...
+......                                                                   [100%]
+6 passed in 2.53s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  b1463b9 Merge pull request #85 from entropicalabs/dev_alternate_ansatz
+  c53c170 Added Notebook 11 to documentation
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> b1463b9
+
+HEAD is now at a463e69 Merge pull request #133 from entropicalabs/dev_hotfix
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  b1463b9 Merge pull request #85 from entropicalabs/dev_alternate_ansatz
+  c53c170 Added Notebook 11 to documentation
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> b1463b9
+
+HEAD is now at a463e69 Merge pull request #133 from entropicalabs/dev_hotfix
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  b1463b9 Merge pull request #85 from entropicalabs/dev_alternate_ansatz
+  c53c170 Added Notebook 11 to documentation
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> b1463b9
+
+HEAD is now at a463e69 Merge pull request #133 from entropicalabs/dev_hotfix

@@ -1,0 +1,34 @@
+import json,pathlib,re
+p=pathlib.Path(__file__).resolve().parent
+root=p.parents[2]
+state=json.loads((p/'status.json').read_text()) if (p/'status.json').exists() else {'jobs':{}}
+for job in json.loads((p/'jobs.json').read_text()):
+ out=root/job['out'];g=out/'generation';done=set()
+ try:done=set(json.loads((g/'preds.json').read_text())['predictions'])
+ except (OSError,json.JSONDecodeError):pass
+ fresh=out/('approved_generation' if (out/'approved_generation').exists() else 'first_attempt_generation')
+ if fresh.exists():
+  try:done |= set(json.loads((fresh/'preds.json').read_text())['predictions'])
+  except (OSError,json.JSONDecodeError):pass
+ active=[x.name for x in g.iterdir() if x.is_dir() and x.name in json.loads((out/'sample_ids.json').read_text()) and x.name not in done] if g.exists() else []
+ invalid=[]
+ if job['agent']=='minisweagent' and not (out/'platform_repair_done.json').exists():
+  for sid in ['qiskit_addon_sqd_148_230','qiskit_addon_sqd_265_343']:
+   try:d=json.loads((g/sid/(sid+'.traj.json')).read_text())
+   except (OSError,json.JSONDecodeError):continue
+   if d.get('info',{}).get('exit_status')=='CalledProcessError' and not d.get('messages'):invalid.append(sid)
+ row={'job':job['id'],'valid_finished':len(done)-len(invalid),'zero_call_startups':len(invalid),'active':active,**state['jobs'].get(job['id'],{'phase':'queued'})}
+ if row['phase']=='repairing_zero_call_startup':
+  try:row['valid_finished']+=len(json.loads((out/'arm_generation/preds.json').read_text())['predictions'])
+  except (OSError,json.JSONDecodeError):pass
+ log=out/('approved_agents.log' if (out/'approved_generation').exists() else 'first_attempt_agents.log' if fresh.exists() else 'arm_agents.log' if row['phase']=='repairing_zero_call_startup' else 'agents.log')
+ if log.exists():
+  with log.open('rb') as h:
+   h.seek(max(0,log.stat().st_size-262144));tail=h.read().decode('utf-8','replace')
+  pattern=r'\[([a-z0-9_]+)\] step (\d+)' if job['agent']=='minisweagent' else r'OPENHANDS_PROGRESS instance=(\S+) step=(\d+)/100'
+  matches=re.findall(pattern,tail)
+  if matches:row['latest_step']={'instance':matches[-1][0],'step':int(matches[-1][1])}
+ for result_file in [out/'results_additions.json',out/'results_additions.json.partial',out/'results_completed_subset.json',out/'results_completed_subset.json.partial']:
+  if result_file.exists():
+   d=json.loads(result_file.read_text());valid=[r for r in d['results'] if not r.get('eval_infra_failed') and not r.get('timed_out')];row.update(evaluated=len(valid),resolved=sum(r['resolved'] for r in valid));break
+ print(json.dumps(row))

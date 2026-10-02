@@ -1,0 +1,22 @@
+ARG BASE_IMAGE=benchmark-base:__SAMPLE_ID__
+FROM ${BASE_IMAGE}
+
+# Fill these sample-specific values after copying the template.
+ENV SAMPLE_ID=__SAMPLE_ID__
+ENV REPOSITORY=__OWNER__/__REPO__
+ENV REPOSITORY_URL=https://github.com/__OWNER__/__REPO__.git
+ENV ISSUE_URL=__ISSUE_URL__
+ENV PR_URL=__PR_URL__
+ENV BASE_COMMIT=__BASE_COMMIT__
+ENV PATCHED_COMMIT=__PATCHED_COMMIT__
+ENV PR_HEAD_COMMIT=__PR_HEAD_COMMIT__
+ENV FAIL_PASS_TEST_PATHS="__FAIL_PASS_TEST_FILES__"
+ENV PASS_PASS_TEST_PATHS="__PASS_PASS_TEST_FILES__"
+ENV DEFAULT_TARGET=patched
+
+COPY sample.json /benchmark/sample.json
+COPY run.sh /benchmark/run.sh
+RUN chmod +x /benchmark/run.sh
+
+ENTRYPOINT ["/benchmark/run.sh"]
+CMD ["patched"]

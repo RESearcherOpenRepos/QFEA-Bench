@@ -1,0 +1,17 @@
+"""Validate completed patches during the provider outage; never call a model."""
+import json
+from pathlib import Path
+import run_batch as batch
+for job in json.loads((batch.OUT/'billing_jobs.json').read_text()):
+ if not job['pending_ids']:continue
+ result=batch.ev.evaluate_predictions(Path(job['preds_source']),batch.SAMPLES,Path(job['result_source']),timeout=600,workers=1,stable_runs=3,setup_retries=1,resume=True)
+ assert len(result['results'])==job['completed_workflows']
+ for row in result['results']:
+  assert not row.get('eval_infra_failed') and not row.get('timed_out'),(job['id'],row['instance_id'])
+  if row['patch_applied']:
+   assert len(row['eval_runs'])==3 and row['resolved']==all(r['resolved'] for r in row['eval_runs'])
+   assert all(not r.get('eval_infra_failed') and not r.get('timed_out') for r in row['eval_runs'])
+ result['run_provenance']={'status':'incomplete_provider_account_outage','completed_valid_workflows':job['completed_workflows'],'expected_workflows':13,'excluded_pending_ids':job['pending_ids'],'note':'This is a completed subset, not a final 13-instance resolved rate. Account-rejected workflows are excluded. Original 106 main rows remain unchanged.'}
+ batch.save(batch.ROOT/job['result_source'],result)
+ batch.save(batch.ROOT/job['out']/'billing_subset_verification.json',{'valid_results':len(result['results']),'resolved':result['summary']['resolved'],'actual_validation_runs':sum(len(r.get('eval_runs',[])) for r in result['results']),'pending':job['pending_ids']})
+ print('VALIDATED_SUBSET',job['id'],result['summary']['resolved'],len(result['results']),flush=True)

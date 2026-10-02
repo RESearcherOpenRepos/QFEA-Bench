@@ -1,0 +1,50 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________________ TestQRCClassifier.test_serialization[kernel] _________________
+
+self = <tests.qrc.test_qrc_classifier.TestQRCClassifier object at 0x7fffe20f6da0>
+data = (array([[0.8652526 , 0.1       , 0.1844257 , 0.5238305 ],
+       [0.9       , 0.67116392, 0.9       , 0.9       ],
+   ...1563065, 0.26479375, 0.23264115],
+       [0.27787065, 0.9       , 0.78091628, 0.53013873]]), array([0, 1, 0, 1, 0, 1]))
+ml_model = 'kernel'
+
+    @pytest.mark.parametrize(
+        "ml_model",
+        [
+            "linear",
+            "mlp",
+            "kernel",
+        ],
+    )
+    def test_serialization(self, data, ml_model):
+        """Tests concerning the serialization of the QRCClassifier."""
+        X, y = data
+        qrc_classifier = self.qrc_classifier(ml_model)
+        qrc_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qrc_classifier.dump(buffer)
+E       AttributeError: 'QRCClassifier' object has no attribute 'dump'
+
+tests/qrc/test_qrc_classifier.py:73: AttributeError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+=========================== short test summary info ============================
+FAILED tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[kernel]
+1 failed, 3 warnings in 3.99s

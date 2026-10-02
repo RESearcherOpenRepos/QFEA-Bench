@@ -1,0 +1,88 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.repo-base
+#1 transferring dockerfile: 1.56kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/qfea-python310:trixie-db7a1753878f
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [stage-0 1/8] FROM docker.io/library/qfea-python310:trixie-db7a1753878f
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 7.14MB 0.2s done
+#5 DONE 0.2s
+
+#6 [stage-0 3/8] WORKDIR /workspace/repo
+#6 CACHED
+
+#7 [stage-0 4/8] ADD --chown=0:0 source.tar.gz /workspace/repo
+#7 CACHED
+
+#8 [stage-0 5/8] RUN chown -R root:root /workspace/repo && git checkout --detach 137d3f0a10391adce5bb23cf7536f2d221defb79 && git cat-file -e cf30131c4d7927e86daf6104399ee612cd6f78ec^{commit}
+#8 CACHED
+
+#9 [stage-0 6/8] COPY constraints.txt /opt/constraints.txt
+#9 CACHED
+
+#10 [stage-0 2/8] RUN sed -i "s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g; s|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g" /etc/apt/sources.list.d/debian.sources && apt-get -o Acquire::Retries=3 update && apt-get install -y --no-install-recommends git gcc g++ gfortran make libgomp1 && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [stage-0 7/8] RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip python -m pip install 'pip<25' 'setuptools<81' wheel && python -m pip install -c /opt/constraints.txt pytest amazon-braket-sdk pandas sympy numpy networkx matplotlib scipy qiskit pyquil docplex autograd semantic_version autoray && python -m pip install --no-deps -e . && python -m pip freeze > /opt/build-freeze.txt
+#11 CACHED
+
+#12 [stage-0 8/8] RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip python -m pip install 'ipython<9' && python -m pip freeze > /opt/build-freeze.txt
+#12 0.942 Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+#12 1.390 Collecting ipython<9
+#12 1.466   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c0/56/4cc7fc9e9e3f38fd324f24f8afe0ad8bb5fa41283f37f1aaf9de0612c968/ipython-8.39.0-py3-none-any.whl (831 kB)
+#12 1.595 Collecting matplotlib-inline
+#12 1.667   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/41/09/5b161152e2d90f7b87f781c2e1267494aef9c32498df793f73ad0a0a494a/matplotlib_inline-0.2.2-py3-none-any.whl (9.5 kB)
+#12 1.668 Requirement already satisfied: pygments>=2.4.0 in /usr/local/lib/python3.10/site-packages (from ipython<9) (2.21.0)
+#12 1.749 Collecting stack_data
+#12 1.823   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl (24 kB)
+#12 1.916 Collecting traitlets>=5.13.0
+#12 1.978   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ad/66/0d785f0bc5e4315a96c989bb476d0fc07ea4f85132550c7b156ca2035d52/traitlets-5.16.1-py3-none-any.whl (86 kB)
+#12 2.108 Collecting prompt_toolkit<3.1.0,>=3.0.41
+#12 2.186   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/54/6f/84908cad2d6aa5144abcf7b42709fe4fdb459bc640ec7ac5786e7693dabc/prompt_toolkit-3.0.53-py3-none-any.whl (392 kB)
+#12 2.270 Collecting pexpect>4.3
+#12 2.338   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+#12 2.429 Collecting jedi>=0.16
+#12 2.546   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/9a/93/242e2eab5fe682ffcb8b0084bde703a41d51e17ee0f3a31ff0d9d813620a/jedi-0.20.0-py2.py3-none-any.whl (4.9 MB)
+#12 2.695 Collecting decorator
+#12 2.756   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/05/7f/798705f5296a58ca505d600456748d1be48078eac8a7050d8a98bc9edb89/decorator-5.3.1-py3-none-any.whl (10 kB)
+#12 2.759 Requirement already satisfied: typing_extensions>=4.6 in /usr/local/lib/python3.10/site-packages (from ipython<9) (4.16.0)
+#12 2.760 Requirement already satisfied: exceptiongroup in /usr/local/lib/python3.10/site-packages (from ipython<9) (1.3.1)
+#12 2.869 Collecting parso<0.9.0,>=0.8.6
+#12 2.932   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/99/5d/8268b644392ee874ee82a635cd0df1773de230bde356c38de28e298392cc/parso-0.8.7-py2.py3-none-any.whl (107 kB)
+#12 3.005 Collecting ptyprocess>=0.5
+#12 3.068   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+#12 3.158 Collecting wcwidth>=0.1.4
+#12 3.227   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/e2/a0/834886b30e3b885a5a96e8358f1b3917bc0bac43ae4178d77f0c210d079b/wcwidth-0.9.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (768 kB)
+#12 3.339 Collecting executing>=1.2.0
+#12 3.398   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl (28 kB)
+#12 3.478 Collecting asttokens>=2.1.0
+#12 3.540   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/d4/2b/04b8a15f3a1c77bc79ddf5c73875327f34b4fa75982df2b76e45e402d364/asttokens-3.0.2-py3-none-any.whl (28 kB)
+#12 3.612 Collecting pure-eval
+#12 3.673   Using cached https://pypi.tuna.tsinghua.edu.cn/packages/6d/18/83376915176eb058cb86470eb7396388a13350b09a8f233a79303bbcbc5b/pure_eval-0.2.4-py3-none-any.whl (11 kB)
+#12 4.636 Installing collected packages: pure-eval, ptyprocess, wcwidth, traitlets, pexpect, parso, executing, decorator, asttokens, stack_data, prompt_toolkit, matplotlib-inline, jedi, ipython
+#12 7.635 Successfully installed asttokens-3.0.2 decorator-5.3.1 executing-2.2.1 ipython-8.39.0 jedi-0.20.0 matplotlib-inline-0.2.2 parso-0.8.7 pexpect-4.9.0 prompt_toolkit-3.0.53 ptyprocess-0.7.0 pure-eval-0.2.4 stack_data-0.6.3 traitlets-5.16.1 wcwidth-0.9.1
+#12 7.636 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#12 7.645 
+#12 7.645 [notice] A new release of pip is available: 23.0.1 -> 26.2.1
+#12 7.645 [notice] To update, run: pip install --upgrade pip
+#12 DONE 8.8s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 0.6s done
+#13 writing image sha256:1138045439c894b907919a4ccce0ee8b8dec2a0c4680b05663ad9de291ffceca done
+#13 naming to docker.io/library/benchmark-base:openqaoa_232_241 done
+#13 DONE 0.6s

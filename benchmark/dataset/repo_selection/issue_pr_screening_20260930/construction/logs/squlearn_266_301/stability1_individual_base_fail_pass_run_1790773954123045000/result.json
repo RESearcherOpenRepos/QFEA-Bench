@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 6.256937461000007,
+  "items": [
+    "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency"
+  ],
+  "reports": [
+    {
+      "nodeid": "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.00038616700021520955,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.002759124999784035,
+      "wasxfail": null,
+      "longrepr": "self = <tests.encoding_circuit.test_layered_encoding_circuit.TestLayeredEncodingCircuit object at 0x7fffe2633a90>\n\n    def test_feature_consistency(self):\n        circuit = LayeredEncodingCircuit(num_qubits=4, num_features=3)\n        circuit.H()\n        layer = Layer(circuit)\n        layer.Rz(\"x\")\n        layer.Ry(\"p\")\n        layer.cx_entangling(\"NN\")\n        circuit.add_layer(layer)\n    \n        features = np.array([0.5, -0.5])\n    \n        with pytest.raises(ValueError):\n>           circuit.get_circuit(features, [])\n\ntests/encoding_circuit/test_layered_encoding_circuit.py:299: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/squlearn/encoding_circuit/layered_encoding_circuit.py:2223: in get_circuit\n    return self._layered_pqc.get_circuit(features, parameters)\nsrc/squlearn/encoding_circuit/layered_encoding_circuit.py:974: in get_circuit\n    QC = QC.compose(op.get_circuit(var_param_assignment))\nsrc/squlearn/encoding_circuit/layered_encoding_circuit.py:303: in get_circuit\n    QC = self.apply_param_vectors(QC, RZGate, var_param_assignment)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <squlearn.encoding_circuit.layered_encoding_circuit._Rz_operation object at 0x7fffe26337f0>\nQC = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fffe2632fb0>\nr_star = <class 'qiskit.circuit.library.standard_gates.rz.RZGate'>\nvar_param_assignment = {6655206610931882365: array([ 0.5, -0.5]), 7425050236746355560: []}\n\n    def apply_param_vectors(self, QC, r_star, var_param_assignment):\n        \"\"\"\n        Applies the param vectors creating a quantum circuit with the given gate.\n        Contains an algorithm for Rx, Ry and Rz gates, which distinguish between the following cases:\n        First: The user sets no map so a default map is given and the number of variable groups used exceeds 2, than raise an error because the default map needs exactly two arguments.\n        Second: The user sets no map so a default map is given and the number of variable groups used is 1, than apply the r* (stands for rx, ry or rz) gate with the given variable but without the map.\n        Third: The user sets a map with some variable groups or there are exactly 2 variable groups given.\n        Args:\n            QC: the quantum circuit by qiskit\n            r_star: Stands for r* (rx, ry or rz); a RXGate, RYGate or RZGate (also PhaseGate)\n            var_param_assignment: a dictionary, that assigns hash values of variable groups with their parameter vectors (by qiskit)\n        Returns:\n            QuantumCircuit\n        Raises:\n            ValueError, if the first case occurs.\n    \n        \"\"\"\n        if self.default_map and (len(self.variablegroup_tuple) > 2):\n            raise ValueError(\n                \"There are too many variable groups given without a map. There can only be one or two parameters without any given map.\"\n            )\n        elif self.default_map and (len(self.variablegroup_tuple) == 1):\n            if self.variablegroup_tuple[0].size == None:\n                for qubit in range(self.num_qubits):\n                    QC.append(\n                        r_star(\n                            var_param_assignment[hash(self.variablegroup_tuple[0])][\n                                self.variablegroup_tuple[0].index\n                            ]\n                        ),\n                        [qubit],\n                        [],\n                    )\n                    self.variablegroup_tuple[0].increase_index(1)\n            else:\n                for qubit in range(self.num_qubits):\n                    QC.append(\n                        r_star(\n>                           var_param_assignment[hash(self.variablegroup_tuple[0])][\n                                (self.variablegroup_tuple[0].index)\n                                % self.variablegroup_tuple[0].size\n                            ]\n                        ),\n                        [qubit],\n                        [],\n                    )\nE                   IndexError: index 2 is out of bounds for axis 0 with size 2\n\nsrc/squlearn/encoding_circuit/layered_encoding_circuit.py:233: IndexError"
+    },
+    {
+      "nodeid": "tests/encoding_circuit/test_layered_encoding_circuit.py::TestLayeredEncodingCircuit::test_feature_consistency",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.0004705829999238631,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

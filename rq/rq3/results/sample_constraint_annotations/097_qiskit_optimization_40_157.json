@@ -1,0 +1,343 @@
+{
+  "id": 97,
+  "sample_id": "qiskit_optimization_40_157",
+  "repo": "qiskit-community/qiskit-optimization",
+  "patch_commit": "2364e6ba3e7d5845591e713b0a53308f7605773a",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 9,
+    "p2p_tests": 15,
+    "subtype_test_counts": {
+      "general_semantics/penalty_value_calculation": 2,
+      "general_semantics/inequality_penalty_conversion": 7,
+      "general_semantics/qubo_conversion": 1,
+      "general_semantics/inequality_conversion": 3,
+      "interface/warning_contract": 1,
+      "interface/conversion_mode": 3,
+      "general_semantics/equality_penalty_conversion": 2,
+      "interface/unsupported_constraint_sense": 1,
+      "general_semantics/penalty_value_recalculation": 2,
+      "general_semantics/objective_sense_conversion": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_inequality_to_penalty_auto_define_penalty",
+      "label": "general_semantics/penalty_value_calculation",
+      "assertions": [
+        {
+          "line": 463,
+          "expected": "Automatic penalty uses objective bounds or the documented fallback."
+        }
+      ],
+      "rationale": "Automatic penalty uses objective bounds or the documented fallback."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty1",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 105,
+          "expected": "At-most-one binary constraints become quadratic penalties while other constraints remain."
+        }
+      ],
+      "rationale": "At-most-one binary constraints become quadratic penalties while other constraints remain."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty2",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 170,
+          "expected": "At-least-one binary constraints produce the expected constant, linear and quadratic penalties."
+        }
+      ],
+      "rationale": "At-least-one binary constraints produce the expected constant, linear and quadratic penalties."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty3",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 246,
+          "expected": "At-least-n-minus-one constraint becomes the pairwise quadratic penalty."
+        }
+      ],
+      "rationale": "At-least-n-minus-one constraint becomes the pairwise quadratic penalty."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty4",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 293,
+          "expected": "At-most-one multi-variable constraint becomes pairwise penalties with objective sign."
+        }
+      ],
+      "rationale": "At-most-one multi-variable constraint becomes pairwise penalties with objective sign."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty6",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 346,
+          "expected": "Binary x less-than-or-equal y becomes the correct signed penalty."
+        }
+      ],
+      "rationale": "Binary x less-than-or-equal y becomes the correct signed penalty."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty7",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 399,
+          "expected": "Binary x greater-than-or-equal y becomes the correct signed penalty."
+        }
+      ],
+      "rationale": "Binary x greater-than-or-equal y becomes the correct signed penalty."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_linear_inequality_to_penalty8",
+      "label": "general_semantics/inequality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 558,
+          "expected": "Mixed integer and binary models retain variables and receive correct objective penalties."
+        }
+      ],
+      "rationale": "Mixed integer and binary models retain variables and receive correct objective penalties."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/converters/test_linear_inequality_to_penalty.py::TestLinearInequalityToPenalty::test_quadratic_program_to_qubo_inequality_to_penalty",
+      "label": "general_semantics/qubo_conversion",
+      "assertions": [
+        {
+          "line": 424,
+          "expected": "Default QUBO pipeline absorbs special inequality into the objective."
+        }
+      ],
+      "rationale": "Default QUBO pipeline absorbs special inequality into the objective."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_0var_range_inequality",
+      "label": "general_semantics/inequality_conversion",
+      "assertions": [
+        {
+          "line": 612,
+          "expected": "Zero-variable range inequality conversion preserves expected variable count."
+        }
+      ],
+      "rationale": "Zero-variable range inequality conversion preserves expected variable count."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_auto_penalty",
+      "label": "general_semantics/penalty_value_calculation",
+      "assertions": [
+        {
+          "line": 516,
+          "expected": "Automatic and explicit penalties yield the same optimum."
+        }
+      ],
+      "rationale": "Automatic and explicit penalties yield the same optimum."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_auto_penalty_warning",
+      "label": "interface/warning_contract",
+      "assertions": [
+        {
+          "line": 535,
+          "expected": "Fractional coefficient fallback emits the expected warning."
+        }
+      ],
+      "rationale": "Fractional coefficient fallback emits the expected warning."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+      "label": "general_semantics/inequality_conversion",
+      "assertions": [
+        {
+          "line": 166,
+          "expected": "Binary inequalities gain appropriate slack variables and solution interpretation."
+        }
+      ],
+      "rationale": "Binary inequalities gain appropriate slack variables and solution interpretation."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_integer",
+      "label": "general_semantics/inequality_conversion",
+      "assertions": [
+        {
+          "line": 243,
+          "expected": "Integer inequalities gain bounded slack variables and solution interpretation."
+        }
+      ],
+      "rationale": "Integer inequalities gain bounded slack variables and solution interpretation."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_mode_auto",
+      "label": "interface/conversion_mode",
+      "assertions": [
+        {
+          "line": 294,
+          "expected": "Auto mode picks integer or continuous slack types from constraints."
+        }
+      ],
+      "rationale": "Auto mode picks integer or continuous slack types from constraints."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_mode_continuous",
+      "label": "interface/conversion_mode",
+      "assertions": [
+        {
+          "line": 277,
+          "expected": "Continuous mode creates continuous slack variables."
+        }
+      ],
+      "rationale": "Continuous mode creates continuous slack variables."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_inequality_mode_integer",
+      "label": "interface/conversion_mode",
+      "assertions": [
+        {
+          "line": 260,
+          "expected": "Integer mode creates integer slack variables."
+        }
+      ],
+      "rationale": "Integer mode creates integer slack variables."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_binary",
+      "label": "general_semantics/equality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 331,
+          "expected": "Binary equalities become objective penalties and preserve original solution."
+        }
+      ],
+      "rationale": "Binary equalities become objective penalties and preserve original solution."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_integer",
+      "label": "general_semantics/equality_penalty_conversion",
+      "assertions": [
+        {
+          "line": 352,
+          "expected": "Integer equalities become objective penalties and preserve original solution."
+        }
+      ],
+      "rationale": "Integer equalities become objective penalties and preserve original solution."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalize_sense",
+      "label": "interface/unsupported_constraint_sense",
+      "assertions": [
+        {
+          "line": 310,
+          "expected": "Unsupported penalization sense raises QiskitOptimizationError."
+        }
+      ],
+      "rationale": "Unsupported penalization sense raises QiskitOptimizationError."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing",
+      "label": "general_semantics/penalty_value_recalculation",
+      "assertions": [
+        {
+          "line": 558,
+          "expected": "Reused converter recomputes its penalty for each model."
+        }
+      ],
+      "rationale": "Reused converter recomputes its penalty for each model."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/converters/test_converters.py::TestConverters::test_penalty_recalculation_when_reusing2",
+      "label": "general_semantics/penalty_value_recalculation",
+      "assertions": [
+        {
+          "line": 580,
+          "expected": "A second reused converter updates its penalty for another model."
+        }
+      ],
+      "rationale": "A second reused converter updates its penalty for another model."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_maximize_to_minimize",
+      "label": "general_semantics/objective_sense_conversion",
+      "assertions": [
+        {
+          "line": 48,
+          "expected": "Maximization converts to minimization with objective value negated."
+        }
+      ],
+      "rationale": "Maximization converts to minimization with objective value negated."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/converters/test_flip_problem_sense.py::TestFlipProblemSense::test_minimize_to_maximize",
+      "label": "general_semantics/objective_sense_conversion",
+      "assertions": [
+        {
+          "line": 75,
+          "expected": "Minimization converts to maximization with objective value negated."
+        }
+      ],
+      "rationale": "Minimization converts to maximization with objective value negated."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-optimization/blob/2364e6ba3e7d5845591e713b0a53308f7605773a/test/converters/test_converters.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/2364e6ba3e7d5845591e713b0a53308f7605773a/test/converters/test_flip_problem_sense.py",
+    "https://github.com/qiskit-community/qiskit-optimization/blob/2364e6ba3e7d5845591e713b0a53308f7605773a/test/converters/test_linear_inequality_to_penalty.py"
+  ],
+  "rationale": "Every selected test was inspected individually against its task and assertion."
+}

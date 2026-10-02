@@ -1,0 +1,164 @@
+{
+  "instance": {
+    "id": 51,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_174_862",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/174",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/862",
+    "base_commit": "8b213070389760724b88ee9b3497711de34397f4",
+    "patch": "53aa83650ae55bd287622a88aaa88dd70d08e3ea"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task represents electronic density and reduced-density matrices as second-quantized auxiliary operators with result-interpretation semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/electronic_integrals.py",
+      "qiskit_nature/second_q/operators/polynomial_tensor.py",
+      "qiskit_nature/second_q/problems/electronic_properties_container.py",
+      "qiskit_nature/second_q/problems/electronic_structure_result.py",
+      "qiskit_nature/second_q/properties/__init__.py",
+      "qiskit_nature/second_q/properties/electronic_density.py",
+      "qiskit_nature/second_q/transformers/active_space_transformer.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Electronic-structure results do not currently provide a built-in way to recover electronic charge-density information. Users who want one- and two-particle reduced density matrices have to reconstruct them manually instead of requesting them through the second-quantized properties stack. The repository should provide an ElectronicDensity property that can be attached to an electronic-structure problem, translated into auxiliary operators, and interpreted back onto the result object.",
+    "requirements": [
+      "The second-quantized properties package must expose an ElectronicDensity property for electronic-structure workflows.",
+      "ElectronicDensity must be constructible from alpha and beta orbital occupations and produce the corresponding one- and two-particle density integrals.",
+      "ElectronicDensity must expose second-quantized auxiliary operators for the stored reduced-density data.",
+      "ElectronicDensity must be able to interpret evaluated auxiliary-operator results and attach the reconstructed density information to an ElectronicStructureResult.",
+      "Existing electronic-properties container behavior for other properties and existing ElectronicIntegrals behavior unrelated to density reconstruction must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "ElectronicDensity",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "constructor: alpha=None, beta=None, beta_alpha=None",
+        "Output": "",
+        "Description": "Represents electronic one- and two-particle density information in the second-quantized properties stack."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.from_orbital_occupation",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "occupation_alpha, occupation_beta",
+        "Output": "ElectronicDensity",
+        "Description": "Constructs an ElectronicDensity instance from alpha and beta orbital occupations."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.second_q_ops",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "self",
+        "Output": "dict[str, FermionicOp]",
+        "Description": "Builds the auxiliary second-quantized operators needed to evaluate the stored reduced-density quantities."
+      },
+      {
+        "Type": "Method",
+        "Name": "ElectronicDensity.interpret",
+        "Path": "qiskit_nature/second_q/properties/electronic_density.py",
+        "Input": "self, result",
+        "Output": "",
+        "Description": "Reads evaluated auxiliary-operator values and stores the reconstructed electronic density on the ElectronicStructureResult."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_174_862",
+      "image_id": "sha256:3f74a2b131222d6b4bfc31d8653d8d33344968700a43ad572df8fe45001dc511",
+      "image_size": "1217417830"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret"
+        ],
+        "summary": "3 passed in 1.60s",
+        "duration_seconds": 6.44
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_angular_momentum",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_electronic_dipole_moment",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_magnetization",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_particle_number",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_custom_property",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose"
+        ],
+        "summary": "12 passed in 1.79s",
+        "duration_seconds": 7.21
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_from_orbital_occupation",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_second_q_ops",
+          "test/second_q/properties/test_electronic_density.py::TestElectronicDensity::test_interpret"
+        ],
+        "summary": "3 errors in 1.67s; ElectronicDensity cannot be imported from qiskit_nature.second_q.properties",
+        "duration_seconds": 8.82
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_angular_momentum",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_electronic_dipole_moment",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_magnetization",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_particle_number",
+          "test/second_q/problems/test_electronic_properties_container.py::TestElectronicPropertiesContainer::test_custom_property",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_attributes",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_one_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_two_body",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_iter",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_add",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_conjugate",
+          "test/second_q/operators/test_electronic_integrals.py::TestElectronicIntegrals::test_transpose"
+        ],
+        "summary": "12 passed in 1.64s",
+        "duration_seconds": 11.09
+      }
+    }
+  }
+}

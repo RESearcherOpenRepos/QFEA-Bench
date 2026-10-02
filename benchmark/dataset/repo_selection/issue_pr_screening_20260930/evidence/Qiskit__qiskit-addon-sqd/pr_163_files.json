@@ -1,0 +1,38 @@
+[
+  {
+    "sha": "3d81e8c08b747fd954a95541a1a153a21e6cb441",
+    "filename": "docs/apidocs/qiskit_addon_sqd.fermion.rst",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 1,
+    "changes": 1,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/54ad829259905f492b82e051605a918fbea7133a/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/54ad829259905f492b82e051605a918fbea7133a/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/docs%2Fapidocs%2Fqiskit_addon_sqd.fermion.rst?ref=54ad829259905f492b82e051605a918fbea7133a",
+    "patch": "@@ -15,4 +15,3 @@ Fermion (:mod:`qiskit_addon_sqd.fermion`)\n .. autofunction:: solve_fermion\n .. autofunction:: optimize_orbitals\n .. autofunction:: rotate_integrals\n-.. autofunction:: bitstring_matrix_to_sorted_addresses"
+  },
+  {
+    "sha": "eb57b45eb27f9b72252865cfb970034dde0008db",
+    "filename": "docs/conf.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 1,
+    "changes": 1,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/54ad829259905f492b82e051605a918fbea7133a/docs%2Fconf.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/54ad829259905f492b82e051605a918fbea7133a/docs%2Fconf.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/docs%2Fconf.py?ref=54ad829259905f492b82e051605a918fbea7133a",
+    "patch": "@@ -125,7 +125,6 @@\n     (\"qiskit_addon_sqd.fermion\", \"solve_fermion\"),\n     (\"qiskit_addon_sqd.fermion\", \"optimize_orbitals\"),\n     (\"qiskit_addon_sqd.fermion\", \"rotate_integrals\"),\n-    (\"qiskit_addon_sqd.fermion\", \"bitstring_matrix_to_sorted_addresses\"),\n     (\"qiskit_addon_sqd.qubit\", \"solve_qubit\"),\n     (\"qiskit_addon_sqd.qubit\", \"project_operator_to_subspace\"),\n     (\"qiskit_addon_sqd.qubit\", \"project_operator_to_subspace\"),"
+  },
+  {
+    "sha": "e2bae39ddf8720628a178ce236a74d7f66935815",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 0,
+    "deletions": 54,
+    "changes": 54,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/54ad829259905f492b82e051605a918fbea7133a/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/54ad829259905f492b82e051605a918fbea7133a/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=54ad829259905f492b82e051605a918fbea7133a",
+    "patch": "@@ -23,7 +23,6 @@\n from jax import numpy as jnp\n from jax.scipy.linalg import expm\n from pyscf import fci\n-from qiskit.utils import deprecate_func\n from scipy import linalg as LA\n \n config.update(\"jax_enable_x64\", True)  # To deal with large integers\n@@ -330,59 +329,6 @@ def rotate_integrals(\n     return np.array(hcore_rot), np.array(eri_rot)\n \n \n-@deprecate_func(\n-    removal_timeline=\"no sooner than qiskit-addon-sqd 0.10.0\",\n-    since=\"0.6.0\",\n-    package_name=\"qiskit-addon-sqd\",\n-    additional_msg=\"Use the bitstring_matrix_to_ci_strs function.\",\n-)\n-def bitstring_matrix_to_sorted_addresses(\n-    bitstring_matrix: np.ndarray, open_shell: bool = False\n-) -> tuple[np.ndarray, np.ndarray]:\n-    \"\"\"Convert a bitstring matrix into a sorted array of unique, unsigned integers.\n-\n-    This function separates each bitstring in ``bitstring_matrix`` in half, flips the\n-    bits and translates them into integer representations, and finally appends them to\n-    their respective (spin-up or spin-down) lists. Those lists are sorted and output\n-    from this function.\n-\n-    Args:\n-        bitstring_matrix: A 2D array of ``bool`` representations of bit\n-            values such that each row represents a single bitstring\n-        open_shell: A flag specifying whether unique addresses from the left and right\n-            halves of the bitstrings should be kept separate. If ``False``, addresses\n-            from the left and right halves of the bitstrings are combined into a single\n-            set of unique addresses. That combined set will be returned for both the left\n-            and right bitstrings.\n-\n-    Returns:\n-        A length-2 tuple of sorted, unique determinants representing the left (spin-down) and\n-        right (spin-up) halves of the bitstrings, respectively.\n-\n-    \"\"\"\n-    norb = bitstring_matrix.shape[1] // 2\n-    num_configs = bitstring_matrix.shape[0]\n-\n-    address_left = np.zeros(num_configs)\n-    address_right = np.zeros(num_configs)\n-    bts_matrix_left = bitstring_matrix[:, :norb]\n-    bts_matrix_right = bitstring_matrix[:, norb:]\n-\n-    # For performance, we accumulate the left and right addresses together, column-wise,\n-    # across the two halves of the input bitstring matrix.\n-    for i in range(norb):\n-        address_left[:] += bts_matrix_left[:, i] * 2 ** (norb - 1 - i)\n-        address_right[:] += bts_matrix_right[:, i] * 2 ** (norb - 1 - i)\n-\n-    addresses_right = np.unique(address_right.astype(\"longlong\"))\n-    addresses_left = np.unique(address_left.astype(\"longlong\"))\n-\n-    if not open_shell:\n-        addresses_left = addresses_right = np.union1d(addresses_left, addresses_right)\n-\n-    return addresses_left, addresses_right\n-\n-\n def bitstring_matrix_to_ci_strs(\n     bitstring_matrix: np.ndarray, open_shell: bool = False\n ) -> tuple[np.ndarray, np.ndarray]:"
+  }
+]

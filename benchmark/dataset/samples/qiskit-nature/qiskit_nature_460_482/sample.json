@@ -1,0 +1,217 @@
+{
+  "instance": {
+    "id": 61,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_460_482",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/460",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/482",
+    "base_commit": "5939cb03527eb16fab15a32126b1a70c7817ade1",
+    "patch": "97e43377553ddcc21beec48b49bf374a285bdaa5"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task defines quadratic fermionic Hamiltonian semantics, including Majorana form and Bogoliubov diagonalization."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/operators/second_quantization/__init__.py",
+      "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature currently lacks a dedicated data structure for quadratic fermionic Hamiltonians, even though these Hamiltonians are naturally represented by Hermitian and antisymmetric coefficient matrices and need linear-algebra-based diagonalization routines. Users need a public QuadraticHamiltonian abstraction that stores those matrix blocks directly, exposes whether particle number is conserved, converts back to FermionicOp form, and computes the Bogoliubov transform that diagonalizes the Hamiltonian.",
+    "requirements": [
+      "Provide a public QuadraticHamiltonian class in the second-quantization operators package.",
+      "QuadraticHamiltonian construction must accept a Hermitian particle-number-conserving matrix part, an antisymmetric pairing matrix part, an additive constant, and an optional num_modes override.",
+      "When either matrix block is omitted, QuadraticHamiltonian must fill the missing block with zeros of the inferred size, and it must reject inputs when neither matrix block nor num_modes is specified.",
+      "QuadraticHamiltonian must validate Hermitian and antisymmetric inputs by default, including shape consistency with each other and with num_modes, while allowing validation to be disabled explicitly.",
+      "QuadraticHamiltonian must expose the stored Hermitian block, antisymmetric block, constant, and inferred number of modes for later inspection.",
+      "QuadraticHamiltonian must report whether the Hamiltonian conserves particle number based on whether the antisymmetric block is zero.",
+      "QuadraticHamiltonian must convert itself into an equivalent FermionicOp representation with the correct one-body, pairing, and constant terms.",
+      "QuadraticHamiltonian must provide the Majorana-form and diagonalizing Bogoliubov transform needed to diagonalize both particle-number-conserving and nonconserving quadratic Hamiltonians, returning sorted orbital energies and the transformed constant.",
+      "Existing FermionicOp construction, term iteration, register-length inference, arithmetic, matrix multiplication, and matrix-conversion behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QuadraticHamiltonian",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "constructor: hermitian_part=None, antisymmetric_part=None, constant=0.0, num_modes=None, validate=True, rtol=1e-5, atol=1e-8",
+        "Output": "",
+        "Description": "Represents a quadratic fermionic Hamiltonian using Hermitian and antisymmetric matrix blocks plus an additive constant."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.hermitian_part",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the matrix of particle-number-conserving coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.antisymmetric_part",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "numpy.ndarray",
+        "Description": "Returns the matrix of pairing coefficients."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.constant",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "float",
+        "Description": "Returns the additive constant term."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.num_modes",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "int",
+        "Description": "Returns the number of fermionic modes represented by the Hamiltonian."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.conserves_particle_number",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "bool",
+        "Description": "Reports whether the antisymmetric block is zero and particle number is conserved."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.to_fermionic_op",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "FermionicOp",
+        "Description": "Converts the quadratic Hamiltonian into an equivalent FermionicOp."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.majorana_form",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "tuple[numpy.ndarray, float]",
+        "Description": "Returns the real antisymmetric Majorana matrix and its associated constant term."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuadraticHamiltonian.diagonalizing_bogoliubov_transform",
+        "Path": "qiskit_nature/operators/second_quantization/quadratic_hamiltonian.py",
+        "Input": "self",
+        "Output": "tuple[numpy.ndarray, numpy.ndarray, float]",
+        "Description": "Returns the transformation that diagonalizes the quadratic Hamiltonian, the sorted orbital energies, and the transformed constant."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_460_482",
+      "image_id": "sha256:e4f9e6eee8e347feea9e23b6541a1a3c0780c7f9859a676b2c107b0fe0e8f802",
+      "image_size": "1082702059"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "qiskit-terra==0.20.2",
+        "numpy<2",
+        "scipy==1.10.1",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init"
+        ],
+        "summary": "16 selected selectors passed.",
+        "duration_seconds": 46.52
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 16.29
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_conserves_particle_number",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_1_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_2_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_3_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_4_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_non_particle_number_conserving_5_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_1_1",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_2_2",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_3_3",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_4_4",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_5_5",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_diagonalizing_bogoliubov_transform_particle_number_conserving_6_6",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_fermionic_op",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_init",
+          "test/operators/second_quantization/test_quadratic_hamiltonian.py::TestQuadraticHamiltonian::test_validate"
+        ],
+        "summary": "16 selected selectors failed with ImportError because QuadraticHamiltonian is not exposed from qiskit_nature.operators.second_quantization.",
+        "duration_seconds": 48.11
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_terms",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_register_length",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_matmul_multi",
+          "test/operators/second_quantization/test_fermionic_op.py::TestFermionicOp::test_to_matrix"
+        ],
+        "summary": "6 selected selectors passed.",
+        "duration_seconds": 20.08
+      }
+    }
+  }
+}

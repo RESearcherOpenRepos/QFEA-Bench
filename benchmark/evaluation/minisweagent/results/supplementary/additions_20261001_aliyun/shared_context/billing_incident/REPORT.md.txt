@@ -1,0 +1,49 @@
+> **Historical evidence · reviewed 2026-10-02.** The dated counts and decisions below describe that stage. The current FSE cohort is **117 tasks / 11 repositories**; use the [review guide](../../../../docs/REVIEW_GUIDE.md) for current results. Original data and decision provenance are retained.
+
+# New 13 samples: Alibaba Cloud experiment status
+
+Execution stopped after Docker storage I/O failures recurred. The table reports confirmed solved counts and validation coverage; incomplete rows are not final resolved rates.
+
+| Agent | Model | Completed workflows / 13 | Valid results / 13 | Confirmed solved | Paid workflows interrupted | Never started |
+|---|---|---|---|---|---|---|
+| ACR | deepseek-v4-pro | 13 | 13 | 1 | 0 | 0 |
+| ACR | deepseek-v4-flash | 13 | 13 | 3 | 0 | 0 |
+| ACR | glm-5.2 | 13 | 13 | 0 | 0 | 0 |
+| Mini-SWE-Agent | deepseek-v4-flash | 12 | 11 | 6 | 1 | 0 |
+| Mini-SWE-Agent | deepseek-v4-pro | 10 | 3 | 1 | 2 | 1 |
+| OpenHands | deepseek-v4-flash | 8 | 5 | 3 | 2 | 3 |
+| Mini-SWE-Agent | glm-5.2 | 12 | 12 | 5 | 1 | 0 |
+| OpenHands | deepseek-v4-pro | 6 | 5 | 3 | 1 | 6 |
+| OpenHands | glm-5.2 | 9 | 5 | 2 | 2 | 2 |
+
+Totals: 96 completed workflows; 80 valid results; 9 interrupted paid workflows; 12 workflows never started.
+
+All applicable patches counted as valid results have three actual validations. Resolved requires all three to pass. Docker container launch failures are not test failures and are excluded from valid results. Mini–Flash has six confirmed solved instances, but its squlearn_62_99 validation was invalidated by the second storage incident.
+
+All original 106 result and prediction rows remain unchanged. ACR main files contain the complete 119 rows. Incomplete Mini/OpenHands additions remain in separate cohort files; their main files retain the original 106 rows.
+
+Docker data: `/Volumes/dev/DockerDisk/DockerDesktop`, on an external USB APFS volume. Both the host and the external volume have free space. Guest I/O errors and read-only remounts recurred after a successful restart; the underlying cause is not yet established. All model controllers were stopped. No disk reset, image deletion, or volume repair was performed.
+
+Pending paid retries:
+- minisweagent_deepseek_v4_flash: `squlearn_275_339`
+- minisweagent_deepseek_v4_pro: `squlearn_275_339`
+- minisweagent_deepseek_v4_pro: `tequila_403_407`
+- openhands_deepseek_v4_flash: `squlearn_274_279`
+- openhands_deepseek_v4_flash: `squlearn_275_339`
+- minisweagent_glm5_2: `tequila_403_407`
+- openhands_deepseek_v4_pro: `squlearn_112_154`
+- openhands_glm5_2: `squlearn_266_301`
+- openhands_glm5_2: `tequila_400_411`
+
+Result records:
+- ACR / deepseek-v4-pro — `benchmark/evaluation/autocoderover/runs/deepseek_v4_pro_20260610/additions_20261001_aliyun/results_additions.json` (archived local output; not included)
+- ACR / deepseek-v4-flash — `benchmark/evaluation/autocoderover/runs/deepseek_v4_flash_20260609/additions_20261001_aliyun/results_additions.json` (archived local output; not included)
+- ACR / glm-5.2 — `benchmark/evaluation/autocoderover/runs/glm5_2_openrouter_20260628/additions_20261001_aliyun/results_additions.json` (archived local output; not included)
+- Mini-SWE-Agent / deepseek-v4-flash — `benchmark/evaluation/minisweagent/runs/deepseek_v4_flash_20260602/additions_20261001_aliyun/results_completed_subset.json` (archived local output; not included)
+- Mini-SWE-Agent / deepseek-v4-pro — `benchmark/evaluation/minisweagent/runs/deepseek_v4_pro_20260602/additions_20261001_aliyun/prevalidation_results.json` (archived local output; not included)
+- OpenHands / deepseek-v4-flash — `benchmark/evaluation/openhands/runs/deepseek_v4_flash_20260608/additions_20261001_aliyun/prevalidation_results.json` (archived local output; not included)
+- Mini-SWE-Agent / glm-5.2 — `benchmark/evaluation/minisweagent/runs/glm5_2_20260626/additions_20261001_aliyun/results_completed_subset.json` (archived local output; not included)
+- OpenHands / deepseek-v4-pro — `benchmark/evaluation/openhands/runs/deepseek_v4_pro_20260608/additions_20261001_aliyun/prevalidation_results.json` (archived local output; not included)
+- OpenHands / glm-5.2 — `benchmark/evaluation/openhands/runs/glm5_2_20260627/additions_20261001_aliyun/prevalidation_results.json` (archived local output; not included)
+
+Automatic approval review rejected an earlier attempt to restart paid interrupted workflows, because that could exceed the single-attempt request. Only never-started model workflows were subsequently launched. Further paid retries require explicit user approval, and all remaining execution requires a stable Docker storage environment.

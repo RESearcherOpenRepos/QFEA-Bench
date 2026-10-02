@@ -1,0 +1,104 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  5a504be Add fci wavefunction to pyscf backend (#409)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 5a504be
+
+HEAD is now at beb74a6 corrected how the default maxrank is calculated, replaced floor division by usual division. (#404)
+Removing src/tequila_basic.egg-info/
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+__________ test_wfn_fci[H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6] __________
+
+geometry = 'H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6'
+
+    @pytest.mark.skipif(condition=not HAS_PYSCF, reason="pyscf not found")
+    @pytest.mark.parametrize(
+        "geometry",
+        [
+            "H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6",
+            "Li 0.0 0.0 0.0\nH 0.0 0.0 1.5",
+            "Be 0.0 0.0 0.0",
+        ],
+    )
+    def test_wfn_fci(geometry):
+        mol = tq.Molecule(geometry=geometry, basis_set="sto-3g", backend="pyscf")
+        H = mol.make_hamiltonian()
+        v, vv = numpy.linalg.eigh(H.to_matrix())
+    
+        # ground state wavefunction
+        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])
+        energy = v[0]
+    
+>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)
+E       TypeError: cannot unpack non-iterable numpy.float64 object
+
+test_chemistry.py:476: TypeError
+----------------------------- Captured stderr call -----------------------------
+Unknown keys dict_keys(['get_wfn']) for FCI kernel pyscf.fci.direct_spin1
+<class 'pyscf.fci.direct_spin1.FCISolver'> does not have attributes  get_wfn
+_________________ test_wfn_fci[Li 0.0 0.0 0.0\nH 0.0 0.0 1.5] __________________
+
+geometry = 'Li 0.0 0.0 0.0\nH 0.0 0.0 1.5'
+
+    @pytest.mark.skipif(condition=not HAS_PYSCF, reason="pyscf not found")
+    @pytest.mark.parametrize(
+        "geometry",
+        [
+            "H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6",
+            "Li 0.0 0.0 0.0\nH 0.0 0.0 1.5",
+            "Be 0.0 0.0 0.0",
+        ],
+    )
+    def test_wfn_fci(geometry):
+        mol = tq.Molecule(geometry=geometry, basis_set="sto-3g", backend="pyscf")
+        H = mol.make_hamiltonian()
+        v, vv = numpy.linalg.eigh(H.to_matrix())
+    
+        # ground state wavefunction
+        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])
+        energy = v[0]
+    
+>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)
+E       TypeError: cannot unpack non-iterable numpy.float64 object
+
+test_chemistry.py:476: TypeError
+----------------------------- Captured stderr call -----------------------------
+Unknown keys dict_keys(['get_wfn']) for FCI kernel pyscf.fci.direct_spin1
+_________________________ test_wfn_fci[Be 0.0 0.0 0.0] _________________________
+
+geometry = 'Be 0.0 0.0 0.0'
+
+    @pytest.mark.skipif(condition=not HAS_PYSCF, reason="pyscf not found")
+    @pytest.mark.parametrize(
+        "geometry",
+        [
+            "H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6",
+            "Li 0.0 0.0 0.0\nH 0.0 0.0 1.5",
+            "Be 0.0 0.0 0.0",
+        ],
+    )
+    def test_wfn_fci(geometry):
+        mol = tq.Molecule(geometry=geometry, basis_set="sto-3g", backend="pyscf")
+        H = mol.make_hamiltonian()
+        v, vv = numpy.linalg.eigh(H.to_matrix())
+    
+        # ground state wavefunction
+        wfn = tq.QubitWaveFunction.from_array(vv[:, 0])
+        energy = v[0]
+    
+>       fci_energy, fci_wfn = mol.compute_fci(get_wfn=True)
+E       TypeError: cannot unpack non-iterable numpy.float64 object
+
+test_chemistry.py:476: TypeError
+----------------------------- Captured stderr call -----------------------------
+Unknown keys dict_keys(['get_wfn']) for FCI kernel pyscf.fci.direct_spin1
+=========================== short test summary info ============================
+FAILED test_chemistry.py::test_wfn_fci[H 0.0 0.0 0.0\nHe 0.0 0.0 1.3\nH 0.0 0.0 2.6]
+FAILED test_chemistry.py::test_wfn_fci[Li 0.0 0.0 0.0\nH 0.0 0.0 1.5] - TypeE...
+FAILED test_chemistry.py::test_wfn_fci[Be 0.0 0.0 0.0] - TypeError: cannot un...
+3 failed, 9 warnings in 16.27s

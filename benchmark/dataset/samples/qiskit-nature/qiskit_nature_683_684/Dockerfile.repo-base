@@ -1,0 +1,26 @@
+FROM python:3.9-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV PIP_DEFAULT_TIMEOUT=120
+ENV REPO_DIR=/workspace/repo
+ENV REPOSITORY_URL=https://github.com/qiskit-community/qiskit-nature.git
+ENV DEPENDENCY_COMMIT=64b08facfb29cffb3cff91df65debb039bb6ee44
+
+RUN sed -i 's|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g; s|http://deb.debian.org/debian-security|https://mirrors.tuna.tsinghua.edu.cn/debian-security|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends build-essential git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=cache,id=quanbench-pip,target=/root/.cache/pip \
+    for attempt in 1 2 3; do \
+        git clone --filter=blob:none "${REPOSITORY_URL}" "${REPO_DIR}" && break; \
+        if [ "$attempt" = "3" ]; then exit 1; fi; \
+        rm -rf "${REPO_DIR}"; \
+        sleep 3; \
+    done \
+    && cd "${REPO_DIR}" \
+    && git checkout --force "${DEPENDENCY_COMMIT}" \
+    && python -m pip install --upgrade "pip<24.1" "setuptools<70" wheel \
+    && python -m pip install "numpy<2" "scipy==1.10.1" "qiskit-terra==0.20.2" retworkx h5py psutil typing_extensions "pytest==7.3.1" ddt "networkx<2.6" scikit-learn "pyscf==2.2.1" \
+    && python -m pip install --no-deps -e .

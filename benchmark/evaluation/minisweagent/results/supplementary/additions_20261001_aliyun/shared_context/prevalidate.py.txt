@@ -1,0 +1,28 @@
+"""Validate a completed, immutable prefix while the remaining agents run."""
+import hashlib,json,sys
+from pathlib import Path
+HERE=Path(__file__).resolve().parent
+ROOT=HERE.parents[2]
+sys.path.insert(0,str(ROOT))
+from benchmark.evaluation.scripts import evaluate_agent_preds as ev
+job=next(j for j in json.loads((HERE/'jobs.json').read_text()) if j['id']==sys.argv[1])
+out=ROOT/job['out'];pred=out/'generation/preds.json'
+ids=['qiskit_addon_sqd_148_230','qiskit_addon_sqd_265_343','openqaoa_36_71','openqaoa_112_85','openqaoa_232_241']
+if job['agent']=='minisweagent':
+    ids=ids[2:]  # Only completed AMD workflows; never cache pre-model ARM startup failures.
+before=json.loads(pred.read_text())['predictions']
+assert set(ids)<=before.keys()
+assert not (out/'valid_generation_done.json').exists()
+snapshot=pred.parent/'prevalidation_preds.json'
+snapshot.write_text(json.dumps({'predictions':{sid:before[sid] for sid in ids}})+'\n')
+result=ev.evaluate_predictions(snapshot,ROOT/'benchmark/dataset/samples',out/'prevalidation_results.json',timeout=600,workers=1,stable_runs=3,setup_retries=1,resume=True)
+assert len(result['results'])==len(ids)
+after=json.loads(pred.read_text())['predictions']
+assert all(before[sid]==after[sid] for sid in ids)
+assert not (out/'valid_generation_done.json').exists(),'Cohort finished before cache handoff; inspect before merging'
+partial=out/'results_additions.json.partial'
+assert not partial.exists()
+assert all(not r.get('eval_infra_failed') and not r.get('timed_out') for r in result['results'])
+tmp=partial.with_suffix('.tmp');tmp.write_text(json.dumps(result,indent=2)+'\n');tmp.replace(partial)
+(out/'prevalidation_audit.json').write_text(json.dumps({'instance_ids':ids,'prediction_hashes':{sid:hashlib.sha256(json.dumps(before[sid],sort_keys=True).encode()).hexdigest() for sid in ids},'note':'Three actual validations per applicable patch, reused by final evaluator; no additional model attempts.'},indent=2)+'\n')
+print('PREFIX_CACHE_READY',job['id'],result['summary'],flush=True)

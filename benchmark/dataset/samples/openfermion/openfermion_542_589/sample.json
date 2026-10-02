@@ -1,0 +1,147 @@
+{
+  "instance": {
+    "id": 11,
+    "repo": "quantumlib/OpenFermion",
+    "instance_id": "openfermion_542_589",
+    "status": "completed",
+    "issue_url": "https://github.com/quantumlib/OpenFermion/issues/542",
+    "pr_url": "https://github.com/quantumlib/OpenFermion/pull/589",
+    "base_commit": "54d28a8228bc1a2d9b5a31d6f827084e364b0942",
+    "patch": "45d25cdd373d50f82dab9a9a7d6accdb0eecffb1"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task maps fermionic Hamiltonian terms into Majorana representation while preserving diagonal-Coulomb equivalence."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "src/openfermion/transforms/__init__.py",
+      "src/openfermion/transforms/_conversion.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "OpenFermion needs a Majorana-operator conversion path for fermionic Hamiltonians so users can move between FermionOperator-based models and the Majorana representation without manually expanding each ladder operator term. The implementation should provide the Majorana conversion routine for fermionic operators, accept diagonal Coulomb Hamiltonians through the same path, and preserve the expected type checking for unsupported inputs.",
+    "requirements": [
+      "Provide a Majorana conversion routine for FermionOperator instances using the standard mapping from fermionic creation and annihilation operators to Majorana modes.",
+      "Allow converting a DiagonalCoulombHamiltonian to a MajoranaOperator through the same public conversion entry point used for FermionOperator inputs.",
+      "Ensure converting a DiagonalCoulombHamiltonian yields the same MajoranaOperator as converting the equivalent FermionOperator.",
+      "Raise TypeError when the Majorana conversion entry point or its validated helper entry points receive unsupported input types.",
+      "Keep the existing diagonal-Coulomb conversion path and Majorana-to-Fermion conversion behavior working."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "get_majorana_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "operator: PolynomialTensor | DiagonalCoulombHamiltonian | FermionOperator",
+        "Output": "MajoranaOperator",
+        "Description": "Converts supported fermionic operator representations into their equivalent MajoranaOperator form."
+      },
+      {
+        "Type": "Function",
+        "Name": "_fermion_operator_to_majorana_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "fermion_operator: FermionOperator",
+        "Output": "MajoranaOperator",
+        "Description": "Converts a FermionOperator into a MajoranaOperator and rejects unsupported input types."
+      },
+      {
+        "Type": "Function",
+        "Name": "_fermion_term_to_majorana_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "term: tuple",
+        "Output": "MajoranaOperator",
+        "Description": "Converts a single FermionOperator term into its MajoranaOperator representation and rejects unsupported input types."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_diagonal_coulomb_hamiltonian",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "fermion_operator: FermionOperator, n_qubits=None",
+        "Output": "DiagonalCoulombHamiltonian",
+        "Description": "Converts a supported FermionOperator into DiagonalCoulombHamiltonian form for downstream structured conversions."
+      },
+      {
+        "Type": "Function",
+        "Name": "get_fermion_operator",
+        "Path": "src/openfermion/transforms/_conversion.py",
+        "Input": "operator: PolynomialTensor | MajoranaOperator | DiagonalCoulombHamiltonian",
+        "Output": "FermionOperator",
+        "Description": "Converts supported structured operators into FermionOperator form, including the existing MajoranaOperator conversion path."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:openfermion_542_589",
+      "image_id": "sha256:f1beeb10110db0f09819deafc5b0f03ff6a51e241eb0504921dfb2d4aa069bf1",
+      "image_size": "464519504"
+    },
+    "environment": {
+      "python_version": "3.6",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "numpy<1.20",
+        "scipy<1.3",
+        "networkx<3",
+        "h5py<3.2",
+        "future",
+        "pytest<7"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_raises",
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_fermion_operator",
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_diagonalcoulomb"
+        ],
+        "summary": "3 passed in 1.54s",
+        "duration_seconds": 4.83
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_ignore_incompatible_terms",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+          "src/openfermion/transforms/_conversion_test.py::test_get_fermion_operator_majorana_operator"
+        ],
+        "summary": "5 passed in 1.58s",
+        "duration_seconds": 4.88
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_raises",
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_fermion_operator",
+          "src/openfermion/transforms/_conversion_test.py::GetMajoranaOperatorTest::test_get_majorana_operator_diagonalcoulomb"
+        ],
+        "summary": "3 errors in 1.52s",
+        "duration_seconds": 4.95
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_hubbard",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_random_quadratic",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_ignore_incompatible_terms",
+          "src/openfermion/transforms/_conversion_test.py::GetDiagonalCoulombHamiltonianTest::test_exceptions",
+          "src/openfermion/transforms/_conversion_test.py::test_get_fermion_operator_majorana_operator"
+        ],
+        "summary": "5 passed in 1.59s",
+        "duration_seconds": 4.92
+      }
+    }
+  }
+}

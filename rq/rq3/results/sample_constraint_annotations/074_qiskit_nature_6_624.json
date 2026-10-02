@@ -1,0 +1,177 @@
+{
+  "id": 74,
+  "sample_id": "qiskit_nature_6_624",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "7964402599ae7096b58936ee59dbec49697ee2c3",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 7,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/spin_qubit_mapping": 12
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Spin-1/2 Y operator maps to its single-qubit Pauli Y coefficient."
+        }
+      ],
+      "rationale": "This variant directly checks a spin-to-qubit rule."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Two-site XZ product maps to the prescribed Pauli string and complex coefficient."
+        }
+      ],
+      "rationale": "This variant checks ordered spin-product mapping."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Three-site mixed spin product maps to the prescribed Pauli operator."
+        }
+      ],
+      "rationale": "This variant checks a higher-order spin mapping."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Spin-3/2 two-site Z term maps to its four-qubit Pauli sum."
+        }
+      ],
+      "rationale": "This variant checks higher-spin local encoding."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Eight-site spin sum maps to the expected identity and X terms."
+        }
+      ],
+      "rationale": "This variant checks multi-site logarithmic encoding."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Spin-1 Z with padding two maps to the upper embedded Pauli blocks."
+        }
+      ],
+      "rationale": "The explicit expected Pauli sum includes the embedding convention."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/mappers/second_quantization/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Spin-1 Z with lower embedding maps to the alternative Pauli blocks."
+        }
+      ],
+      "rationale": "The explicit expected Pauli sum checks lower-block encoding."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_1",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Linear mapper preserves the reference Y-squared spin operator."
+        }
+      ],
+      "rationale": "This selected control checks an exact spin-to-qubit Pauli expansion."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_2",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Linear mapper preserves the reference two-site XZ product."
+        }
+      ],
+      "rationale": "This selected control checks an exact Pauli expansion."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_3",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Linear mapper preserves the reference three-site mixed product."
+        }
+      ],
+      "rationale": "This selected control checks an exact Pauli expansion."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_4",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Linear mapper preserves the reference higher-spin Z term."
+        }
+      ],
+      "rationale": "This selected control checks a higher-spin Pauli expansion."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/mappers/second_quantization/test_linear_mapper.py::TestLinearMapper::test_mapping_5",
+      "label": "quantum_semantics/spin_qubit_mapping",
+      "assertions": [
+        {
+          "line": 79,
+          "expected": "Linear mapper preserves the reference eight-site spin sum."
+        }
+      ],
+      "rationale": "This selected control checks a multi-site Pauli expansion."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/7964402599ae7096b58936ee59dbec49697ee2c3/test/mappers/second_quantization/test_linear_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/7964402599ae7096b58936ee59dbec49697ee2c3/test/mappers/second_quantization/test_logarithmic_mapper.py"
+  ],
+  "rationale": "Read all 12 selected tests at the exact sample commit; each case is labeled by its explicit assertion rather than operator class name."
+}

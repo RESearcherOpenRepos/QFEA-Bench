@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "15dabfb1d52bcd2c21df811e515575c76d409bd6",
+    "filename": "src/squlearn/util/executor.py",
+    "status": "modified",
+    "additions": 9,
+    "deletions": 4,
+    "changes": 13,
+    "blob_url": "https://github.com/sQUlearn/squlearn/blob/67afd65eea18180a2d350f9d80ecc8beaaa0d6f4/src%2Fsqulearn%2Futil%2Fexecutor.py",
+    "raw_url": "https://github.com/sQUlearn/squlearn/raw/67afd65eea18180a2d350f9d80ecc8beaaa0d6f4/src%2Fsqulearn%2Futil%2Fexecutor.py",
+    "contents_url": "https://api.github.com/repos/sQUlearn/squlearn/contents/src%2Fsqulearn%2Futil%2Fexecutor.py?ref=67afd65eea18180a2d350f9d80ecc8beaaa0d6f4",
+    "patch": "@@ -747,14 +747,14 @@ def __init__(\n                 )\n             if self.qpu_parallelization:\n                 raise ValueError(\"QPU parallelization is not supported for PennyLane devices!\")\n-\n             self._remote_backend = not any(\n-                substring in str(self._pennylane_device)\n+                substring in self._pennylane_device.name.lower()\n                 for substring in [\n                     \"default.qubit\",\n                     \"default.mixed\",\n                     \"default.clifford\",\n-                    \"Lightning Qubit\",\n+                    \"lightning.qubit\",\n+                    \"lightning.gpu\"\n                 ]\n             )\n         else:\n@@ -2560,7 +2560,12 @@ def is_statevector(self) -> bool:\n         elif self.quantum_framework == \"pennylane\":\n             return any(\n                 name in self._pennylane_device.name.lower()\n-                for name in [\"default.qubit\", \"default.clifford\", \"lightning.qubit\"]\n+                for name in [\n+                    \"default.qubit\",\n+                    \"default.mixed\",\n+                    \"default.clifford\",\n+                    \"lightning.qubit\",\n+                    \"lightning.gpu\"]\n             )\n         else:\n             raise RuntimeError(\"Unknown quantum framework!\")"
+  }
+]

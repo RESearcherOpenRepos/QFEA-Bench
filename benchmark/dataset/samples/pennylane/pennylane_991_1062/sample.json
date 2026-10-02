@@ -1,0 +1,123 @@
+{
+  "instance": {
+    "id": 19,
+    "repo": "PennyLaneAI/pennylane",
+    "instance_id": "pennylane_991_1062",
+    "status": "completed",
+    "issue_url": "https://github.com/PennyLaneAI/pennylane/issues/991",
+    "pr_url": "https://github.com/PennyLaneAI/pennylane/pull/1062",
+    "base_commit": "2c9f3c83305a6a541a65adbcfcf3fdf0514d75a8",
+    "patch": "a7bf5c9ec7db785bd80a6d52a08c0de475382f0d"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task extends QNode TorchLayer batching, but correctness is mostly tensor shape and gradient plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "pennylane/qnn/torch.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PennyLane's TorchLayer only supports either a single input vector or a simple batch of input vectors. It should behave like common neural-network layers and accept inputs with extra leading dimensions, applying the wrapped quantum node across those dimensions while preserving the expected output shape and gradient flow.",
+    "requirements": [
+      "TorchLayer must accept one-dimensional inputs and ordinary batched two-dimensional inputs with the existing output shapes.",
+      "TorchLayer must accept inputs with multiple leading dimensions before the per-example quantum input dimension.",
+      "For multidimensional inputs, TorchLayer must evaluate the wrapped quantum node across the leading dimensions and return outputs with those leading dimensions followed by the quantum output dimension.",
+      "Backpropagation through multidimensional TorchLayer inputs must still populate gradients for all trainable QNode weights."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TorchLayer",
+        "Path": "pennylane/qnn/torch.py",
+        "Input": "qnode, weight_shapes, init_method=None",
+        "Output": "torch.nn.Module",
+        "Description": "Wraps a PennyLane QNode as a PyTorch module with trainable QNode weights."
+      },
+      {
+        "Type": "Method",
+        "Name": "TorchLayer.forward",
+        "Path": "pennylane/qnn/torch.py",
+        "Input": "inputs",
+        "Output": "torch.Tensor",
+        "Description": "Evaluates the wrapped QNode for single, batched, or multidimensional inputs while preserving leading dimensions."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:pennylane_991_1062",
+      "image_id": "sha256:92b52e77f944ff1bbca0a53ad20d93ce655e8300d9510feff5a435f07afd0063",
+      "image_size": "1734981489"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "base_os": "debian:trixie-slim via python:3.9-slim-trixie",
+      "glibc_version": "2.41",
+      "shared_between_base_and_patched": true,
+      "repair_plugin_entry_points_after_clean": true,
+      "extra_test_dependencies": [
+        "numpy<1.24",
+        "scipy<1.11",
+        "networkx<3",
+        "tensornetwork==0.3",
+        "semantic_version==2.6",
+        "dask[delayed]<2024",
+        "autoray>=0.3.1,<0.7",
+        "torch==2.2.2+cpu",
+        "pytest==7.4.4"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-2-2-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-5-4-n_qubits1-output_dim1-torch]"
+        ],
+        "summary": "2 passed in 36.21s",
+        "duration_seconds": 64.58
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits1-output_dim1-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits1-output_dim1-torch]"
+        ],
+        "summary": "4 passed in 1.60s",
+        "duration_seconds": 49.69
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-2-2-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_broadcasting[True-5-4-n_qubits1-output_dim1-torch]"
+        ],
+        "summary": "2 failed in 2.25s: TorchLayer.forward passes a two-dimensional feature slice to AngleEmbedding instead of recursively broadcasting over leading dimensions",
+        "duration_seconds": 48.6
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward_single_input[True-n_qubits1-output_dim1-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits0-output_dim0-torch]",
+          "tests/qnn/test_qnn_torch.py::TestTorchLayer::test_forward[True-n_qubits1-output_dim1-torch]"
+        ],
+        "summary": "4 passed in 0.70s",
+        "duration_seconds": 42.98
+      }
+    }
+  }
+}

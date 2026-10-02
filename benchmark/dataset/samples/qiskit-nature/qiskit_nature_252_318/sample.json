@@ -1,0 +1,159 @@
+{
+  "instance": {
+    "id": 54,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_252_318",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/252",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/318",
+    "base_commit": "580183c6f8da4a8cb9f6a408ab3e7861be27c495",
+    "patch": "0266d2baffcf7f1f8b710659adcfea509f732602"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adjusts protein-folding qubit encoding for a side-chain case, with correctness centered on model constraints and qubit-fixing behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/problems/sampling/protein_folding/__init__.py",
+      "qiskit_nature/problems/sampling/protein_folding/bead_distances/distance_map_builder.py",
+      "qiskit_nature/problems/sampling/protein_folding/peptide/chains/main_chain.py",
+      "qiskit_nature/problems/sampling/protein_folding/peptide/peptide.py",
+      "qiskit_nature/problems/sampling/protein_folding/qubit_op_builder.py",
+      "qiskit_nature/problems/sampling/protein_folding/qubit_utils/qubit_fixing.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The protein-folding module forbids attaching a side chain to the second bead of the main chain in order to save one qubit in the encoded optimization problem. That restriction prevents users from modeling proteins whose second main bead actually has a side chain. The repository should support that configuration while still keeping the existing qubit-saving behavior for proteins that do not use a second-bead side chain.",
+    "requirements": [
+      "Protein-folding peptide construction must allow a side chain on the second main bead while continuing to reject side chains on the first and last main beads.",
+      "When the second main bead has a side chain, the qubit-fixing logic must preserve the additional qubit needed to encode that configuration instead of applying the old fixed-qubit reduction.",
+      "ProteinFoldingProblem must produce the expected qubit operator for proteins whose second main bead has a side chain.",
+      "Existing protein-folding behavior for inputs without a second-bead side chain must remain compatible.",
+      "Existing invalid-side-chain checks for the first and last main beads must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "Peptide",
+        "Path": "qiskit_nature/problems/sampling/protein_folding/peptide/peptide.py",
+        "Input": "constructor: main_chain_residue_sequence, side_chain_residue_sequences",
+        "Output": "",
+        "Description": "Builds the protein-folding peptide model and must accept a side chain on the second main bead while still rejecting side chains on the first and last main beads."
+      },
+      {
+        "Type": "Class",
+        "Name": "ProteinFoldingProblem",
+        "Path": "qiskit_nature/problems/sampling/protein_folding/protein_folding_problem.py",
+        "Input": "constructor: peptide, interaction, penalty_parameters",
+        "Output": "",
+        "Description": "Creates the protein-folding optimization problem for a peptide, including cases where the second main bead has a side chain."
+      },
+      {
+        "Type": "Method",
+        "Name": "ProteinFoldingProblem._qubit_op_full",
+        "Path": "qiskit_nature/problems/sampling/protein_folding/protein_folding_problem.py",
+        "Input": "self",
+        "Output": "PauliSumOp or PauliOp",
+        "Description": "Builds the full qubit operator and must produce the expected operator when the second main bead has a side chain."
+      },
+      {
+        "Type": "Function",
+        "Name": "_fix_qubits",
+        "Path": "qiskit_nature/problems/sampling/protein_folding/qubit_utils/qubit_fixing.py",
+        "Input": "operator, has_side_chain_second_bead=False",
+        "Output": "PauliSumOp or PauliOp",
+        "Description": "Applies the fixed-qubit reduction and must preserve the additional encoded qubit when the second main bead has a side chain."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_252_318",
+      "image_id": "sha256:c066ee50ff225f6d4b8a22d71e5608cbb868e25957f8b641a56b77cbbbd808e5",
+      "image_size": "1084548305"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.20.2",
+        "retworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem_2_second_bead_side_chain",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large_fifth_qubit_allowed"
+        ],
+        "summary": "2 passed in 1.37s",
+        "duration_seconds": 6.49
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small_2",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_pauli_op",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_constructor",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_first",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_last"
+        ],
+        "summary": "8 passed in 4.85s",
+        "duration_seconds": 9.72
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem_2_second_bead_side_chain",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large_fifth_qubit_allowed"
+        ],
+        "summary": "2 failed in 1.17s; second-bead side chains still raise InvalidSideChainException and _fix_qubits does not accept has_side_chain_second_bead",
+        "duration_seconds": 8.26
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/sampling/protein_folding/test_protein_folding_problem.py::TestProteinFoldingProblem::test_protein_folding_problem",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_small_2",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_large",
+          "test/problems/sampling/protein_folding/qubit_utils/test_qubit_fixing.py::TestQubitFixing::test_fix_qubits_pauli_op",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_constructor",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_first",
+          "test/problems/sampling/protein_folding/peptide/chains/test_chain_main.py::TestMainChain::test_main_chain_illegal_side_chain_last"
+        ],
+        "summary": "8 passed in 5.75s",
+        "duration_seconds": 12.44
+      }
+    }
+  },
+  "evaluation_resources": {
+    "patched_f2p_support_files": [
+      "test/problems/sampling/protein_folding/resources/test_protein_folding_problem/test_protein_folding_problem_2_second_bead_side_chain"
+    ]
+  }
+}

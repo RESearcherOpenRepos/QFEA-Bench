@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "06ab533f2ee7a397376f00c4e764598ac839add4",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 6,
+    "deletions": 0,
+    "changes": 6,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/76722d5db67c7f3b4976b40c758b89462924bf77/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/76722d5db67c7f3b4976b40c758b89462924bf77/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=76722d5db67c7f3b4976b40c758b89462924bf77",
+    "patch": "@@ -295,6 +295,12 @@ def diagonalize_fermionic_hamiltonian(\n             bitstrings, probs = postselect_by_hamming_right_and_left(\n                 raw_bitstrings, raw_probs, hamming_right=n_alpha, hamming_left=n_beta\n             )\n+            if not bitstrings.size:\n+                raise ValueError(\n+                    \"The input bit array did not contain any valid bitstrings. \"\n+                    \"Either pass a bit array that contains at least one valid bitstring \"\n+                    \"(with the correct right and left Hamming weights), or specify a value for initial_occupancies.\"\n+                )\n         else:\n             # If we do have average orbital occupancy information, use it to refine the\n             # full set of noisy configurations"
+  },
+  {
+    "sha": "a3ad41adb46400cdd177f203de12288cc04b2d8c",
+    "filename": "test/test_fermion.py",
+    "status": "modified",
+    "additions": 62,
+    "deletions": 0,
+    "changes": 62,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/76722d5db67c7f3b4976b40c758b89462924bf77/test%2Ftest_fermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/76722d5db67c7f3b4976b40c758b89462924bf77/test%2Ftest_fermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/test%2Ftest_fermion.py?ref=76722d5db67c7f3b4976b40c758b89462924bf77",
+    "patch": "@@ -18,6 +18,7 @@\n import numpy as np\n import pyscf\n import pyscf.mcscf\n+import pytest\n from pyscf.fci import cistring, spin_square\n from qiskit.primitives import BitArray\n from qiskit_addon_sqd.counts import generate_bit_array_uniform\n@@ -216,6 +217,67 @@ def test_diagonalize_fermionic_hamiltonian_max_dim(self):\n         self.assertEqual(sci_dim_b, 10)\n         self.assertAlmostEqual(result.sci_state.spin_square(), expected_spin_square)\n \n+    def test_diagonalize_fermionic_hamiltonian_no_valid_bitstrings(self):\n+        \"\"\"Test diagonalize_fermionic_hamiltonian when no valid bitstrings for subsampling.\"\"\"\n+        # Build N2 molecule\n+        mol = pyscf.gto.Mole()\n+        mol.build(\n+            atom=[[\"N\", (0, 0, 0)], [\"N\", (1.0, 0, 0)]],\n+            basis=\"sto-6g\",\n+            symmetry=\"Dooh\",\n+        )\n+\n+        # Define active space\n+        n_frozen = 2\n+        active_space = range(n_frozen, mol.nao_nr())\n+\n+        # Get molecular integrals\n+        scf = pyscf.scf.RHF(mol).run()\n+        norb = len(active_space)\n+        n_electrons = int(sum(scf.mo_occ[active_space]))\n+        n_alpha = (n_electrons + mol.spin) // 2\n+        n_beta = (n_electrons - mol.spin) // 2\n+        nelec = (n_alpha, n_beta)\n+        cas = pyscf.mcscf.CASCI(scf, norb, nelec)\n+        mo = cas.sort_mo(active_space, base=0)\n+        hcore, nuclear_repulsion_energy = cas.get_h1cas(mo)\n+        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(mo), norb)\n+\n+        # Generate invalid samples from ground state\n+        strings = [\"00\" * norb for _ in range(100)]\n+\n+        bit_array = BitArray.from_samples(strings, num_bits=2 * norb)\n+\n+        # Diagonalize\n+        # Check error with raise if no valid bitstrings\n+        with pytest.raises(ValueError, match=\"did not contain any valid bitstrings\"):\n+            _ = diagonalize_fermionic_hamiltonian(\n+                hcore,\n+                eri,\n+                bit_array,\n+                samples_per_batch=10,\n+                norb=norb,\n+                nelec=nelec,\n+                max_iterations=5,\n+                symmetrize_spin=True,\n+                seed=self.rng,\n+            )\n+\n+        # check when passing in initial_occupancies, no error will be raised\n+        average_occupancy = np.zeros(norb) + 0.1\n+        _ = diagonalize_fermionic_hamiltonian(\n+            hcore,\n+            eri,\n+            bit_array,\n+            samples_per_batch=1,\n+            norb=norb,\n+            nelec=nelec,\n+            max_iterations=5,\n+            symmetrize_spin=True,\n+            initial_occupancies=(average_occupancy, average_occupancy),\n+            seed=self.rng,\n+        )\n+\n     def test_diagonalize_fermionic_hamiltonian_reproducible_with_seed(self):\n         \"\"\"Test diagonalize_fermionic_hamiltonian result is reproducible with seed.\"\"\"\n         # Build N2 molecule"
+  }
+]

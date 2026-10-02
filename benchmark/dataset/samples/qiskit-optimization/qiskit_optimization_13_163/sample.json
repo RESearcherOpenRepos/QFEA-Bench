@@ -1,0 +1,127 @@
+{
+  "instance": {
+    "id": 96,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_13_163",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/13",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/163",
+    "base_commit": "7a3ff2243d70c3b9e33fbaa87ffbd95a383774fa",
+    "patch": "072b29f8d76081d524dc3f70f741efb0481d199c"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task translates classical DOcplex indicator constraints into big-M linear constraints."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/translators/docplex_mp.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The DOcplex translator rejects DOcplex indicator constraints, so models that use conditional linear constraints cannot be imported into Qiskit Optimization through the translator. Users need indicator constraints to be translated into equivalent linear big-M constraints while preserving ordinary variable, objective, and constraint translation behavior.",
+    "requirements": [
+      "Support docplex.mp.constr.IndicatorConstraint in the DOcplex-to-QuadraticProgram translator.",
+      "Translate indicator constraints into one or more linear constraints using a big-M formulation based on variable bounds when no explicit big-M value is supplied.",
+      "Accept an explicit indicator_big_m value and use it instead of automatically derived bounds when translating indicator constraints.",
+      "Handle active values 0 and 1 for indicator constraints.",
+      "Handle <=, >=, and == indicator linear constraints; equality indicators must become paired <= and >= linear constraints with stable names.",
+      "Preserve translated linear coefficients, senses, right-hand sides, and constraint names for the generated QuadraticProgram constraints.",
+      "Continue to reject unsupported DOcplex features such as equivalence, not-equal, logical, piecewise-linear, lazy, user-cut, SOS, and unsupported variable types."
+    ],
+    "interface": [
+      {
+        "Type": "Function",
+        "Name": "from_docplex_mp",
+        "Path": "qiskit_optimization/translators/docplex_mp.py",
+        "Input": "model: docplex.mp.model.Model, indicator_big_m: float | None = None",
+        "Output": "QuadraticProgram",
+        "Description": "Translates a DOcplex model, including supported indicator constraints, into a QuadraticProgram."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_13_163",
+      "image_id": "sha256:177c2721a7659bdcc7765d0fe0d63dba0d7d2e5bea16307e6e7400d1bd2778c1",
+      "image_size": "986938682"
+    },
+    "environment": {
+      "python_version": "3.8",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "qiskit-terra @ git+https://github.com/Qiskit/qiskit-terra.git@5fad07e9c537e7f254cbd099e129a1eb427176cd",
+        "numpy<1.24",
+        "scipy<1.11",
+        "docplex==2.21.207",
+        "networkx<3",
+        "pytest<8",
+        "ddt",
+        "Cython<3"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_indicator_constraints"
+        ],
+        "summary": "1 passed in 1.49s",
+        "duration_seconds": 8.75
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+          "test/problems/test_linear_constraint.py::TestLinearConstraint::test_init",
+          "test/problems/test_linear_expression.py::TestLinearExpression::test_evaluate",
+          "test/problems/test_variable.py::TestVariable::test_init"
+        ],
+        "summary": "9 passed in 1.56s",
+        "duration_seconds": 7.41
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_indicator_constraints"
+        ],
+        "summary": "1 failed in 1.53s; indicator constraint translation raises QiskitOptimizationError on base",
+        "duration_seconds": 10.56
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/translators/test_docplex_mp.py::TestDocplexMpTranslator::test_from_and_to",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_constructor",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_variables_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_objective_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_linear_constraints_handling",
+          "test/problems/test_quadratic_program.py::TestQuadraticProgram::test_quadratic_constraints_handling",
+          "test/problems/test_linear_constraint.py::TestLinearConstraint::test_init",
+          "test/problems/test_linear_expression.py::TestLinearExpression::test_evaluate",
+          "test/problems/test_variable.py::TestVariable::test_init"
+        ],
+        "summary": "9 passed in 1.52s",
+        "duration_seconds": 12.33
+      }
+    }
+  },
+  "evaluation_resources": {
+    "patched_p2p_test_files": [
+      "test/translators/test_docplex_mp.py"
+    ]
+  }
+}

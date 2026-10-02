@@ -1,0 +1,1454 @@
+Patch applied: true
+Running fail-pass tests...
+..F..FF.......F.F.F.F...F.                                               [100%]
+=================================== FAILURES ===================================
+_________________ TestQNNRegressor.test_serialization[qulacs] __________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe1eb2200>
+request = <FixtureRequest for <Function test_serialization[qulacs]>>
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+framework = 'qulacs'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNRegressor."""
+    
+        X, y = data
+        qnn_regressor = self.get_qnn_regressor(framework)
+        qnn_regressor.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_regressor.dump(buffer)
+
+tests/qnn/test_qnnr.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:29: in dump
+    ExecutorExcludingPickler(target).dump(self)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:932: in save_list
+    self._batch_appends(obj)
+/usr/local/lib/python3.10/pickle.py:956: in _batch_appends
+    save(x)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1150: in _save_with_postproc
+    pickler._batch_setitems(iter(source.items()))
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:387: in save_numpy_ufunc
+    StockPickler.save_global(pickler, obj, name=name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.util.serialization.serializable_model_mixin.SerializableModelMixin.dump.<locals>.ExecutorExcludingPickler object at 0x7fffdaf1a5f0>
+obj = <ufunc 'assoc_legendre_p'>, name = 'assoc_legendre_p'
+
+    def save_global(self, obj, name=None):
+        write = self.write
+        memo = self.memo
+    
+        if name is None:
+            name = getattr(obj, '__qualname__', None)
+        if name is None:
+            name = obj.__name__
+    
+        module_name = whichmodule(obj, name)
+        try:
+            __import__(module_name, level=0)
+            module = sys.modules[module_name]
+            obj2, parent = _getattribute(module, name)
+        except (ImportError, KeyError, AttributeError):
+>           raise PicklingError(
+                "Can't pickle %r: it's not found as %s.%s" %
+                (obj, module_name, name)) from None
+E           _pickle.PicklingError: Can't pickle <ufunc 'assoc_legendre_p'>: it's not found as __main__.assoc_legendre_p
+
+/usr/local/lib/python3.10/pickle.py:1071: PicklingError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 81.93it/s]
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qulacs
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+_________________ TestQNNClassifier.test_serialization[qulacs] _________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe19f0340>
+request = <FixtureRequest for <Function test_serialization[qulacs]>>
+data = (array([[0.87909297, 0.34157351],
+       [0.1       , 0.78589188],
+       [0.16013294, 0.76436588],
+       [0.9       ...7408025, 0.24706199],
+       [0.83617927, 0.1770553 ],
+       [0.11927146, 0.9       ]]), array([0, 1, 1, 0, 0, 0, 1]))
+framework = 'qulacs'
+
+    @pytest.mark.parametrize("framework", ["qiskit", "pennylane", "qulacs"])
+    def test_serialization(self, request, data, framework):
+        """Tests concerning the serialization of the QNNClassifier."""
+        X, y = data
+        qnn_classifier = self.get_qnn_classifier(framework)
+        qnn_classifier.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       qnn_classifier.dump(buffer)
+
+tests/qnn/test_qnnc.py:226: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/util/serialization/serializable_model_mixin.py:29: in dump
+    ExecutorExcludingPickler(target).dump(self)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:429: in dump
+    StockPickler.dump(self, obj)
+/usr/local/lib/python3.10/pickle.py:487: in dump
+    self.save(obj)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/pickle.py:932: in save_list
+    self._batch_appends(obj)
+/usr/local/lib/python3.10/pickle.py:956: in _batch_appends
+    save(x)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:2046: in save_function
+    _save_with_postproc(pickler, (_create_function, (
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1150: in _save_with_postproc
+    pickler._batch_setitems(iter(source.items()))
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:603: in save
+    self.save_reduce(obj=obj, *rv)
+/usr/local/lib/python3.10/pickle.py:717: in save_reduce
+    save(state)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:1266: in save_module_dict
+    StockPickler.save_dict(pickler, obj)
+/usr/local/lib/python3.10/pickle.py:972: in save_dict
+    self._batch_setitems(obj.items())
+/usr/local/lib/python3.10/pickle.py:998: in _batch_setitems
+    save(v)
+src/squlearn/util/serialization/serializable_model_mixin.py:23: in save
+    return super().save(obj)
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:423: in save
+    StockPickler.save(self, obj, save_persistent_id)
+/usr/local/lib/python3.10/pickle.py:560: in save
+    f(self, obj)  # Call unbound method with explicit self
+/usr/local/lib/python3.10/site-packages/dill/_dill.py:387: in save_numpy_ufunc
+    StockPickler.save_global(pickler, obj, name=name)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.util.serialization.serializable_model_mixin.SerializableModelMixin.dump.<locals>.ExecutorExcludingPickler object at 0x7fffe03b7dc0>
+obj = <ufunc 'assoc_legendre_p'>, name = 'assoc_legendre_p'
+
+    def save_global(self, obj, name=None):
+        write = self.write
+        memo = self.memo
+    
+        if name is None:
+            name = getattr(obj, '__qualname__', None)
+        if name is None:
+            name = obj.__name__
+    
+        module_name = whichmodule(obj, name)
+        try:
+            __import__(module_name, level=0)
+            module = sys.modules[module_name]
+            obj2, parent = _getattribute(module, name)
+        except (ImportError, KeyError, AttributeError):
+>           raise PicklingError(
+                "Can't pickle %r: it's not found as %s.%s" %
+                (obj, module_name, name)) from None
+E           _pickle.PicklingError: Can't pickle <ufunc 'assoc_legendre_p'>: it's not found as __main__.assoc_legendre_p
+
+/usr/local/lib/python3.10/pickle.py:1071: PicklingError
+----------------------------- Captured stdout call -----------------------------
+
+fit:   0%|          | 0/2 [00:00<?, ?it/s]
+fit: 100%|██████████| 2/2 [00:00<00:00, 125.57it/s]
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qulacs
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+INFO     executor:executor.py:849 Execution of qulacs circuit
+INFO     executor:executor.py:852 Execution of qulacs successful
+__________________ TestQKRR.test_serialization[qkrr_fidelity] __________________
+
+self = <tests.kernel.ml.test_qkrr.TestQKRR object at 0x7fffe17045b0>
+qkrr = 'qkrr_fidelity'
+request = <FixtureRequest for <Function test_serialization[qkrr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qkrr", ["qkrr_fidelity", "qkrr_pqk"])
+    def test_serialization(self, qkrr, request, data):
+        """Tests serialization of QKRR."""
+        instance = request.getfixturevalue(qkrr)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+        instance.dump(buffer)
+    
+        predict_before = instance.predict(X)
+    
+        buffer.seek(0)
+        instance_loaded = QKRR.load(buffer, Executor("qiskit"))
+>       predict_after = instance_loaded.predict(X)
+
+tests/kernel/ml/test_qkrr.py:237: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/kernel/qkrr.py:199: in predict
+    self.k_testtrain = self._quantum_kernel.evaluate(X, self.X_train)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:213: in evaluate
+    kernel_matrix = self._quantum_kernel.evaluate(x, y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:189: in evaluate
+    kernel_matrix = self.evaluate_kernel_sv(x, y)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.kernel.lowlevel_kernel.fidelity_kernel_statevector.FidelityKernelStatevector object at 0x7fffdaacc160>
+x = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+
+    def evaluate_kernel_sv(self, x, y):
+        """
+        Function to evaluate the kernel matrix with statevector simulator using PennyLane.
+    
+        Evaluates the kernel matrix using the statevectors, overlap is then
+        classically calculated.
+    
+        Args:
+            x (np.ndarray): Vector of data for which the kernel matrix is evaluated
+            y (np.ndarray): Vector of data for which the kernel matrix is evaluated
+                            (can be similar to x)
+    
+        Returns:
+            np.ndarray: Quantum kernel matrix as 2D numpy array.
+        """
+        shots = self._executor.shots
+        self._executor.set_shots(None)
+        is_symmetric = np.array_equal(x, y)
+    
+        def get_kernel_entry(x: np.ndarray, y: np.ndarray) -> float:
+            """Compute the kernel entry based on the overlap x and y."""
+            # Calculate overlap between statevector x and y
+            overlap = np.abs(np.matmul(x.conj(), y)) ** 2
+            # If shots are set, draw from the binomial distribution
+            if shots is not None and shots > 1:
+                overlap = algorithm_globals.random.binomial(n=shots, p=overlap) / shots
+            return overlap
+    
+        # Convert the input data to the correct format for the lrucache
+        x_inp, _ = adjust_features(x, self._num_features)
+        x_inpT = to_tuple(np.transpose(x_inp), flatten=False)
+        y_inp, _ = adjust_features(y, self._num_features)
+        y_inpT = to_tuple(np.transpose(y_inp), flatten=False)
+    
+        if self._executor.quantum_framework == "pennylane":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(self._cached_execution(tuple(self._parameters), x_inpT))
+                y_sv = np.array(self._cached_execution(tuple(self._parameters), y_inpT))
+            else:
+                x_sv = np.array(self._cached_execution(x_inpT))
+                y_sv = np.array(self._cached_execution(y_inpT))
+    
+        elif self._executor.quantum_framework == "qulacs":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(x_)) for x_ in x_inp]
+                )
+                y_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(y_)) for y_ in y_inp]
+                )
+            else:
+                x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
+    
+>       if len(x_sv.shape) == 1:
+E       UnboundLocalError: local variable 'x_sv' referenced before assignment
+
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:353: UnboundLocalError
+----------------------------- Captured stdout call -----------------------------
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+__________________ TestQSVR.test_serialization[qsvr_fidelity] __________________
+
+self = <tests.kernel.ml.test_qsvr.TestQSVR object at 0x7fffe1705d80>
+qsvr = 'qsvr_fidelity'
+request = <FixtureRequest for <Function test_serialization[qsvr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qsvr", ["qsvr_fidelity", "qsvr_pqk"])
+    def test_serialization(self, qsvr, request, data):
+        """Tests serialization of QSVR."""
+        instance = request.getfixturevalue(qsvr)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+        instance.dump(buffer)
+    
+        predict_before = instance.predict(X)
+    
+        buffer.seek(0)
+        instance_loaded = QSVR.load(buffer, Executor("qiskit"))
+>       predict_after = instance_loaded.predict(X)
+
+tests/kernel/ml/test_qsvr.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:438: in predict
+    return predict(X)
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:441: in _dense_predict
+    X = self._compute_kernel(X)
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:515: in _compute_kernel
+    kernel = self.kernel(X, self.__Xfit)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:213: in evaluate
+    kernel_matrix = self._quantum_kernel.evaluate(x, y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:189: in evaluate
+    kernel_matrix = self.evaluate_kernel_sv(x, y)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.kernel.lowlevel_kernel.fidelity_kernel_statevector.FidelityKernelStatevector object at 0x7fffdaacfca0>
+x = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+
+    def evaluate_kernel_sv(self, x, y):
+        """
+        Function to evaluate the kernel matrix with statevector simulator using PennyLane.
+    
+        Evaluates the kernel matrix using the statevectors, overlap is then
+        classically calculated.
+    
+        Args:
+            x (np.ndarray): Vector of data for which the kernel matrix is evaluated
+            y (np.ndarray): Vector of data for which the kernel matrix is evaluated
+                            (can be similar to x)
+    
+        Returns:
+            np.ndarray: Quantum kernel matrix as 2D numpy array.
+        """
+        shots = self._executor.shots
+        self._executor.set_shots(None)
+        is_symmetric = np.array_equal(x, y)
+    
+        def get_kernel_entry(x: np.ndarray, y: np.ndarray) -> float:
+            """Compute the kernel entry based on the overlap x and y."""
+            # Calculate overlap between statevector x and y
+            overlap = np.abs(np.matmul(x.conj(), y)) ** 2
+            # If shots are set, draw from the binomial distribution
+            if shots is not None and shots > 1:
+                overlap = algorithm_globals.random.binomial(n=shots, p=overlap) / shots
+            return overlap
+    
+        # Convert the input data to the correct format for the lrucache
+        x_inp, _ = adjust_features(x, self._num_features)
+        x_inpT = to_tuple(np.transpose(x_inp), flatten=False)
+        y_inp, _ = adjust_features(y, self._num_features)
+        y_inpT = to_tuple(np.transpose(y_inp), flatten=False)
+    
+        if self._executor.quantum_framework == "pennylane":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(self._cached_execution(tuple(self._parameters), x_inpT))
+                y_sv = np.array(self._cached_execution(tuple(self._parameters), y_inpT))
+            else:
+                x_sv = np.array(self._cached_execution(x_inpT))
+                y_sv = np.array(self._cached_execution(y_inpT))
+    
+        elif self._executor.quantum_framework == "qulacs":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(x_)) for x_ in x_inp]
+                )
+                y_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(y_)) for y_ in y_inp]
+                )
+            else:
+                x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
+    
+>       if len(x_sv.shape) == 1:
+E       UnboundLocalError: local variable 'x_sv' referenced before assignment
+
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:353: UnboundLocalError
+----------------------------- Captured stdout call -----------------------------
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+__________________ TestQGPR.test_serialization[qgpr_fidelity] __________________
+
+self = <tests.kernel.ml.test_qgpr.TestQGPR object at 0x7fffe155e290>
+qgpr = 'qgpr_fidelity'
+request = <FixtureRequest for <Function test_serialization[qgpr_fidelity]>>
+data = (array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544...371, 0.9       ]]), array([ 99.62739263, -38.53859219, -19.4104222 ,  14.18779322,
+         7.85663467,  88.31795591]))
+
+    @pytest.mark.parametrize("qgpr", ["qgpr_fidelity", "qgpr_pqk"])
+    def test_serialization(self, qgpr, request, data):
+        """Tests serialization of QGPR."""
+        instance = request.getfixturevalue(qgpr)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+        instance.dump(buffer)
+    
+        predict_before = instance.predict(X)
+    
+        buffer.seek(0)
+        instance_loaded = QGPR.load(buffer, Executor("qiskit"))
+>       predict_after = instance_loaded.predict(X)
+
+tests/kernel/ml/test_qgpr.py:274: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/squlearn/kernel/qgpr.py:248: in predict
+    self.K_test = self._quantum_kernel.evaluate(x=X)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:213: in evaluate
+    kernel_matrix = self._quantum_kernel.evaluate(x, y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:189: in evaluate
+    kernel_matrix = self.evaluate_kernel_sv(x, y)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.kernel.lowlevel_kernel.fidelity_kernel_statevector.FidelityKernelStatevector object at 0x7fffdae0aad0>
+x = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+y = array([[0.9       , 0.53624539],
+       [0.1       , 0.1023651 ],
+       [0.1931607 , 0.19189144],
+       [0.50559544, 0.1       ],
+       [0.23172651, 0.4772908 ],
+       [0.59605371, 0.9       ]])
+
+    def evaluate_kernel_sv(self, x, y):
+        """
+        Function to evaluate the kernel matrix with statevector simulator using PennyLane.
+    
+        Evaluates the kernel matrix using the statevectors, overlap is then
+        classically calculated.
+    
+        Args:
+            x (np.ndarray): Vector of data for which the kernel matrix is evaluated
+            y (np.ndarray): Vector of data for which the kernel matrix is evaluated
+                            (can be similar to x)
+    
+        Returns:
+            np.ndarray: Quantum kernel matrix as 2D numpy array.
+        """
+        shots = self._executor.shots
+        self._executor.set_shots(None)
+        is_symmetric = np.array_equal(x, y)
+    
+        def get_kernel_entry(x: np.ndarray, y: np.ndarray) -> float:
+            """Compute the kernel entry based on the overlap x and y."""
+            # Calculate overlap between statevector x and y
+            overlap = np.abs(np.matmul(x.conj(), y)) ** 2
+            # If shots are set, draw from the binomial distribution
+            if shots is not None and shots > 1:
+                overlap = algorithm_globals.random.binomial(n=shots, p=overlap) / shots
+            return overlap
+    
+        # Convert the input data to the correct format for the lrucache
+        x_inp, _ = adjust_features(x, self._num_features)
+        x_inpT = to_tuple(np.transpose(x_inp), flatten=False)
+        y_inp, _ = adjust_features(y, self._num_features)
+        y_inpT = to_tuple(np.transpose(y_inp), flatten=False)
+    
+        if self._executor.quantum_framework == "pennylane":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(self._cached_execution(tuple(self._parameters), x_inpT))
+                y_sv = np.array(self._cached_execution(tuple(self._parameters), y_inpT))
+            else:
+                x_sv = np.array(self._cached_execution(x_inpT))
+                y_sv = np.array(self._cached_execution(y_inpT))
+    
+        elif self._executor.quantum_framework == "qulacs":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(x_)) for x_ in x_inp]
+                )
+                y_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(y_)) for y_ in y_inp]
+                )
+            else:
+                x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
+    
+>       if len(x_sv.shape) == 1:
+E       UnboundLocalError: local variable 'x_sv' referenced before assignment
+
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:353: UnboundLocalError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+__________________ TestQSVC.test_serialization[qsvc_fidelity] __________________
+
+self = <tests.kernel.ml.test_qsvc.TestQSVC object at 0x7fffe1e8ae90>
+qsvc = 'qsvc_fidelity'
+request = <FixtureRequest for <Function test_serialization[qsvc_fidelity]>>
+data = (array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))
+
+    @pytest.mark.parametrize("qsvc", ["qsvc_fidelity", "qsvc_pqk"])
+    def test_serialization(self, qsvc, request, data):
+        """Tests serialization of QSVC."""
+        instance = request.getfixturevalue(qsvc)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+        instance.dump(buffer)
+    
+        predict_before = instance.predict(X)
+    
+        buffer.seek(0)
+        instance_loaded = QSVC.load(buffer, Executor("qiskit"))
+>       predict_after = instance_loaded.predict(X)
+
+tests/kernel/ml/test_qsvc.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:822: in predict
+    y = super().predict(X)
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:438: in predict
+    return predict(X)
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:441: in _dense_predict
+    X = self._compute_kernel(X)
+/usr/local/lib/python3.10/site-packages/sklearn/svm/_base.py:515: in _compute_kernel
+    kernel = self.kernel(X, self.__Xfit)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:213: in evaluate
+    kernel_matrix = self._quantum_kernel.evaluate(x, y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:189: in evaluate
+    kernel_matrix = self.evaluate_kernel_sv(x, y)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.kernel.lowlevel_kernel.fidelity_kernel_statevector.FidelityKernelStatevector object at 0x7fffdad89570>
+x = array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]])
+y = array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]])
+
+    def evaluate_kernel_sv(self, x, y):
+        """
+        Function to evaluate the kernel matrix with statevector simulator using PennyLane.
+    
+        Evaluates the kernel matrix using the statevectors, overlap is then
+        classically calculated.
+    
+        Args:
+            x (np.ndarray): Vector of data for which the kernel matrix is evaluated
+            y (np.ndarray): Vector of data for which the kernel matrix is evaluated
+                            (can be similar to x)
+    
+        Returns:
+            np.ndarray: Quantum kernel matrix as 2D numpy array.
+        """
+        shots = self._executor.shots
+        self._executor.set_shots(None)
+        is_symmetric = np.array_equal(x, y)
+    
+        def get_kernel_entry(x: np.ndarray, y: np.ndarray) -> float:
+            """Compute the kernel entry based on the overlap x and y."""
+            # Calculate overlap between statevector x and y
+            overlap = np.abs(np.matmul(x.conj(), y)) ** 2
+            # If shots are set, draw from the binomial distribution
+            if shots is not None and shots > 1:
+                overlap = algorithm_globals.random.binomial(n=shots, p=overlap) / shots
+            return overlap
+    
+        # Convert the input data to the correct format for the lrucache
+        x_inp, _ = adjust_features(x, self._num_features)
+        x_inpT = to_tuple(np.transpose(x_inp), flatten=False)
+        y_inp, _ = adjust_features(y, self._num_features)
+        y_inpT = to_tuple(np.transpose(y_inp), flatten=False)
+    
+        if self._executor.quantum_framework == "pennylane":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(self._cached_execution(tuple(self._parameters), x_inpT))
+                y_sv = np.array(self._cached_execution(tuple(self._parameters), y_inpT))
+            else:
+                x_sv = np.array(self._cached_execution(x_inpT))
+                y_sv = np.array(self._cached_execution(y_inpT))
+    
+        elif self._executor.quantum_framework == "qulacs":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(x_)) for x_ in x_inp]
+                )
+                y_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(y_)) for y_ in y_inp]
+                )
+            else:
+                x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
+    
+>       if len(x_sv.shape) == 1:
+E       UnboundLocalError: local variable 'x_sv' referenced before assignment
+
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:353: UnboundLocalError
+----------------------------- Captured stdout call -----------------------------
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+__________________ TestQGPC.test_serialization[qgpc_fidelity] __________________
+
+self = <tests.kernel.ml.test_qgpc.TestQGPC object at 0x7fffe168c3d0>
+qgpc = 'qgpc_fidelity'
+request = <FixtureRequest for <Function test_serialization[qgpc_fidelity]>>
+data = (array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))
+
+    @pytest.mark.parametrize("qgpc", ["qgpc_fidelity", "qgpc_pqk"])
+    def test_serialization(self, qgpc, request, data):
+        """Tests concerning the serialization of the QGPC."""
+        instance = request.getfixturevalue(qgpc)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+        instance.dump(buffer)
+    
+        predict_before = instance.predict(X)
+    
+        buffer.seek(0)
+        instance_loaded = QGPC.load(buffer, Executor("qiskit"))
+>       predict_after = instance_loaded.predict(X)
+
+tests/kernel/ml/test_qgpc.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/sklearn/gaussian_process/_gpc.py:779: in predict
+    return self.base_estimator_.predict(X)
+/usr/local/lib/python3.10/site-packages/sklearn/gaussian_process/_gpc.py:287: in predict
+    K_star = self.kernel_(self.X_train_, X)  # K_star =k(x_star)
+src/squlearn/kernel/lowlevel_kernel/kernel_util.py:26: in __call__
+    kernel_matrix = self.kernel_matrix.evaluate(X, Y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py:213: in evaluate
+    kernel_matrix = self._quantum_kernel.evaluate(x, y)
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:189: in evaluate
+    kernel_matrix = self.evaluate_kernel_sv(x, y)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <squlearn.kernel.lowlevel_kernel.fidelity_kernel_statevector.FidelityKernelStatevector object at 0x7fffdaaf8c70>
+x = array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]])
+y = array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]])
+
+    def evaluate_kernel_sv(self, x, y):
+        """
+        Function to evaluate the kernel matrix with statevector simulator using PennyLane.
+    
+        Evaluates the kernel matrix using the statevectors, overlap is then
+        classically calculated.
+    
+        Args:
+            x (np.ndarray): Vector of data for which the kernel matrix is evaluated
+            y (np.ndarray): Vector of data for which the kernel matrix is evaluated
+                            (can be similar to x)
+    
+        Returns:
+            np.ndarray: Quantum kernel matrix as 2D numpy array.
+        """
+        shots = self._executor.shots
+        self._executor.set_shots(None)
+        is_symmetric = np.array_equal(x, y)
+    
+        def get_kernel_entry(x: np.ndarray, y: np.ndarray) -> float:
+            """Compute the kernel entry based on the overlap x and y."""
+            # Calculate overlap between statevector x and y
+            overlap = np.abs(np.matmul(x.conj(), y)) ** 2
+            # If shots are set, draw from the binomial distribution
+            if shots is not None and shots > 1:
+                overlap = algorithm_globals.random.binomial(n=shots, p=overlap) / shots
+            return overlap
+    
+        # Convert the input data to the correct format for the lrucache
+        x_inp, _ = adjust_features(x, self._num_features)
+        x_inpT = to_tuple(np.transpose(x_inp), flatten=False)
+        y_inp, _ = adjust_features(y, self._num_features)
+        y_inpT = to_tuple(np.transpose(y_inp), flatten=False)
+    
+        if self._executor.quantum_framework == "pennylane":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(self._cached_execution(tuple(self._parameters), x_inpT))
+                y_sv = np.array(self._cached_execution(tuple(self._parameters), y_inpT))
+            else:
+                x_sv = np.array(self._cached_execution(x_inpT))
+                y_sv = np.array(self._cached_execution(y_inpT))
+    
+        elif self._executor.quantum_framework == "qulacs":
+    
+            if self._parameter_vector is not None:
+                if self._parameters is None:
+                    raise ValueError(
+                        "Parameters have to been set with assign_parameters or as initial parameters!"
+                    )
+                x_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(x_)) for x_ in x_inp]
+                )
+                y_sv = np.array(
+                    [self._cached_execution(tuple(self._parameters), tuple(y_)) for y_ in y_inp]
+                )
+            else:
+                x_sv = np.array([self._cached_execution(tuple(x_)) for x_ in x_inp])
+                y_sv = np.array([self._cached_execution(tuple(y_)) for y_ in y_inp])
+    
+>       if len(x_sv.shape) == 1:
+E       UnboundLocalError: local variable 'x_sv' referenced before assignment
+
+src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py:353: UnboundLocalError
+----------------------------- Captured stdout call -----------------------------
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+WARNING: Advanced option. Do not use it within an squlearn.kernel workflow
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with qiskit
+INFO     executor:executor.py:786 Executor initialized with backend: AerSimulator('aer_simulator_statevector')
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:2190 Set shots to None
+______________________ test_multiple_executor_references _______________________
+
+executor_obj = <squlearn.util.executor.Executor object at 0x7fffda99b730>
+
+    def test_multiple_executor_references(executor_obj):
+        class Holder(SerializableModelMixin):
+            def __init__(self, executor):
+                self.level1 = DummyExecutorHolder(executor)
+                self.level2 = DummyExecutorHolder(executor)
+    
+        holder = Holder(executor_obj)
+    
+        buffer = io.BytesIO()
+        holder.dump(buffer)
+    
+        # raw load all executor references should be None
+        buffer.seek(0)
+        dummy_pickler = DummyUnpickler(buffer)
+        raw = dummy_pickler.load()
+        assert raw.level1.executor is None
+        assert raw.level2.executor is None
+    
+        # load with ExecutorUnpickler, which should reinject the executor
+        buffer.seek(0)
+    
+>       loaded = holder.load(buffer, executor_obj)
+
+tests/util/serialization/test_model_pickler.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'tests.util.serialization.test_model_pickler.test_multiple_executor_references.<locals>.Holder'>
+source = <_io.BytesIO object at 0x7fffdacabe70>
+executor = <squlearn.util.executor.Executor object at 0x7fffda99b730>
+
+    @classmethod
+    def load(cls, source: Union[str, Path, io.IOBase], executor: Executor):
+        """
+        Loads a model from a file or a binary stream and reinserts the executor.
+    
+        Args:
+            source (Union[str, Path, io.IOBase]): The file path or binary stream to load the model from.
+            executor (Executor): The executor to reinsert into the model.
+    
+        Returns:
+            The loaded model instance.
+        """
+        if not isinstance(executor, Executor):
+            raise TypeError("executor must be an instance of Executor")
+    
+        if isinstance(source, (str, Path)):
+            with open(source, "rb") as f:
+                model = pickle.load(f)
+        elif isinstance(source, io.IOBase):
+            model = pickle.load(source)
+        else:
+            raise TypeError("source must be a file path or a binary stream")
+    
+        if not isinstance(model, cls):
+>           raise TypeError(f"Loaded object is not an instance of {cls.__name__}")
+E           TypeError: Loaded object is not an instance of Holder
+
+src/squlearn/util/serialization/serializable_model_mixin.py:57: TypeError
+------------------------------ Captured log setup ------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+=============================== warnings summary ===============================
+src/squlearn/kernel/lowlevel_kernel/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/lowlevel_kernel/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/lowlevel_kernel/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/qasm_simulator.py:433: PendingDeprecationWarning: The `QasmSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend.
+    warn(
+
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/statevector_simulator.py:242: PendingDeprecationWarning: The `StatevectorSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="statevector")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 2 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/unitary_simulator.py:228: PendingDeprecationWarning: The `UnitarySimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="unitary")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]
+  /workspace/repo/src/squlearn/qnn/lowlevel_qnn/lowlevel_qnn.py:69: UserWarning: Primitive argument is not supported for Qulacs. Ignoring...
+    warn("Primitive argument is not supported for Qulacs. Ignoring...")
+
+tests/qnn/test_qnnc.py: 3 warnings
+tests/kernel/ml/test_qkrr.py: 2 warnings
+tests/qrc/test_qrc_classifier.py: 3 warnings
+tests/qrc/test_qrc_regressor.py: 3 warnings
+tests/kernel/ml/test_qsvr.py: 2 warnings
+tests/kernel/ml/test_qgpr.py: 2 warnings
+tests/kernel/ml/test_qsvc.py: 2 warnings
+tests/kernel/ml/test_qgpc.py: 8 warnings
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+tests/qrc/test_qrc_classifier.py::TestQRCClassifier::test_serialization[mlp]
+  /usr/local/lib/python3.10/site-packages/sklearn/neural_network/_multilayer_perceptron.py:691: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_serialization[qulacs]
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_serialization[qulacs]
+FAILED tests/kernel/ml/test_qkrr.py::TestQKRR::test_serialization[qkrr_fidelity]
+FAILED tests/kernel/ml/test_qsvr.py::TestQSVR::test_serialization[qsvr_fidelity]
+FAILED tests/kernel/ml/test_qgpr.py::TestQGPR::test_serialization[qgpr_fidelity]
+FAILED tests/kernel/ml/test_qsvc.py::TestQSVC::test_serialization[qsvc_fidelity]
+FAILED tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_fidelity]
+FAILED tests/util/serialization/test_model_pickler.py::test_multiple_executor_references
+8 failed, 18 passed, 78 warnings in 19.46s
+
+
+Running pass-pass tests...
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_fidelity]
+tests/kernel/ml/test_qkrr.py::TestQKRR::test_predict[qkrr_pqk]
+  /workspace/repo/src/squlearn/encoding_circuit/encoding_circuit_base.py:28: DeprecationWarning: The parameter 'num_features' is deprecated and will be removed in a future version. Please update your code accordingly.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 2 warnings in 3.18s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)

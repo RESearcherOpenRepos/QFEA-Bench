@@ -1,0 +1,192 @@
+{
+  "instance": {
+    "id": 50,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_167_220",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/167",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/220",
+    "base_commit": "bc2162b5e09bdb793678dfde816041f90a81205b",
+    "patch": "b4a46bf49408153603c3d24bfccc15ceb94aac82"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task builds electronic second-quantized observables whose operators encode particle number, magnetization, and angular-momentum semantics."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/properties/__init__.py",
+      "qiskit_nature/properties/property.py",
+      "qiskit_nature/properties/second_quantization/__init__.py",
+      "qiskit_nature/properties/second_quantization/electronic/__init__.py",
+      "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+      "qiskit_nature/properties/second_quantization/electronic/magnetization.py",
+      "qiskit_nature/properties/second_quantization/electronic/particle_number.py",
+      "qiskit_nature/properties/second_quantization/second_quantized_property.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature needs first-class second-quantized Property objects for core electronic observables instead of relying only on older problem-specific helpers. Users should be able to construct reusable ParticleNumber, Magnetization, and AngularMomentum properties from driver results and obtain the expected second-quantized operators from them.",
+    "requirements": [
+      "Provide a second-quantized Property framework for reusable electronic observables in Qiskit Nature.",
+      "ParticleNumber must be constructible from an electronic driver result and expose the expected number-operator terms through second_q_ops().",
+      "Magnetization must be constructible from an electronic driver result and expose the expected spin-resolved magnetization terms through second_q_ops().",
+      "AngularMomentum must be constructible from an electronic driver result and expose the expected second-quantized angular-momentum operator through second_q_ops().",
+      "Existing electronic-structure problem operator generation and downstream operator-evaluation behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SecondQuantizedProperty",
+        "Path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+        "Input": "constructor: property metadata defined by subclasses",
+        "Output": "",
+        "Description": "Base contract for reusable second-quantized property objects that can be built from driver results and converted into second-quantized operators."
+      },
+      {
+        "Type": "Method",
+        "Name": "SecondQuantizedProperty.from_driver_result",
+        "Path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+        "Input": "cls, result",
+        "Output": "Property",
+        "Description": "Constructs a property instance from a supported electronic or vibrational driver result."
+      },
+      {
+        "Type": "Method",
+        "Name": "SecondQuantizedProperty.second_q_ops",
+        "Path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+        "Input": "self",
+        "Output": "List[SecondQuantizedOp]",
+        "Description": "Returns the second-quantized operators represented by the property."
+      },
+      {
+        "Type": "Class",
+        "Name": "ParticleNumber",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/particle_number.py",
+        "Input": "constructor: electronic occupancy metadata",
+        "Output": "",
+        "Description": "Represents the particle-number observable as a reusable electronic property."
+      },
+      {
+        "Type": "Method",
+        "Name": "ParticleNumber.from_driver_result",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/particle_number.py",
+        "Input": "cls, result",
+        "Output": "ParticleNumber",
+        "Description": "Constructs the particle-number property from an electronic driver result."
+      },
+      {
+        "Type": "Class",
+        "Name": "Magnetization",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/magnetization.py",
+        "Input": "constructor: electronic occupancy metadata",
+        "Output": "",
+        "Description": "Represents the electronic magnetization observable as a reusable property."
+      },
+      {
+        "Type": "Method",
+        "Name": "Magnetization.from_driver_result",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/magnetization.py",
+        "Input": "cls, result",
+        "Output": "Magnetization",
+        "Description": "Constructs the magnetization property from an electronic driver result."
+      },
+      {
+        "Type": "Class",
+        "Name": "AngularMomentum",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+        "Input": "constructor: electronic occupancy metadata",
+        "Output": "",
+        "Description": "Represents the electronic angular-momentum observable as a reusable property."
+      },
+      {
+        "Type": "Method",
+        "Name": "AngularMomentum.from_driver_result",
+        "Path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+        "Input": "cls, result",
+        "Output": "AngularMomentum",
+        "Description": "Constructs the angular-momentum property from an electronic driver result."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_167_220",
+      "image_id": "sha256:194657cb0a474d62b5252668268a1ec57d473afade099514d9b61e2f7935aad4",
+      "image_size": "1103712276"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+          "test/properties/second_quantization/electronic/test_magnetization.py::TestMagnetization::test_second_q_ops",
+          "test/properties/second_quantization/electronic/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops"
+        ],
+        "summary": "3 selected selectors passed.",
+        "duration_seconds": 13.85
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_without_transformers",
+          "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_with_active_space",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_npme",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_list"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 32.05
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/properties/second_quantization/electronic/test_particle_number.py::TestParticleNumber::test_second_q_ops",
+          "test/properties/second_quantization/electronic/test_magnetization.py::TestMagnetization::test_second_q_ops",
+          "test/properties/second_quantization/electronic/test_angular_momentum.py::TestAngularMomentum::test_second_q_ops"
+        ],
+        "summary": "3 selected selectors failed because qiskit_nature.properties is missing on base.",
+        "duration_seconds": 15.88
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_without_transformers",
+          "test/problems/second_quantization/electronic/test_electronic_structure_problem.py::TestElectronicStructureProblem::test_second_q_ops_with_active_space",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_npme",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_single",
+          "test/algorithms/ground_state_solvers/test_groundstate_eigensolver.py::TestGroundStateEigensolver::test_eval_op_list"
+        ],
+        "summary": "5 selected selectors passed.",
+        "duration_seconds": 31.3
+      }
+    }
+  }
+}

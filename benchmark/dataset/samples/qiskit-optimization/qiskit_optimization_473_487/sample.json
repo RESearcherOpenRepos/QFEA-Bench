@@ -1,0 +1,279 @@
+{
+  "instance": {
+    "id": 101,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_473_487",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/473",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/487",
+    "base_commit": "b6d004115abb1f86f06b5aef2d6b12d18db60350",
+    "patch": "d7b9ddba474be0a1e9abdc72f4fa68d52cd1d82f"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task implements QRAO encoding, quantum random-access-code operators, quantum rounding, and relaxed quantum optimizer workflows."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/__init__.py",
+      "qiskit_optimization/algorithms/optimization_algorithm.py",
+      "qiskit_optimization/algorithms/qrao/__init__.py",
+      "qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py",
+      "qiskit_optimization/algorithms/qrao/magic_rounding.py",
+      "qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py",
+      "qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py",
+      "qiskit_optimization/algorithms/qrao/rounding_common.py",
+      "qiskit_optimization/algorithms/qrao/semideterministic_rounding.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Optimization did not include Quantum Random Access Optimization (QRAO), so users could not encode binary quadratic optimization problems into quantum random access code relaxations, solve the relaxed Hamiltonian with primitive-based minimum eigensolvers, and round the relaxed result back to classical bit-string solutions from inside the package. The QRAO prototype needed to be integrated into the optimization algorithm stack with Qiskit primitives, SparsePauliOp-based operators, rounding schemes, tests, and public exports.",
+    "requirements": [
+      "Add a qiskit_optimization.algorithms.qrao module that exposes QRAO encoding, rounding, and optimizer classes through the package public API.",
+      "Implement QuantumRandomAccessEncoding for 1, 2, and 3 variables per qubit, including QRAC operator assignment, encoded SparsePauliOp construction, offsets, compression metrics, and state preparation circuits.",
+      "Reject unsupported encodings and unsupported optimization problems with clear errors.",
+      "Provide a commutation verifier that checks encoded objective values against original quadratic-program objective values.",
+      "Implement SemideterministicRounding and MagicRounding to convert relaxed expectation values or sampled QRAC measurements into SolutionSample objects.",
+      "Implement QuantumRandomAccessOptimizer with solve_relaxed and solve workflows that accept auxiliary-operator-capable minimum eigensolvers such as NumPyMinimumEigensolver and VQE.",
+      "Return a QuantumRandomAccessOptimizationResult containing rounded samples, relaxed objective data, the relaxed eigensolver result, and rounding metadata.",
+      "Use Qiskit primitives and SparsePauliOp rather than legacy quantum-instance or opflow APIs."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "QuantumRandomAccessEncoding",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py",
+        "Input": "constructor: max_vars_per_qubit: int = 3",
+        "Output": "",
+        "Description": "Encodes a binary QuadraticProgram into a QRAC-backed SparsePauliOp relaxation, exposing the encoded problem, qubit operator, offset, variable count, and variable-to-Pauli mapping metadata."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumRandomAccessEncoding.encode",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "None",
+        "Description": "Builds the qubit operator, offset, and variable-to-Pauli mapping for the relaxed problem."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumRandomAccessEncoding.state_preparation_circuit",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py",
+        "Input": "self, x: Sequence[int]",
+        "Output": "QuantumCircuit",
+        "Description": "Builds the QRAC state preparation circuit for a classical bit string under the encoded variable assignment."
+      },
+      {
+        "Type": "Class",
+        "Name": "EncodingCommutationVerifier",
+        "Path": "qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py",
+        "Input": "constructor: encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator",
+        "Output": "",
+        "Description": "Verifies that relaxed expectation values match original objective values and supports length checks plus iteration over encoded bit-string records."
+      },
+      {
+        "Type": "Method",
+        "Name": "EncodingCommutationVerifier.__len__",
+        "Path": "qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py",
+        "Input": "self",
+        "Output": "int",
+        "Description": "Returns the number of encoded bit-string assignments covered by the verifier."
+      },
+      {
+        "Type": "Method",
+        "Name": "EncodingCommutationVerifier.__iter__",
+        "Path": "qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py",
+        "Input": "self",
+        "Output": "Iterator[tuple[str, float, float]]",
+        "Description": "Iterates over encoded bit strings together with original and encoded objective values."
+      },
+      {
+        "Type": "Class",
+        "Name": "RoundingContext",
+        "Path": "qiskit_optimization/algorithms/qrao/rounding_common.py",
+        "Input": "constructor: encoding: QuantumRandomAccessEncoding, expectation_values: list[complex] | None, circuit: QuantumCircuit | None = None",
+        "Output": "",
+        "Description": "Context object passed to QRAO rounding schemes."
+      },
+      {
+        "Type": "Class",
+        "Name": "RoundingResult",
+        "Path": "qiskit_optimization/algorithms/qrao/rounding_common.py",
+        "Input": "constructor: expectation_values: list[complex] | None, samples: list[SolutionSample], bases: np.ndarray | None = None, basis_shots: np.ndarray | None = None, basis_counts: list[dict[str, int]] | None = None",
+        "Output": "",
+        "Description": "Result object returned by QRAO rounding schemes."
+      },
+      {
+        "Type": "Class",
+        "Name": "MagicRounding",
+        "Path": "qiskit_optimization/algorithms/qrao/magic_rounding.py",
+        "Input": "constructor: sampler: BaseSampler, basis_sampling: str = 'uniform', seed: int | None = None",
+        "Output": "",
+        "Description": "Samples QRAC measurement bases and rounds measurement outcomes into classical optimization samples."
+      },
+      {
+        "Type": "Method",
+        "Name": "MagicRounding.round",
+        "Path": "qiskit_optimization/algorithms/qrao/magic_rounding.py",
+        "Input": "rounding_context: RoundingContext",
+        "Output": "RoundingResult",
+        "Description": "Rounds a relaxed QRAO solution by sampling QRAC measurement bases with a Qiskit sampler."
+      },
+      {
+        "Type": "Method",
+        "Name": "MagicRounding._make_circuits",
+        "Path": "qiskit_optimization/algorithms/qrao/magic_rounding.py",
+        "Input": "circuit: QuantumCircuit, bases: np.ndarray, vars_per_qubit: int",
+        "Output": "list[QuantumCircuit]",
+        "Description": "Builds QRAC measurement circuits for sampled bases and validates the variables-per-qubit setting."
+      },
+      {
+        "Type": "Class",
+        "Name": "SemideterministicRounding",
+        "Path": "qiskit_optimization/algorithms/qrao/semideterministic_rounding.py",
+        "Input": "constructor: atol: float = 1e-8, seed: int | None = None",
+        "Output": "",
+        "Description": "Rounds relaxed expectation values deterministically when signs are nonzero and randomly for ambiguous values."
+      },
+      {
+        "Type": "Method",
+        "Name": "SemideterministicRounding.round",
+        "Path": "qiskit_optimization/algorithms/qrao/semideterministic_rounding.py",
+        "Input": "rounding_context: RoundingContext",
+        "Output": "RoundingResult",
+        "Description": "Rounds a relaxed QRAO solution from expectation values without running additional quantum sampling."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuantumRandomAccessOptimizer",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py",
+        "Input": "constructor: min_eigen_solver: MinimumEigensolver, max_vars_per_qubit: int = 3, rounding_scheme: RoundingScheme | None = None, penalty: float | None = None",
+        "Output": "",
+        "Description": "Runs QRAO by encoding a quadratic program, solving the relaxed Hamiltonian, and rounding to classical solutions."
+      },
+      {
+        "Type": "Class",
+        "Name": "QuantumRandomAccessOptimizationResult",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py",
+        "Input": "constructor: x: list[float] | np.ndarray, fval: float, variables: list[Variable], status: OptimizationResultStatus, samples: list[SolutionSample], encoding: QuantumRandomAccessEncoding, relaxed_fval: float, relaxed_result: MinimumEigensolverResult, rounding_result: RoundingResult",
+        "Output": "",
+        "Description": "Optimization result returned by the full QRAO solve workflow, including rounded samples and relaxed-solver metadata."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumRandomAccessOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "QuantumRandomAccessOptimizationResult",
+        "Description": "Executes the full QRAO workflow and returns rounded samples plus relaxed-solver metadata."
+      },
+      {
+        "Type": "Method",
+        "Name": "QuantumRandomAccessOptimizer.solve_relaxed",
+        "Path": "qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py",
+        "Input": "encoding: QuantumRandomAccessEncoding",
+        "Output": "tuple[MinimumEigensolverResult, RoundingContext]",
+        "Description": "Solves the encoded relaxed Hamiltonian and prepares context for a separate rounding step."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_473_487",
+      "image_id": "sha256:1de1daf6212e4b7544b8211a89b991b06dc0f7b560a9f5554630cfe7972c056f",
+      "image_size": "1054741511"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.14",
+        "qiskit==0.44.3",
+        "qiskit-algorithms==0.2.2",
+        "qiskit-aer==0.12.2",
+        "docplex>=2.21.207,!=2.24.231",
+        "networkx>=2.6.3",
+        "pytest",
+        "ddt",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+          "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding"
+        ],
+        "summary": "8 passed in 13.19s",
+        "duration_seconds": 28.51
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+          "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+          "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+          "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary"
+        ],
+        "summary": "11 passed in 1.83s",
+        "duration_seconds": 5.08
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_11p_qrac_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestQuantumRandomAccessEncoding::test_qrac_unsupported_encoding",
+          "test/algorithms/qrao/test_quantum_random_access_encoding.py::TestEncodingCommutationVerifier::test_encoding_commutation_verifier",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_constructor",
+          "test/algorithms/qrao/test_magic_rounding.py::TestMagicRounding::test_magic_rounding_round_uniform_1_1_qrac",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_numpy",
+          "test/algorithms/qrao/test_quantum_random_access_optimizer.py::TestQuantumRandomAccessOptimizer::test_solve_relaxed_numpy",
+          "test/algorithms/qrao/test_semideterministic_rounding.py::TestSemideterministicRounding::test_semideterministic_rounding"
+        ],
+        "summary": "Collection failed because qiskit_optimization.algorithms.qrao is missing; 4 errors in 4.56s",
+        "duration_seconds": 21.34
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_init",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_prettyprint",
+          "test/algorithms/test_optimization_result.py::TestOptimizationResult::test_str_repr",
+          "test/applications/test_knapsack.py::TestKnapsack::test_interpret",
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program",
+          "test/applications/test_max_cut.py::TestMaxcut::test_interpret",
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+          "test/converters/test_converters.py::TestConverters::test_binary_to_integer",
+          "test/converters/test_converters.py::TestConverters::test_inequality_binary",
+          "test/converters/test_converters.py::TestConverters::test_penalize_binary"
+        ],
+        "summary": "11 passed in 2.19s",
+        "duration_seconds": 8.03
+      }
+    }
+  }
+}

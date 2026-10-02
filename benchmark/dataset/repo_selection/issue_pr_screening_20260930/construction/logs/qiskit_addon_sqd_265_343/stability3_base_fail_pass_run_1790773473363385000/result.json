@@ -1,0 +1,37 @@
+{
+  "side": "base",
+  "suite": "fail_pass",
+  "action": "run",
+  "exit_code": 1,
+  "pytest_seconds": 2.038518834000115,
+  "items": [
+    "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings"
+  ],
+  "reports": [
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings",
+      "phase": "setup",
+      "outcome": "passed",
+      "duration": 0.0005038749998220737,
+      "wasxfail": null,
+      "longrepr": ""
+    },
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings",
+      "phase": "call",
+      "outcome": "failed",
+      "duration": 0.23075429200002873,
+      "wasxfail": null,
+      "longrepr": "self = <test.test_fermion.TestFermion testMethod=test_diagonalize_fermionic_hamiltonian_numpy_bitstrings>\n\n    def test_diagonalize_fermionic_hamiltonian_numpy_bitstrings(self):\n        \"\"\"Test diagonalization with bitstrings stored in a NumPy array.\"\"\"\n        mol = pyscf.gto.Mole()\n        mol.build(\n            atom=[[\"H\", (0, 0, 0)], [\"H\", (0, 0, 0.735)]],\n            basis=\"sto-3g\",\n        )\n    \n        scf = pyscf.scf.RHF(mol).run()\n        norb = mol.nao_nr()\n        nelec = (1, 1)\n        cas = pyscf.mcscf.CASCI(scf, norb, nelec)\n        hcore, nuclear_repulsion_energy = cas.get_h1cas()\n        eri = pyscf.ao2mo.restore(1, cas.get_h2cas(), norb)\n        cas.kernel()\n    \n        bitstrings = BitArray.from_samples(\n            [\"0101\", \"0110\", \"1001\", \"1010\"], num_bits=2 * norb\n        ).to_bool_array()\n    \n>       result = diagonalize_fermionic_hamiltonian(\n            hcore,\n            eri,\n            bitstrings,\n            samples_per_batch=4,\n            norb=norb,\n            nelec=nelec,\n            max_iterations=1,\n            seed=self.rng,\n        )\n\ntest/test_fermion.py:147: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nqiskit_addon_sqd/fermion.py:396: in diagonalize_fermionic_hamiltonian\n    raw_bitstrings, raw_probs = bit_array_to_arrays(bit_array)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nbit_array = array([[False,  True, False,  True],\n       [False,  True,  True, False],\n       [ True, False, False,  True],\n       [ True, False,  True, False]])\n\n    def bit_array_to_arrays(bit_array: BitArray) -> tuple[np.ndarray, np.ndarray]:\n        \"\"\"Convert a bit array into a bitstring matrix and a probability array.\n    \n        Args:\n            bit_array: The bit array to convert\n    \n        Returns:\n            - A 2D array representing the sampled bitstrings. Each row represents a\n              bitstring, and each element is a ``bool`` representation of the\n              bit's value\n            - A 1D array containing the probability with which each bitstring was sampled\n        \"\"\"\n        # TODO can use bit_array.to_bool_array() when it's available\n>       bool_array = np.unpackbits(bit_array.array, axis=-1)[..., -bit_array.num_bits :].astype(bool)\nE       AttributeError: 'numpy.ndarray' object has no attribute 'array'\n\nqiskit_addon_sqd/counts.py:58: AttributeError"
+    },
+    {
+      "nodeid": "test/test_fermion.py::TestFermion::test_diagonalize_fermionic_hamiltonian_numpy_bitstrings",
+      "phase": "teardown",
+      "outcome": "passed",
+      "duration": 0.00031791599985808716,
+      "wasxfail": null,
+      "longrepr": ""
+    }
+  ],
+  "collection_errors": []
+}

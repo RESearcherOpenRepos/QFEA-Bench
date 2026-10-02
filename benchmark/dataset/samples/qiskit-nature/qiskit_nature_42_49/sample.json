@@ -1,0 +1,139 @@
+{
+  "instance": {
+    "id": 59,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_42_49",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/42",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/49",
+    "base_commit": "5351294e03a15b1d0ccd4012b4313c8236729b49",
+    "patch": "c71dff0e47b09005c21dc2690833e61e42686997"
+  },
+  "metadata": {
+    "quantum_depth": "strong",
+    "quantum_depth_rationale": "The task builds molecular second-quantized operators and auxiliary observables through driver and active-space workflows."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/problems/__init__.py",
+      "qiskit_nature/problems/second_quantization/__init__.py",
+      "qiskit_nature/problems/second_quantization/molecular/__init__.py",
+      "qiskit_nature/problems/second_quantization/molecular/fermionic_op_builder.py",
+      "qiskit_nature/problems/second_quantization/molecular/integrals_calculators/__init__.py",
+      "qiskit_nature/problems/second_quantization/molecular/integrals_calculators/angular_momentum_integrals_calculator.py",
+      "qiskit_nature/problems/second_quantization/molecular/integrals_calculators/magnetization_integrals_calculator.py",
+      "qiskit_nature/problems/second_quantization/molecular/integrals_calculators/particle_number_integrals_calculator.py",
+      "qiskit_nature/problems/second_quantization/molecular/molecular_problem.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Nature can already build fermionic operators and apply electronic-structure transformations, but users still lack a higher-level molecular problem object that runs a driver, applies optional transformers, and returns the corresponding second-quantized operators needed by downstream algorithms. Users should be able to construct a MolecularProblem from a fermionic driver, request its second-quantized operators with or without an active-space reduction, and receive the expected electronic and auxiliary operators in a stable order.",
+    "requirements": [
+      "Provide a MolecularProblem abstraction for molecular second-quantization workflows.",
+      "MolecularProblem must accept a fermionic driver together with an optional list of QMolecule transformers.",
+      "MolecularProblem.second_q_ops must run the driver, apply the configured transformers, and return the resulting second-quantized operators in a stable order.",
+      "Without transformers, MolecularProblem.second_q_ops must include the expected electronic operator together with the standard auxiliary molecular operators and, when available, dipole operators.",
+      "With an active-space transformer, MolecularProblem.second_q_ops must return the reduced electronic operator and corresponding reduced auxiliary operator set for the active space.",
+      "Existing ActiveSpaceTransformer behavior and nearby FermionicOp algebra behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MolecularProblem",
+        "Path": "qiskit_nature/problems/second_quantization/molecular/molecular_problem.py",
+        "Input": "constructor: fermionic_driver, q_molecule_transformers=None",
+        "Output": "",
+        "Description": "Represents a molecular second-quantization problem built from a fermionic driver and optional QMolecule transformers."
+      },
+      {
+        "Type": "Method",
+        "Name": "MolecularProblem.second_q_ops",
+        "Path": "qiskit_nature/problems/second_quantization/molecular/molecular_problem.py",
+        "Input": "self",
+        "Output": "List[SecondQuantizedOp]",
+        "Description": "Runs the configured driver workflow and returns the electronic, auxiliary, and optional dipole second-quantized operators in the expected order."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_42_49",
+      "image_id": "sha256:1dc6803d8b41b57e9dc64fae56fea3325b142dd0bb8c2ad919d315e83f3e2303",
+      "image_size": "1211269373"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy==1.10.1",
+        "qiskit-terra==0.18.3",
+        "qiskit-aqua==0.9.5",
+        "retworkx",
+        "h5py<3.3",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_without_transformers",
+          "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_with_active_space"
+        ],
+        "summary": "2 passed in 10.73s",
+        "duration_seconds": 16
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 passed in 24.66s",
+        "duration_seconds": 34
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_without_transformers",
+          "test/problems/second_quantization/molecular/test_molecular_problem.py::TestMolecularProblem::test_second_q_ops_with_active_space"
+        ],
+        "summary": "2 failed in 10.53s",
+        "duration_seconds": 17
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+          "test/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_active_space_for_q_molecule_v2",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_init_multiterm",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/operators/test_fermionic_op.py::TestFermionicOp::test_reduce"
+        ],
+        "summary": "6 passed in 22.49s",
+        "duration_seconds": 33
+      }
+    }
+  }
+}

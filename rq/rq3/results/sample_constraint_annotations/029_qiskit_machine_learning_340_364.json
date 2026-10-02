@@ -1,0 +1,312 @@
+{
+  "id": 29,
+  "sample_id": "qiskit_machine_learning_340_364",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "0672248906b280e780c838d1c684a747172d16d5",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 10,
+    "p2p_tests": 10,
+    "subtype_test_counts": {
+      "general_semantics/effective_dimension_calculation": 4,
+      "quantum_semantics/qnn_representation_equivalence": 1,
+      "interface/input_format_equivalence": 2,
+      "interface/input_validation": 2,
+      "interface/callback_invocation": 1,
+      "interface/output_shape": 5,
+      "interface/gradient_shape": 5
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_1___circuit1___10__10__4_51202148_",
+      "label": "general_semantics/effective_dimension_calculation",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Global effective dimension matches reference value 4.51202148 to five places"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_2___circuit1___1__1__1_39529449_",
+      "label": "general_semantics/effective_dimension_calculation",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Global effective dimension matches reference value 1.39529449 to five places"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_3___circuit1___10__1__3_97371533_",
+      "label": "general_semantics/effective_dimension_calculation",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Global effective dimension matches reference value 3.97371533 to five places"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_alg_results_4___circuit2___10__10__5_90859124_",
+      "label": "general_semantics/effective_dimension_calculation",
+      "assertions": [
+        {
+          "line": 113,
+          "expected": "Global effective dimension matches reference value 5.90859124 to five places"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_qnn_type",
+      "label": "quantum_semantics/qnn_representation_equivalence",
+      "assertions": [
+        {
+          "line": 137,
+          "expected": "CircuitQNN effective dimension matches a reference value"
+        },
+        {
+          "line": 138,
+          "expected": "Equivalent OpflowQNN and CircuitQNN have matching effective dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_multiple_data",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 155,
+          "expected": "List and NumPy-array dataset sizes return identical effective-dimension arrays"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 181,
+          "expected": "Explicit input/weight samples agree approximately with generated sample counts"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_inputs_shapes",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 195,
+          "expected": "Input sample width inconsistent with QNN inputs raises QiskitMachineLearningError"
+        },
+        {
+          "line": 202,
+          "expected": "Weight sample width inconsistent with QNN weights raises QiskitMachineLearningError"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_local_ed_params",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 232,
+          "expected": "A local estimator rejects multiple weight parameter points"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/neural_networks/test_effective_dimension.py::TestEffectiveDimension::test_callback",
+      "label": "interface/callback_invocation",
+      "assertions": [
+        {
+          "line": 255,
+          "expected": "The gradient callback is invoked once for each supplied weight sample"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "The network forward result includes the batch and declared output dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "A network without inputs returns no input gradient"
+        },
+        {
+          "line": 127,
+          "expected": "A network without weights returns no weight gradient"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_1___sv___True_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "OpflowQNN forward result has the expected batch and output dimensions",
+          "via_helper": "validate_output_shape (called at line 159)"
+        },
+        {
+          "line": 92,
+          "expected": "Requested input gradients have the expected dimensions",
+          "via_helper": "validate_output_shape (called at line 159)"
+        },
+        {
+          "line": 98,
+          "expected": "Weight gradients have the expected dimensions",
+          "via_helper": "validate_output_shape (called at line 159)"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_1___qi___True_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "TwoLayerQNN forward output has the declared shape"
+        },
+        {
+          "line": 82,
+          "expected": "Required input gradient has the expected dimensions"
+        },
+        {
+          "line": 86,
+          "expected": "Weight gradient has the expected dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Forward output has the batch and declared output dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Forward output has the batch and declared output dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+      "label": "interface/output_shape",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Forward output has the batch and declared output dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Input gradient is absent when there are zero inputs"
+        },
+        {
+          "line": 122,
+          "expected": "Weight gradient has the expected dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Input gradient is absent when there are zero inputs"
+        },
+        {
+          "line": 122,
+          "expected": "Weight gradient has the expected dimensions"
+        }
+      ]
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_",
+      "label": "interface/gradient_shape",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "Input gradient is absent when there are zero inputs"
+        },
+        {
+          "line": 122,
+          "expected": "Weight gradient has the expected dimensions"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/0672248906b280e780c838d1c684a747172d16d5/test/neural_networks/test_effective_dimension.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/0672248906b280e780c838d1c684a747172d16d5/test/neural_networks/test_neural_network.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/0672248906b280e780c838d1c684a747172d16d5/test/neural_networks/test_opflow_qnn.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/0672248906b280e780c838d1c684a747172d16d5/test/neural_networks/test_two_layer_qnn.py"
+  ],
+  "rationale": "Effective-dimension values are a statistical capacity calculation; the Opflow/CircuitQNN cross-representation equality is quantum-model equivalence. Sample format, dimensions, callback counts, and output/gradient shapes are interface contracts."
+}

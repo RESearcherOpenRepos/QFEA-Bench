@@ -1,0 +1,363 @@
+{
+  "id": 16,
+  "sample_id": "pennylane_4881_4928",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "2b971e013bb5b962263a27e987c56371d75e9b3f",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 12,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "interface/input_validation": 2,
+      "quantum_semantics/fermion_qubit_parity_mapping": 6,
+      "quantum_semantics/fermionic_zero_operator": 2,
+      "interface/zero_operator_representation": 2,
+      "interface/wire_mapping_contract": 4,
+      "interface/coefficient_type_tolerance": 2,
+      "quantum_semantics/fermion_qubit_mapping": 6
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_error_is_raised_for_incompatible_type",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 14,
+          "expected": "Parity transform rejects nonfermionic operator types with ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op4-4-result4]",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 461,
+          "expected": "The selected FermiWord has the expected parity-basis PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_ps[fermionic_op8-6-result8]",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 461,
+          "expected": "The selected complex FermiWord has the expected parity-basis PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_fermi_word_operation[fermionic_op4-4-result4]",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 473,
+          "expected": "The selected FermiWord has the expected parity-basis qubit operation"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_for_identity",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 478,
+          "expected": "The fermionic identity maps to the qubit identity"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_for_null_operator_fermi_word_ps[operator0]",
+      "label": "quantum_semantics/fermionic_zero_operator",
+      "assertions": [
+        {
+          "line": 500,
+          "expected": "The selected fermion word cancels to a zero PauliSentence"
+        },
+        {
+          "line": 505,
+          "expected": "Its operation form is a scalar product"
+        },
+        {
+          "line": 506,
+          "expected": "The base operation is identity"
+        },
+        {
+          "line": 507,
+          "expected": "The scalar is zero"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_empty_fermi_sentence",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 523,
+          "expected": "An empty FermiSentence returns an empty PauliSentence"
+        },
+        {
+          "line": 526,
+          "expected": "Its operation representation uses identity"
+        },
+        {
+          "line": 528,
+          "expected": "Its operation representation has zero scalar"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_ps[fermionic_op0-4-result0]",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 589,
+          "expected": "The selected FermiSentence maps to the expected parity PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_for_fermi_sentence_operation[fermionic_op0-4-result0]",
+      "label": "quantum_semantics/fermion_qubit_parity_mapping",
+      "assertions": [
+        {
+          "line": 599,
+          "expected": "The selected FermiSentence maps to the expected qubit operation"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 749,
+          "expected": "A custom wire map relabels the FermiWord parity PauliSentence as requested"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 670,
+          "expected": "The parity operation exposes the requested custom wires"
+        },
+        {
+          "line": 674,
+          "expected": "Its PauliSentence matches the same relabeled reference"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "tests/fermi/test_parity_mapping.py::test_parity_transform_tolerance[fermi_op2-qubit_op_data2-1e-12]",
+      "label": "interface/coefficient_type_tolerance",
+      "assertions": [
+        {
+          "line": 772,
+          "expected": "Tolerance removes negligible imaginary parts and yields the expected real coefficient type"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_error_is_raised_for_incompatible_type",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 505,
+          "expected": "Jordan-Wigner rejects nonfermionic operator types with ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op4-result4]",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 364,
+          "expected": "The selected FermiWord maps to the expected Jordan-Wigner PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_ps[fermionic_op8-result8]",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 364,
+          "expected": "The selected extended FermiWord maps to the expected Jordan-Wigner PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_fermi_word_operation[fermionic_op4-result4]",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 377,
+          "expected": "The selected FermiWord maps to the expected Jordan-Wigner qubit operation"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_identity",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 382,
+          "expected": "The fermionic identity maps to the qubit identity"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_null_operator_fermi_word_ps[operator0]",
+      "label": "quantum_semantics/fermionic_zero_operator",
+      "assertions": [
+        {
+          "line": 402,
+          "expected": "The selected fermion word cancels to a zero PauliSentence"
+        },
+        {
+          "line": 407,
+          "expected": "Its operation form is a scalar product"
+        },
+        {
+          "line": 408,
+          "expected": "Its base is identity"
+        },
+        {
+          "line": 409,
+          "expected": "Its scalar is zero"
+        }
+      ]
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_empty_fermi_sentence",
+      "label": "interface/zero_operator_representation",
+      "assertions": [
+        {
+          "line": 425,
+          "expected": "An empty FermiSentence returns an empty PauliSentence"
+        },
+        {
+          "line": 429,
+          "expected": "Its operation representation uses identity"
+        },
+        {
+          "line": 430,
+          "expected": "Its scalar is zero"
+        }
+      ]
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_ps[fermionic_op0-result0]",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 489,
+          "expected": "The selected FermiSentence has the expected Jordan-Wigner PauliSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_for_fermi_sentence_operation[fermionic_op0-result0]",
+      "label": "quantum_semantics/fermion_qubit_mapping",
+      "assertions": [
+        {
+          "line": 499,
+          "expected": "The selected FermiSentence has the expected Jordan-Wigner qubit operation"
+        }
+      ]
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_word_to_ps[wire_map1-ops1]",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 656,
+          "expected": "A custom wire map relabels the Jordan-Wigner FermiWord output as requested"
+        }
+      ]
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_providing_wire_map_fermi_sentence_to_operation[wire_map1-ops1]",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 577,
+          "expected": "The Jordan-Wigner operation exposes the requested custom wires"
+        },
+        {
+          "line": 581,
+          "expected": "Its PauliSentence matches the same relabeled reference"
+        }
+      ]
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "tests/fermi/test_fermi_mapping.py::test_jordan_wigner_tolerance[fermi_op2-qubit_op_data2-1e-12]",
+      "label": "interface/coefficient_type_tolerance",
+      "assertions": [
+        {
+          "line": 676,
+          "expected": "Tolerance yields the expected coefficient type in the Jordan-Wigner output"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/2b971e013bb5b962263a27e987c56371d75e9b3f/tests/fermi/test_fermi_mapping.py",
+    "https://github.com/PennyLaneAI/pennylane/blob/2b971e013bb5b962263a27e987c56371d75e9b3f/tests/fermi/test_parity_mapping.py"
+  ],
+  "rationale": "Explicit Pauli images, identity, and fermionic cancellation test parity/Jordan-Wigner quantum mapping. Rejected types, zero-container output form, custom wire labels, and tolerance-dependent coefficient representation are public interface contracts."
+}

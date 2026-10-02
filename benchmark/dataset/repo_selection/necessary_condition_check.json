@@ -1,0 +1,542 @@
+{
+  "date": "2026-09-30",
+  "purpose": "Apply any-one-failed-necessary-condition logic after explicit adoption of four additional scope requirements. This file tracks the nine candidates entering this review.",
+  "criteria_file": "criteria.json",
+  "repositories": [
+    {
+      "repository": "XanaduAI/strawberryfields",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 854
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 117
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 536
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/XanaduAI/strawberryfields/blob/162125d8ad5fd5488322a30c520253189596adf5/strawberryfields/apps/qchem/vibronic.py#L72"
+        },
+        "repository_scope_eligible": {
+          "status": "fail",
+          "reason_code": "E12",
+          "evidence": "https://github.com/XanaduAI/strawberryfields/blob/162125d8ad5fd5488322a30c520253189596adf5/doc/introduction/introduction.rst#L10"
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "fail",
+          "evidence": "https://github.com/XanaduAI/strawberryfields/blob/162125d8ad5fd5488322a30c520253189596adf5/doc/introduction/introduction.rst#L10",
+          "finding": "主要计算模型是连续变量光子电路，使用 Gaussian/Fock/Bosonic 表示及 GBS 应用层；不满足本轮新增的量子比特应用范围条件。",
+          "rule_adoption": "criteria.json:additional_scope_confirmation"
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [
+        "qubit_application_scope"
+      ],
+      "decision": "exclude_proposed"
+    },
+    {
+      "repository": "microsoft/QuantumLibraries",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 572
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 137
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 407
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing; quantum chemistry"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/microsoft/QuantumLibraries/blob/f2f5e380225367ee4eb995d922067025dc77f0a0/Python/qsharp-chemistry/qsharp/chemistry/__init__.py#L49"
+        },
+        "repository_scope_eligible": {
+          "status": "fail",
+          "reason_code": "E13",
+          "evidence": "https://github.com/microsoft/QuantumLibraries/blob/f2f5e380225367ee4eb995d922067025dc77f0a0/Chemistry/README.md#L8"
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "fail",
+          "evidence": "https://github.com/microsoft/QuantumLibraries/blob/f2f5e380225367ee4eb995d922067025dc77f0a0/Chemistry/README.md#L8",
+          "finding": "Chemistry 的 Hamiltonian 数据处理由 C# DataModel 实现，量子算法由 Q# Runtime 实现；Python qsharp-chemistry 是互操作接口，不满足本轮要求的 Python 原生应用核心实现。",
+          "rule_adoption": "criteria.json:additional_scope_confirmation"
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [
+        "python_native_application_implementation"
+      ],
+      "decision": "exclude_proposed"
+    },
+    {
+      "repository": "tequilahub/tequila",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 442
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 40
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 364
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing; quantum chemistry"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/tequilahub/tequila/blob/93c361b6821ae6790fd0fc3d0b7a0ebfaa312be4/src/tequila/quantumchemistry/qc_base.py#L50"
+        },
+        "repository_scope_eligible": {
+          "status": "admitted_by_user",
+          "note": "Does not establish historical task or runtime feasibility."
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [],
+      "decision": "retain_for_pair_screening"
+    },
+    {
+      "repository": "qiboteam/qibo",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 366
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 528
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 1120
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/qiboteam/qibo/blob/daab039a55c5f34793d26ce159b48b0d477b9a47/src/qibo/models/variational.py#L8"
+        },
+        "repository_scope_eligible": {
+          "status": "fail_under_author_selected_primary_product_scope",
+          "reason_code": "E04",
+          "evidence": "https://github.com/qiboteam/qibo/blob/daab039a55c5f34793d26ce159b48b0d477b9a47/README.md#L7"
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_primarily_simulation_execution_hardware_control_infrastructure": {
+          "status": "fail_under_author_selected_primary_product_scope",
+          "evidence": "https://github.com/qiboteam/qibo/blob/daab039a55c5f34793d26ce159b48b0d477b9a47/README.md#L7",
+          "finding": "官方将主要产品定位为量子模拟与量子硬件控制的全栈 API，核心包括电路构造/执行接口和可插拔模拟、硬件后端。用户选择按主体基础设施定位排除；准确表述为量子模拟、执行与硬件控制基础设施。",
+          "counterevidence": "不能写成主要从事硬件设计。Qibo 确有 VQE、QAOA、QCNN 等应用模块；生态系统的实验室管理及控制能力也不能一概当作此仓库直接实现的全部功能。排除为主体交付层次判断。",
+          "rule_confirmation": "criteria.json:primary_product_scope_confirmation"
+        }
+      },
+      "failed_necessary_conditions": [
+        "not_primarily_simulation_execution_hardware_control_infrastructure"
+      ],
+      "decision": "exclude_proposed"
+    },
+    {
+      "repository": "eclipse-qrisp/Qrisp",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 298
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 207
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 355
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/eclipse-qrisp/Qrisp/blob/da9e3668eab52c9f5ded8f82039f5e71805e657b/src/qrisp/algorithms/vqe/problems/electronic_structure.py#L206"
+        },
+        "repository_scope_eligible": {
+          "status": "fail_under_author_selected_primary_product_scope",
+          "reason_code": "E02",
+          "evidence": "https://github.com/eclipse-qrisp/Qrisp/blob/da9e3668eab52c9f5ded8f82039f5e71805e657b/README.md#L23"
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_primarily_programming_compilation_infrastructure": {
+          "status": "fail_under_author_selected_primary_product_scope",
+          "evidence": "https://github.com/eclipse-qrisp/Qrisp/blob/da9e3668eab52c9f5ded8f82039f5e71805e657b/README.md#L23",
+          "finding": "官方将主要产品定位为高层量子编程框架，核心提供量子类型、程序构造及到电路层的编译。用户据仓库主体定位选择排除，归入编程/编译基础设施范围。",
+          "counterevidence": "保留已发现的电子结构、投资组合等应用实现及测试事实。此次是用户确认的主体定位判断，不是新发现其没有应用，也不以仅仅包含编程框架功能作为普遍排除规则。",
+          "rule_confirmation": "criteria.json:primary_product_scope_confirmation"
+        }
+      },
+      "failed_necessary_conditions": [
+        "not_primarily_programming_compilation_infrastructure"
+      ],
+      "decision": "exclude_proposed"
+    },
+    {
+      "repository": "entropicalabs/openqaoa",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 144
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 38
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 217
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum optimization"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/entropicalabs/openqaoa/blob/c6e7dd759392fcca180bab9bd29c5f5e7dab3662/src/openqaoa-core/openqaoa/algorithms/qaoa/qaoa_workflow.py#L29"
+        },
+        "repository_scope_eligible": {
+          "status": "admitted_by_user",
+          "note": "Does not establish historical task or runtime feasibility."
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [],
+      "decision": "retain_for_pair_screening"
+    },
+    {
+      "repository": "qiskit-community/ffsim",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 108
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 111
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 520
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum chemistry"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/qiskit-community/ffsim/blob/cd4228a9e4be5975830da7523ee4da7649740307/python/ffsim/hamiltonians/molecular_hamiltonian.py#L33"
+        },
+        "repository_scope_eligible": {
+          "status": "fail",
+          "reason_code": "E15",
+          "evidence": "https://github.com/qiskit-community/ffsim/blob/cd4228a9e4be5975830da7523ee4da7649740307/README.md#L5"
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "fail",
+          "evidence": "https://github.com/qiskit-community/ffsim/blob/cd4228a9e4be5975830da7523ee4da7649740307/README.md#L5",
+          "finding": "官方主要产品是利用粒子数及自旋守恒进行费米量子电路模拟的专用库；核心公开接口包括状态向量、门作用及模拟协议，不满足本轮排除领域专用模拟器的条件。",
+          "rule_adoption": "criteria.json:additional_scope_confirmation"
+        }
+      },
+      "failed_necessary_conditions": [
+        "not_a_domain_specific_simulator_product"
+      ],
+      "decision": "exclude_proposed"
+    },
+    {
+      "repository": "sQUlearn/squlearn",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 105
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 83
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 275
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum computing; quantum machine learning"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/sQUlearn/squlearn/blob/0f6cb0982fdbe80dcd0ea6cb0acd68c59e362de4/src/squlearn/qnn/qnnc.py#L36"
+        },
+        "repository_scope_eligible": {
+          "status": "admitted_by_user",
+          "note": "Does not establish historical task or runtime feasibility."
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [],
+      "decision": "retain_for_pair_screening"
+    },
+    {
+      "repository": "Qiskit/qiskit-addon-sqd",
+      "checks": {
+        "primary_query_membership": {
+          "status": "pass",
+          "evidence": "candidates.csv and snapshots/2026-09-30.json"
+        },
+        "stars_gt100": {
+          "status": "pass",
+          "value": 101
+        },
+        "closed_issues_gt20": {
+          "status": "pass",
+          "value": 59
+        },
+        "merged_prs_gt200": {
+          "status": "pass",
+          "value": 252
+        },
+        "non_fork": {
+          "status": "pass"
+        },
+        "keyword_union": {
+          "status": "pass",
+          "matched_keywords": "quantum chemistry"
+        },
+        "application_implementation_exists": {
+          "status": "pass",
+          "evidence": "https://github.com/Qiskit/qiskit-addon-sqd/blob/8124d790600a764740fd40f44956a67ddecb3cd1/qiskit_addon_sqd/fermion.py#L204"
+        },
+        "repository_scope_eligible": {
+          "status": "admitted_by_user",
+          "note": "Does not establish historical task or runtime feasibility."
+        },
+        "historical_feature_issue_pr_and_f2p_p2p": {
+          "status": "not_audited",
+          "unit": "instance",
+          "note": "No exhaustive historical task audit or upstream test execution; not evidence of repository ineligibility."
+        },
+        "qubit_application_scope": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "python_native_application_implementation": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        },
+        "not_a_domain_specific_simulator_product": {
+          "status": "not_assessed",
+          "note": "No pass is inferred from missing failure evidence."
+        }
+      },
+      "failed_necessary_conditions": [],
+      "decision": "retain_for_pair_screening"
+    }
+  ],
+  "existing_cohort_recheck": {
+    "repositories": 7,
+    "status": "deferred_at_user_request",
+    "compliance": "not_checked"
+  }
+}

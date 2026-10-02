@@ -1,0 +1,166 @@
+{
+  "instance": {
+    "id": 102,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_628_646",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/628",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/646",
+    "base_commit": "c4487cc9b51ef990c8b9f750fc2512c28177ef1c",
+    "patch": "53184abdc05965e12a5de9e2d1e3ecc1ce64fedf"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task extends TSP graph modeling for sparse weighted NetworkX inputs, a classical optimization application behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/applications/tsp.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The TSP application can model complete geometric traveling-salesman instances, but it assumes every pair of nodes is connected. Users who already have weighted NetworkX graphs cannot model sparse or otherwise custom TSP instances directly because missing edges are not represented as invalid transitions. The application should support arbitrary weighted graphs while preserving the existing complete-graph behavior.",
+    "requirements": [
+      "The TSP application must accept weighted NetworkX graphs that are not complete.",
+      "The generated quadratic program must include binary variables for every node-position assignment.",
+      "Objective terms must use the weights of existing graph edges in both travel directions for an undirected graph.",
+      "Missing graph edges must be encoded as constraints that prevent consecutive positions from using those non-adjacent node pairs in either direction.",
+      "Existing node-visit and position-occupancy constraints must remain unchanged.",
+      "Interpreting a result must return the ordered node route, and the edge-list helper must return route edges in order.",
+      "Random geometric TSP instances and TSPLIB parsing must keep their existing complete-graph behavior."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "Tsp",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "constructor: graph: networkx.Graph | np.ndarray | list",
+        "Output": "",
+        "Description": "Traveling-salesman application backed by a weighted NetworkX graph, exposing the graph used by random and TSPLIB-created instances."
+      },
+      {
+        "Type": "Method",
+        "Name": "Tsp.to_quadratic_program",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "self",
+        "Output": "QuadraticProgram",
+        "Description": "Builds a quadratic-program formulation of the graph-backed TSP instance."
+      },
+      {
+        "Type": "Method",
+        "Name": "Tsp.interpret",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "self, result: OptimizationResult | np.ndarray",
+        "Output": "list[int | list[int]]",
+        "Description": "Converts an optimization result into the corresponding ordered route."
+      },
+      {
+        "Type": "Method",
+        "Name": "Tsp._edgelist",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "self, result: OptimizationResult | np.ndarray",
+        "Output": "list[tuple[int, int]]",
+        "Description": "Returns the route edges in traversal order."
+      },
+      {
+        "Type": "Method",
+        "Name": "Tsp.create_random_instance",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "n: int, low: int = 0, high: int = 100, seed: int | None = None",
+        "Output": "Tsp",
+        "Description": "Creates a random complete geometric TSP instance with weighted graph edges."
+      },
+      {
+        "Type": "Method",
+        "Name": "Tsp.parse_tsplib_format",
+        "Path": "qiskit_optimization/applications/tsp.py",
+        "Input": "filename: str",
+        "Output": "Tsp",
+        "Description": "Parses a TSPLIB file into a complete weighted TSP instance."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_628_646",
+      "image_id": "sha256:7cd8616317f64802f388fb8198a470b42f4bd08fbafdd5cf39d1a08b7269fb39",
+      "image_size": "1054081322"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.14",
+        "qiskit==1.0.0",
+        "qiskit-algorithms==0.3.0",
+        "qiskit-aer==0.14.2",
+        "docplex>=2.21.207,!=2.24.231",
+        "networkx>=2.6.3",
+        "pytest",
+        "ddt",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_tsp.py::TestTspCustomGraph::test_to_quadratic_program"
+        ],
+        "summary": "1 passed in 5.75s",
+        "duration_seconds": 18.36
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_tsp.py::TestTsp::test_create_random_instance",
+          "test/applications/test_tsp.py::TestTsp::test_edgelist",
+          "test/applications/test_tsp.py::TestTsp::test_interpret",
+          "test/applications/test_tsp.py::TestTsp::test_parse_tsplib_format",
+          "test/applications/test_tsp.py::TestTsp::test_to_quadratic_program",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_edgelist",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_interpret",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_to_quadratic_program",
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program"
+        ],
+        "summary": "10 passed in 2.22s",
+        "duration_seconds": 5.5
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/applications/test_tsp.py::TestTspCustomGraph::test_to_quadratic_program"
+        ],
+        "summary": "1 failed with KeyError: 'The edge (0, 2) is not in the graph.' in 19.77s",
+        "duration_seconds": 28.74
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/applications/test_tsp.py::TestTsp::test_create_random_instance",
+          "test/applications/test_tsp.py::TestTsp::test_edgelist",
+          "test/applications/test_tsp.py::TestTsp::test_interpret",
+          "test/applications/test_tsp.py::TestTsp::test_parse_tsplib_format",
+          "test/applications/test_tsp.py::TestTsp::test_to_quadratic_program",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_edgelist",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_interpret",
+          "test/applications/test_vehicle_routing.py::TestVehicleRouting::test_to_quadratic_program",
+          "test/applications/test_max_cut.py::TestMaxcut::test_to_quadratic_program",
+          "test/applications/test_knapsack.py::TestKnapsack::test_to_quadratic_program"
+        ],
+        "summary": "10 passed in 2.87s",
+        "duration_seconds": 8.38
+      }
+    }
+  }
+}

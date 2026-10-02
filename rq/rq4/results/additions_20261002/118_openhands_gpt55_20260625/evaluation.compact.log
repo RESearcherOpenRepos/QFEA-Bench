@@ -1,0 +1,1595 @@
+Patch applied: true
+Running fail-pass tests...
+FFF..FF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________ TestBaseQNN.test_set_params_num_qubits_single_op _______________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe6560c10>
+qnn_single_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffaae5d50>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5a782e0>)
+
+    def test_set_params_num_qubits_single_op(self, qnn_single_op: MockBaseQNN):
+        """
+        Test `set_params` with `num_qubits` for single operator.
+    
+        Args:
+            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+        qnn_single_op.set_params(num_qubits=5)
+>       assert qnn_single_op.feature_map.num_qubits == 5
+E       AttributeError: 'MockBaseQNN' object has no attribute 'feature_map'
+
+tests/qnn/test_base_qnn.py:83: AttributeError
+------------------------------ Captured log setup ------------------------------
+_______________ TestBaseQNN.test_set_params_num_qubits_multi_op ________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe6563730>
+qnn_multi_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7fffe3cb2320>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe3cb2560>)
+
+    def test_set_params_num_qubits_multi_op(self, qnn_multi_op):
+        """
+        Test `set_params` with `num_qubits` for mutiple operators.
+    
+        Args:
+            qnn_multi_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+        qnn_multi_op.set_params(num_qubits=5)
+>       assert qnn_multi_op.feature_map.num_qubits == 5
+E       AttributeError: 'MockBaseQNN' object has no attribute 'feature_map'
+
+tests/qnn/test_base_qnn.py:98: AttributeError
+------------------------------ Captured log setup ------------------------------
+___________________ TestBaseQNN.test_set_params_feature_map ____________________
+
+self = <tests.qnn.test_base_qnn.TestBaseQNN object at 0x7fffe6561db0>
+qnn_single_op = MockBaseQNN(executor=<squlearn.util.executor.Executor object at 0x7ffffaae5d50>,
+            loss=<squlearn.qnn.loss.S...1., 1., 1.]),
+            pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe5a782e0>)
+
+    def test_set_params_feature_map(self, qnn_single_op):
+        """
+        Test `set_params` for pqc parameters.
+    
+        Args:
+            qnn_single_op (MockBaseQNN): An instance of the `MockBaseQNN` class.
+    
+        Returns:
+            None
+        """
+        qnn_single_op.set_params(num_layers=3, closed=True)
+>       assert qnn_single_op.feature_map.num_layers == 3
+E       AttributeError: 'MockBaseQNN' object has no attribute 'feature_map'
+
+tests/qnn/test_base_qnn.py:114: AttributeError
+___________________ TestQNNRegressor.test_set_params_and_fit ___________________
+
+self = <tests.qnn.test_qnnr.TestQNNRegressor object at 0x7fffe5c95330>
+qnn_regressor = QNNRegressor(executor=<squlearn.util.executor.Executor object at 0x7fffe021f640>,
+             loss=<squlearn.qnn.loss...., 1., 1.]),
+             pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffe021f940>)
+data = (array([[0.43274505],
+       [0.14365581],
+       [0.50147978],
+       [0.10000747],
+       [0.9       ],
+       [0.1       ]]), array([ 2.88509522, -0.803089  ,  3.76200899, -1.35995202,  8.84630755,
+       -1.36004738]))
+
+    def test_set_params_and_fit(self, qnn_regressor, data):
+        """
+        Tests fit after changing parameters that alter the number of parameters of the pqc.
+    
+        Tests include
+            - whether `_is_fitted` is True
+            - whether `_param` is updated
+            - whether `_param_op` is updated
+        """
+        X, y = data
+        qnn_regressor.set_params(num_layers=3)
+        qnn_regressor.fit(X, y)
+    
+        assert qnn_regressor._is_fitted
+>       assert not np.allclose(qnn_regressor._param, qnn_regressor.param_ini)
+E       AttributeError: 'QNNRegressor' object has no attribute '_param'. Did you mean: 'param'?
+
+tests/qnn/test_qnnr.py:143: AttributeError
+------------------------------ Captured log setup ------------------------------
+----------------------------- Captured stdout call -----------------------------
+theta [ 0.30670429  1.35207467  0.64568133  0.28200936  0.01        1.34
+  2.67        4.          5.82655809 -1.46471707  3.66592495  0.36310427
+  0.01        1.34        2.67        4.         -6.02911343  4.17982425
+  3.49542082  4.64970979  0.01        1.34        2.67        4.
+ -4.79690504  1.75829941 -4.48175477  5.58787441  0.13727705 -0.53619484
+ -1.47934072  1.72306109  1.          1.          1.        ]
+Current value: 83.49641299988818
+theta [ 0.30670429  1.35207467  0.64568133  0.28200936  0.01        1.34
+  2.67        4.          5.82655809 -1.46471707  3.66592495  0.36310427
+  0.01        1.34        2.67        4.         -6.02911343  4.17982425
+  3.49542082  4.64970979  0.01        1.34        2.67        4.
+ -4.79690504  1.75829941 -4.48175477  5.58787441  0.13727705 -0.53619484
+ -1.47934072  1.72306109  1.          1.          1.        ]
+Grad length: 56.08471921507035
+grad [  6.76594544   3.5960215   19.78883269  17.78843693   0.39186848
+   3.09686865 -14.45882503 -21.11647353  -0.157112     7.14286268
+  -4.36402406  -2.44636721   0.9135917    5.67247382  -8.82858557
+ -10.57335528   0.06933724   7.49498764   8.74857251  -3.6139431
+   1.20050921  -8.26117585   2.51199845   0.29209821   0.22904335
+  -1.05316066  -2.49804093  -1.5633807    1.44862171  -1.1561116
+  -5.71585846 -16.51355657 -18.89558335 -16.4237598   15.74587815]
+theta [ -6.45924115  -2.24394683 -19.14315135 -17.50642758  -0.38186848
+  -1.75686865  17.12882503  25.11647353   5.98367009  -8.60757976
+   8.02994901   2.80947148  -0.9035917   -4.33247382  11.49858557
+  14.57335528  -6.09845068  -3.31516339  -5.25315169   8.26365289
+  -1.19050921   9.60117585   0.15800155   3.70790179  -5.02594838
+   2.81146007  -1.98371384   7.15125511  -1.31134466   0.61991675
+   4.23651774  18.23661766  19.89558335  17.4237598  -14.74587815]
+Current value: 3626.230584491806
+theta [-1.28431851e+00  5.06464508e-01 -4.00769405e+00 -3.90096979e+00
+ -8.21484939e-02  6.11766427e-01  6.07001563e+00  8.96557223e+00
+  5.86350322e+00 -3.14437256e+00  4.69213212e+00  9.38371397e-01
+ -2.04832536e-01  6.10878810e-03  4.74605589e+00  6.48634126e+00
+ -6.04541819e+00  2.41736603e+00  1.43818013e+00  5.49953424e+00
+ -2.72301643e-01  3.28262860e+00  2.07929958e+00  3.93131264e+00
+ -4.85076494e+00  2.00595181e+00 -3.89433648e+00  5.95550586e+00
+ -2.03368638e-01 -2.64333370e-01 -1.35247540e-01  5.60625010e+00
+  5.44332638e+00  4.86207316e+00 -2.70266821e+00]
+Current value: 220.2831223606645
+theta [-0.36465312  0.99525599 -1.31788452 -1.48306532 -0.02888352  1.03271025
+  4.10469075  6.09530229  5.84214768 -2.17347446  4.09894941  0.6058474
+ -0.08065201  0.77714336  3.54602485  5.04915129 -6.03599349  3.43612693
+  2.62733534  5.00830675 -0.10912167  2.15972308  2.42074455  3.97101628
+ -4.81963208  1.86280028 -4.23388427  5.74300236 -0.00646382 -0.42147857
+ -0.91217919  3.36163454  2.87493234  2.62966328 -0.56239982]
+Current value: 136.50922791233265
+theta [ 0.01976272  1.19956855 -0.19355671 -0.47239255 -0.00661902  1.20866279
+  3.28319413  4.89554287  5.83322116 -1.76764359  3.85100181  0.46685392
+ -0.02874513  1.09943221  3.04441748  4.4484126  -6.032054    3.86196423
+  3.12439667  4.80297595 -0.04091321  1.69035382  2.56346695  3.98761221
+ -4.80661869  1.80296362 -4.37581365  5.65417689  0.07584147 -0.48716452
+ -1.236933    2.42339572  1.80135563  1.69652638  0.33222236]
+Current value: 38.5952954180267
+theta [ 0.01976272  1.19956855 -0.19355671 -0.47239255 -0.00661902  1.20866279
+  3.28319413  4.89554287  5.83322116 -1.76764359  3.85100181  0.46685392
+ -0.02874513  1.09943221  3.04441748  4.4484126  -6.032054    3.86196423
+  3.12439667  4.80297595 -0.04091321  1.69035382  2.56346695  3.98761221
+ -4.80661869  1.80296362 -4.37581365  5.65417689  0.07584147 -0.48716452
+ -1.236933    2.42339572  1.80135563  1.69652638  0.33222236]
+Grad length: 64.34904245901429
+grad [-1.77279216e-01 -4.99807025e+00 -7.90768300e-01  5.64635951e+00
+  9.59502564e-01  1.53764431e+00  1.79417110e+01  4.35512568e+01
+  2.52147901e-03 -2.12770600e+00  1.32458280e+00 -5.48970728e+00
+ -1.12127136e+00 -1.40251356e+01  1.01862190e+01  1.69051606e+01
+  9.19445504e-03  8.80560518e+00  8.87437654e-01 -1.04514444e+01
+  8.92587847e-01  1.21760044e+01 -4.86542812e+00  1.91785712e+00
+ -7.14504818e-03 -1.19637800e+01  1.45726118e+01  4.31410491e+00
+  5.01773415e-01 -1.44483468e+01  1.12481848e+01 -2.86652620e+00
+ -4.01325009e-01 -1.19126628e+01 -3.68389113e+00]
+------------------------------ Captured log call -------------------------------
+__________________ TestQNNClassifier.test_set_params_and_fit ___________________
+
+self = <tests.qnn.test_qnnc.TestQNNClassifier object at 0x7fffe5a78400>
+qnn_classifier = QNNClassifier(executor=<squlearn.util.executor.Executor object at 0x7fffd2b50c70>,
+              loss=<squlearn.qnn.lo..., 1., 1.]),
+              pqc=<squlearn.feature_map.feature_map_implemented.cheb_pqc.ChebPQC object at 0x7fffd2b50400>)
+data = (array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))
+
+    def test_set_params_and_fit(self, qnn_classifier, data):
+        """
+        Tests fit after changing parameters that alter the number of parameters of the pqc.
+    
+        Tests include
+            - whether `_is_fitted` is True
+            - whether `_param` is updated
+            - whether `_param_op` is updated
+        """
+        X, y = data
+        qnn_classifier.set_params(num_layers=3)
+        qnn_classifier.fit(X, y)
+    
+        assert qnn_classifier._is_fitted
+>       assert not np.allclose(qnn_classifier._param, qnn_classifier.param_ini)
+E       AttributeError: 'QNNClassifier' object has no attribute '_param'. Did you mean: 'param'?
+
+tests/qnn/test_qnnc.py:139: AttributeError
+------------------------------ Captured log setup ------------------------------
+----------------------------- Captured stdout call -----------------------------
+theta [ 0.30670429  1.35207467  0.64568133  0.28200936  0.01        1.34
+  2.67        4.          5.82655809 -1.46471707  3.66592495  0.36310427
+  0.01        1.34        2.67        4.         -6.02911343  4.17982425
+  3.49542082  4.64970979  0.01        1.34        2.67        4.
+ -4.79690504  1.75829941 -4.48175477  5.58787441  0.13727705 -0.53619484
+ -1.47934072  1.72306109  1.          1.          1.        ]
+Current value: 1.3702361751200622
+theta [ 0.30670429  1.35207467  0.64568133  0.28200936  0.01        1.34
+  2.67        4.          5.82655809 -1.46471707  3.66592495  0.36310427
+  0.01        1.34        2.67        4.         -6.02911343  4.17982425
+  3.49542082  4.64970979  0.01        1.34        2.67        4.
+ -4.79690504  1.75829941 -4.48175477  5.58787441  0.13727705 -0.53619484
+ -1.47934072  1.72306109  1.          1.          1.        ]
+Grad length: 10.958716461096989
+grad [-0.77190561  1.79480543 -1.77402363 -2.48233074 -0.21706751 -0.36179944
+ -2.46562016 -1.81263772 -0.07006048 -2.10603088  0.37606024  0.63334887
+  0.08364968  1.08867111  0.73178732 -1.21355935 -0.05704211 -1.08848699
+ -1.11064792 -0.54998151 -0.49534733  0.0982245  -0.10604308  0.46885929
+ -0.07507201 -2.37376772  0.26980668  1.63150316 -0.62889571  3.34159735
+ -4.45015855 -1.99608286  4.72960107  2.80607574 -3.47311824]
+theta [ 1.0786099  -0.44273076  2.41970497  2.76434009  0.22706751  1.70179944
+  5.13562016  5.81263772  5.89661857  0.6413138   3.28986471 -0.2702446
+ -0.07364968  0.25132889  1.93821268  5.21355935 -5.97207132  5.26831125
+  4.60606874  5.19969129  0.50534733  1.2417755   2.77604308  3.53114071
+ -4.72183302  4.13206713 -4.75156145  3.95637125  0.76617276 -3.8777922
+  2.97081783  3.71914395 -3.72960107 -1.80607574  4.47311824]
+Current value: 344.61064072698446
+theta [ 4.06741031e-01  1.11947306e+00  8.75589680e-01  6.03712259e-01
+  3.81313229e-02  1.38688816e+00  2.98953726e+00  4.23491262e+00
+  5.83563772e+00 -1.19178155e+00  3.61718862e+00  2.81024084e-01
+ -8.40757094e-04  1.19891136e+00  2.57516247e+00  4.15727379e+00
+ -6.02172094e+00  4.32088903e+00  3.63935759e+00  4.72098580e+00
+  7.41955850e-02  1.32727039e+00  2.68374288e+00  3.93923719e+00
+ -4.78717592e+00  2.06593286e+00 -4.51672094e+00  5.37643631e+00
+  2.18780124e-01 -9.69256223e-01 -9.02613007e-01  1.98174767e+00
+  3.87057343e-01  6.36340678e-01  1.45010611e+00]
+Current value: 11.29442254851673
+theta [ 0.33724712  1.28105764  0.71587606  0.38023044  0.01858895  1.35431571
+  2.76755988  4.07172261  5.82933025 -1.38138545  3.65104496  0.33804387
+  0.00669014  1.29692336  2.64104457  4.04801823 -6.02685638  4.2228936
+  3.53936704  4.6714715   0.02959995  1.33611344  2.67419592  3.98144813
+ -4.79393458  1.85222487 -4.4924305   5.52331895  0.16216126 -0.66841547
+ -1.30325644  1.80204228  0.81285872  0.88896894  1.13742466]
+Current value: 0.9973784660614098
+theta [ 0.32327601  1.31354273  0.68376712  0.33530149  0.01466013  1.34776732
+  2.72293338  4.03891477  5.82806219 -1.41950356  3.65785146  0.34950716
+  0.00820416  1.31662777  2.65428956  4.02605341 -6.02788882  4.20319253
+  3.51926486  4.66151711  0.02063441  1.33789126  2.6722766   3.98993425
+ -4.79529335  1.80926085 -4.48754714  5.55284834  0.15077856 -0.60793422
+ -1.3838021   1.76591417  0.89846214  0.93975751  1.07456295]
+Current value: 0.22468985496673005
+theta [ 0.32327601  1.31354273  0.68376712  0.33530149  0.01466013  1.34776732
+  2.72293338  4.03891477  5.82806219 -1.41950356  3.65785146  0.34950716
+  0.00820416  1.31662777  2.65428956  4.02605341 -6.02788882  4.20319253
+  3.51926486  4.66151711  0.02063441  1.33789126  2.6722766   3.98993425
+ -4.79529335  1.80926085 -4.48754714  5.55284834  0.15077856 -0.60793422
+ -1.3838021   1.76591417  0.89846214  0.93975751  1.07456295]
+Grad length: 1.544195628531244
+grad [-0.02848182  0.15012216 -0.11994259  0.27599548 -0.00644428 -0.02025612
+ -0.36984622  0.57643114 -0.00081108 -0.04490387 -0.0337672   0.06130597
+  0.00107207  0.12278749  0.17097893  0.42082928  0.00420881  0.18562395
+  0.2039158  -0.0353677  -0.01908253 -0.18693388  0.30870583 -0.52669631
+  0.00115141  0.01744234  0.10899438 -0.10839613  0.00797503  0.31254365
+  0.10997476  0.79429537 -0.48139502  0.06761748  0.29407258]
+------------------------------ Captured log call -------------------------------
+=============================== warnings summary ===============================
+src/squlearn/util/executor.py:1023
+  /workspace/repo/src/squlearn/util/executor.py:1023: DeprecationWarning: invalid escape sequence '\ '
+    """Parameters of the quantum circuits.
+
+../../usr/local/lib/python3.10/site-packages/qiskit/version.py:96
+../../usr/local/lib/python3.10/site-packages/qiskit/version.py:96
+  /usr/local/lib/python3.10/site-packages/qiskit/version.py:96: DeprecationWarning: qiskit.__qiskit_version__ is deprecated since Qiskit Terra 0.25.0, and will be removed 3 months or more later. Instead, you should use qiskit.__version__. The other packages listed in former qiskit.__qiskit_version__ have their own __version__ module level dunder, as standard in PEP 8.
+    warnings.warn(
+
+../../usr/local/lib/python3.10/site-packages/qiskit_ibm_provider/api/session.py:19
+  /usr/local/lib/python3.10/site-packages/qiskit_ibm_provider/api/session.py:19: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    X = make_immutable(PauliOp(Pauli("X")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:54: 4 warnings
+tests/qnn/test_base_qnn.py: 5662 warnings
+tests/qnn/test_qnnr.py: 587 warnings
+tests/qnn/test_qnnc.py: 587 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:54: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:110: 12 warnings
+tests/qnn/test_base_qnn.py: 5662 warnings
+tests/qnn/test_qnnr.py: 2293 warnings
+tests/qnn/test_qnnc.py: 2293 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:110: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_base.py:53: 19 warnings
+tests/qnn/test_base_qnn.py: 12317 warnings
+tests/qnn/test_qnnr.py: 15670 warnings
+tests/qnn/test_qnnc.py: 15670 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_base.py:53: DeprecationWarning: The class ``qiskit.opflow.mixins.star_algebra.StarAlgebraMixin`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    X = make_immutable(PauliOp(Pauli("X")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Y = make_immutable(PauliOp(Pauli("Y")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Y = make_immutable(PauliOp(Pauli("Y")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Z = make_immutable(PauliOp(Pauli("Z")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Z = make_immutable(PauliOp(Pauli("Z")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    I = make_immutable(PauliOp(Pauli("I")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    I = make_immutable(PauliOp(Pauli("I")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CX = make_immutable(CircuitOp(CXGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CX = make_immutable(CircuitOp(CXGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    S = make_immutable(CircuitOp(SGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    S = make_immutable(CircuitOp(SGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = make_immutable(CircuitOp(HGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = make_immutable(CircuitOp(HGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    T = make_immutable(CircuitOp(TGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    T = make_immutable(CircuitOp(TGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Swap = make_immutable(CircuitOp(SwapGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Swap = make_immutable(CircuitOp(SwapGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CZ = make_immutable(CircuitOp(CZGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CZ = make_immutable(CircuitOp(CZGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Zero = make_immutable(DictStateFn("0"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:89: 5 warnings
+tests/qnn/test_base_qnn.py: 3192 warnings
+tests/qnn/test_qnnr.py: 3157 warnings
+tests/qnn/test_qnnc.py: 3157 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:89: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:142: 7 warnings
+tests/qnn/test_base_qnn.py: 3248 warnings
+tests/qnn/test_qnnr.py: 5799 warnings
+tests/qnn/test_qnnc.py: 5799 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:142: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Zero = make_immutable(DictStateFn("0"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    One = make_immutable(DictStateFn("1"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    One = make_immutable(DictStateFn("1"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    temp = StateFn(
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitStateFn(new_self.primitive, coeff=new_self.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:83: 2 warnings
+tests/qnn/test_base_qnn.py: 12 warnings
+tests/qnn/test_qnnr.py: 1309 warnings
+tests/qnn/test_qnnc.py: 1309 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:83: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:68
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:68: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Plus = make_immutable(H.compose(Zero))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:292
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:292: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitOp(self.to_circuit(), coeff=self.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:149
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:149: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitOp(new_qc, coeff=new_self.coeff * other.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:69
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:69: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Minus = make_immutable(H.compose(X).compose(Zero))
+
+../../usr/local/lib/python3.10/site-packages/qiskit_ibm_runtime/estimator.py:21
+  /usr/local/lib/python3.10/site-packages/qiskit_ibm_runtime/estimator.py:21: DeprecationWarning: The ``qiskit.opflow`` module is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    from qiskit.opflow import PauliSumOp
+
+src/squlearn/feature_map/pruned_feature_map.py:195
+  /workspace/repo/src/squlearn/feature_map/pruned_feature_map.py:195: DeprecationWarning: invalid escape sequence '\p'
+    """
+
+src/squlearn/util/qfi.py:3
+  /workspace/repo/src/squlearn/util/qfi.py:3: DeprecationWarning: ``qiskit.algorithms`` has been migrated to an independent package: https://github.com/qiskit-community/qiskit-algorithms. The ``qiskit.algorithms`` import path is deprecated as of qiskit-terra 0.25.0 and will be removed no earlier than 3 months after the release date. Please run ``pip install qiskit_algorithms`` and use ``import qiskit_algorithms`` instead.
+    from qiskit.algorithms.gradients import LinCombQGT, QFI
+
+src/squlearn/kernel/matrix/regularization.py:6
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:6: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+src/squlearn/kernel/matrix/regularization.py:33
+  /workspace/repo/src/squlearn/kernel/matrix/regularization.py:33: DeprecationWarning: invalid escape sequence '\s'
+    """
+
+src/squlearn/kernel/matrix/projected_quantum_kernel.py:576
+  /workspace/repo/src/squlearn/kernel/matrix/projected_quantum_kernel.py:576: DeprecationWarning: invalid escape sequence '\l'
+    """
+
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op
+  /workspace/repo/src/squlearn/util/executor.py:227: PendingDeprecationWarning: The qiskit.Aer entry point will be deprecated in a future release and subsequently removed. Instead you should use this directly from the root of the qiskit-aer package.
+    self._backend = Aer.get_backend(execution)
+
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/statevector_simulator.py:243: PendingDeprecationWarning: The `StatevectorSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="statevector")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 7 warnings
+tests/qnn/test_qnnc.py: 7 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:158: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = PauliOp(Pauli("I" * self.num_qubits))  # is removed later
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 7 warnings
+tests/qnn/test_qnnc.py: 7 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:162: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli("I" * self.num_qubits)) * parameters[ioff % nparam]
+
+tests/qnn/test_base_qnn.py: 2190 warnings
+tests/qnn/test_qnnr.py: 216 warnings
+tests/qnn/test_qnnc.py: 216 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:161: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=self.coeff * scalar)
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 7 warnings
+tests/qnn/test_qnnc.py: 7 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:71: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliOp(self.primitive, coeff=self.coeff + other.coeff)
+
+tests/qnn/test_base_qnn.py: 328 warnings
+tests/qnn/test_qnnr.py: 28 warnings
+tests/qnn/test_qnnc.py: 28 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:167: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli(gen_single_ising_string(i, "Z"))) * parameters[ioff % nparam]
+
+tests/qnn/test_base_qnn.py: 140 warnings
+tests/qnn/test_qnnr.py: 16 warnings
+tests/qnn/test_qnnc.py: 16 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:89: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_base_qnn.py: 2330 warnings
+tests/qnn/test_qnnr.py: 1913 warnings
+tests/qnn/test_qnnc.py: 1913 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:50: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(oplist, combo_fn=lambda x: np.sum(x, axis=0), coeff=coeff, abelian=abelian)
+
+tests/qnn/test_base_qnn.py: 3407 warnings
+tests/qnn/test_qnnr.py: 7578 warnings
+tests/qnn/test_qnnc.py: 7578 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:80: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_base_qnn.py: 1980 warnings
+tests/qnn/test_qnnr.py: 326 warnings
+tests/qnn/test_qnnc.py: 326 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:89: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(self_new_ops + other_new_ops)
+
+tests/qnn/test_base_qnn.py: 652 warnings
+tests/qnn/test_qnnr.py: 42 warnings
+tests/qnn/test_qnnc.py: 42 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:184: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli(gen_double_ising_string(i, j))) * parameters[ioff % nparam]
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 7 warnings
+tests/qnn/test_qnnc.py: 7 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:190: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = H - PauliOp(Pauli("I" * self.num_qubits))
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 377 warnings
+tests/qnn/test_qnnc.py: 377 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:264: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.oplist, coeff=scalar * self.coeff, abelian=self.abelian)
+
+tests/qnn/test_base_qnn.py: 1130 warnings
+tests/qnn/test_qnnr.py: 94 warnings
+tests/qnn/test_qnnc.py: 94 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:106: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    new_op = PrimitiveOp(op.primitive)
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 297 warnings
+tests/qnn/test_qnnc.py: 297 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:121: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([op * coeff for op, coeff in zip(oplist, coeffs)])
+
+tests/qnn/test_base_qnn.py: 1060 warnings
+tests/qnn/test_qnnr.py: 77 warnings
+tests/qnn/test_qnnc.py: 77 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:178: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliOp(blank, operator.coeff)
+
+tests/qnn/test_base_qnn.py: 1060 warnings
+tests/qnn/test_qnnr.py: 798 warnings
+tests/qnn/test_qnnc.py: 798 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:141: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return DictStateFn(
+
+tests/qnn/test_base_qnn.py: 1072 warnings
+tests/qnn/test_qnnr.py: 1401 warnings
+tests/qnn/test_qnnc.py: 1401 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:263: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    if self == StateFn({"0": 1}, is_measurement=True):
+
+tests/qnn/test_base_qnn.py: 1060 warnings
+tests/qnn/test_qnnr.py: 958 warnings
+tests/qnn/test_qnnc.py: 958 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:265: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn("0" * other.num_qubits, is_measurement=True), other
+
+tests/qnn/test_base_qnn.py: 1072 warnings
+tests/qnn/test_qnnr.py: 1401 warnings
+tests/qnn/test_qnnc.py: 1401 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:333: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp([new_self, other])
+
+tests/qnn/test_base_qnn.py: 1072 warnings
+tests/qnn/test_qnnr.py: 3934 warnings
+tests/qnn/test_qnnc.py: 3934 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/composed_op.py:53: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(oplist, combo_fn=partial(reduce, np.dot), coeff=coeff, abelian=abelian)
+
+tests/qnn/test_base_qnn.py: 70 warnings
+tests/qnn/test_qnnr.py: 7 warnings
+tests/qnn/test_qnnc.py: 7 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:200: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_base_qnn.py: 32 warnings
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:140: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(self.get_pauli_mapped(parameters), is_measurement=True)
+
+tests/qnn/test_base_qnn.py: 44 warnings
+tests/qnn/test_qnnr.py: 1333 warnings
+tests/qnn/test_qnnc.py: 1333 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/operator_state_fn.py:58: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+tests/qnn/test_base_qnn.py: 12 warnings
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:103: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    self.circuit_opflow = CircuitStateFn(primitive=circuit, coeff=1.0)
+
+tests/qnn/test_base_qnn.py: 12 warnings
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:106: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    identity_measurement = StateFn(PauliOp(Pauli("I" * self.num_qubits)), is_measurement=True)
+
+tests/qnn/test_base_qnn.py: 12 warnings
+tests/qnn/test_qnnr.py: 3 warnings
+tests/qnn/test_qnnc.py: 3 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:106: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    identity_measurement = StateFn(PauliOp(Pauli("I" * self.num_qubits)), is_measurement=True)
+
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_multi_operator
+tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_multi_operator
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:116: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    opflow = ListOp(expectation_op_list)
+
+tests/qnn/test_base_qnn.py: 10 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:175: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli(gen_single_ising_string(i, "X"))) * parameters[ioff % nparam]
+
+tests/qnn/test_qnnr.py: 99 warnings
+tests/qnn/test_qnnc.py: 99 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:257: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=param_value)
+
+tests/qnn/test_qnnr.py: 395 warnings
+tests/qnn/test_qnnc.py: 395 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:240: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 1135 warnings
+tests/qnn/test_qnnc.py: 1135 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:415: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(
+
+tests/qnn/test_qnnr.py: 11 warnings
+tests/qnn/test_qnnc.py: 11 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:81: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(
+
+tests/qnn/test_qnnr.py: 1706 warnings
+tests/qnn/test_qnnc.py: 1706 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:61: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff)
+
+tests/qnn/test_qnnr.py: 75 warnings
+tests/qnn/test_qnnc.py: 75 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:137: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(
+
+tests/qnn/test_qnnr.py: 11 warnings
+tests/qnn/test_qnnc.py: 11 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:447: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return OperatorStateFn(
+
+tests/qnn/test_qnnr.py: 9 warnings
+tests/qnn/test_qnnc.py: 9 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:305: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(return_list)
+
+tests/qnn/test_qnnr.py: 9 warnings
+tests/qnn/test_qnnc.py: 9 warnings
+  /workspace/repo/src/squlearn/qnn/qnn.py:955: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    opflow_measured = measure_feature_map_derivative(pqc_opflow, ListOp(measure_list))
+
+tests/qnn/test_qnnr.py: 183 warnings
+tests/qnn/test_qnnc.py: 183 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:348: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp([new_self, other])
+
+tests/qnn/test_qnnr.py: 1122 warnings
+tests/qnn/test_qnnc.py: 1122 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:257: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=param_value)
+
+tests/qnn/test_qnnr.py: 1112 warnings
+tests/qnn/test_qnnc.py: 1112 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:239: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp([convert_fn(op) for op in self.oplist], **self._state(coeff=coeff))
+
+tests/qnn/test_qnnr.py: 1098 warnings
+tests/qnn/test_qnnc.py: 1098 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:304: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(qc, coeff=param_value, is_measurement=self.is_measurement)
+
+tests/qnn/test_qnnr.py: 1130 warnings
+tests/qnn/test_qnnc.py: 1130 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:240: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 63 warnings
+tests/qnn/test_qnnc.py: 63 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:301: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(return_list)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:498: DeprecationWarning: The class ``qiskit.opflow.gradients.gradient.Gradient`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return _clean_opflow_circ(Gradient().get_gradient(operator=opflow, params=parameters))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient.py:44: DeprecationWarning: The class ``qiskit.opflow.gradients.gradient_base.GradientBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(grad_method=grad_method, **kwargs)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient_base.py:43: DeprecationWarning: The class ``qiskit.opflow.gradients.derivative_base.DerivativeBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/derivative_base.py:55: DeprecationWarning: The class ``qiskit.opflow.converters.converter_base.ConverterBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient_base.py:49: DeprecationWarning: The class ``qiskit.opflow.gradients.circuit_gradients.param_shift.ParamShift`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    self._grad_method = ParamShift(analytic=True)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:65: DeprecationWarning: The class ``qiskit.opflow.gradients.circuit_gradients.circuit_gradient.CircuitGradient`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/circuit_gradient.py:44: DeprecationWarning: The class ``qiskit.opflow.converters.converter_base.ConverterBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py: 32 warnings
+tests/qnn/test_qnnc.py: 32 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:374: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitStateFn(circuit, coeff=operator.coeff)
+
+tests/qnn/test_qnnr.py: 1132 warnings
+tests/qnn/test_qnnc.py: 1132 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:264: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.oplist, coeff=scalar * self.coeff, abelian=self.abelian)
+
+tests/qnn/test_qnnr.py: 204 warnings
+tests/qnn/test_qnnc.py: 204 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:209: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_qnnr.py: 32 warnings
+tests/qnn/test_qnnc.py: 32 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:272: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    if not SummedOp(shifted_ops).reduce():
+
+tests/qnn/test_qnnr.py: 32 warnings
+tests/qnn/test_qnnc.py: 32 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:275: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(shifted_ops).reduce()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient.py:138: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(param_grads)
+
+tests/qnn/test_qnnr.py: 88 warnings
+tests/qnn/test_qnnc.py: 88 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:558: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp(op_list, coeff=operator.coeff)
+
+tests/qnn/test_qnnr.py: 32 warnings
+tests/qnn/test_qnnc.py: 32 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:568: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:576: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py: 64 warnings
+tests/qnn/test_qnnc.py: 64 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:381: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py: 64 warnings
+tests/qnn/test_qnnc.py: 64 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:158: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_qnnr.py: 176 warnings
+tests/qnn/test_qnnc.py: 176 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:214: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:389: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py: 64 warnings
+tests/qnn/test_qnnc.py: 64 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:438: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py: 176 warnings
+tests/qnn/test_qnnc.py: 176 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:531: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(reduced_ops, **self._state())
+
+tests/qnn/test_qnnr.py: 176 warnings
+tests/qnn/test_qnnc.py: 176 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:221: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 176 warnings
+tests/qnn/test_qnnc.py: 176 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/composed_op.py:185: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return l_arg.__class__(
+
+tests/qnn/test_qnnr.py: 176 warnings
+tests/qnn/test_qnnc.py: 176 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:263: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(self.oplist, **self._state(coeff=scalar * self.coeff))
+
+tests/qnn/test_qnnr.py: 496 warnings
+tests/qnn/test_qnnc.py: 496 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:420: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(primitive.simplify(atol=atol, rtol=rtol))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:446: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:331: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    expectation_op_ = ListOp([opflow])
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:405: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(oplist=without_zeros, coeff=operator.coeff).reduce()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:393: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(op, is_measurement=True)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:347: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    list_op.append(ListOp(expectation_op_grad_list))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:454: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    PauliSumOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:453: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return OperatorStateFn(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:471: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(oplist=op_list, coeff=operator.coeff)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_single_op
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_num_qubits_multi_op
+FAILED tests/qnn/test_base_qnn.py::TestBaseQNN::test_set_params_feature_map
+FAILED tests/qnn/test_qnnr.py::TestQNNRegressor::test_set_params_and_fit - At...
+FAILED tests/qnn/test_qnnc.py::TestQNNClassifier::test_set_params_and_fit - A...
+5 failed, 2 passed, 171280 warnings in 63.66s (0:01:03)
+
+
+Running pass-pass tests...
+....                                                                     [100%]
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.10/site-packages/qiskit/version.py:96
+../../usr/local/lib/python3.10/site-packages/qiskit/version.py:96
+  /usr/local/lib/python3.10/site-packages/qiskit/version.py:96: DeprecationWarning: qiskit.__qiskit_version__ is deprecated since Qiskit Terra 0.25.0, and will be removed 3 months or more later. Instead, you should use qiskit.__version__. The other packages listed in former qiskit.__qiskit_version__ have their own __version__ module level dunder, as standard in PEP 8.
+    warnings.warn(
+
+../../usr/local/lib/python3.10/site-packages/qiskit_ibm_provider/api/session.py:19
+  /usr/local/lib/python3.10/site-packages/qiskit_ibm_provider/api/session.py:19: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    X = make_immutable(PauliOp(Pauli("X")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:54: 4 warnings
+tests/qnn/test_qnnr.py: 297 warnings
+tests/qnn/test_qnnc.py: 286 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:54: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:110: 12 warnings
+tests/qnn/test_qnnr.py: 1587 warnings
+tests/qnn/test_qnnc.py: 1560 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:110: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_base.py:53: 19 warnings
+tests/qnn/test_qnnr.py: 11319 warnings
+tests/qnn/test_qnnc.py: 11255 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_base.py:53: DeprecationWarning: The class ``qiskit.opflow.mixins.star_algebra.StarAlgebraMixin`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:52: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    X = make_immutable(PauliOp(Pauli("X")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Y = make_immutable(PauliOp(Pauli("Y")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:53: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Y = make_immutable(PauliOp(Pauli("Y")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Z = make_immutable(PauliOp(Pauli("Z")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:54: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Z = make_immutable(PauliOp(Pauli("Z")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    I = make_immutable(PauliOp(Pauli("I")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:55: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    I = make_immutable(PauliOp(Pauli("I")))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CX = make_immutable(CircuitOp(CXGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:66: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:58: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CX = make_immutable(CircuitOp(CXGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    S = make_immutable(CircuitOp(SGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:59: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    S = make_immutable(CircuitOp(SGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = make_immutable(CircuitOp(HGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:60: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = make_immutable(CircuitOp(HGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    T = make_immutable(CircuitOp(TGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:61: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    T = make_immutable(CircuitOp(TGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Swap = make_immutable(CircuitOp(SwapGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:62: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Swap = make_immutable(CircuitOp(SwapGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CZ = make_immutable(CircuitOp(CZGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:63: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    CZ = make_immutable(CircuitOp(CZGate()))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Zero = make_immutable(DictStateFn("0"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:89: 5 warnings
+tests/qnn/test_qnnr.py: 2239 warnings
+tests/qnn/test_qnnc.py: 2239 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:89: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:142: 7 warnings
+tests/qnn/test_qnnr.py: 4212 warnings
+tests/qnn/test_qnnc.py: 4198 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:142: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:66: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Zero = make_immutable(DictStateFn("0"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    One = make_immutable(DictStateFn("1"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:67: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    One = make_immutable(DictStateFn("1"))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:250: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    temp = StateFn(
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:137: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitStateFn(new_self.primitive, coeff=new_self.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:83: 2 warnings
+tests/qnn/test_qnnr.py: 970 warnings
+tests/qnn/test_qnnc.py: 964 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:83: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:68
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:68: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Plus = make_immutable(H.compose(Zero))
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:292
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:292: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitOp(self.to_circuit(), coeff=self.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:149
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/circuit_op.py:149: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.circuit_op.CircuitOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitOp(new_qc, coeff=new_self.coeff * other.coeff)
+
+../../usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:69
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/operator_globals.py:69: DeprecationWarning: The function ``qiskit.opflow.operator_globals.make_immutable()`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    Minus = make_immutable(H.compose(X).compose(Zero))
+
+../../usr/local/lib/python3.10/site-packages/qiskit_ibm_runtime/estimator.py:21
+  /usr/local/lib/python3.10/site-packages/qiskit_ibm_runtime/estimator.py:21: DeprecationWarning: The ``qiskit.opflow`` module is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    from qiskit.opflow import PauliSumOp
+
+src/squlearn/util/qfi.py:3
+  /workspace/repo/src/squlearn/util/qfi.py:3: DeprecationWarning: ``qiskit.algorithms`` has been migrated to an independent package: https://github.com/qiskit-community/qiskit-algorithms. The ``qiskit.algorithms`` import path is deprecated as of qiskit-terra 0.25.0 and will be removed no earlier than 3 months after the release date. Please run ``pip install qiskit_algorithms`` and use ``import qiskit_algorithms`` instead.
+    from qiskit.algorithms.gradients import LinCombQGT, QFI
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+  /workspace/repo/src/squlearn/util/executor.py:227: PendingDeprecationWarning: The qiskit.Aer entry point will be deprecated in a future release and subsequently removed. Instead you should use this directly from the root of the qiskit-aer package.
+    self._backend = Aer.get_backend(execution)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit_aer/backends/statevector_simulator.py:243: PendingDeprecationWarning: The `StatevectorSimulator` backend will be deprecated in the future. It has been superseded by the `AerSimulator` backend. To obtain legacy functionality initialize with `AerSimulator(method="statevector")` and append run circuits with the `save_state` instruction.
+    warn(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:158: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = PauliOp(Pauli("I" * self.num_qubits))  # is removed later
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:162: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli("I" * self.num_qubits)) * parameters[ioff % nparam]
+
+tests/qnn/test_qnnr.py: 101 warnings
+tests/qnn/test_qnnc.py: 101 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:161: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=self.coeff * scalar)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:71: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliOp(self.primitive, coeff=self.coeff + other.coeff)
+
+tests/qnn/test_qnnr.py: 8 warnings
+tests/qnn/test_qnnc.py: 8 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:167: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli(gen_single_ising_string(i, "Z"))) * parameters[ioff % nparam]
+
+tests/qnn/test_qnnr.py: 6 warnings
+tests/qnn/test_qnnc.py: 6 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:89: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_qnnr.py: 1341 warnings
+tests/qnn/test_qnnc.py: 1340 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:50: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(oplist, combo_fn=lambda x: np.sum(x, axis=0), coeff=coeff, abelian=abelian)
+
+tests/qnn/test_qnnr.py: 5520 warnings
+tests/qnn/test_qnnc.py: 5497 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:80: DeprecationWarning: The class ``qiskit.opflow.operator_base.OperatorBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py: 166 warnings
+tests/qnn/test_qnnc.py: 166 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:89: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(self_new_ops + other_new_ops)
+
+tests/qnn/test_qnnr.py: 12 warnings
+tests/qnn/test_qnnc.py: 12 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:184: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H += PauliOp(Pauli(gen_double_ising_string(i, j))) * parameters[ioff % nparam]
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_implemented/ising_hamiltonian.py:190: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    H = H - PauliOp(Pauli("I" * self.num_qubits))
+
+tests/qnn/test_qnnr.py: 276 warnings
+tests/qnn/test_qnnc.py: 276 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:264: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.oplist, coeff=scalar * self.coeff, abelian=self.abelian)
+
+tests/qnn/test_qnnr.py: 34 warnings
+tests/qnn/test_qnnc.py: 34 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:106: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    new_op = PrimitiveOp(op.primitive)
+
+tests/qnn/test_qnnr.py: 220 warnings
+tests/qnn/test_qnnc.py: 220 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/summed_op.py:121: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([op * coeff for op, coeff in zip(oplist, coeffs)])
+
+tests/qnn/test_qnnr.py: 22 warnings
+tests/qnn/test_qnnc.py: 22 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:178: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliOp(blank, operator.coeff)
+
+tests/qnn/test_qnnr.py: 559 warnings
+tests/qnn/test_qnnc.py: 559 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/dict_state_fn.py:141: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return DictStateFn(
+
+tests/qnn/test_qnnr.py: 1001 warnings
+tests/qnn/test_qnnc.py: 1001 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:263: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    if self == StateFn({"0": 1}, is_measurement=True):
+
+tests/qnn/test_qnnr.py: 679 warnings
+tests/qnn/test_qnnc.py: 679 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:265: DeprecationWarning: The class ``qiskit.opflow.state_fns.dict_state_fn.DictStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn("0" * other.num_qubits, is_measurement=True), other
+
+tests/qnn/test_qnnr.py: 1001 warnings
+tests/qnn/test_qnnc.py: 1001 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:333: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp([new_self, other])
+
+tests/qnn/test_qnnr.py: 2865 warnings
+tests/qnn/test_qnnc.py: 2858 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/composed_op.py:53: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(oplist, combo_fn=partial(reduce, np.dot), coeff=coeff, abelian=abelian)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:200: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_base.py:140: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(self.get_pauli_mapped(parameters), is_measurement=True)
+
+tests/qnn/test_qnnr.py: 1003 warnings
+tests/qnn/test_qnnc.py: 995 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/operator_state_fn.py:58: DeprecationWarning: The class ``qiskit.opflow.state_fns.state_fn.StateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff, is_measurement=is_measurement)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:103: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    self.circuit_opflow = CircuitStateFn(primitive=circuit, coeff=1.0)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:106: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    identity_measurement = StateFn(PauliOp(Pauli("I" * self.num_qubits)), is_measurement=True)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_predict_unfitted
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_predict_unfitted
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:106: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    identity_measurement = StateFn(PauliOp(Pauli("I" * self.num_qubits)), is_measurement=True)
+
+tests/qnn/test_qnnr.py: 110 warnings
+tests/qnn/test_qnnc.py: 99 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:257: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_op.PauliOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=param_value)
+
+tests/qnn/test_qnnr.py: 300 warnings
+tests/qnn/test_qnnc.py: 299 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:240: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 854 warnings
+tests/qnn/test_qnnc.py: 847 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:415: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(
+
+tests/qnn/test_qnnr.py: 12 warnings
+tests/qnn/test_qnnc.py: 11 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_op.py:81: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(
+
+tests/qnn/test_qnnr.py: 1290 warnings
+tests/qnn/test_qnnc.py: 1274 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:61: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.primitive_op.PrimitiveOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(primitive, coeff=coeff)
+
+tests/qnn/test_qnnr.py: 84 warnings
+tests/qnn/test_qnnc.py: 75 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:137: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(
+
+tests/qnn/test_qnnr.py: 12 warnings
+tests/qnn/test_qnnc.py: 11 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:447: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return OperatorStateFn(
+
+tests/qnn/test_qnnr.py: 10 warnings
+tests/qnn/test_qnnc.py: 9 warnings
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:305: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(return_list)
+
+tests/qnn/test_qnnr.py: 10 warnings
+tests/qnn/test_qnnc.py: 9 warnings
+  /workspace/repo/src/squlearn/qnn/qnn.py:955: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    opflow_measured = measure_feature_map_derivative(pqc_opflow, ListOp(measure_list))
+
+tests/qnn/test_qnnr.py: 136 warnings
+tests/qnn/test_qnnc.py: 135 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:348: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp([new_self, other])
+
+tests/qnn/test_qnnr.py: 840 warnings
+tests/qnn/test_qnnc.py: 834 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/primitive_op.py:257: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.primitive, coeff=param_value)
+
+tests/qnn/test_qnnr.py: 830 warnings
+tests/qnn/test_qnnc.py: 824 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:239: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp([convert_fn(op) for op in self.oplist], **self._state(coeff=coeff))
+
+tests/qnn/test_qnnr.py: 816 warnings
+tests/qnn/test_qnnc.py: 810 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:304: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(qc, coeff=param_value, is_measurement=self.is_measurement)
+
+tests/qnn/test_qnnr.py: 840 warnings
+tests/qnn/test_qnnc.py: 834 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:240: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 70 warnings
+tests/qnn/test_qnnc.py: 63 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:301: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(return_list)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:498: DeprecationWarning: The class ``qiskit.opflow.gradients.gradient.Gradient`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return _clean_opflow_circ(Gradient().get_gradient(operator=opflow, params=parameters))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient.py:44: DeprecationWarning: The class ``qiskit.opflow.gradients.gradient_base.GradientBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__(grad_method=grad_method, **kwargs)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient_base.py:43: DeprecationWarning: The class ``qiskit.opflow.gradients.derivative_base.DerivativeBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/derivative_base.py:55: DeprecationWarning: The class ``qiskit.opflow.converters.converter_base.ConverterBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient_base.py:49: DeprecationWarning: The class ``qiskit.opflow.gradients.circuit_gradients.param_shift.ParamShift`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    self._grad_method = ParamShift(analytic=True)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:65: DeprecationWarning: The class ``qiskit.opflow.gradients.circuit_gradients.circuit_gradient.CircuitGradient`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/circuit_gradient.py:44: DeprecationWarning: The class ``qiskit.opflow.converters.converter_base.ConverterBase`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    super().__init__()
+
+tests/qnn/test_qnnr.py: 24 warnings
+tests/qnn/test_qnnc.py: 24 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:374: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return CircuitStateFn(circuit, coeff=operator.coeff)
+
+tests/qnn/test_qnnr.py: 824 warnings
+tests/qnn/test_qnnc.py: 824 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:264: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(self.oplist, coeff=scalar * self.coeff, abelian=self.abelian)
+
+tests/qnn/test_qnnr.py: 152 warnings
+tests/qnn/test_qnnc.py: 152 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:209: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_qnnr.py: 24 warnings
+tests/qnn/test_qnnc.py: 24 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:272: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    if not SummedOp(shifted_ops).reduce():
+
+tests/qnn/test_qnnr.py: 24 warnings
+tests/qnn/test_qnnc.py: 24 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/circuit_gradients/param_shift.py:275: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(shifted_ops).reduce()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/gradients/gradient.py:138: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(param_grads)
+
+tests/qnn/test_qnnr.py: 64 warnings
+tests/qnn/test_qnnc.py: 64 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:558: DeprecationWarning: The class ``qiskit.opflow.list_ops.composed_op.ComposedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ComposedOp(op_list, coeff=operator.coeff)
+
+tests/qnn/test_qnnr.py: 24 warnings
+tests/qnn/test_qnnc.py: 24 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:568: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:576: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py: 48 warnings
+tests/qnn/test_qnnc.py: 48 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:381: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py: 48 warnings
+tests/qnn/test_qnnc.py: 48 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/circuit_state_fn.py:158: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp([self, other])
+
+tests/qnn/test_qnnr.py: 128 warnings
+tests/qnn/test_qnnc.py: 128 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:214: DeprecationWarning: The class ``qiskit.opflow.state_fns.circuit_state_fn.CircuitStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:389: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py: 48 warnings
+tests/qnn/test_qnnc.py: 48 warnings
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:438: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(
+
+tests/qnn/test_qnnr.py: 128 warnings
+tests/qnn/test_qnnc.py: 128 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:531: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(reduced_ops, **self._state())
+
+tests/qnn/test_qnnr.py: 128 warnings
+tests/qnn/test_qnnc.py: 128 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/state_fns/state_fn.py:221: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return self.__class__(
+
+tests/qnn/test_qnnr.py: 128 warnings
+tests/qnn/test_qnnc.py: 128 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/composed_op.py:185: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return l_arg.__class__(
+
+tests/qnn/test_qnnr.py: 128 warnings
+tests/qnn/test_qnnc.py: 128 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/list_ops/list_op.py:263: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(self.oplist, **self._state(coeff=scalar * self.coeff))
+
+tests/qnn/test_qnnr.py: 352 warnings
+tests/qnn/test_qnnc.py: 352 warnings
+  /usr/local/lib/python3.10/site-packages/qiskit/opflow/primitive_ops/pauli_sum_op.py:420: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return PauliSumOp(primitive.simplify(atol=atol, rtol=rtol))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/feature_map/feature_map_derivatives.py:446: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:331: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    expectation_op_ = ListOp([opflow])
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:405: DeprecationWarning: The class ``qiskit.opflow.list_ops.summed_op.SummedOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return SummedOp(oplist=without_zeros, coeff=operator.coeff).reduce()
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:393: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return StateFn(op, is_measurement=True)
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:347: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    list_op.append(ListOp(expectation_op_grad_list))
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:454: DeprecationWarning: The class ``qiskit.opflow.primitive_ops.pauli_sum_op.PauliSumOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    PauliSumOp(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:453: DeprecationWarning: The class ``qiskit.opflow.state_fns.operator_state_fn.OperatorStateFn`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return OperatorStateFn(
+
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnr.py::TestQNNRegressor::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+tests/qnn/test_qnnc.py::TestQNNClassifier::test_fit
+  /workspace/repo/src/squlearn/expectation_operator/expectation_operator_derivatives.py:471: DeprecationWarning: The class ``qiskit.opflow.list_ops.list_op.ListOp`` is deprecated as of qiskit-terra 0.24.0. It will be removed no earlier than 3 months after the release date. For code migration guidelines, visit https://qisk.it/opflow_migration.
+    return ListOp(oplist=op_list, coeff=operator.coeff)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 87797 warnings in 32.24s
+
+
+
+===== evaluation run 1/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  6a41d14 Add `get_params` and `set_params`  for qnns (#99)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6a41d14
+
+HEAD is now at a744a78 add readme to index (#104)
+
+===== evaluation run 2/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  6a41d14 Add `get_params` and `set_params`  for qnns (#99)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6a41d14
+
+HEAD is now at a744a78 add readme to index (#104)
+
+===== evaluation run 3/3 =====
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  6a41d14 Add `get_params` and `set_params`  for qnns (#99)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6a41d14
+
+HEAD is now at a744a78 add readme to index (#104)

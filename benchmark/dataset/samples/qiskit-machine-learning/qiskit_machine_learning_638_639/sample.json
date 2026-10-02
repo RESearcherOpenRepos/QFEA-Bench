@@ -1,0 +1,146 @@
+{
+  "instance": {
+    "id": 41,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_638_639",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/638",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/639",
+    "base_commit": "4df88ec272547b7712fa99b98daf09651538c921",
+    "patch": "24717922ed34f89c062882c15cb9457c61101ab9"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts statevector fidelity kernels to the trainable-kernel workflow, with correctness centered on parameter binding and kernel evaluation behavior."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/kernels/__init__.py",
+      "qiskit_machine_learning/kernels/fidelity_statevector_kernel.py",
+      "qiskit_machine_learning/kernels/trainable_fidelity_quantum_kernel.py",
+      "qiskit_machine_learning/kernels/trainable_fidelity_statevector_kernel.py",
+      "qiskit_machine_learning/kernels/trainable_kernel.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The repository already provides a trainable fidelity quantum kernel for the primitive-based kernel stack, and it also provides a statevector-based fidelity kernel for kernel evaluation. However, there is no trainable statevector-based counterpart. Users who want statevector-backed kernel evaluation cannot train that kernel through the same workflow used by the existing trainable fidelity kernel. The repository should support a trainable statevector kernel that fits naturally into the existing trainable kernel workflow.",
+    "requirements": [
+      "The statevector-backed trainable kernel must accept the same trainable-kernel configuration style as the existing trainable fidelity kernel, including a feature map and explicit training parameters.",
+      "It must expose training-parameter and feature counts consistently with the existing trainable kernel API.",
+      "It must support valid training-parameter assignment through mappings, lists, and NumPy arrays, including partial reassignment, while rejecting wrong-sized or invalid assignments.",
+      "After all training parameters are bound, it must evaluate symmetric and asymmetric kernel matrices correctly; if required training parameters remain unbound, evaluation must raise the repository's machine-learning error."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "TrainableFidelityStatevectorKernel",
+        "Path": "qiskit_machine_learning/kernels/trainable_fidelity_statevector_kernel.py",
+        "Input": "constructor: feature_map=None, statevector_type=Statevector, training_parameters=None, cache_size=None, auto_clear_cache: bool = True, shots=None, enforce_psd: bool = True",
+        "Output": "",
+        "Description": "Trainable statevector-based fidelity kernel exposing assigned parameter_values, training_parameters, num_training_parameters, and num_features."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableFidelityStatevectorKernel.assign_training_parameters",
+        "Path": "qiskit_machine_learning/kernels/trainable_fidelity_statevector_kernel.py",
+        "Input": "self, parameter_values",
+        "Output": "",
+        "Description": "Assigns trainable kernel parameter values from mappings, lists, or NumPy arrays, including partial reassignment."
+      },
+      {
+        "Type": "Method",
+        "Name": "TrainableFidelityStatevectorKernel.evaluate",
+        "Path": "qiskit_machine_learning/kernels/trainable_fidelity_statevector_kernel.py",
+        "Input": "self, x_vec, y_vec=None",
+        "Output": "kernel matrix",
+        "Description": "Evaluates symmetric or asymmetric statevector-backed trainable fidelity kernel matrices after all training parameters are bound."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_machine_learning_638_639",
+      "image_id": "sha256:11484fe2ed5b75d8dd749541bae4bff848b8d701b376cb4b2fd4ed4a127fb00a",
+      "image_size": "1492846551"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": []
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_training_parameters_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_properties_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_incomplete_binding_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_2",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_4",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_2",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_4",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_default_fit_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_asymmetric_trainable_parameters_2_TrainableFidelityStatevectorKernel"
+        ],
+        "summary": "10 passed in 11.49s",
+        "duration_seconds": 19
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_defaults",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_properties",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_validate_input",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_exceptions",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_symmetric_01___samples_1____default_fidelity____no_fm___True___none__",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_asymmetric_001___samples_1____samples_1____default_fidelity____no_fm___True___none__",
+          "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_training_parameters",
+          "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_unbound_parameters"
+        ],
+        "summary": "8 passed in 3.54s",
+        "duration_seconds": 10
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_training_parameters_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_properties_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_incomplete_binding_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_2",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_symmetric_4",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_2",
+          "test/kernels/test_trainable_fidelity_qkernel.py::TestPrimitivesTrainableQuantumKernelClassify::test_evaluate_asymmetric_4",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_default_fit_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_fit_with_params_2_TrainableFidelityStatevectorKernel",
+          "test/kernels/algorithms/test_fidelity_qkernel_trainer.py::TestQuantumKernelTrainer::test_asymmetric_trainable_parameters_2_TrainableFidelityStatevectorKernel"
+        ],
+        "summary": "Failed during collection because the base version cannot import TrainableFidelityStatevectorKernel from qiskit_machine_learning.kernels; 2 errors in 2.87s",
+        "duration_seconds": 6
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_defaults",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_properties",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_validate_input",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_exceptions",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_symmetric_01___samples_1____default_fidelity____no_fm___True___none__",
+          "test/kernels/test_fidelity_qkernel.py::TestFidelityQuantumKernel::test_evaluate_asymmetric_001___samples_1____samples_1____default_fidelity____no_fm___True___none__",
+          "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_training_parameters",
+          "test/kernels/test_qkernel.py::TestQuantumKernelTrainingParameters::test_unbound_parameters"
+        ],
+        "summary": "8 passed in 3.29s",
+        "duration_seconds": 9
+      }
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "instance": {
+    "id": 89,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_955_964",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/955",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/964",
+    "base_commit": "abfb7a421b4d7f7d62408811c3ef8d86f02e4403",
+    "patch": "cd0fcca70df419d19ce975ba047c00a48c527775"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds sparse einsum backend compatibility for PolynomialTensor contractions while preserving dense-equivalent results."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/optionals.py",
+      "qiskit_nature/second_q/algorithms/initial_points/mp2_initial_point.py",
+      "qiskit_nature/second_q/drivers/gaussiand/gaussiandriver.py",
+      "qiskit_nature/second_q/drivers/pyscfd/pyscfdriver.py",
+      "qiskit_nature/second_q/operators/polynomial_tensor.py",
+      "qiskit_nature/utils/__init__.py",
+      "qiskit_nature/utils/opt_einsum.py",
+      "setup.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "PolynomialTensor supports dense tensor contractions and can store sparse tensor data, but sparse einsum operations are not handled through an implementation that preserves sparse inputs. Users working with sparse PolynomialTensor data need einsum-based transformations to operate without unnecessary densification when an optional sparse-capable contraction backend is available.",
+    "requirements": [
+      "Einsum-based tensor contractions must support dense, sparse, and mixed dense/sparse polynomial tensor inputs.",
+      "When the optional opt_einsum dependency is available, sparse tensor contractions must preserve sparse data instead of forcing dense arrays.",
+      "When opt_einsum is unavailable, existing dense-compatible einsum behavior must continue to work.",
+      "The einsum result must remain numerically equivalent to the corresponding dense contraction for one-body and two-body tensor transformations.",
+      "The optional dependency availability check must integrate with the repository's optional-dependency mechanism."
+    ],
+    "interface": [
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.einsum",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "einsum_map: dict[str, tuple[str, ...]], *operands: PolynomialTensor, validate: bool = True",
+        "Output": "PolynomialTensor",
+        "Description": "Applies mapped einsum contractions across PolynomialTensor operands, supporting dense, sparse, and mixed operands, using sparse-aware contraction when available and skipping mapped contractions whose operand keys are absent."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_955_964",
+      "image_id": "sha256:b0bd8593a0788f084827b85611f97afb5fc95fc250546a5f20f4d8bafeba36aa",
+      "image_size": "1206836583"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.25.3",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest",
+        "ddt",
+        "sparse<0.15",
+        "opt_einsum",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum"
+        ],
+        "summary": "1 passed in 13.79s",
+        "duration_seconds": 21.69
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_apply",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_dense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_empty",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_sparse",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_dense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_sparse"
+        ],
+        "summary": "19 passed in 5.23s",
+        "duration_seconds": 8.52
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_einsum"
+        ],
+        "summary": "1 failed with AttributeError: module 'qiskit_nature.optionals' has no attribute 'HAS_OPT_EINSUM' in 2.92s",
+        "duration_seconds": 12.05
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_apply",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_compose",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_expand",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_dense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_empty",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_is_sparse",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_tensor",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_dense",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_to_sparse"
+        ],
+        "summary": "19 passed in 5.00s",
+        "duration_seconds": 10.33
+      }
+    }
+  }
+}

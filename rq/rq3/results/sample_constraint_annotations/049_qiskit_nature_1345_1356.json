@@ -1,0 +1,441 @@
+{
+  "id": 49,
+  "sample_id": "qiskit_nature_1345_1356",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "3221b5c56cc25bd83f95b5c9932f801e79f249ee",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 6,
+    "p2p_tests": 26,
+    "subtype_test_counts": {
+      "quantum_semantics/boson_qubit_logarithmic_mapping": 6,
+      "quantum_semantics/boson_qubit_linear_mapping": 18,
+      "quantum_semantics/spin_qubit_logarithmic_mapping": 7,
+      "interface/wire_mapping_contract": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_1",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Creation on mode 0 maps to the two-qubit Pauli expansion at occupation 3."
+        }
+      ],
+      "rationale": "Selected bos_op1 checks ladder coefficient phases."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_5",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Number term +_0 -_0 maps to occupation-3 diagonal Pauli coefficients."
+        }
+      ],
+      "rationale": "Selected bos_op5 checks number-operator encoding."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_7",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Cross-mode +_0 -_1 maps to the occupation-3 four-qubit Pauli expansion."
+        }
+      ],
+      "rationale": "Selected bos_op7 checks two-mode ordering and coefficients."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_3_9",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 247,
+          "expected": "Repeated +_0 +_0 maps to the occupation-3 Pauli expansion."
+        }
+      ],
+      "rationale": "Selected bos_op9 checks two creation factors and bosonic amplitudes."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_1",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 266,
+          "expected": "Mode-0 creation maps to the three-qubit expansion at occupation 7."
+        }
+      ],
+      "rationale": "Selected bos_op1 now uses eight local occupation levels."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/mappers/test_bosonic_logarithmic_mapper.py::TestBosonicLogarithmicMapper::test_mapping_max_occupation_7_7",
+      "label": "quantum_semantics/boson_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 266,
+          "expected": "Cross-mode +_0 -_1 maps to the occupation-7 Pauli expansion."
+        }
+      ],
+      "rationale": "Selected bos_op7 checks six-qubit cross-mode product."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_1",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 mode-0 creation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op1 checks creation phase."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_2",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 mode-0 annihilation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op2 changes imaginary coefficient signs."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_3",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 mode-1 creation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op3 checks qubit placement on second mode."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_4",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 mode-1 annihilation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op4 checks phase and placement."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_5",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 number term equals its diagonal Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op5 checks +_0 -_0."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_6",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 reverse number term equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op6 checks -_0 +_0."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_7",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 cross-mode +_0 -_1 equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op7 checks two-mode ordering."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_8",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 cross-mode -_1 +_0 equals the same Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op8 checks commuting factors on distinct modes."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_1_9",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 150,
+          "expected": "Linear occupation-1 double-creation term maps to zero."
+        }
+      ],
+      "rationale": "Selected bos_op9 checks truncation at one quantum."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_1",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 mode-0 creation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op1 checks the larger local truncation."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_2",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 mode-0 annihilation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op2 checks conjugate phases at occupation 2."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_3",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 mode-1 creation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op3 checks second-mode qubit placement."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_4",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 mode-1 annihilation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op4 checks second-mode phases."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_5",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 number term equals its diagonal Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op5 checks +_0 -_0 with three local levels."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_6",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 reverse number term equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op6 checks -_0 +_0 with three levels."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_7",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 cross-mode +_0 -_1 equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op7 checks six-qubit coupling."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_8",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 cross-mode -_1 +_0 equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op8 checks reversed inter-mode factors."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_bosonic_linear_mapper.py::TestBosonicLinearMapper::test_mapping_max_occupation_2_9",
+      "label": "quantum_semantics/boson_qubit_linear_mapping",
+      "assertions": [
+        {
+          "line": 168,
+          "expected": "Linear occupation-2 double creation equals its Pauli reference."
+        }
+      ],
+      "rationale": "Selected bos_op9 is nonzero at this truncation, unlike occupation 1."
+    },
+    {
+      "test_number": 25,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_1",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Spin-1/2 Y_0 maps to its single-qubit Pauli coefficient."
+        }
+      ],
+      "rationale": "Selected spin_op1 checks the simplest spin map."
+    },
+    {
+      "test_number": 26,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_2",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Spin-1/2 X_0 Z_0 maps to the expected Pauli product."
+        }
+      ],
+      "rationale": "Selected spin_op2 checks noncommuting same-mode factors."
+    },
+    {
+      "test_number": 27,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_3",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Long three-mode spin product maps to its expected XZY coefficient."
+        }
+      ],
+      "rationale": "Selected spin_op3 checks multiplication phases across modes."
+    },
+    {
+      "test_number": 28,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_4",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Spin-3/2 Z_1 maps to two-qubit local encoding at mode 1."
+        }
+      ],
+      "rationale": "Selected spin_op4 checks larger spin and mode placement."
+    },
+    {
+      "test_number": 29,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_5",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Eight-mode X plus identity maps to its expected Pauli sum."
+        }
+      ],
+      "rationale": "Selected spin_op5 checks register span and identity term."
+    },
+    {
+      "test_number": 30,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_6",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Spin-1 Z maps with padding 2 and upper embedding."
+        }
+      ],
+      "rationale": "Selected spin_op6 checks the embedding convention."
+    },
+    {
+      "test_number": 31,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_7",
+      "label": "quantum_semantics/spin_qubit_logarithmic_mapping",
+      "assertions": [
+        {
+          "line": 67,
+          "expected": "Spin-1 Z maps with padding 2 and lower embedding."
+        }
+      ],
+      "rationale": "Selected spin_op7 changes embed_upper=False and expected Pauli coefficients."
+    },
+    {
+      "test_number": 32,
+      "split": "P2P",
+      "selector": "test/second_q/mappers/test_logarithmic_mapper.py::TestLogarithmicMapper::test_mapping_overwrite_reg_len",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 74,
+          "expected": "Explicit register_length=3 produces the same mapping as a three-mode SpinOp."
+        }
+      ],
+      "rationale": "The public override argument is the direct subject of this P2P assertion."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/3221b5c56cc25bd83f95b5c9932f801e79f249ee/test/second_q/mappers/test_bosonic_linear_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3221b5c56cc25bd83f95b5c9932f801e79f249ee/test/second_q/mappers/test_bosonic_logarithmic_mapper.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3221b5c56cc25bd83f95b5c9932f801e79f249ee/test/second_q/mappers/test_logarithmic_mapper.py"
+  ],
+  "rationale": "Reviewed each selected BosonicOp and SpinOp data row in the three mapper parametrizations, including truncation levels, creation/annihilation phases, cross-mode order, and the explicit register-length override."
+}

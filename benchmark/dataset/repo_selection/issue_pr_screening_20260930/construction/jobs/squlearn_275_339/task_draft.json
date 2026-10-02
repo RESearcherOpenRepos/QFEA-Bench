@@ -1,0 +1,55 @@
+{
+  "oracle_files": [
+    "src/squlearn/encoding_circuit/encoding_circuit_base.py",
+    "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel.py",
+    "src/squlearn/kernel/lowlevel_kernel/fidelity_kernel_statevector.py",
+    "src/squlearn/kernel/lowlevel_kernel/kernel_util.py",
+    "src/squlearn/kernel/qgpc.py",
+    "src/squlearn/kernel/qgpr.py",
+    "src/squlearn/kernel/qkrr.py",
+    "src/squlearn/kernel/qsvc.py",
+    "src/squlearn/kernel/qsvr.py",
+    "src/squlearn/qnn/base_qnn.py",
+    "src/squlearn/qrc/base_qrc.py",
+    "src/squlearn/util/executor.py",
+    "src/squlearn/util/qulacs/qulacs_circuit.py",
+    "src/squlearn/util/serialization/__init__.py",
+    "src/squlearn/util/serialization/model_pickler.py",
+    "src/squlearn/util/serialization/serializable_model_mixin.py"
+  ],
+  "task": {
+    "problem_statement": "Trained quantum-learning models need to be saved and restored without serializing their live execution environment. Reloading a model with a supplied executor should preserve its learned parameters, quantum circuit and observable representations, and predictions.",
+    "requirements": [
+      "Save and restore quantum neural networks, kernel models, and reservoir-computing models through file paths or binary streams.",
+      "Preserve predictions after a serialization round trip for the supported quantum execution backends.",
+      "Exclude executor instances from the serialized payload and reinsert the supplied executor on loading, including repeated or nested references.",
+      "Reject unsupported input and output object types."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "SerializableModelMixin",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "constructor:",
+        "Output": "",
+        "Description": "Supplies serialization to the supported model classes."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.dump",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "self, target",
+        "Output": "None",
+        "Description": "Writes to a string file path or binary IOBase stream and removes executor references from the payload."
+      },
+      {
+        "Type": "Method",
+        "Name": "SerializableModelMixin.load",
+        "Path": "src/squlearn/util/serialization/serializable_model_mixin.py",
+        "Input": "cls, source, executor",
+        "Output": "model instance",
+        "Description": "Class method restoring the model and all executor references from a string file path or binary stream."
+      }
+    ]
+  }
+}

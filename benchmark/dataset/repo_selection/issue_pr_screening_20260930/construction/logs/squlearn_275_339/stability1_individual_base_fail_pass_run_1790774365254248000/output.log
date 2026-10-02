@@ -1,0 +1,48 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  e52584a add model serialization by which high level models can be stored and loaded (#339)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> e52584a
+
+HEAD is now at 3672c9e add testfile for llqnn (#350)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________ TestQGPC.test_serialization[qgpc_pqk] _____________________
+
+self = <tests.kernel.ml.test_qgpc.TestQGPC object at 0x7fffe1a61f90>
+qgpc = 'qgpc_pqk'
+request = <FixtureRequest for <Function test_serialization[qgpc_pqk]>>
+data = (array([[0.12394968, 0.81758165],
+       [0.9       , 0.1       ],
+       [0.69982171, 0.21117187],
+       [0.82821029, 0.21911751],
+       [0.30850417, 0.9       ],
+       [0.1       , 0.88149528]]), array([0, 1, 1, 1, 0, 0]))
+
+    @pytest.mark.parametrize("qgpc", ["qgpc_fidelity", "qgpc_pqk"])
+    def test_serialization(self, qgpc, request, data):
+        """Tests concerning the serialization of the QGPC."""
+        instance = request.getfixturevalue(qgpc)
+        X, y = data
+        instance.fit(X, y)
+    
+        buffer = io.BytesIO()
+>       instance.dump(buffer)
+E       AttributeError: 'QGPC' object has no attribute 'dump'
+
+tests/kernel/ml/test_qgpc.py:256: AttributeError
+------------------------------ Captured log call -------------------------------
+INFO     executor:executor.py:2190 Set shots to None
+INFO     executor:executor.py:784 Executor initialized with pennylane
+INFO     executor:executor.py:800 Executor intial shots: None
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+INFO     executor:executor.py:997 Execution of pennylane circuit function
+INFO     executor:executor.py:1000 Execution of pennylane circuit successful
+=========================== short test summary info ============================
+FAILED tests/kernel/ml/test_qgpc.py::TestQGPC::test_serialization[qgpc_pqk]
+1 failed, 5 warnings in 4.65s

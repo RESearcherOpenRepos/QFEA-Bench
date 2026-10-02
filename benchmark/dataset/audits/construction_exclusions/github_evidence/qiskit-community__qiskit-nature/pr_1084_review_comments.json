@@ -1,0 +1,1321 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132840895",
+    "pull_request_review_id": 1335564717,
+    "id": 1132840895,
+    "node_id": "PRRC_kwDOE-DJV85Dhce_",
+    "diff_hunk": "@@ -85,19 +83,30 @@ from qiskit.primitives import Estimator\n estimator = Estimator()\n \n # setup the ansatz for VQE\n-from qiskit_nature.second_q.circuit.library import UCCSD\n+from qiskit_nature.second_q.circuit.library import HartreeFock, UCCSD\n \n ansatz = UCCSD()\n-\n-# use a factory to complement the VQE and its components at runtime\n-from qiskit_nature.second_q.algorithms import VQEUCCFactory\n-\n-vqe_factory = VQEUCCFactory(estimator, ansatz, optimizer)\n+ansatz.num_particles = problem.num_particles\n+ansatz.num_spatial_orbitals = problem.num_spatial_orbitals\n+ansatz.qubit_mapper = mapper\n+initial_state = HartreeFock()\n+initial_state.num_particles = problem.num_particles\n+initial_state.num_spatial_orbitals = problem.num_spatial_orbitals\n+initial_state.qubit_mapper = mapper\n+ansatz.initial_state = initial_state\n+",
+    "path": "README.md",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```\r\nnum_particles = problem.num_particles\r\nnum_spatial_orbitals = problem.num_spatial_orbitals\r\n\r\nhf_state = HartreeFock(num_spatial_orbitals, num_particles, mapper)\r\nansatz = UCCSD(num_spatial_orbitals, num_particles, mapper, initial_state=hf_state)\r\n```\r\nCould we do the HF and UCCSD via their constructors, say as above. Since we know all the information from the problem, while we can use the setters most code I see from users does it with the constructor. ",
+    "created_at": "2023-03-10T20:24:50Z",
+    "updated_at": "2023-03-10T20:25:19Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132840895",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132840895"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132840895"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132840895/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 98,
+    "original_line": 97,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 36,
+    "position": 34,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132844535",
+    "pull_request_review_id": 1335570241,
+    "id": 1132844535,
+    "node_id": "PRRC_kwDOE-DJV85DhdX3",
+    "diff_hunk": "@@ -8,48 +8,62 @@ This tutorial outlines how the algorithm can be used.\n \n 1. We obtain an ``ElectronicStructureProblem`` which we want to solve:",
+    "path": "docs/howtos/adapt_vqe.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This is just a comment - we can maybe improve them later (or now) - we should be able to have these all as class refs so they are clickable links not just highlighted. I see in places in the new howtos you do have class refs. Perhaps they should be used more generally, although some may be doable eg QubitMapper I think most should, and with intersphinx we can do it for VQE etc too right.",
+    "created_at": "2023-03-10T20:30:23Z",
+    "updated_at": "2023-03-10T20:30:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132844535",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132844535"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132844535"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132844535/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 9,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 2,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132845166",
+    "pull_request_review_id": 1335571267,
+    "id": 1132845166,
+    "node_id": "PRRC_kwDOE-DJV85Dhdhu",
+    "diff_hunk": "@@ -8,48 +8,62 @@ This tutorial outlines how the algorithm can be used.\n \n 1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n \n->>> from qiskit_nature.second_q.drivers import PySCFDriver\n->>> driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n->>> problem = driver.run()\n+.. testcode::\n \n-2. We setup our ``QubitConverter``:\n+    from qiskit_nature.second_q.drivers import PySCFDriver\n+    driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+    problem = driver.run()\n \n->>> from qiskit_nature.second_q.mappers import JordanWignerMapper, QubitConverter\n->>> converter = QubitConverter(JordanWignerMapper())\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n \n 3. We setup our ansatz:\n \n->>> from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n->>> ansatz = UCCSD()\n->>> ansatz.num_particles = problem.num_particles\n->>> ansatz.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> ansatz.qubit_converter = converter\n->>> initial_state = HartreeFock()\n->>> initial_state.num_particles = problem.num_particles\n->>> initial_state.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> initial_state.qubit_converter = converter\n->>> ansatz.initial_state = initial_state\n+.. testcode::\n+\n+    from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n+    ansatz = UCCSD()",
+    "path": "docs/howtos/adapt_vqe.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Similar comment to that of the readme in terms of HF+UCCSD creation",
+    "created_at": "2023-03-10T20:31:20Z",
+    "updated_at": "2023-03-10T20:31:21Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132845166",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132845166"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132845166"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132845166/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132850577",
+    "pull_request_review_id": 1335578206,
+    "id": 1132850577,
+    "node_id": "PRRC_kwDOE-DJV85Dhe2R",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am thinking for code like this, which should run fast, can we not do testoutput here so we can keep an eye on the howto that it continues to work as expected. I thought about commenting on the AdaptVQE one but am not sure how long that takes to run. If its relatively quick though...",
+    "created_at": "2023-03-10T20:34:11Z",
+    "updated_at": "2023-03-10T20:34:14Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132850577",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132850577"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132850577"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132850577/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132863151",
+    "pull_request_review_id": 1335594145,
+    "id": 1132863151,
+    "node_id": "PRRC_kwDOE-DJV85Dhh6v",
+    "diff_hunk": "@@ -18,12 +18,19 @@\n from qiskit.algorithms.eigensolvers import Eigensolver, NumPyEigensolver\n from qiskit.utils.validation import validate_min\n \n+from qiskit_nature.deprecation import DeprecatedType, warn_deprecated\n from qiskit_nature.second_q.problems.base_problem import BaseProblem\n from .eigensolver_factory import EigensolverFactory\n \n \n class NumPyEigensolverFactory(EigensolverFactory):\n-    \"\"\"A factory to construct a NumPyEigensolver.\"\"\"\n+    \"\"\"DEPRECATED A factory to construct a NumPyEigensolver.\n+\n+    .. warning::\n+\n+        This class is deprecated! Please see :ref:`this guide <how-to-numpy>` for how to replace",
+    "path": "qiskit_nature/second_q/algorithms/excited_states_solvers/eigensolver_factories/numpy_eigensolver_factory.py",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I was wondering about a migration guide that shows the existing factory way and the new way for an identical problem. It could point to the howto for more explanation for the new way of course.",
+    "created_at": "2023-03-10T20:39:19Z",
+    "updated_at": "2023-03-13T18:02:25Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132863151",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132863151"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1132863151"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1132863151/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 31,
+    "original_line": 31,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 23,
+    "position": 23,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135529314",
+    "pull_request_review_id": 1339258396,
+    "id": 1135529314,
+    "node_id": "PRRC_kwDOE-DJV85Drs1i",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The problem is that `print(result)` contains a lot of floating point precision values which are likely to fail a direct string comparison as this would do here. I think we have the following options:\r\n- manually print a selected value (maybe just the energy) up to a precision which we expect to be stable (say 4 decimal places for example)\r\n- change the print formatting of our result classes (maybe to allow printing up to a desired precision) [future goal maybe]",
+    "created_at": "2023-03-14T13:18:34Z",
+    "updated_at": "2023-03-14T13:18:34Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135529314",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135529314"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135529314"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135529314/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132850577,
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135530894",
+    "pull_request_review_id": 1339260641,
+    "id": 1135530894,
+    "node_id": "PRRC_kwDOE-DJV85DrtOO",
+    "diff_hunk": "@@ -18,12 +18,19 @@\n from qiskit.algorithms.eigensolvers import Eigensolver, NumPyEigensolver\n from qiskit.utils.validation import validate_min\n \n+from qiskit_nature.deprecation import DeprecatedType, warn_deprecated\n from qiskit_nature.second_q.problems.base_problem import BaseProblem\n from .eigensolver_factory import EigensolverFactory\n \n \n class NumPyEigensolverFactory(EigensolverFactory):\n-    \"\"\"A factory to construct a NumPyEigensolver.\"\"\"\n+    \"\"\"DEPRECATED A factory to construct a NumPyEigensolver.\n+\n+    .. warning::\n+\n+        This class is deprecated! Please see :ref:`this guide <how-to-numpy>` for how to replace",
+    "path": "qiskit_nature/second_q/algorithms/excited_states_solvers/eigensolver_factories/numpy_eigensolver_factory.py",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I will write the migration guide for the 0.5 to 0.6 transition in a separate PR. That will also need to do some minor restructuring of the migration guides page in order to separate the 0.4->0.5 transition guides.",
+    "created_at": "2023-03-14T13:19:40Z",
+    "updated_at": "2023-03-14T13:19:40Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135530894",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135530894"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135530894"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135530894/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 31,
+    "original_line": 31,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132863151,
+    "author_association": "MEMBER",
+    "original_position": 23,
+    "position": 23,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135582058",
+    "pull_request_review_id": 1339339556,
+    "id": 1135582058,
+    "node_id": "PRRC_kwDOE-DJV85Dr5tq",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We can also also add a testoutput where the output is hidden so it can be more related to just testing the code (like your checking the energy to so many digits per your comment) rather than also showing an end user output. I have not used this hidden option before so we might need to see how it goes. (But your point about the output in general is well taken, here for Numpy I might expect it to be pass given the same system/version of libraries etc. But given we go to 12 digits by default in the formatted print it may not be so over time as things change.)",
+    "created_at": "2023-03-14T13:52:52Z",
+    "updated_at": "2023-03-14T13:52:53Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135582058",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135582058"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135582058"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135582058/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132850577,
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135699719",
+    "pull_request_review_id": 1339518242,
+    "id": 1135699719,
+    "node_id": "PRRC_kwDOE-DJV85DsWcH",
+    "diff_hunk": "@@ -8,48 +8,62 @@ This tutorial outlines how the algorithm can be used.\n \n 1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n \n->>> from qiskit_nature.second_q.drivers import PySCFDriver\n->>> driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n->>> problem = driver.run()\n+.. testcode::\n \n-2. We setup our ``QubitConverter``:\n+    from qiskit_nature.second_q.drivers import PySCFDriver\n+    driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+    problem = driver.run()\n \n->>> from qiskit_nature.second_q.mappers import JordanWignerMapper, QubitConverter\n->>> converter = QubitConverter(JordanWignerMapper())\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n \n 3. We setup our ansatz:\n \n->>> from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n->>> ansatz = UCCSD()\n->>> ansatz.num_particles = problem.num_particles\n->>> ansatz.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> ansatz.qubit_converter = converter\n->>> initial_state = HartreeFock()\n->>> initial_state.num_particles = problem.num_particles\n->>> initial_state.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> initial_state.qubit_converter = converter\n->>> ansatz.initial_state = initial_state\n+.. testcode::\n+\n+    from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n+    ansatz = UCCSD()",
+    "path": "docs/howtos/adapt_vqe.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This is still created via an default instance and setters - was that intentional to leave one this way? I guess that is how it was before though - maybe one howto showing it done this way is ok - it's valid of course to do it like this.",
+    "created_at": "2023-03-14T15:02:52Z",
+    "updated_at": "2023-03-14T15:02:53Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135699719",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135699719"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135699719"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135699719/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132845166,
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135777821",
+    "pull_request_review_id": 1339631547,
+    "id": 1135777821,
+    "node_id": "PRRC_kwDOE-DJV85Dspgd",
+    "diff_hunk": "@@ -8,48 +8,62 @@ This tutorial outlines how the algorithm can be used.\n \n 1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n \n->>> from qiskit_nature.second_q.drivers import PySCFDriver\n->>> driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n->>> problem = driver.run()\n+.. testcode::\n \n-2. We setup our ``QubitConverter``:\n+    from qiskit_nature.second_q.drivers import PySCFDriver\n+    driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+    problem = driver.run()\n \n->>> from qiskit_nature.second_q.mappers import JordanWignerMapper, QubitConverter\n->>> converter = QubitConverter(JordanWignerMapper())\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n \n 3. We setup our ansatz:\n \n->>> from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n->>> ansatz = UCCSD()\n->>> ansatz.num_particles = problem.num_particles\n->>> ansatz.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> ansatz.qubit_converter = converter\n->>> initial_state = HartreeFock()\n->>> initial_state.num_particles = problem.num_particles\n->>> initial_state.num_spatial_orbitals = problem.num_spatial_orbitals\n->>> initial_state.qubit_converter = converter\n->>> ansatz.initial_state = initial_state\n+.. testcode::\n+\n+    from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock\n+    ansatz = UCCSD()",
+    "path": "docs/howtos/adapt_vqe.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Sorry I overlooked it in the existing how-to guide and only updated the newly added ones. Will do this rn",
+    "created_at": "2023-03-14T15:51:19Z",
+    "updated_at": "2023-03-14T15:51:19Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135777821",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135777821"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135777821"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135777821/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132845166,
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135780153",
+    "pull_request_review_id": 1339634888,
+    "id": 1135780153,
+    "node_id": "PRRC_kwDOE-DJV85DsqE5",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "How would a hidden cell avoid the problem of a pure string comparison? I would still need to print something which I can assert against, no?",
+    "created_at": "2023-03-14T15:52:54Z",
+    "updated_at": "2023-03-14T15:52:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135780153",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135780153"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135780153"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135780153/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132850577,
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135799497",
+    "pull_request_review_id": 1339664952,
+    "id": 1135799497,
+    "node_id": "PRRC_kwDOE-DJV85DsuzJ",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It would not right - just that you can add extra testoutput thats hidden solely to test the code - at least that is what I was thinking. Hence one could print the energy at some limited precision to test it, hopefully thats stable enough - or maybe some code to check the value and print if its true or not and check that. Not sure, as I said I have never used that capability.",
+    "created_at": "2023-03-14T16:05:52Z",
+    "updated_at": "2023-03-14T17:09:04Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135799497",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135799497"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135799497"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135799497/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132850577,
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135960296",
+    "pull_request_review_id": 1339898327,
+    "id": 1135960296,
+    "node_id": "PRRC_kwDOE-DJV85DtWDo",
+    "diff_hunk": "@@ -0,0 +1,51 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an ``ElectronicStructureProblem`` which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our ``QubitMapper``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our ``NumPyEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a ``ExcitedStatesEigensolver``:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "5570cb0713071bba30bc12b25dc01b04322d48b4",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Alright I added assertions against the total energies up to 4 decimal places. Two comments:\r\n1. I cannot test the UVCC case because I do not actually have a valid problem loaded to test there\r\n2. I chose to actually include the output in the rendering because otherwise I think it can look confusing with the `print` statement included but no output actually shown",
+    "created_at": "2023-03-14T17:33:56Z",
+    "updated_at": "2023-03-14T17:33:56Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135960296",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135960296"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1135960296"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1135960296/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 52,
+    "original_line": 51,
+    "side": "RIGHT",
+    "in_reply_to_id": 1132850577,
+    "author_association": "MEMBER",
+    "original_position": 51,
+    "position": 52,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095577",
+    "pull_request_review_id": 1341534339,
+    "id": 1137095577,
+    "node_id": "PRRC_kwDOE-DJV85DxrOZ",
+    "diff_hunk": "@@ -0,0 +1,58 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "d9f914c6975ba088377b7d0207035994f925addf",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n:class:`~qiskit.algorithms.eigensolvers.NumPyEigensolver` one needs to set the\r\n```",
+    "created_at": "2023-03-15T13:43:50Z",
+    "updated_at": "2023-03-15T13:43:51Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137095577",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095577"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137095577"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095577/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 7,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 7,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095948",
+    "pull_request_review_id": 1341534801,
+    "id": 1137095948,
+    "node_id": "PRRC_kwDOE-DJV85DxrUM",
+    "diff_hunk": "@@ -0,0 +1,58 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "d9f914c6975ba088377b7d0207035994f925addf",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n:attr:`~qiskit.algorithms.eigensolvers.NumPyEigensolver.filter_criterion` attribute\r\n```",
+    "created_at": "2023-03-15T13:44:03Z",
+    "updated_at": "2023-03-15T13:44:03Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137095948",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095948"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137095948"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137095948/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 8,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 8,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137108924",
+    "pull_request_review_id": 1341550657,
+    "id": 1137108924,
+    "node_id": "PRRC_kwDOE-DJV85Dxue8",
+    "diff_hunk": "@@ -0,0 +1,58 @@\n+.. _how-to-numpy:\n+\n+How to use the ``NumPyEigensolver``\n+===================================\n+\n+In order to ensure a physically meaningful excited states of a hamiltonian are found when using the\n+:class:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver` one needs to set the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.NumPyEigensolver.filter_criterion` attribute\n+of the solver.\n+\n+Subclasses of :class:`~qiskit_nature.second_q.problems.BaseProblem` in Qiskit Nature provide the\n+:meth:`~qiskit_nature.second_q.problems.BaseProblem.get_default_filter_criterion` method which\n+provides a default implementation of such a filter criterion for commonly encountered cases.\n+\n+Below we show how you can use this setting.\n+\n+1. We obtain an :class:`~qiskit_nature.second_q.problems.ElectronicStructureProblem`\n+   which we want to solve:\n+\n+.. testcode::\n+\n+   from qiskit_nature.second_q.drivers import PySCFDriver\n+   driver = PySCFDriver(atom=\"H 0 0 0; H 0 0 0.735\", basis=\"sto-3g\")\n+   problem = driver.run()\n+\n+2. We setup our :class:`~qiskit_nature.second_q.mappers.QubitMapper`:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import JordanWignerMapper\n+    mapper = JordanWignerMapper()\n+\n+3. We setup our :class:`~qiskit.algorithms.eigensolvers.NumPyEigensolver`:\n+\n+.. testcode::\n+\n+    from qiskit.algorithms.eigensolvers import NumPyEigensolver\n+    algo = NumPyEigensolver(k=100)\n+    algo.filter_criterion = problem.get_default_filter_criterion()\n+\n+4. We wrap everything in a :class:`~qiskit_nature.second_q.algorithms.ExcitedStatesEigensolver`:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms import ExcitedStatesEigensolver\n+    solver = ExcitedStatesEigensolver(mapper, algo)\n+\n+5. We solve the problem:\n+\n+.. testcode::\n+\n+    result = solver.solve(problem)\n+\n+    print(f\"Total ground state energy = {result.total_energies[0]:.4f}\")",
+    "path": "docs/howtos/numpy_eigensolver.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "d9f914c6975ba088377b7d0207035994f925addf",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think it might have been nice to have shown the excited state values here too since this is about excited states.",
+    "created_at": "2023-03-15T13:51:23Z",
+    "updated_at": "2023-03-15T13:51:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137108924",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137108924"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137108924"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137108924/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 54,
+    "original_line": 54,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 54,
+    "position": 54,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137324264",
+    "pull_request_review_id": 1341820752,
+    "id": 1137324264,
+    "node_id": "PRRC_kwDOE-DJV85DyjDo",
+    "diff_hunk": "@@ -0,0 +1,102 @@\n+.. _how-to-vqe-ucc:\n+\n+How to use a UCC-like ansatz with a ``VQE``\n+===========================================\n+\n+When using a :class:`~qiskit_nature.second_q.circuit.library.UCC`-style ansatz with a\n+:class:`~qiskit.algorithms.minimum_eigensolvers.VQE` one needs to pay particular attention to the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.VQE.initial_point` attribute which indicates from\n+which set of initial parameters the optimization routine should start.\n+By default, the algorithm will start from a *random* initial point. In this how to we show how one",
+    "path": "docs/howtos/vqe_ucc.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "c32db6b8e7c153b94865f8a42354217a3dbc705c",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\nBy default, VQE will start from a *random* initial point. In this how to we show how one\r\n```\r\nI am wondering if saying \"the algorithm\" is a bit vague here, given this also uses algorithms from nature - maybe explictly stating  \"VQE\" is clearer.",
+    "created_at": "2023-03-15T15:40:15Z",
+    "updated_at": "2023-03-15T15:40:16Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137324264",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137324264"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137324264"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137324264/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 10,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 10,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137328906",
+    "pull_request_review_id": 1341826090,
+    "id": 1137328906,
+    "node_id": "PRRC_kwDOE-DJV85DykMK",
+    "diff_hunk": "@@ -0,0 +1,74 @@\n+.. _how-to-vqe-uvcc:\n+\n+How to use a UVCC-like ansatz with a ``VQE``\n+============================================\n+\n+When using a :class:`~qiskit_nature.second_q.circuit.library.UVCC`-style ansatz with a\n+:class:`~qiskit.algorithms.minimum_eigensolvers.VQE` one needs to pay particular attention to the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.VQE.initial_point` attribute which indicates from\n+which set of initial parameters the optimization routine should start.\n+By default, the algorithm will start from a *random* initial point. In this how to we show how one",
+    "path": "docs/howtos/vqe_uvcc.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "c32db6b8e7c153b94865f8a42354217a3dbc705c",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\nBy default, VQE will start from a *random* initial point. In this how to we show how one\r\n```\r\nSame change suggestion as above",
+    "created_at": "2023-03-15T15:42:37Z",
+    "updated_at": "2023-03-15T15:42:38Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137328906",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137328906"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137328906"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137328906/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 10,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 10,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137339148",
+    "pull_request_review_id": 1341839859,
+    "id": 1137339148,
+    "node_id": "PRRC_kwDOE-DJV85DymsM",
+    "diff_hunk": "@@ -0,0 +1,74 @@\n+.. _how-to-vqe-uvcc:\n+\n+How to use a UVCC-like ansatz with a ``VQE``\n+============================================\n+\n+When using a :class:`~qiskit_nature.second_q.circuit.library.UVCC`-style ansatz with a\n+:class:`~qiskit.algorithms.minimum_eigensolvers.VQE` one needs to pay particular attention to the\n+:attr:`~qiskit.algorithms.minimum_eigensolvers.VQE.initial_point` attribute which indicates from\n+which set of initial parameters the optimization routine should start.\n+By default, the algorithm will start from a *random* initial point. In this how to we show how one\n+can set a custom initial point instead (for example to guarantee that one starts from the\n+VSCF state).\n+\n+The basics of this how-to are identical to the UCC-like ansatz how-to (TODO: add link). Thus, here\n+we will simply show how to use the\n+:class:`~qiskit_nature.second_q.algorithms.initial_points.VSCFInitialPoint` like so:\n+\n+1. Assuming we already have our :class:`~qiskit_nature.second_q.problems.VibrationalStructureProblem`\n+   and :class:`~qiskit_nature.second_q.mappers.QubitMapper`:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.mappers import DirectMapper\n+    from qiskit_nature.second_q.problems import VibrationalStructureProblem\n+    problem: VibrationalStructureProblem = ...\n+    num_modals = [2, 2, 2]  # some example of what problem.num_modals might yield\n+    mapper = DirectMapper()\n+\n+2. We setup our ansatz:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.circuit.library import UVCCSD, VSCF\n+    ansatz = UVCCSD(\n+        num_modals,\n+        mapper,\n+        initial_state=VSCF(\n+            num_modals,\n+            mapper,\n+        ),\n+    )\n+\n+3. We setup a :class:`~qiskit.algorithms.minimum_eigensolvers.VQE`:\n+\n+.. testcode::\n+\n+    import numpy as np\n+    from qiskit.algorithms.optimizers import SLSQP\n+    from qiskit.algorithms.minimum_eigensolvers import VQE\n+    from qiskit.primitives import Estimator\n+    vqe = VQE(Estimator(), ansatz, SLSQP())\n+\n+4. Now comes the key step: choosing the initial point. Since we picked the\n+   :class:`~qiskit_nature.second_q.circuit.library.VSCF` initial state before,\n+   in order to ensure we start from that, we need to initialize our ``initial_point``\n+   with all-zero parameters. One way to do that is like so:\n+\n+.. testcode::\n+\n+    vqe.initial_point = np.zeros(ansatz.num_parameters)\n+\n+Alternatively, one can also use\n+:class:`~qiskit_nature.second_q.algorithms.initial_points.VSCFInitialPoint` like so:\n+\n+.. testcode::\n+\n+    from qiskit_nature.second_q.algorithms.initial_points import VSCFInitialPoint\n+    initial_point = VSCFInitialPoint()\n+    initial_point.ansatz = ansatz\n+    initial_point.problem = problem\n+    vqe.initial_point = initial_point.to_numpy_array()\n+\n+Just like in the UCC-ansatz case, this is mostly useful when building more code on top of the",
+    "path": "docs/howtos/vqe_uvcc.rst",
+    "commit_id": "fca3ed57b1f926da56f44516b1063a3cbe0b12f6",
+    "original_commit_id": "c32db6b8e7c153b94865f8a42354217a3dbc705c",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "As this `UCC-ansatz case` references the other howto could we make it link so its easy to jump there",
+    "created_at": "2023-03-15T15:48:23Z",
+    "updated_at": "2023-03-15T15:48:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137339148",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137339148"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1084#discussion_r1137339148"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1084"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1137339148/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 73,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 73,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

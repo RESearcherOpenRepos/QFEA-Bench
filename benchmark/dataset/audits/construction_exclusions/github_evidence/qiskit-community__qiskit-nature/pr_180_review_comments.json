@@ -1,0 +1,1255 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635559929",
+    "pull_request_review_id": 663629250,
+    "id": 635559929,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTU1OTkyOQ==",
+    "diff_hunk": "@@ -122,6 +123,7 @@ def test_lih_rhf_bk(self):\n         )\n         self._assert_energy_and_dipole(result, \"lih\")\n \n+    @slow_test",
+    "path": "test/drivers/pyscfd/test_driver_problem_pyscf.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am not sure these are all that slow. I would be reluctant not to have these in there running normally under CI.",
+    "created_at": "2021-05-19T20:25:03Z",
+    "updated_at": "2021-05-19T20:25:03Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635559929",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635559929"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635559929"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635559929/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 126,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635561179",
+    "pull_request_review_id": 663631018,
+    "id": 635561179,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTU2MTE3OQ==",
+    "diff_hunk": "@@ -53,47 +68,79 @@ def __init__(\n         spin: int = 0,\n         basis: str = \"sto3g\",\n         hf_method: HFMethodType = HFMethodType.RHF,\n+        xc_functional: str = \"lda,vwn\",\n+        xcf_library: str = \"libxc\",\n         conv_tol: float = 1e-9,\n         max_cycle: int = 50,\n         init_guess: InitialGuess = InitialGuess.MINAO,\n         max_memory: Optional[int] = None,\n+        chkfile: Optional[str] = None,\n         molecule: Optional[Molecule] = None,\n     ) -> None:\n         \"\"\"\n         Args:\n-            atom: Atom list or string separated by semicolons or line breaks. Each element in the\n-                list is an atom followed by position e.g. `H 0.0 0.0 0.5`. The preceding example\n-                shows the `XYZ` format for position but `Z-Matrix` format is supported too here.\n-            unit: Angstrom or Bohr\n-            charge: Charge on the molecule\n-            spin: Spin (2S), in accordance with how PySCF defines a molecule in pyscf.gto.mole.Mole\n-            basis: Basis set name as recognized by PySCF, e.g. `sto3g`, `321g` etc.\n-                See https://sunqm.github.io/pyscf/_modules/pyscf/gto/basis.html for a listing.\n-                Defaults to the minimal basis 'sto3g'.\n-            hf_method: Hartree-Fock Method type\n-            conv_tol: Convergence tolerance see PySCF docs and pyscf/scf/hf.py\n-            max_cycle: Max convergence cycles see PySCF docs and pyscf/scf/hf.py,\n-                has a min. value of 1.\n-            init_guess: See PySCF pyscf/scf/hf.py init_guess_by_minao/1e/atom methods\n-            max_memory: Maximum memory that PySCF should use\n-            molecule: A driver independent Molecule definition instance may be provided. When\n+            atom: A string (or a list thereof) denoting the elements and coordinates of all atoms in\n+                the system. Two formats are allowed; first, the PySCF-style `XYZ` format which is a\n+                list of strings formatted as `{element symbol} {x_coord} {y_coord} {z_coord}`. If a\n+                single string is given, the list entries should be joined by `;` as in the example:\n+                `H 0.0 0.0 0.0; H 0.0 0.0 0.735`.\n+                Second, the `Z-Matrix` format which is explained at 1_. The previous example\n+                would be written as `H; H 3 0.735`.\n+                See also 2_ for more details on geometry specifications supported by PySCF.\n+            unit: Denotes the unit of coordinates. Valid values are given by the ``UnitsType`` enum.\n+            charge: The charge of the molecule.\n+            spin: The spin of the molecule. In accordance with PySCF's definition, the spin equals\n+                :math:`2*S`, where :math:`S` is the total spin number of the molecule.\n+            basis: A basis set name as recognized by PySCF (3_), e.g. `sto3g` (the default), `321g`,\n+                etc. Note, that more advanced configuration options like a Dictionary or custom\n+                basis sets are not allowed for the moment. Refer to 4_ for an extensive list of\n+                PySCF's valid basis set names.\n+            hf_method: The SCF method type to be used for the PySCF calculation. While the name\n+                refers to HF methods, the PySCFDriver also supports KS methods. Refer to the\n+                ``HFMethodType`` for a list of the supported methods.",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "If the name needs this further explanation around hf would it be better to have this as a different name? Maybe simply just `method` that accommodates either and deprecate the `hf_method`; same for HFMethodType maybe it needs an enum specific to PySCF - that one supported  all the drivers and was used in PyQuante where these additional methods would be invalid.",
+    "created_at": "2021-05-19T20:27:13Z",
+    "updated_at": "2021-05-19T20:27:14Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635561179",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635561179"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635561179"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635561179/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 98,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 100,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 108,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635565119",
+    "pull_request_review_id": 663636093,
+    "id": 635565119,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTU2NTExOQ==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)\n+        except AttributeError as exc:\n+            raise QiskitNatureError(\"Failed to load {} HF object.\".format(hf_method_name)) from exc\n+\n+        self._calc = hf_method_cls(self._mol)\n+\n+        if \"KS\" in hf_method_name:",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Since we have enum here we should just be able to ask if the enum is one of the set of them that should be acted upon - that way we don't have some string \"KS\" as comparison that is we changed enum names, with set the refactoring would tale care of things.",
+    "created_at": "2021-05-19T20:33:46Z",
+    "updated_at": "2021-05-19T20:33:47Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635565119",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635565119"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635565119"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635565119/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 425,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 444,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635566581",
+    "pull_request_review_id": 663637941,
+    "id": 635566581,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTU2NjU4MQ==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)\n+        except AttributeError as exc:\n+            raise QiskitNatureError(\"Failed to load {} HF object.\".format(hf_method_name)) from exc\n+\n+        self._calc = hf_method_cls(self._mol)\n+\n+        if \"KS\" in hf_method_name:\n+            self._calc._numint.libxc = getattr(dft, self.xcf_library)\n+            self._calc.xc = self.xc_functional\n+\n+        if self._chkfile is not None and os.path.exists(self._chkfile):\n+            self._calc.__dict__.update(lib_chkfile.load(self._chkfile, \"scf\"))\n+\n+            logger.info(\"PySCF loaded from chkfile e(hf): %s\", self._calc.e_tot)\n         else:\n-            atom = self._atom\n-            charge = self._charge\n-            spin = self._spin\n-            units = self._units\n-\n-        basis = self.basis\n-        hf_method = self.hf_method\n-\n-        q_mol = compute_integrals(\n-            atom=atom,\n-            unit=units,\n-            charge=charge,\n-            spin=spin,\n-            basis=basis,\n-            hf_method=hf_method,\n-            conv_tol=self._conv_tol,\n-            max_cycle=self._max_cycle,\n-            init_guess=self._init_guess,\n-            max_memory=self._max_memory,\n-        )\n+            self._calc.conv_tol = self._conv_tol\n+            self._calc.max_cycle = self._max_cycle\n+            self._calc.init_guess = self._init_guess\n+            self._calc.kernel()\n \n+            logger.info(\n+                \"PySCF kernel() converged: %s, e(hf): %s\",\n+                self._calc.converged,\n+                self._calc.e_tot,\n+            )\n+\n+    def _construct_qmolecule(self) -> QMolecule:\n+        \"\"\"Constructs a QMolecule out of the PySCF calculation object.\n+\n+        Returns:\n+            QMolecule: A QMolecule populated with driver integrals etc.\n+        \"\"\"\n+        # Create driver level molecule object and populate\n+        q_mol = QMolecule()\n+\n+        self._populate_q_molecule_driver_info(q_mol)\n+        self._populate_q_molecule_mol_data(q_mol)\n+        self._populate_q_molecule_orbitals(q_mol)\n+        self._populate_q_molecule_ao_integrals(q_mol)\n+        self._populate_q_molecule_mo_integrals(q_mol)\n+        self._populate_q_molecule_dipole_integrals(q_mol)\n+\n+        return q_mol\n+\n+    def _populate_q_molecule_driver_info(self, q_mol: QMolecule) -> None:\n+        \"\"\"Populates the driver information fields.\n+\n+        Args:\n+            q_mol: the QMolecule to populate.\n+        \"\"\"\n         q_mol.origin_driver_name = \"PYSCF\"\n+        q_mol.origin_driver_version = pyscf_version\n         cfg = [\n-            \"atom={}\".format(atom),\n-            \"unit={}\".format(units),\n-            \"charge={}\".format(charge),\n-            \"spin={}\".format(spin),\n-            \"basis={}\".format(basis),\n-            \"hf_method={}\".format(hf_method),\n+            \"atom={}\".format(self._atom),\n+            \"unit={}\".format(self._unit),\n+            \"charge={}\".format(self._charge),\n+            \"spin={}\".format(self._spin),\n+            \"basis={}\".format(self._basis),\n+            \"hf_method={}\".format(self._hf_method),\n             \"conv_tol={}\".format(self._conv_tol),\n             \"max_cycle={}\".format(self._max_cycle),\n             \"init_guess={}\".format(self._init_guess),\n             \"max_memory={}\".format(self._max_memory),\n-            \"\",\n         ]\n-        q_mol.origin_driver_config = \"\\n\".join(cfg)\n+        if \"ks\" in self._hf_method.lower():",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess this \"ks\" string detection is lower case versus the above I commented on where it was uppercase; again with an enum I think we should be able to leverage that as described before",
+    "created_at": "2021-05-19T20:36:06Z",
+    "updated_at": "2021-05-19T20:36:06Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635566581",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635566581"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635566581"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635566581/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 483,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 530,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635573590",
+    "pull_request_review_id": 663646898,
+    "id": 635573590,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTU3MzU5MA==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess this works - but it ends up more obscure for me and could do with explanation for any future readers if you choose to want to keep this. Certainly the switch/case (ifs from before) would grow larger here but to me its clearer/cleaner - now the enum names I guess have to match the method names.",
+    "created_at": "2021-05-19T20:47:21Z",
+    "updated_at": "2021-05-19T20:47:21Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635573590",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635573590"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635573590"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635573590/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 418,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 419,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 438,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635821614",
+    "pull_request_review_id": 664011883,
+    "id": 635821614,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTgyMTYxNA==",
+    "diff_hunk": "@@ -122,6 +123,7 @@ def test_lih_rhf_bk(self):\n         )\n         self._assert_energy_and_dipole(result, \"lih\")\n \n+    @slow_test",
+    "path": "test/drivers/pyscfd/test_driver_problem_pyscf.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I do not see the benefit of the `OH` tests compared to the existing `H2` *and* `LiH` tests. The `OH` tests are, relative to the other ones, *very* slow. Hence, I disabled them. If you disagree strongly we can re-enable them. However, for the record, I don't think they are necessary.",
+    "created_at": "2021-05-20T07:05:16Z",
+    "updated_at": "2021-05-20T07:05:16Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635821614",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635821614"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635821614"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635821614/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 126,
+    "side": "RIGHT",
+    "in_reply_to_id": 635559929,
+    "author_association": "MEMBER",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635822320",
+    "pull_request_review_id": 664012892,
+    "id": 635822320,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTgyMjMyMA==",
+    "diff_hunk": "@@ -53,47 +68,79 @@ def __init__(\n         spin: int = 0,\n         basis: str = \"sto3g\",\n         hf_method: HFMethodType = HFMethodType.RHF,\n+        xc_functional: str = \"lda,vwn\",\n+        xcf_library: str = \"libxc\",\n         conv_tol: float = 1e-9,\n         max_cycle: int = 50,\n         init_guess: InitialGuess = InitialGuess.MINAO,\n         max_memory: Optional[int] = None,\n+        chkfile: Optional[str] = None,\n         molecule: Optional[Molecule] = None,\n     ) -> None:\n         \"\"\"\n         Args:\n-            atom: Atom list or string separated by semicolons or line breaks. Each element in the\n-                list is an atom followed by position e.g. `H 0.0 0.0 0.5`. The preceding example\n-                shows the `XYZ` format for position but `Z-Matrix` format is supported too here.\n-            unit: Angstrom or Bohr\n-            charge: Charge on the molecule\n-            spin: Spin (2S), in accordance with how PySCF defines a molecule in pyscf.gto.mole.Mole\n-            basis: Basis set name as recognized by PySCF, e.g. `sto3g`, `321g` etc.\n-                See https://sunqm.github.io/pyscf/_modules/pyscf/gto/basis.html for a listing.\n-                Defaults to the minimal basis 'sto3g'.\n-            hf_method: Hartree-Fock Method type\n-            conv_tol: Convergence tolerance see PySCF docs and pyscf/scf/hf.py\n-            max_cycle: Max convergence cycles see PySCF docs and pyscf/scf/hf.py,\n-                has a min. value of 1.\n-            init_guess: See PySCF pyscf/scf/hf.py init_guess_by_minao/1e/atom methods\n-            max_memory: Maximum memory that PySCF should use\n-            molecule: A driver independent Molecule definition instance may be provided. When\n+            atom: A string (or a list thereof) denoting the elements and coordinates of all atoms in\n+                the system. Two formats are allowed; first, the PySCF-style `XYZ` format which is a\n+                list of strings formatted as `{element symbol} {x_coord} {y_coord} {z_coord}`. If a\n+                single string is given, the list entries should be joined by `;` as in the example:\n+                `H 0.0 0.0 0.0; H 0.0 0.0 0.735`.\n+                Second, the `Z-Matrix` format which is explained at 1_. The previous example\n+                would be written as `H; H 3 0.735`.\n+                See also 2_ for more details on geometry specifications supported by PySCF.\n+            unit: Denotes the unit of coordinates. Valid values are given by the ``UnitsType`` enum.\n+            charge: The charge of the molecule.\n+            spin: The spin of the molecule. In accordance with PySCF's definition, the spin equals\n+                :math:`2*S`, where :math:`S` is the total spin number of the molecule.\n+            basis: A basis set name as recognized by PySCF (3_), e.g. `sto3g` (the default), `321g`,\n+                etc. Note, that more advanced configuration options like a Dictionary or custom\n+                basis sets are not allowed for the moment. Refer to 4_ for an extensive list of\n+                PySCF's valid basis set names.\n+            hf_method: The SCF method type to be used for the PySCF calculation. While the name\n+                refers to HF methods, the PySCFDriver also supports KS methods. Refer to the\n+                ``HFMethodType`` for a list of the supported methods.",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I agree that the naming is not ideal. Given our plans for the `MoleculeDriver` I think we can tackle that then, because we need to re-evaluate how this Enum ties into the general case there, too.",
+    "created_at": "2021-05-20T07:06:34Z",
+    "updated_at": "2021-05-20T07:06:34Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635822320",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635822320"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635822320"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635822320/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 98,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 100,
+    "side": "RIGHT",
+    "in_reply_to_id": 635561179,
+    "author_association": "MEMBER",
+    "original_position": 108,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823265",
+    "pull_request_review_id": 664013912,
+    "id": 635823265,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTgyMzI2NQ==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)\n+        except AttributeError as exc:\n+            raise QiskitNatureError(\"Failed to load {} HF object.\".format(hf_method_name)) from exc\n+\n+        self._calc = hf_method_cls(self._mol)\n+\n+        if \"KS\" in hf_method_name:",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The reason why I went with this comparison style is that I did not to duplicate half of the Enum as a set here. And this comparison properly reflects the nature of the check which we care about.",
+    "created_at": "2021-05-20T07:07:48Z",
+    "updated_at": "2021-05-20T07:07:48Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635823265",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823265"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635823265"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823265/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 425,
+    "side": "RIGHT",
+    "in_reply_to_id": 635565119,
+    "author_association": "MEMBER",
+    "original_position": 444,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823905",
+    "pull_request_review_id": 664014793,
+    "id": 635823905,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNTgyMzkwNQ==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I can add some explanatory comment. I will not revert it to the `if-elif-else` switches.\r\nI will wait with this update until we have resolved the other discussion points above.",
+    "created_at": "2021-05-20T07:08:50Z",
+    "updated_at": "2021-05-20T07:08:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635823905",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823905"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r635823905"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/635823905/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 418,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 419,
+    "side": "RIGHT",
+    "in_reply_to_id": 635573590,
+    "author_association": "MEMBER",
+    "original_position": 438,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636451597",
+    "pull_request_review_id": 664872280,
+    "id": 636451597,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNjQ1MTU5Nw==",
+    "diff_hunk": "@@ -122,6 +123,7 @@ def test_lih_rhf_bk(self):\n         )\n         self._assert_energy_and_dipole(result, \"lih\")\n \n+    @slow_test",
+    "path": "test/drivers/pyscfd/test_driver_problem_pyscf.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The doublet OH was included since its not a closed shell molecule to start with unlike LiH. Its a bit bigger and hence the bit slower. It was to make sure we were doing things right with either type of molecule across the different methods - it was originally called test driver methods. How long does it take to run that you consider it slow? If anything I could support perhaps putting some of them oh_uhf/oh_rohf (same for lih_uhf/rohf/rhf) as slow where they test the same thing but with a different mapping to thin things down. Arguably if it works for one mapping it should be good for the others - if it does not its more likely the mapper is broke than the driver. Having said that I am not sure we have mapping tests with such coverage of open shell molecules elsewhere.",
+    "created_at": "2021-05-20T20:34:08Z",
+    "updated_at": "2021-05-20T20:34:08Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636451597",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636451597"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636451597"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636451597/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 126,
+    "side": "RIGHT",
+    "in_reply_to_id": 635559929,
+    "author_association": "MEMBER",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636454540",
+    "pull_request_review_id": 664876192,
+    "id": 636454540,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNjQ1NDU0MA==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)\n+        except AttributeError as exc:\n+            raise QiskitNatureError(\"Failed to load {} HF object.\".format(hf_method_name)) from exc\n+\n+        self._calc = hf_method_cls(self._mol)\n+\n+        if \"KS\" in hf_method_name:",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess in my mind it makes the code 'brittle' in that refactoring an enum, should we ever want to change any name, this detection here would break. Listing the set and simply saying `if x in [A, B, C]` works and if we refactor C to D that code should get changed by the refactor whereas some check on \"C\" would not.",
+    "created_at": "2021-05-20T20:39:10Z",
+    "updated_at": "2021-05-20T20:39:10Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636454540",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636454540"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636454540"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636454540/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 425,
+    "side": "RIGHT",
+    "in_reply_to_id": 635565119,
+    "author_association": "MEMBER",
+    "original_position": 444,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636457157",
+    "pull_request_review_id": 664879564,
+    "id": 636457157,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDYzNjQ1NzE1Nw==",
+    "diff_hunk": "@@ -125,49 +302,386 @@ def _check_valid():\n         raise QiskitNatureError(err_msg)\n \n     def run(self) -> QMolecule:\n+        \"\"\"Runs the PySCF driver.\n+\n+        Raises:\n+            QiskitNatureError: if an error during the PySCF setup or calculation occurred.\n+\n+        Returns:\n+            A QMolecule object containing the raw driver results.\n+        \"\"\"\n         if self.molecule is not None:\n-            atom = \";\".join(\n-                [name + \" \" + \" \".join(map(str, coord)) for (name, coord) in self.molecule.geometry]\n+            self.atom = [  # type: ignore\n+                \" \".join(map(str, (name, *coord)))  # type: ignore\n+                for (name, coord) in self.molecule.geometry\n+            ]\n+            self._charge = self.molecule.charge\n+            self._spin = self.molecule.multiplicity - 1\n+            self._unit = self.molecule.units.value\n+\n+        self._build_molecule()\n+        self.run_pyscf()\n+\n+        q_mol = self._construct_qmolecule()\n+        return q_mol\n+\n+    def _build_molecule(self) -> None:\n+        \"\"\"Builds the PySCF molecule object.\n+\n+        Raises:\n+             QiskitNatureError: If building the PySCF molecule object failed.\n+        \"\"\"\n+        # Get config from input parameters\n+        # molecule is in PySCF atom string format e.g. \"H .0 .0 .0; H .0 .0 0.2\"\n+        #          or in Z-Matrix format e.g. \"H; O 1 1.08; H 2 1.08 1 107.5\"\n+        # other parameters are as per PySCF got.Mole format\n+\n+        atom = self._check_molecule_format(self.atom)\n+        if self._max_memory is None:\n+            self._max_memory = param.MAX_MEMORY\n+\n+        try:\n+            verbose = pylogger.QUIET\n+            output = None\n+            if logger.isEnabledFor(logging.DEBUG):\n+                verbose = pylogger.INFO\n+                file, output = tempfile.mkstemp(suffix=\".log\")\n+                os.close(file)\n+\n+            self._mol = gto.Mole(\n+                atom=atom,\n+                unit=self._unit,\n+                basis=self._basis,\n+                max_memory=self._max_memory,\n+                verbose=verbose,\n+                output=output,\n             )\n-            charge = self.molecule.charge\n-            spin = self.molecule.multiplicity - 1\n-            units = self.molecule.units.value\n+            self._mol.symmetry = False\n+            self._mol.charge = self._charge\n+            self._mol.spin = self._spin\n+            self._mol.build(parse_arg=False)\n+\n+            if output is not None:\n+                self._process_pyscf_log(output)\n+                try:\n+                    os.remove(output)\n+                except Exception:  # pylint: disable=broad-except\n+                    pass\n+\n+        except Exception as exc:\n+            raise QiskitNatureError(\"Failed to build the PySCF Molecule object.\") from exc\n+\n+    @staticmethod\n+    def _check_molecule_format(val: str) -> Union[str, List[str]]:\n+        \"\"\"Ensures the molecule coordinates are in XYZ format.\n+\n+        This utility automatically converts a Z-matrix coordinate format into XYZ coordinates.\n+\n+        Args:\n+            val: the atomic coordinates.\n+\n+        Raises:\n+            QiskitNatureError: If the provided coordinate are badly formatted.\n+\n+        Returns:\n+            The coordinates in XYZ format.\n+        \"\"\"\n+        atoms = [x.strip() for x in val.split(\";\")]\n+        if atoms is None or len(atoms) < 1:  # pylint: disable=len-as-condition\n+            raise QiskitNatureError(\"Molecule format error: \" + val)\n+\n+        # An xyz format has 4 parts in each atom, if not then do zmatrix convert\n+        # Allows dummy atoms, using symbol 'X' in zmatrix format for coord computation to xyz\n+        parts = [x.strip() for x in atoms[0].split(\" \")]\n+        if len(parts) != 4:\n+            try:\n+                newval = []\n+                for entry in gto.mole.from_zmatrix(val):\n+                    if entry[0].upper() != \"X\":\n+                        newval.append(entry)\n+                return newval\n+            except Exception as exc:\n+                raise QiskitNatureError(\"Failed to convert atom string: \" + val) from exc\n+\n+        return val\n+\n+    def run_pyscf(self) -> None:\n+        \"\"\"Runs the PySCF calculation.\n+\n+        This method is part of the public interface to allow the user to easily overwrite it in a\n+        subclass to further tailor the behavior to some specific use case.\n+\n+        Raises:\n+            QiskitNatureError: If an invalid HF method type was supplied.\n+        \"\"\"\n+        try:\n+            hf_method_name = self._hf_method.upper()\n+            hf_method_cls = getattr(scf, hf_method_name)",
+    "path": "qiskit_nature/drivers/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "7809a7da162d69fbd4fdf77e3a2a15970cdde66d",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Thats fine - if its documented - though personally I am not so keen on the direct couping of names in the enum - that currently has wider use in Nature, to names that match PySCF driver methods, though I understand RHF/ROHF and UHF are universal enough - maybe that's true of these KS methods too. With a switch, that was calling to the methods directly, tooling can check and show issues. Here if things change any tooling (lint, IDEs) etc are unlikely to spot any issue. In that regard its easier/simpler to see things too as one is coding. Here of course unit tests should run through all the possibilities and would ensure it continues to work.",
+    "created_at": "2021-05-20T20:43:38Z",
+    "updated_at": "2021-05-20T21:01:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636457157",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636457157"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r636457157"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/636457157/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 418,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 419,
+    "side": "RIGHT",
+    "in_reply_to_id": 635573590,
+    "author_association": "MEMBER",
+    "original_position": 438,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645163531",
+    "pull_request_review_id": 675773863,
+    "id": 645163531,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY0NTE2MzUzMQ==",
+    "diff_hunk": "@@ -10,25 +10,39 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" PYSCF Driver \"\"\"\n+\"\"\"The PySCF Driver.\"\"\"\n \n import importlib\n import logging\n+import os\n+import tempfile\n+import warnings\n from enum import Enum\n-from typing import Optional, Union, List\n+from typing import List, Optional, Tuple, Union\n \n+import numpy as np\n from qiskit.utils.validation import validate_min\n \n-from qiskit_nature import QiskitNatureError\n-\n+from ....exceptions import QiskitNatureError\n+from ..fermionic_driver import FermionicDriver, MethodType\n from ..qmolecule import QMolecule\n-from .integrals import compute_integrals\n-from ..fermionic_driver import FermionicDriver, HFMethodType\n from ...molecule import Molecule\n from ...units_type import UnitsType\n \n logger = logging.getLogger(__name__)\n \n+try:\n+    from pyscf import __version__ as pyscf_version\n+    from pyscf import ao2mo, dft, gto, scf\n+    from pyscf.lib import chkfile as lib_chkfile\n+    from pyscf.lib import logger as pylogger\n+    from pyscf.lib import param\n+    from pyscf.tools import dump_mat\n+\n+    warnings.filterwarnings(\"ignore\", category=DeprecationWarning, module=\"pyscf\")\n+except ImportError:\n+    logger.info(\"PySCF is not installed. See https://sunqm.github.io/pyscf/install.html\")",
+    "path": "qiskit_nature/drivers/second_quantization/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This should be updated message for the changed install location as follows I think\r\n```suggestion\r\n    logger.info(\"PySCF is not installed. See https://pyscf.org/install.html\")\r\n```",
+    "created_at": "2021-06-03T22:08:46Z",
+    "updated_at": "2021-06-03T22:11:11Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645163531",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645163531"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645163531"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645163531/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 41,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645166588",
+    "pull_request_review_id": 675777418,
+    "id": 645166588,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY0NTE2NjU4OA==",
+    "diff_hunk": "@@ -10,18 +10,18 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" Test Driver Methods Gaussian \"\"\"\n+\"\"\" Test Driver Problem Gaussian \"\"\"\n \n import unittest\n \n-from test.drivers.second_quantization.test_driver_methods_gsc import TestDriverMethods\n+from test.drivers.second_quantization.test_driver_problem import TestDriverProblem\n from qiskit_nature.drivers.second_quantization import GaussianDriver\n from qiskit_nature import QiskitNatureError\n from qiskit_nature.transformers.second_quantization import FreezeCoreTransformer\n \n \n-class TestDriverMethodsGaussian(TestDriverMethods):\n-    \"\"\"Driver Methods Gaussian tests\"\"\"\n+class TestDriverProblemGaussian(TestDriverProblem):",
+    "path": "test/drivers/second_quantization/gaussiand/test_driver_methods_gaussian.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The original rationale why this was called TestDriverMethods was that it was really around tests for the different methods - rhf, rohf, uhf",
+    "created_at": "2021-06-03T22:15:45Z",
+    "updated_at": "2021-06-03T22:15:46Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645166588",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645166588"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645166588"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645166588/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 23,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334205",
+    "pull_request_review_id": 675972047,
+    "id": 645334205,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY0NTMzNDIwNQ==",
+    "diff_hunk": "@@ -10,25 +10,39 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" PYSCF Driver \"\"\"\n+\"\"\"The PySCF Driver.\"\"\"\n \n import importlib\n import logging\n+import os\n+import tempfile\n+import warnings\n from enum import Enum\n-from typing import Optional, Union, List\n+from typing import List, Optional, Tuple, Union\n \n+import numpy as np\n from qiskit.utils.validation import validate_min\n \n-from qiskit_nature import QiskitNatureError\n-\n+from ....exceptions import QiskitNatureError\n+from ..fermionic_driver import FermionicDriver, MethodType\n from ..qmolecule import QMolecule\n-from .integrals import compute_integrals\n-from ..fermionic_driver import FermionicDriver, HFMethodType\n from ...molecule import Molecule\n from ...units_type import UnitsType\n \n logger = logging.getLogger(__name__)\n \n+try:\n+    from pyscf import __version__ as pyscf_version\n+    from pyscf import ao2mo, dft, gto, scf\n+    from pyscf.lib import chkfile as lib_chkfile\n+    from pyscf.lib import logger as pylogger\n+    from pyscf.lib import param\n+    from pyscf.tools import dump_mat\n+\n+    warnings.filterwarnings(\"ignore\", category=DeprecationWarning, module=\"pyscf\")\n+except ImportError:\n+    logger.info(\"PySCF is not installed. See https://sunqm.github.io/pyscf/install.html\")",
+    "path": "qiskit_nature/drivers/second_quantization/pyscfd/pyscfdriver.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Thanks! I must have missed this one. After fixing it grepping for `sunqm` no longer returns any results in the codebase :+1: ",
+    "created_at": "2021-06-04T06:55:31Z",
+    "updated_at": "2021-06-04T06:55:31Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645334205",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334205"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645334205"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334205/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 645163531,
+    "author_association": "MEMBER",
+    "original_position": 41,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334494",
+    "pull_request_review_id": 675972453,
+    "id": 645334494,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY0NTMzNDQ5NA==",
+    "diff_hunk": "@@ -10,18 +10,18 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" Test Driver Methods Gaussian \"\"\"\n+\"\"\" Test Driver Problem Gaussian \"\"\"\n \n import unittest\n \n-from test.drivers.second_quantization.test_driver_methods_gsc import TestDriverMethods\n+from test.drivers.second_quantization.test_driver_problem import TestDriverProblem\n from qiskit_nature.drivers.second_quantization import GaussianDriver\n from qiskit_nature import QiskitNatureError\n from qiskit_nature.transformers.second_quantization import FreezeCoreTransformer\n \n \n-class TestDriverMethodsGaussian(TestDriverMethods):\n-    \"\"\"Driver Methods Gaussian tests\"\"\"\n+class TestDriverProblemGaussian(TestDriverProblem):",
+    "path": "test/drivers/second_quantization/gaussiand/test_driver_methods_gaussian.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I see. I renamed it because these tests are now all based on the `Problem` classes whereas the other drivers tests are more basic. I don't think it matters too much though.",
+    "created_at": "2021-06-04T06:56:05Z",
+    "updated_at": "2021-06-04T06:56:06Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645334494",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334494"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645334494"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645334494/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 23,
+    "side": "RIGHT",
+    "in_reply_to_id": 645166588,
+    "author_association": "MEMBER",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645545575",
+    "pull_request_review_id": 676251893,
+    "id": 645545575,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY0NTU0NTU3NQ==",
+    "diff_hunk": "@@ -10,18 +10,18 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" Test Driver Methods Gaussian \"\"\"\n+\"\"\" Test Driver Problem Gaussian \"\"\"\n \n import unittest\n \n-from test.drivers.second_quantization.test_driver_methods_gsc import TestDriverMethods\n+from test.drivers.second_quantization.test_driver_problem import TestDriverProblem\n from qiskit_nature.drivers.second_quantization import GaussianDriver\n from qiskit_nature import QiskitNatureError\n from qiskit_nature.transformers.second_quantization import FreezeCoreTransformer\n \n \n-class TestDriverMethodsGaussian(TestDriverMethods):\n-    \"\"\"Driver Methods Gaussian tests\"\"\"\n+class TestDriverProblemGaussian(TestDriverProblem):",
+    "path": "test/drivers/second_quantization/gaussiand/test_driver_methods_gaussian.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "They were named based on _what_ they were testing not _how_ - i.e. it's not about the problem, that's just a means to an end to verify the function/result. If we could exact diagonalize a FermionicOp to get a min eig value it could be done that way given what is tested perhaps - before we used to use core Hamiltonian and Numpy - using Problem and GroundStateSolver is just the latest way.",
+    "created_at": "2021-06-04T12:52:24Z",
+    "updated_at": "2021-06-04T12:52:24Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645545575",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645545575"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r645545575"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/645545575/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 23,
+    "side": "RIGHT",
+    "in_reply_to_id": 645166588,
+    "author_association": "MEMBER",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/654189186",
+    "pull_request_review_id": 687089988,
+    "id": 654189186,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY1NDE4OTE4Ng==",
+    "diff_hunk": "@@ -10,18 +10,18 @@\n # copyright notice, and modified files need to carry a notice indicating\n # that they have been altered from the originals.\n \n-\"\"\" Test Driver Methods Gaussian \"\"\"\n+\"\"\" Test Driver Problem Gaussian \"\"\"\n \n import unittest\n \n-from test.drivers.second_quantization.test_driver_methods_gsc import TestDriverMethods\n+from test.drivers.second_quantization.test_driver_problem import TestDriverProblem\n from qiskit_nature.drivers.second_quantization import GaussianDriver\n from qiskit_nature import QiskitNatureError\n from qiskit_nature.transformers.second_quantization import FreezeCoreTransformer\n \n \n-class TestDriverMethodsGaussian(TestDriverMethods):\n-    \"\"\"Driver Methods Gaussian tests\"\"\"\n+class TestDriverProblemGaussian(TestDriverProblem):",
+    "path": "test/drivers/second_quantization/gaussiand/test_driver_methods_gaussian.py",
+    "commit_id": "6bb2b39bb149f3bc6ca67619bd32b9fe671fb2b7",
+    "original_commit_id": "61e6b24363f96b7e22a4e25e7cc568b9c2bf1627",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "After an offline-sync and re-evaluating my view on these tests I have decided to revert this naming change. Initially I was thinking differently about this but I agree that this is a change which does not add any value. I will revert this later today.",
+    "created_at": "2021-06-18T07:01:07Z",
+    "updated_at": "2021-06-18T07:01:08Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r654189186",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/654189186"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/180#discussion_r654189186"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/180"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/654189186/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 23,
+    "side": "RIGHT",
+    "in_reply_to_id": 645166588,
+    "author_association": "MEMBER",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

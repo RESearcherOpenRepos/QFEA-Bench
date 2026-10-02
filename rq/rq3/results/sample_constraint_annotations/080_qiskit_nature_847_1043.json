@@ -1,0 +1,178 @@
+{
+  "id": 80,
+  "sample_id": "qiskit_nature_847_1043",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "3e11312a18f970ce1a1b170603fc0ef38ae224e5",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 2,
+    "p2p_tests": 10,
+    "subtype_test_counts": {
+      "quantum_semantics/active_space_projection": 11,
+      "interface/input_format_equivalence": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_standalone_usage",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 354,
+          "expected": "Prepared standalone active-space transform matches reference electronic integrals and shift."
+        }
+      ],
+      "rationale": "The exact reduced Hamiltonian data is primary; pre-prepare error is secondary."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_standalone_usage",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 156,
+          "expected": "Prepared standalone freeze-core transform matches reference reduced electronic energy."
+        }
+      ],
+      "rationale": "The exact physical integrals and inactive-space correction are primary."
+    },
+    {
+      "test_number": 3,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_arbitrary_active_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 236,
+          "expected": "Explicit active orbitals yield reference reduced driver data."
+        }
+      ],
+      "rationale": "The selected control checks quantum-chemistry projection."
+    },
+    {
+      "test_number": 4,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_full_active_space_1",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 127,
+          "expected": "Full active space preserves driver data."
+        }
+      ],
+      "rationale": "The selected control checks physical data preservation."
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_minimal_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 173,
+          "expected": "Minimal active space yields reference reduced integrals and shifts."
+        }
+      ],
+      "rationale": "The selected control checks quantum-chemistry projection."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_numpy_integer",
+      "label": "interface/input_format_equivalence",
+      "assertions": [
+        {
+          "line": 319,
+          "expected": "NumPy integer electron and orbital counts are accepted by active-space transformation."
+        }
+      ],
+      "rationale": "This regression has no explicit numeric output assertion; accepted scalar types are the contract."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_tuple_num_electrons_with_manual_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 301,
+          "expected": "Tuple electron counts with manually selected orbitals yield reference reduced data."
+        }
+      ],
+      "rationale": "The projected integrals are explicitly compared."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_active_space_transformer.py::TestActiveSpaceTransformer::test_unpaired_electron_active_space",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 197,
+          "expected": "Unpaired-electron active space yields reference spin-resolved reduction."
+        }
+      ],
+      "rationale": "The selected control checks physical projection."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 82,
+          "expected": "Freeze-core transform yields reference reduced molecular data."
+        }
+      ],
+      "rationale": "The selected control checks physical projection."
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_freeze_core_with_remove_orbitals",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 102,
+          "expected": "Freeze core plus orbital removal yields reference reduced molecular data."
+        }
+      ],
+      "rationale": "The selected control checks physical projection."
+    },
+    {
+      "test_number": 11,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_full_active_space_1",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 62,
+          "expected": "FreezeCore full active-space case preserves molecular data."
+        }
+      ],
+      "rationale": "The selected control checks physical preservation."
+    },
+    {
+      "test_number": 12,
+      "split": "P2P",
+      "selector": "test/second_q/transformers/test_freeze_core_transformer.py::TestFreezeCoreTransformer::test_no_freeze_core",
+      "label": "quantum_semantics/active_space_projection",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "No-freeze-core case preserves reference integrals and zero energy shift."
+        }
+      ],
+      "rationale": "The explicit assertion compares physical integral tensors."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/3e11312a18f970ce1a1b170603fc0ef38ae224e5/test/second_q/transformers/test_active_space_transformer.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3e11312a18f970ce1a1b170603fc0ef38ae224e5/test/second_q/transformers/test_freeze_core_transformer.py"
+  ],
+  "rationale": "Individually reviewed all 12 selected exact-patch tests; the primary label follows the explicit behavior checked."
+}

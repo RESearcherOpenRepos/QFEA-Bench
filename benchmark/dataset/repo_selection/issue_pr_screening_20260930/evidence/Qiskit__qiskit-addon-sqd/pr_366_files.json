@@ -1,0 +1,14 @@
+[
+  {
+    "sha": "567ede6e00fb84698030737dad092550ca9dad06",
+    "filename": "qiskit_addon_sqd/fermion.py",
+    "status": "modified",
+    "additions": 5,
+    "deletions": 1,
+    "changes": 6,
+    "blob_url": "https://github.com/Qiskit/qiskit-addon-sqd/blob/03f218efc2c55110de7b2561693c63fa68515c8c/qiskit_addon_sqd%2Ffermion.py",
+    "raw_url": "https://github.com/Qiskit/qiskit-addon-sqd/raw/03f218efc2c55110de7b2561693c63fa68515c8c/qiskit_addon_sqd%2Ffermion.py",
+    "contents_url": "https://api.github.com/repos/Qiskit/qiskit-addon-sqd/contents/qiskit_addon_sqd%2Ffermion.py?ref=03f218efc2c55110de7b2561693c63fa68515c8c",
+    "patch": "@@ -275,7 +275,11 @@ def diagonalize_fermionic_hamiltonian(\n             ``max_dim`` shared by both spin sectors; otherwise, an error is raised.\n             The invariance ensures that the returned state does not mix components of\n             even and odd total spin, but it does *not* guarantee that the state is an\n-            eigenvector of the total spin operator :math:`S^2`.\n+            eigenvector of the total spin operator :math:`S^2`. Note that merging the\n+            two lists increases the number of CI strings in each spin sector by up to a\n+            factor of two, so the dimension of the diagonalization subspace can grow by\n+            up to a factor of four (less when the lists overlap, which is typical). This\n+            growth is still subject to the ``max_dim`` limit, if one is set.\n         max_dim: Limit on the dimension of the spin sectors of the SCI subspace.\n             It can be either:\n "
+  }
+]

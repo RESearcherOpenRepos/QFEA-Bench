@@ -1,0 +1,227 @@
+{
+  "instance": {
+    "id": 35,
+    "repo": "qiskit-community/qiskit-machine-learning",
+    "instance_id": "qiskit_machine_learning_44_73",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-machine-learning/issues/44",
+    "pr_url": "https://github.com/qiskit-community/qiskit-machine-learning/pull/73",
+    "base_commit": "7950e84fca286039d70f6f859660c33acfc5bebf",
+    "patch": "4505912b1ee02ac3e12067423e02569aa5b9f9ec"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task controls input-gradient computation across quantum neural-network workflows, but the core behavior is gradient plumbing."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_machine_learning/connectors/torch_connector.py",
+      "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+      "qiskit_machine_learning/neural_networks/neural_network.py",
+      "qiskit_machine_learning/neural_networks/opflow_qnn.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Machine Learning neural networks currently compute gradients with respect to input data whenever backward gradients are requested. This is unnecessary for many workflows and can add avoidable computation. Users need neural networks to skip input-data gradients by default while still allowing them to enable input-gradient computation when a workflow requires it.",
+    "requirements": [
+      "Neural networks must expose whether gradients with respect to input data are computed during backward.",
+      "Input-gradient computation must be disabled by default.",
+      "Users must be able to enable and disable input-gradient computation through the exposed property.",
+      "When input gradients are disabled, backward must return no input gradient while still returning weight gradients where the network supports them.",
+      "Circuit-based, opflow-based, and two-layer neural-network workflows must follow the same disabled-input-gradient behavior.",
+      "Existing forward and backward shape behavior must remain compatible for neural networks."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "NeuralNetwork",
+        "Path": "qiskit_machine_learning/neural_networks/neural_network.py",
+        "Input": "constructor: num_inputs, num_weights, sparse, sampling, output_shape",
+        "Output": "",
+        "Description": "Base neural network initializes input-gradient computation as disabled by default."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetwork.input_gradients",
+        "Path": "qiskit_machine_learning/neural_networks/neural_network.py",
+        "Input": "",
+        "Output": "bool",
+        "Description": "Property getter and setter expose whether backward computes gradients with respect to input data."
+      },
+      {
+        "Type": "Method",
+        "Name": "NeuralNetwork.backward",
+        "Path": "qiskit_machine_learning/neural_networks/neural_network.py",
+        "Input": "input_data, weights",
+        "Output": "tuple",
+        "Description": "Runs the backward pass and returns input gradients only when input_gradients is enabled."
+      },
+      {
+        "Type": "Class",
+        "Name": "CircuitQNN",
+        "Path": "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+        "Input": "constructor: circuit, input_params=None, weight_params=None, sparse=False, sampling=False, interpret=None, output_shape=None, gradient=None, quantum_instance=None",
+        "Output": "",
+        "Description": "Circuit neural network returns None for input gradients when input_gradients is disabled."
+      },
+      {
+        "Type": "Method",
+        "Name": "CircuitQNN.input_gradients",
+        "Path": "qiskit_machine_learning/neural_networks/circuit_qnn.py",
+        "Input": "",
+        "Output": "bool",
+        "Description": "Property getter and setter control whether CircuitQNN backward computes gradients with respect to input data."
+      },
+      {
+        "Type": "Class",
+        "Name": "OpflowQNN",
+        "Path": "qiskit_machine_learning/neural_networks/opflow_qnn.py",
+        "Input": "constructor: operator, input_params, weight_params, exp_val=None, gradient=None, quantum_instance=None",
+        "Output": "",
+        "Description": "Opflow neural network returns None for input gradients when input_gradients is disabled."
+      },
+      {
+        "Type": "Method",
+        "Name": "OpflowQNN.input_gradients",
+        "Path": "qiskit_machine_learning/neural_networks/opflow_qnn.py",
+        "Input": "",
+        "Output": "bool",
+        "Description": "Property getter and setter control whether OpflowQNN backward computes gradients with respect to input data."
+      },
+      {
+        "Type": "Class",
+        "Name": "TwoLayerQNN",
+        "Path": "qiskit_machine_learning/neural_networks/two_layer_qnn.py",
+        "Input": "constructor: num_qubits=None, feature_map=None, ansatz=None, observable=None, exp_val=None, quantum_instance=None",
+        "Output": "",
+        "Description": "Two-layer neural network inherits the input-gradient toggle behavior of opflow neural networks."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "image": "benchmark-evaluation:qiskit_machine_learning_44_73",
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image_id": "sha256:32e9268072b5e071ac9682dc2e3ba08ed1e0edf6a561c9a38adc40417c21cadd",
+      "image_size": "1623605884"
+    },
+    "environment": {
+      "python_version": "3.9",
+      "platform": "linux/amd64",
+      "shared_between_base_and_patched": true,
+      "extra_test_dependencies": [
+        "pip<24.1",
+        "setuptools<70",
+        "numpy<2",
+        "scipy<1.11",
+        "scikit-learn<1.2",
+        "Cython<3",
+        "qiskit-terra==0.18.0",
+        "qiskit-aer==0.8.2",
+        "pytest<8"
+      ]
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_13__True__False__True__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_19__True__False__False__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_37__False__False__True__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_43__False__False__False__0__1_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_4___qasm___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_1_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_1_4___qasm___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_2_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_2_4___qasm___False_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_3___qi___False_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_4___no_qi___False_"
+        ],
+        "result": "passed",
+        "summary": "13 passed in 12.04s",
+        "duration_seconds": 15.95
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_05___1__0__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_06___1__1__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_07___1__1__True__2___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_08___1__1__True___2__2____0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_09___2__2__True___2__2_____0__0__",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_10___2__2__True___2__2______0__0____1__1___",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_05___1__0__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_06___1__1__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_07___1__1__True__2___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_08___1__1__True___2__2____0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_09___2__2__True___2__2_____0__0__",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_10___2__2__True___2__2______0__0____1__1___"
+        ],
+        "result": "passed",
+        "summary": "20 passed in 2.03s",
+        "duration_seconds": 5.57
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_data_gradients",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_13__True__False__True__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_19__True__False__False__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_37__False__False__True__0__1_",
+          "test/neural_networks/test_circuit_qnn.py::TestCircuitQNN::test_circuit_qnn_43__False__False__False__0__1_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_1_1_4___qasm___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_1_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_1_4___qasm___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_2_2___sv___False_",
+          "test/neural_networks/test_opflow_qnn.py::TestOpflowQNN::test_opflow_qnn_2_2_4___qasm___False_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_3___qi___False_",
+          "test/neural_networks/test_two_layer_qnn.py::TestTwoLayerQNN::test_qnn_simple_new_4___no_qi___False_"
+        ],
+        "result": "failed",
+        "summary": "13 failed in 12.94s",
+        "duration_seconds": 19.17
+      },
+      "pass_pass": {
+        "file_list": [
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_05___1__0__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_06___1__1__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_07___1__1__True__2___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_08___1__1__True___2__2____0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_09___2__2__True___2__2_____0__0__",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_forward_shape_10___2__2__True___2__2______0__0____1__1___",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_01___0__0__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_02___0__1__True__1___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_03___0__1__True__2___None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_04___0__1__True___2__2____None_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_05___1__0__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_06___1__1__True__1___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_07___1__1__True__2___0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_08___1__1__True___2__2____0_",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_09___2__2__True___2__2_____0__0__",
+          "test/neural_networks/test_neural_network.py::TestNeuralNetwork::test_backward_shape_10___2__2__True___2__2______0__0____1__1___"
+        ],
+        "result": "passed",
+        "summary": "20 passed in 2.10s",
+        "duration_seconds": 7.46
+      }
+    }
+  }
+}

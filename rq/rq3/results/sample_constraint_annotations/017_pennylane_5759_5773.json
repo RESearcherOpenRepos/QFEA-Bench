@@ -1,0 +1,300 @@
+{
+  "id": 17,
+  "sample_id": "pennylane_5759_5773",
+  "repo": "PennyLaneAI/pennylane",
+  "patch_commit": "c920e7a32d02121a0f384d3c31b76b14bafc7cd6",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 16,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/qubit_operator_conversion": 3,
+      "interface/coefficient_tolerance_contract": 4,
+      "interface/return_representation": 3,
+      "quantum_semantics/fermionic_operator_conversion": 3,
+      "interface/optional_dependency_error": 1,
+      "interface/wire_mapping_contract": 2,
+      "interface/input_validation": 3,
+      "interface/string_representation": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op0-pl_op0]",
+      "label": "quantum_semantics/qubit_operator_conversion",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "OpenFermion Pauli terms convert to the equivalent PennyLane qubit operator"
+        }
+      ]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_qubit[of_op5-pl_op5]",
+      "label": "quantum_semantics/qubit_operator_conversion",
+      "assertions": [
+        {
+          "line": 76,
+          "expected": "A multi-Pauli OpenFermion operator converts to the equivalent PennyLane sum"
+        }
+      ]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_qubit",
+      "label": "interface/coefficient_tolerance_contract",
+      "assertions": [
+        {
+          "line": 85,
+          "expected": "Imaginary coefficient noise below tolerance is removed"
+        },
+        {
+          "line": 88,
+          "expected": "Imaginary components above tolerance remain"
+        }
+      ]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_sum_qubit",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 94,
+          "expected": "Default qubit conversion returns LinearCombination"
+        },
+        {
+          "line": 95,
+          "expected": "Explicit LinearCombination format returns that class"
+        },
+        {
+          "line": 98,
+          "expected": "Sum format returns a Sum object"
+        }
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op0-pl_op0]",
+      "label": "quantum_semantics/fermionic_operator_conversion",
+      "assertions": [
+        {
+          "line": 161,
+          "expected": "OpenFermion fermionic terms convert to the equivalent PennyLane fermionic representation"
+        }
+      ]
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic[of_op5-pl_op5]",
+      "label": "quantum_semantics/fermionic_operator_conversion",
+      "assertions": [
+        {
+          "line": 161,
+          "expected": "The selected multi-term OpenFermion operator converts to an equivalent FermiSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fw",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 170,
+          "expected": "A single unit-coefficient fermion term returns a FermiWord"
+        }
+      ]
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_convert_fermionic_type_fs",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 179,
+          "expected": "A multiple-term fermion operator returns a FermiSentence"
+        }
+      ]
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_tol_fermionic",
+      "label": "interface/coefficient_tolerance_contract",
+      "assertions": [
+        {
+          "line": 198,
+          "expected": "Terms smaller than the requested coefficient tolerance are omitted"
+        }
+      ]
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestFromOpenFermion::test_fail_import_openfermion_fermionic",
+      "label": "interface/optional_dependency_error",
+      "assertions": [
+        {
+          "line": 206,
+          "expected": "Converting with OpenFermion unavailable raises the documented ImportError"
+        }
+      ]
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op0-of_op0]",
+      "label": "quantum_semantics/fermionic_operator_conversion",
+      "assertions": [
+        {
+          "line": 255,
+          "expected": "A PennyLane FermiWord converts to the equivalent OpenFermion FermionOperator"
+        }
+      ]
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_conversion[fermi_op4-of_op4]",
+      "label": "quantum_semantics/qubit_operator_conversion",
+      "assertions": [
+        {
+          "line": 255,
+          "expected": "A PennyLane qubit operator converts to the equivalent OpenFermion QubitOperator"
+        }
+      ]
+    },
+    {
+      "test_number": 13,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op0]",
+      "label": "interface/coefficient_tolerance_contract",
+      "assertions": [
+        {
+          "line": 276,
+          "expected": "Small imaginary parts are removed under loose tolerance"
+        },
+        {
+          "line": 280,
+          "expected": "Imaginary parts remain under tighter tolerance"
+        }
+      ]
+    },
+    {
+      "test_number": 14,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_tol[pl_op1]",
+      "label": "interface/coefficient_tolerance_contract",
+      "assertions": [
+        {
+          "line": 276,
+          "expected": "Small imaginary parts are removed for the selected compound operator"
+        },
+        {
+          "line": 280,
+          "expected": "They remain under tighter tolerance"
+        }
+      ]
+    },
+    {
+      "test_number": 15,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_mapping_wires[pl_op0-of_op0-wires0]",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 311,
+          "expected": "A requested wire map is honored in the OpenFermion output"
+        }
+      ]
+    },
+    {
+      "test_number": 16,
+      "split": "F2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py::TestToOpenFermion::test_wires_not_covered[pl_op0]",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 347,
+          "expected": "A wire map that omits required wires raises ValueError"
+        }
+      ]
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_identities_pennylane_to_openfermion",
+      "label": "interface/string_representation",
+      "assertions": [
+        {
+          "line": 596,
+          "expected": "Identity-bearing Pauli terms have the expected OpenFermion string form"
+        }
+      ]
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_singlewire_pennylane_to_openfermion",
+      "label": "interface/string_representation",
+      "assertions": [
+        {
+          "line": 610,
+          "expected": "A single-wire Pauli term has the expected OpenFermion string form"
+        }
+      ]
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_pennylane_to_openfermion_no_decomp",
+      "label": "interface/wire_mapping_contract",
+      "assertions": [
+        {
+          "line": 629,
+          "expected": "Custom PennyLane wire labels map to the requested OpenFermion indices"
+        }
+      ]
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_wires_not_covered_pennylane_to_openfermion",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 458,
+          "expected": "The lower-level converter rejects a wire map that misses an operator wire"
+        }
+      ]
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "tests/qchem/openfermion_pyscf_tests/test_convert.py::test_not_xyz_pennylane_to_openfermion[op0]",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 446,
+          "expected": "The converter rejects non-Pauli nested observables"
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    "https://github.com/PennyLaneAI/pennylane/blob/c920e7a32d02121a0f384d3c31b76b14bafc7cd6/tests/qchem/openfermion_pyscf_tests/test_convert.py",
+    "https://github.com/PennyLaneAI/pennylane/blob/c920e7a32d02121a0f384d3c31b76b14bafc7cd6/tests/qchem/openfermion_pyscf_tests/test_convert_openfermion.py"
+  ],
+  "rationale": "Operator equality across libraries checks quantum representation conversion. Checks of output class, tolerance behavior, wire coverage, optional dependency errors, and exact string/wire contracts specify interfaces."
+}

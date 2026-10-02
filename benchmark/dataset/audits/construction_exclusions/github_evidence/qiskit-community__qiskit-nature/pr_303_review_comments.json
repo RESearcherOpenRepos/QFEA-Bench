@@ -1,0 +1,3328 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560083",
+    "pull_request_review_id": 722209346,
+    "id": 682560083,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MDA4Mw==",
+    "diff_hunk": "@@ -67,15 +68,18 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n             total particle number operator, total angular momentum operator, total magnetization\n             operator, and (if available) x, y, z dipole operators.\n         \"\"\"\n-        self._molecule_data = cast(QMolecule, self.driver.run())\n+        driver_result = self.driver.run()\n         if self._legacy_transform:\n-            qmol_transformed = self._transform(self._molecule_data)\n+            qmol_transformed = self._transform(driver_result)\n             self._properties_transformed = (\n                 ElectronicStructureDriverResult.from_legacy_driver_result(qmol_transformed)\n             )\n+        elif isinstance(driver_result, QMolecule):\n+            self._properties_transformed = (\n+                ElectronicStructureDriverResult.from_legacy_driver_result(driver_result)\n+            )\n         else:\n-            prop = ElectronicStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-            self._properties_transformed = self._transform(prop)\n+            self._properties_transformed = self._transform(driver_result)",
+    "path": "qiskit_nature/problems/second_quantization/electronic/electronic_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This still needs to be cleaned up. In order for that to happen I need to figure out how to properly deprecate the `BaseProblem.molecule_data*`..\r\n@woodsp-ibm @manoelmarques do you have some ideas on how to proceed with that?\r\n\r\nSince they are part of the public API I am unsure if I can just change/delete them. They won't exist in their format any longer and they were really just auxiliary access points to the driver results (which are now `Property` objects).\r\nIn #263 I added the `BaseProblem.roperties_transformed` attribute as a temporary workaround. Ideally I think we should have something like this:\r\n```python\r\nclass BaseProblem:\r\n    @property\r\n    def driver_result(self) -> GroupedProperty:\r\n        return self._driver_result\r\n\r\n    @property\r\n    def transformed_driver_result(self) -> GroupedProperty:\r\n        return self._transformed_driver_result\r\n```\r\nPlease let me know your opinions :slightly_smiling_face: ",
+    "created_at": "2021-08-04T12:17:15Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560083",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560083"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560083"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560083/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 70,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 82,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560412",
+    "pull_request_review_id": 722209346,
+    "id": 682560412,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MDQxMg==",
+    "diff_hunk": "@@ -62,9 +63,22 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n         Returns:\n             A list of `SecondQuantizedOp` in the following order: ... .\n         \"\"\"\n-        self._molecule_data: WatsonHamiltonian = cast(WatsonHamiltonian, self.driver.run())\n-        prop = VibrationalStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-        self._properties_transformed = cast(VibrationalStructureDriverResult, self._transform(prop))\n+        driver_result = self.driver.run()\n+        if self._legacy_transform:\n+            watson_transformed = self._transform(driver_result)\n+            properties_transformed = VibrationalStructureDriverResult.from_legacy_driver_result(\n+                watson_transformed\n+            )\n+        elif isinstance(driver_result, WatsonHamiltonian):\n+            properties_transformed = VibrationalStructureDriverResult.from_legacy_driver_result(\n+                driver_result\n+            )\n+        else:\n+            properties_transformed = self._transform(driver_result)\n+\n+        self._properties_transformed = cast(\n+            VibrationalStructureDriverResult, properties_transformed\n+        )",
+    "path": "qiskit_nature/problems/second_quantization/vibrational/vibrational_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The same as in the electronic case also applies here",
+    "created_at": "2021-08-04T12:17:47Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560412",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560412"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560412"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560412/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 65,
+    "original_start_line": 65,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 81,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 32,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560622",
+    "pull_request_review_id": 722209346,
+    "id": 682560622,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MDYyMg==",
+    "diff_hunk": "@@ -29,3 +29,5 @@ def __init__(self, program: str, version: str, config: str) -> None:\n         self.program = program\n         self.version = version\n         self.config = config\n+\n+    # TODO: implement __str__",
+    "path": "qiskit_nature/properties/second_quantization/driver_metadata.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Will be part of this PR",
+    "created_at": "2021-08-04T12:18:07Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560622",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560622"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560622"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560622/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 33,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560909",
+    "pull_request_review_id": 722209346,
+    "id": 682560909,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MDkwOQ==",
+    "diff_hunk": "@@ -49,7 +47,7 @@ def __str__(self) -> str:\n         return \"\\n\".join(string)\n \n     @classmethod\n-    def from_legacy_driver_result(cls, result: LegacyDriverResult) -> \"AngularMomentum\":\n+    def from_legacy_driver_result(cls, result: Any) -> \"AngularMomentum\":",
+    "path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Change `Any` -> `Type`? Need to double check",
+    "created_at": "2021-08-04T12:18:33Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560909",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560909"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682560909"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682560909/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 50,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 28,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682561837",
+    "pull_request_review_id": 722209346,
+    "id": 682561837,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MTgzNw==",
+    "diff_hunk": "@@ -62,7 +60,10 @@ def from_legacy_driver_result(cls, result: LegacyDriverResult) -> \"AngularMoment\n         Raises:\n             QiskitNatureError: if a WatsonHamiltonian is provided.\n         \"\"\"\n-        cls._validate_input_type(result, LegacyElectronicStructureDriverResult)\n+        # pylint: disable=import-outside-toplevel\n+        from qiskit_nature.drivers import QMolecule",
+    "path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I need to double check whether the \"outside-toplevel\" imports are still necessary (I was running into some cyclic import issues before).\r\nIn any case, I still need to wrap the import in all occurrences with filters for the `DeprecationWarning`s",
+    "created_at": "2021-08-04T12:19:59Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682561837",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682561837"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682561837"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682561837/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 63,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 64,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562014",
+    "pull_request_review_id": 722209346,
+    "id": 682562014,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2MjAxNA==",
+    "diff_hunk": "@@ -45,3 +45,5 @@ def __init__(\n         self.final_basis = final_basis\n         self.coeff_alpha = coeff_alpha\n         self.coeff_beta = coeff_alpha if coeff_beta is None else coeff_beta\n+\n+    # TODO: implement __str__",
+    "path": "qiskit_nature/properties/second_quantization/electronic/bases/electronic_basis_transform.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Will be part of this PR",
+    "created_at": "2021-08-04T12:20:14Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562014",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562014"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562014"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562014/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 49,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 5,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562785",
+    "pull_request_review_id": 722209346,
+    "id": 682562785,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2Mjc4NQ==",
+    "diff_hunk": "@@ -28,6 +25,9 @@\n from .particle_number import ParticleNumber\n from .types import GroupedElectronicProperty\n \n+if TYPE_CHECKING:\n+    from qiskit_nature.molecule import Molecule",
+    "path": "qiskit_nature/properties/second_quantization/electronic/electronic_structure_driver_result.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I need to double check if the cyclic imports still occur if this is not wrapped",
+    "created_at": "2021-08-04T12:21:17Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562785",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562785"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562785"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562785/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 21,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562990",
+    "pull_request_review_id": 722209346,
+    "id": 682562990,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2Mjk5MA==",
+    "diff_hunk": "@@ -86,6 +86,7 @@ def __str__(self) -> str:\n \n     @staticmethod\n     def _render_matrix_as_sparse_list(matrix) -> List[str]:\n+        # TODO: handle all-zero matrix",
+    "path": "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Will be part of this PR",
+    "created_at": "2021-08-04T12:21:34Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562990",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562990"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682562990"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682562990/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 89,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564417",
+    "pull_request_review_id": 722209346,
+    "id": 682564417,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2NDQxNw==",
+    "diff_hunk": "@@ -99,6 +99,7 @@ def test_oh_with_atoms(self):\n         self._assert_energy(result, \"oh\")\n \n \n+@unittest.skip(\"Until the Property framework supports log\")",
+    "path": "test/drivers/second_quantization/fcidumpd/test_driver_methods_fcidump.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The `log` integration should still become part of this PR",
+    "created_at": "2021-08-04T12:23:37Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682564417",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564417"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682564417"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564417/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 102,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564773",
+    "pull_request_review_id": 722209346,
+    "id": 682564773,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MjU2NDc3Mw==",
+    "diff_hunk": "@@ -21,6 +21,7 @@\n from qiskit_nature.drivers.second_quantization import HDF5Driver\n \n \n+@unittest.skip(\"Until the Property framework supports HDF5 storage\")",
+    "path": "test/drivers/second_quantization/hdf5d/test_driver_hdf5_save.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "FYI: #302 ",
+    "created_at": "2021-08-04T12:23:59Z",
+    "updated_at": "2021-08-04T12:27:50Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682564773",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564773"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682564773"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682564773/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 24,
+    "original_line": 24,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889696",
+    "pull_request_review_id": 722646682,
+    "id": 682889696,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4Mjg4OTY5Ng==",
+    "diff_hunk": "@@ -49,7 +47,7 @@ def __str__(self) -> str:\n         return \"\\n\".join(string)\n \n     @classmethod\n-    def from_legacy_driver_result(cls, result: LegacyDriverResult) -> \"AngularMomentum\":\n+    def from_legacy_driver_result(cls, result: Any) -> \"AngularMomentum\":",
+    "path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Actually not `Type` but `Union[QMolecule, WatsonHamiltonian]`.\r\nI don't know what I was thinking earlier. I have addressed now, though :+1:",
+    "created_at": "2021-08-04T19:14:27Z",
+    "updated_at": "2021-08-04T19:14:27Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682889696",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889696"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682889696"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889696/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 50,
+    "side": "RIGHT",
+    "in_reply_to_id": 682560909,
+    "author_association": "MEMBER",
+    "original_position": 28,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889900",
+    "pull_request_review_id": 722647254,
+    "id": 682889900,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4Mjg4OTkwMA==",
+    "diff_hunk": "@@ -62,7 +60,10 @@ def from_legacy_driver_result(cls, result: LegacyDriverResult) -> \"AngularMoment\n         Raises:\n             QiskitNatureError: if a WatsonHamiltonian is provided.\n         \"\"\"\n-        cls._validate_input_type(result, LegacyElectronicStructureDriverResult)\n+        # pylint: disable=import-outside-toplevel\n+        from qiskit_nature.drivers import QMolecule",
+    "path": "qiskit_nature/properties/second_quantization/electronic/angular_momentum.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This is indeed no longer necessary",
+    "created_at": "2021-08-04T19:14:42Z",
+    "updated_at": "2021-08-04T19:14:42Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682889900",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889900"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r682889900"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/682889900/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 63,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 64,
+    "side": "RIGHT",
+    "in_reply_to_id": 682561837,
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683730103",
+    "pull_request_review_id": 723721370,
+    "id": 683730103,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MzczMDEwMw==",
+    "diff_hunk": "@@ -67,15 +68,18 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n             total particle number operator, total angular momentum operator, total magnetization\n             operator, and (if available) x, y, z dipole operators.\n         \"\"\"\n-        self._molecule_data = cast(QMolecule, self.driver.run())\n+        driver_result = self.driver.run()\n         if self._legacy_transform:\n-            qmol_transformed = self._transform(self._molecule_data)\n+            qmol_transformed = self._transform(driver_result)\n             self._properties_transformed = (\n                 ElectronicStructureDriverResult.from_legacy_driver_result(qmol_transformed)\n             )\n+        elif isinstance(driver_result, QMolecule):\n+            self._properties_transformed = (\n+                ElectronicStructureDriverResult.from_legacy_driver_result(driver_result)\n+            )\n         else:\n-            prop = ElectronicStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-            self._properties_transformed = self._transform(prop)\n+            self._properties_transformed = self._transform(driver_result)",
+    "path": "qiskit_nature/problems/second_quantization/electronic/electronic_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "manoelmarques",
+      "id": 16138150,
+      "node_id": "MDQ6VXNlcjE2MTM4MTUw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16138150?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/manoelmarques",
+      "html_url": "https://github.com/manoelmarques",
+      "followers_url": "https://api.github.com/users/manoelmarques/followers",
+      "following_url": "https://api.github.com/users/manoelmarques/following{/other_user}",
+      "gists_url": "https://api.github.com/users/manoelmarques/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/manoelmarques/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/manoelmarques/subscriptions",
+      "organizations_url": "https://api.github.com/users/manoelmarques/orgs",
+      "repos_url": "https://api.github.com/users/manoelmarques/repos",
+      "events_url": "https://api.github.com/users/manoelmarques/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/manoelmarques/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "You can’t delete the properties if you intend to deprecate. Is it possible to get the molecule data by other means to keep the properties or is it lost ?  ",
+    "created_at": "2021-08-05T19:27:57Z",
+    "updated_at": "2021-08-05T19:27:57Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683730103",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683730103"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683730103"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683730103/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 70,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 82,
+    "side": "RIGHT",
+    "in_reply_to_id": 682560083,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683804828",
+    "pull_request_review_id": 723819461,
+    "id": 683804828,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MzgwNDgyOA==",
+    "diff_hunk": "@@ -67,15 +68,18 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n             total particle number operator, total angular momentum operator, total magnetization\n             operator, and (if available) x, y, z dipole operators.\n         \"\"\"\n-        self._molecule_data = cast(QMolecule, self.driver.run())\n+        driver_result = self.driver.run()\n         if self._legacy_transform:\n-            qmol_transformed = self._transform(self._molecule_data)\n+            qmol_transformed = self._transform(driver_result)\n             self._properties_transformed = (\n                 ElectronicStructureDriverResult.from_legacy_driver_result(qmol_transformed)\n             )\n+        elif isinstance(driver_result, QMolecule):\n+            self._properties_transformed = (\n+                ElectronicStructureDriverResult.from_legacy_driver_result(driver_result)\n+            )\n         else:\n-            prop = ElectronicStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-            self._properties_transformed = self._transform(prop)\n+            self._properties_transformed = self._transform(driver_result)",
+    "path": "qiskit_nature/problems/second_quantization/electronic/electronic_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "`molecule_data` used to be `QMolecule` or `WatsonHamiltonian`. Since these are now deprecated, they will no longer occur within the stack, if a user uses one of the new drivers in `qiskit_nature.drivers.second_quantization`.\r\nI could deprecate the properties and change their type to be `Optional[...]` but I am not sure if that is allowed? [Technically they probably should have been that though, because the `__init__` sets them to `None`...]\r\n\r\nAnd to be clear: the deprecated drivers are still supported by this stack but right now they will not store these properties (which I could change ofcourse) :+1: ",
+    "created_at": "2021-08-05T21:39:18Z",
+    "updated_at": "2021-08-05T21:39:18Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683804828",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683804828"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683804828"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683804828/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 70,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 82,
+    "side": "RIGHT",
+    "in_reply_to_id": 682560083,
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683810016",
+    "pull_request_review_id": 723825865,
+    "id": 683810016,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4MzgxMDAxNg==",
+    "diff_hunk": "@@ -67,15 +68,18 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n             total particle number operator, total angular momentum operator, total magnetization\n             operator, and (if available) x, y, z dipole operators.\n         \"\"\"\n-        self._molecule_data = cast(QMolecule, self.driver.run())\n+        driver_result = self.driver.run()\n         if self._legacy_transform:\n-            qmol_transformed = self._transform(self._molecule_data)\n+            qmol_transformed = self._transform(driver_result)\n             self._properties_transformed = (\n                 ElectronicStructureDriverResult.from_legacy_driver_result(qmol_transformed)\n             )\n+        elif isinstance(driver_result, QMolecule):\n+            self._properties_transformed = (\n+                ElectronicStructureDriverResult.from_legacy_driver_result(driver_result)\n+            )\n         else:\n-            prop = ElectronicStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-            self._properties_transformed = self._transform(prop)\n+            self._properties_transformed = self._transform(driver_result)",
+    "path": "qiskit_nature/problems/second_quantization/electronic/electronic_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It would be nice if using things with the existing drivers, for users that have code to what is currently released, works the same albeit deprecated. Switching to the newer drivers then other code for properties can come about. At that level things can be more separated - in the problem I guess it has the unenviable task of, in the interim, allowing the old way to work and supporting the new way too if thats indeed doable.",
+    "created_at": "2021-08-05T21:50:23Z",
+    "updated_at": "2021-08-05T21:50:48Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683810016",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683810016"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r683810016"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/683810016/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 70,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 82,
+    "side": "RIGHT",
+    "in_reply_to_id": 682560083,
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/684109727",
+    "pull_request_review_id": 724192514,
+    "id": 684109727,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NDEwOTcyNw==",
+    "diff_hunk": "@@ -67,15 +68,18 @@ def second_q_ops(self) -> List[SecondQuantizedOp]:\n             total particle number operator, total angular momentum operator, total magnetization\n             operator, and (if available) x, y, z dipole operators.\n         \"\"\"\n-        self._molecule_data = cast(QMolecule, self.driver.run())\n+        driver_result = self.driver.run()\n         if self._legacy_transform:\n-            qmol_transformed = self._transform(self._molecule_data)\n+            qmol_transformed = self._transform(driver_result)\n             self._properties_transformed = (\n                 ElectronicStructureDriverResult.from_legacy_driver_result(qmol_transformed)\n             )\n+        elif isinstance(driver_result, QMolecule):\n+            self._properties_transformed = (\n+                ElectronicStructureDriverResult.from_legacy_driver_result(driver_result)\n+            )\n         else:\n-            prop = ElectronicStructureDriverResult.from_legacy_driver_result(self._molecule_data)\n-            self._properties_transformed = self._transform(prop)\n+            self._properties_transformed = self._transform(driver_result)",
+    "path": "qiskit_nature/problems/second_quantization/electronic/electronic_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "8af3b9e483b8e206232502b48ab2acda23aa833c",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I have updated the code and we now have the following:\r\n* `BaseProblem.molecule_data*` are deprecated in favor of `BaseProblem.grouped_property*`\r\n\r\nWe have some internal logic as follows:\r\n\r\n#### Legacy Driver + Legacy Transformers\r\nWorks as expected. Deprecation warnings will be raised by those classes themselvers.\r\nThe following properties will be set:\r\n* `molecule_data`\r\n* `molecule_data_transformed`\r\n* `grouped_property`\r\n* `grouped_property_transformed`\r\n\r\n#### Legacy Driver + New Transformers\r\nWorks. A `UserWarning` will be raised, suggesting to look into the new drivers.\r\nThe following properties will be set:\r\n* `molecule_data`\r\n* ~~`molecule_data_transformed`~~ (remains `None`)\r\n* `grouped_property`\r\n* `grouped_property_transformed`\r\n\r\n#### New Driver + Legacy Transformers\r\nImpossible! A `QiskitNatureError` will be raised.\r\n\r\n#### New Driver + New Transfomrers\r\nWorks as expected.\r\nThe following properties will be set:\r\n* ~~`molecule_data`~~ (remains `None`)\r\n* ~~`molecule_data_transformed`~~ (remains `None`)\r\n* `grouped_property`\r\n* `grouped_property_transformed`\r\n\r\n\r\nFinally, if a user mixes legacy and new transformers, a `QiskitNatureError` will be raised, too.",
+    "created_at": "2021-08-06T09:54:44Z",
+    "updated_at": "2021-08-06T09:55:00Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r684109727",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/684109727"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r684109727"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/684109727/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 70,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 82,
+    "side": "RIGHT",
+    "in_reply_to_id": 682560083,
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686021290",
+    "pull_request_review_id": 726440082,
+    "id": 686021290,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NjAyMTI5MA==",
+    "diff_hunk": "@@ -518,32 +535,46 @@ def run_pyscf(self) -> None:\n                 self._calc.e_tot,\n             )\n \n-    def _construct_qmolecule(self) -> QMolecule:\n-        \"\"\"Constructs a QMolecule out of the PySCF calculation object.\n-\n-        Returns:\n-            QMolecule: A QMolecule populated with driver integrals etc.\n-        \"\"\"\n-        # Create driver level molecule object and populate\n-        q_mol = QMolecule()\n-\n-        self._populate_q_molecule_driver_info(q_mol)\n-        self._populate_q_molecule_mol_data(q_mol)\n-        self._populate_q_molecule_orbitals(q_mol)\n-        self._populate_q_molecule_ao_integrals(q_mol)\n-        self._populate_q_molecule_mo_integrals(q_mol)\n-        self._populate_q_molecule_dipole_integrals(q_mol)\n-\n-        return q_mol\n-\n-    def _populate_q_molecule_driver_info(self, q_mol: QMolecule) -> None:\n-        \"\"\"Populates the driver information fields.\n+    def _construct_driver_result(self) -> ElectronicStructureDriverResult:\n+        # NOTE: under Python 3.6, pylint appears to be unable to properly identify this case of\n+        # nested abstract classes (cf. https://github.com/Qiskit/qiskit-nature/runs/3245395353).\n+        # However, since the tests pass I am adding an exception for this specific case.\n+        # pylint: disable=abstract-class-instantiated\n+        driver_result = ElectronicStructureDriverResult()\n+\n+        self._populate_driver_result_molecule(driver_result)\n+        self._populate_driver_result_metadata(driver_result)\n+        self._populate_driver_result_basis_transform(driver_result)\n+        self._populate_driver_result_particle_number(driver_result)\n+        self._populate_driver_result_electronic_energy(driver_result)\n+        self._populate_driver_result_electronic_dipole_moment(driver_result)\n+\n+        # TODO: once https://github.com/Qiskit/qiskit-terra/issues/6772 is resolved, we no longer\n+        # _have_ to add these properties. However, until then the interpret method relies on indices\n+        # of the aux_operators which are incorrect if these properties are not added.\n+        driver_result.add_property(AngularMomentum(self._mol.nao * 2))\n+        driver_result.add_property(Magnetization(self._mol.nao * 2))\n+\n+        return driver_result\n+\n+    def _populate_driver_result_molecule(\n+        self, driver_result: ElectronicStructureDriverResult\n+    ) -> None:\n+        coords = self._mol.atom_coords()\n+        geometry = []\n+        for i, xyz in enumerate(coords):\n+            geometry.append((self._mol.atom_pure_symbol(i), list(xyz)))",
+    "path": "qiskit_nature/drivers/second_quantization/pyscfd/pyscfdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "d405e2bd4784cc8be20ac17926702c814317a3c1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "\n```suggestion\n       geometry = [(self._mol.atom_pure_symbol(i), list(xyz)) for i, xyz in enumerate(coords)]\n```\n",
+    "created_at": "2021-08-10T13:31:03Z",
+    "updated_at": "2021-08-10T13:46:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686021290",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686021290"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686021290"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686021290/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 564,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 566,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 110,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686026159",
+    "pull_request_review_id": 726440082,
+    "id": 686026159,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NjAyNjE1OQ==",
+    "diff_hunk": "@@ -610,78 +616,77 @@ def _populate_q_molecule_orbitals(self, q_mol: QMolecule) -> None:\n                 dump_mat.dump_mo(self._mol, mo_coeff_b, digits=7, start=1)\n             self._mol.stdout.flush()\n \n-        # Energies and orbital data\n-        q_mol.hf_energy = self._calc.e_tot\n-        q_mol.num_molecular_orbitals = mo_coeff.shape[0]\n-        q_mol.num_alpha = self._mol.nelec[0]\n-        q_mol.num_beta = self._mol.nelec[1]\n-        q_mol.mo_coeff = mo_coeff\n-        q_mol.mo_coeff_b = mo_coeff_b\n-        q_mol.orbital_energies = orbs_energy\n-        q_mol.orbital_energies_b = orbs_energy_b\n-        q_mol.mo_occ = mo_occ\n-        q_mol.mo_occ_b = mo_occ_b\n-\n-    def _populate_q_molecule_ao_integrals(self, q_mol: QMolecule) -> None:\n-        \"\"\"Populates the atomic orbital integral fields.\n-\n-        Args:\n-            q_mol: the QMolecule to populate.\n-        \"\"\"\n-        # 1 and 2 electron AO integrals\n-        q_mol.hcore = self._calc.get_hcore()\n-        q_mol.hcore_b = None\n-        q_mol.kinetic = self._mol.intor_symmetric(\"int1e_kin\")\n-        q_mol.overlap = self._calc.get_ovlp()\n-        q_mol.eri = self._mol.intor(\"int2e\", aosym=1)\n+        driver_result.add_property(\n+            ElectronicBasisTransform(\n+                ElectronicBasis.AO,\n+                ElectronicBasis.MO,\n+                mo_coeff,\n+                mo_coeff_b,\n+            )\n+        )\n \n-    def _populate_q_molecule_mo_integrals(self, q_mol: QMolecule) -> None:\n-        \"\"\"Populates the molecular orbital integral fields.\n+    def _populate_driver_result_particle_number(\n+        self, driver_result: ElectronicStructureDriverResult\n+    ) -> None:\n+        mo_occ, mo_occ_b = self._extract_mo_data(\"mo_occ\")\n \n-        Args:\n-            q_mol: the QMolecule to populate.\n-        \"\"\"\n-        mo_coeff, mo_coeff_b = q_mol.mo_coeff, q_mol.mo_coeff_b\n-        norbs = mo_coeff.shape[0]\n-\n-        mohij = np.dot(np.dot(mo_coeff.T, q_mol.hcore), mo_coeff)\n-        mohij_b = None\n-        if mo_coeff_b is not None:\n-            mohij_b = np.dot(np.dot(mo_coeff_b.T, q_mol.hcore), mo_coeff_b)\n-\n-        mo_eri = ao2mo.incore.full(self._calc._eri, mo_coeff, compact=False)\n-        mohijkl = mo_eri.reshape(norbs, norbs, norbs, norbs)\n-        mohijkl_bb = None\n-        mohijkl_ba = None\n-        if mo_coeff_b is not None:\n-            mo_eri_b = ao2mo.incore.full(self._calc._eri, mo_coeff_b, compact=False)\n-            mohijkl_bb = mo_eri_b.reshape(norbs, norbs, norbs, norbs)\n-            mo_eri_ba = ao2mo.incore.general(\n-                self._calc._eri,\n-                (mo_coeff_b, mo_coeff_b, mo_coeff, mo_coeff),\n-                compact=False,\n+        driver_result.add_property(\n+            ParticleNumber(\n+                num_spin_orbitals=self._mol.nao * 2,\n+                num_particles=(self._mol.nelec[0], self._mol.nelec[1]),\n+                occupation=mo_occ,\n+                occupation_beta=mo_occ_b,\n             )\n-            mohijkl_ba = mo_eri_ba.reshape(norbs, norbs, norbs, norbs)\n+        )\n \n-        # 1 and 2 electron MO integrals\n-        q_mol.mo_onee_ints = mohij\n-        q_mol.mo_onee_ints_b = mohij_b\n-        q_mol.mo_eri_ints = mohijkl\n-        q_mol.mo_eri_ints_bb = mohijkl_bb\n-        q_mol.mo_eri_ints_ba = mohijkl_ba\n+    def _populate_driver_result_electronic_energy(\n+        self, driver_result: ElectronicStructureDriverResult\n+    ) -> None:\n+        basis_transform = driver_result.get_property(ElectronicBasisTransform)\n \n-    def _populate_q_molecule_dipole_integrals(self, q_mol: QMolecule) -> None:\n-        \"\"\"Populates the dipole integral fields.\n+        one_body_ao = OneBodyElectronicIntegrals(\n+            ElectronicBasis.AO,\n+            (self._calc.get_hcore(), None),\n+        )\n+\n+        two_body_ao = TwoBodyElectronicIntegrals(\n+            ElectronicBasis.AO,\n+            (self._mol.intor(\"int2e\", aosym=1), None, None, None),\n+        )\n+\n+        one_body_mo = one_body_ao.transform_basis(basis_transform)\n+        two_body_mo = two_body_ao.transform_basis(basis_transform)\n+\n+        electronic_energy = ElectronicEnergy(\n+            [one_body_ao, two_body_ao, one_body_mo, two_body_mo],\n+            nuclear_repulsion_energy=gto.mole.energy_nuc(self._mol),\n+            reference_energy=self._calc.e_tot,\n+        )\n+\n+        electronic_energy.kinetic = OneBodyElectronicIntegrals(\n+            ElectronicBasis.AO,\n+            (self._mol.intor_symmetric(\"int1e_kin\"), None),\n+        )\n+        electronic_energy.overlap = OneBodyElectronicIntegrals(\n+            ElectronicBasis.AO,\n+            (self._calc.get_ovlp(), None),\n+        )\n+\n+        orbs_energy, orbs_energy_b = self._extract_mo_data(\"mo_energy\")\n+        if orbs_energy_b is not None:\n+            electronic_energy.orbital_energies = np.asarray((orbs_energy, orbs_energy_b))\n+        else:\n+            electronic_energy.orbital_energies = np.asarray(orbs_energy)",
+    "path": "qiskit_nature/drivers/second_quantization/pyscfd/pyscfdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "d405e2bd4784cc8be20ac17926702c814317a3c1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\n       orbital_energies = (orbs_energy, orbs_energy_b) if orbs_energy_b is not None else orbs_energy\n       electronic_energy.orbital_energies = np.asarray(orbital_energies)\n```\n",
+    "created_at": "2021-08-10T13:36:36Z",
+    "updated_at": "2021-08-10T13:46:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686026159",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686026159"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686026159"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686026159/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 676,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 679,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 303,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686031507",
+    "pull_request_review_id": 726440082,
+    "id": 686031507,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NjAzMTUwNw==",
+    "diff_hunk": "@@ -45,3 +45,21 @@ def __init__(\n         self.final_basis = final_basis\n         self.coeff_alpha = coeff_alpha\n         self.coeff_beta = coeff_alpha if coeff_beta is None else coeff_beta\n+\n+    def __str__(self) -> str:\n+        string = [super().__str__() + \":\"]\n+        string += [f\"\\tInitial basis: {self.initial_basis.value}\"]\n+        string += [f\"\\tFinal basis: {self.final_basis.value}\"]\n+        string += [\"\\tAlpha coefficients:\"]\n+        string += self._render_coefficients(self.coeff_alpha)\n+        string += [\"\\tBeta coefficients:\"]\n+        string += self._render_coefficients(self.coeff_beta)\n+        return \"\\n\".join(string)\n+\n+    @staticmethod\n+    def _render_coefficients(coeffs) -> List[str]:\n+        string = []\n+        nonzero = coeffs.nonzero()\n+        for value, *indices in zip(coeffs[nonzero], *nonzero):\n+            string += [f\"\\t{indices} = {value}\"]\n+        return string",
+    "path": "qiskit_nature/properties/second_quantization/electronic/bases/electronic_basis_transform.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "d405e2bd4784cc8be20ac17926702c814317a3c1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\n        nonzero = coeffs.nonzero()\n        return [f\"\\t{indices} = {value}\" for value, *indices in zip(coeffs[nonzero], *nonzero)]\n```\n",
+    "created_at": "2021-08-10T13:42:31Z",
+    "updated_at": "2021-08-10T13:46:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686031507",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686031507"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686031507"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686031507/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 61,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 65,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686032917",
+    "pull_request_review_id": 726440082,
+    "id": 686032917,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NjAzMjkxNw==",
+    "diff_hunk": "@@ -80,8 +80,12 @@ def __str__(self) -> str:\n             string += self._render_matrix_as_sparse_list(self._matrices)\n         else:\n             for title, mat in zip(self._matrix_representations, self._matrices):\n+                rendered_matrix = self._render_matrix_as_sparse_list(mat)\n                 string += [f\"\\t{title}\"]\n-                string += self._render_matrix_as_sparse_list(mat)\n+                if not rendered_matrix:\n+                    string[-1] += \" is all zero\"",
+    "path": "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "d405e2bd4784cc8be20ac17926702c814317a3c1",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is it ever possible that string is []?",
+    "created_at": "2021-08-10T13:44:02Z",
+    "updated_at": "2021-08-10T13:46:54Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686032917",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686032917"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686032917"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686032917/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 103,
+    "original_line": 86,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 8,
+    "position": 87,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686566608",
+    "pull_request_review_id": 727137506,
+    "id": 686566608,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NjU2NjYwOA==",
+    "diff_hunk": "@@ -80,8 +80,12 @@ def __str__(self) -> str:\n             string += self._render_matrix_as_sparse_list(self._matrices)\n         else:\n             for title, mat in zip(self._matrix_representations, self._matrices):\n+                rendered_matrix = self._render_matrix_as_sparse_list(mat)\n                 string += [f\"\\t{title}\"]\n-                string += self._render_matrix_as_sparse_list(mat)\n+                if not rendered_matrix:\n+                    string[-1] += \" is all zero\"",
+    "path": "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "d405e2bd4784cc8be20ac17926702c814317a3c1",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "No this is not possible. See 2 lines above where I do `string += [f\"\\t{title}\"]`. This ensures that `string[-1]` is always existent.",
+    "created_at": "2021-08-11T07:23:03Z",
+    "updated_at": "2021-08-11T07:23:03Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686566608",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686566608"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r686566608"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/686566608/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 103,
+    "original_line": 86,
+    "side": "RIGHT",
+    "in_reply_to_id": 686032917,
+    "author_association": "MEMBER",
+    "original_position": 8,
+    "position": 87,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687733501",
+    "pull_request_review_id": 728629004,
+    "id": 687733501,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NzczMzUwMQ==",
+    "diff_hunk": "@@ -63,38 +73,50 @@ def __init__(self, fcidump_input: str, atoms: Optional[List[str]] = None) -> Non\n             )\n         self.atoms = atoms\n \n-    def run(self) -> QMolecule:\n+    def run(self) -> ElectronicStructureDriverResult:",
+    "path": "qiskit_nature/drivers/second_quantization/fcidumpd/fcidumpdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "please update the docstrings on this file. There are numerous references to the QMolecule that now is renamed!",
+    "created_at": "2021-08-12T13:52:28Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687733501",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687733501"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687733501"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687733501/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 61,
+    "original_line": 76,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 30,
+    "position": 63,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687734347",
+    "pull_request_review_id": 728629004,
+    "id": 687734347,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NzczNDM0Nw==",
+    "diff_hunk": "@@ -12,11 +12,21 @@\n \n \"\"\"FCIDump Driver.\"\"\"\n \n-from typing import List, Optional\n+from typing import List, Optional, cast\n \n from qiskit_nature import QiskitNatureError\n-\n-from ..qmolecule import QMolecule\n+from qiskit_nature.properties.second_quantization.electronic import (\n+    ElectronicStructureDriverResult,\n+    ElectronicEnergy,\n+    ParticleNumber,\n+)\n+from qiskit_nature.properties.second_quantization.electronic.bases import ElectronicBasis\n+from qiskit_nature.properties.second_quantization.electronic.integrals import (\n+    OneBodyElectronicIntegrals,\n+    TwoBodyElectronicIntegrals,\n+)\n+\n+from ...qmolecule import QMolecule",
+    "path": "qiskit_nature/drivers/second_quantization/fcidumpd/fcidumpdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "do you need this import? I do not see this used - I may be wrong. ",
+    "created_at": "2021-08-12T13:53:22Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687734347",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687734347"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687734347"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687734347/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 21,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687735945",
+    "pull_request_review_id": 728629004,
+    "id": 687735945,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NzczNTk0NQ==",
+    "diff_hunk": "@@ -138,10 +140,11 @@ def check_installed() -> None:\n         \"\"\"\n         check_valid()\n \n-    def run(self) -> WatsonHamiltonian:\n+    def run(self) -> VibrationalStructureDriverResult:",
+    "path": "qiskit_nature/drivers/second_quantization/gaussiand/gaussian_forces_driver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Docstring is missing here",
+    "created_at": "2021-08-12T13:55:01Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687735945",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687735945"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687735945"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687735945/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 143,
+    "original_line": 143,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 16,
+    "position": 16,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687737731",
+    "pull_request_review_id": 728629004,
+    "id": 687737731,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4NzczNzczMQ==",
+    "diff_hunk": "@@ -45,7 +48,7 @@ def work_path(self, new_work_path):\n         \"\"\"Sets work path.\"\"\"\n         self._work_path = new_work_path\n \n-    def run(self) -> QMolecule:\n+    def run(self) -> ElectronicStructureDriverResult:",
+    "path": "qiskit_nature/drivers/second_quantization/hdf5d/hdf5driver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Docstring refering QMolecule",
+    "created_at": "2021-08-12T13:57:00Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687737731",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687737731"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687737731"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687737731/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 50,
+    "original_line": 51,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 28,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687740565",
+    "pull_request_review_id": 728629004,
+    "id": 687740565,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4Nzc0MDU2NQ==",
+    "diff_hunk": "@@ -146,7 +147,7 @@ def check_method_supported(method: MethodType) -> None:\n         if method not in [MethodType.RHF, MethodType.ROHF, MethodType.UHF]:\n             raise UnsupportMethodError(f\"Invalid PSI4 method {method.value}.\")\n \n-    def run(self) -> QMolecule:\n+    def run(self) -> ElectronicStructureDriverResult:",
+    "path": "qiskit_nature/drivers/second_quantization/psi4d/psi4driver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Docstring missing",
+    "created_at": "2021-08-12T14:00:07Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687740565",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687740565"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687740565"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687740565/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 151,
+    "original_line": 150,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 16,
+    "position": 23,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687758828",
+    "pull_request_review_id": 728629004,
+    "id": 687758828,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4Nzc1ODgyOA==",
+    "diff_hunk": "@@ -29,3 +29,11 @@ def __init__(self, program: str, version: str, config: str) -> None:\n         self.program = program\n         self.version = version\n         self.config = config\n+\n+    def __str__(self) -> str:",
+    "path": "qiskit_nature/properties/second_quantization/driver_metadata.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "pbark",
+      "id": 26088464,
+      "node_id": "MDQ6VXNlcjI2MDg4NDY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26088464?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pbark",
+      "html_url": "https://github.com/pbark",
+      "followers_url": "https://api.github.com/users/pbark/followers",
+      "following_url": "https://api.github.com/users/pbark/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pbark/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pbark/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pbark/subscriptions",
+      "organizations_url": "https://api.github.com/users/pbark/orgs",
+      "repos_url": "https://api.github.com/users/pbark/repos",
+      "events_url": "https://api.github.com/users/pbark/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pbark/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "this is useful and we needed it for logging the driver info. Thanks",
+    "created_at": "2021-08-12T14:19:44Z",
+    "updated_at": "2021-08-12T14:23:28Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687758828",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687758828"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r687758828"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/687758828/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 33,
+    "original_line": 33,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 5,
+    "position": 5,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688353687",
+    "pull_request_review_id": 729402996,
+    "id": 688353687,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4ODM1MzY4Nw==",
+    "diff_hunk": "@@ -12,11 +12,21 @@\n \n \"\"\"FCIDump Driver.\"\"\"\n \n-from typing import List, Optional\n+from typing import List, Optional, cast\n \n from qiskit_nature import QiskitNatureError\n-\n-from ..qmolecule import QMolecule\n+from qiskit_nature.properties.second_quantization.electronic import (\n+    ElectronicStructureDriverResult,\n+    ElectronicEnergy,\n+    ParticleNumber,\n+)\n+from qiskit_nature.properties.second_quantization.electronic.bases import ElectronicBasis\n+from qiskit_nature.properties.second_quantization.electronic.integrals import (\n+    OneBodyElectronicIntegrals,\n+    TwoBodyElectronicIntegrals,\n+)\n+\n+from ...qmolecule import QMolecule",
+    "path": "qiskit_nature/drivers/second_quantization/fcidumpd/fcidumpdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Thanks! It appears to be left over from some way of specifying a list of atoms for this driver. I will remove it for now.",
+    "created_at": "2021-08-13T08:51:30Z",
+    "updated_at": "2021-08-13T08:51:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r688353687",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688353687"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r688353687"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688353687/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 29,
+    "side": "RIGHT",
+    "in_reply_to_id": 687734347,
+    "author_association": "MEMBER",
+    "original_position": 21,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688356739",
+    "pull_request_review_id": 729407071,
+    "id": 688356739,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4ODM1NjczOQ==",
+    "diff_hunk": "@@ -138,10 +140,11 @@ def check_installed() -> None:\n         \"\"\"\n         check_valid()\n \n-    def run(self) -> WatsonHamiltonian:\n+    def run(self) -> VibrationalStructureDriverResult:",
+    "path": "qiskit_nature/drivers/second_quantization/gaussiand/gaussian_forces_driver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "3227c8338f7e66da0b118445890890944d2cb80e",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "These are inherited from the base class. I don't think we need to duplicate them. In some cases where additional information get's added (like fcidump or hdf5) they have been overwritten in the respective class.",
+    "created_at": "2021-08-13T08:56:23Z",
+    "updated_at": "2021-08-13T08:56:23Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r688356739",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688356739"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r688356739"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/688356739/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 143,
+    "original_line": 143,
+    "side": "RIGHT",
+    "in_reply_to_id": 687735945,
+    "author_association": "MEMBER",
+    "original_position": 16,
+    "position": 16,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689587704",
+    "pull_request_review_id": 730783025,
+    "id": 689587704,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTU4NzcwNA==",
+    "diff_hunk": "@@ -103,19 +106,24 @@ def dump(\n \n         Args:\n             outpath: Path to the output file.\n-            q_mol: QMolecule data to be dumped. It is assumed that the nuclear_repulsion_energy in\n-                this QMolecule instance contains the inactive core energy.\n+            driver_result: The ElectronicStructureDriverResult to be dumped. It is assumed that the\n+                nuclear_repulsion_energy in its ElectronicEnergy property contains the inactive core\n+                energy.",
+    "path": "qiskit_nature/drivers/second_quantization/fcidumpd/fcidumpdriver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n            driver_result: The ElectronicStructureDriverResult to be dumped. It is assumed that the\r\n                nuclear_repulsion_energy contains the inactive core\r\n                energy in its ElectronicEnergy property .\r\n```",
+    "created_at": "2021-08-16T14:28:38Z",
+    "updated_at": "2021-08-16T14:43:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689587704",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689587704"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689587704"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689587704/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 109,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 111,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 132,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689589687",
+    "pull_request_review_id": 730783025,
+    "id": 689589687,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTU4OTY4Nw==",
+    "diff_hunk": "@@ -166,7 +167,7 @@ def run(self) -> QMolecule:\n         )\n \n         input_text += \"sys.path = \" + syspath + \" + sys.path\\n\"\n-        input_text += \"from qiskit_nature.drivers.second_quantization.qmolecule import QMolecule\\n\"\n+        input_text += \"from qiskit_nature.drivers.qmolecule import QMolecule\\n\"\n         input_text += '_q_molecule = QMolecule(\"{0}\")\\n'.format(Path(molecule.filename).as_posix())",
+    "path": "qiskit_nature/drivers/second_quantization/psi4d/psi4driver.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Can we do it through join?",
+    "created_at": "2021-08-16T14:30:50Z",
+    "updated_at": "2021-08-16T14:43:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689589687",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689589687"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689589687"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689589687/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 169,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 171,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 26,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689593566",
+    "pull_request_review_id": 730783025,
+    "id": 689593566,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTU5MzU2Ng==",
+    "diff_hunk": "@@ -47,9 +48,9 @@ def __init__(\n         \"\"\"\n         Args:\n             bosonic_driver: A bosonic driver encoding the molecule information.\n-            transformers: A list of transformations to be applied to the molecule.\n             num_modals: the number of modals per mode.\n             truncation_order: order at which an n-body expansion is truncated\n+            transformers: A list of transformations to be applied to the driver result.",
+    "path": "qiskit_nature/problems/second_quantization/vibrational/vibrational_structure_problem.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Inconsistent letter capitalization.",
+    "created_at": "2021-08-16T14:35:24Z",
+    "updated_at": "2021-08-16T14:43:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689593566",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689593566"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689593566"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689593566/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 52,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 53,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689596313",
+    "pull_request_review_id": 730783025,
+    "id": 689596313,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTU5NjMxMw==",
+    "diff_hunk": "@@ -100,11 +101,14 @@ def __init__(\n         dipole_shift: Optional[Dict[str, DipoleTuple]] = None,\n         nuclear_dipole_moment: Optional[DipoleTuple] = None,\n         reverse_dipole_sign: bool = False,\n-    ):\n+    ) -> None:\n         \"\"\"\n         Args:\n             dipole_axes: a dictionary mapping Cartesian axes to DipoleMoment properties.\n             dipole_shift: an optional dictionary of named dipole shifts.\n+            nuclear_dipole_moment: the optional nuclear dipole moment.\n+            reverse_dipole_sign: whether the sign of the electronic dipole components needs to be\n+                reversed in order to match the nuclear dipole moment direction.",
+    "path": "qiskit_nature/properties/second_quantization/electronic/dipole_moment.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n            reverse_dipole_sign: indicates whether the sign of the electronic dipole components needs to be\r\n                reversed in order to match the nuclear dipole moment direction.\r\n```",
+    "created_at": "2021-08-16T14:38:39Z",
+    "updated_at": "2021-08-16T14:43:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689596313",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689596313"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689596313"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689596313/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 110,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 111,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 44,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689597785",
+    "pull_request_review_id": 730783025,
+    "id": 689597785,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTU5Nzc4NQ==",
+    "diff_hunk": "@@ -33,16 +33,22 @@ class ParticleNumber(ElectronicProperty):\n     Note that this Property serves a two purposes:\n         1. it stores the expected number of electrons (`self.num_particles`)\n         2. it is used to evaluate the measured number of electrons via auxiliary operators.\n-           If this measured number does not match the expected number a warning will be logged.\n+           If this measured number does not match the expected number it will be logged on the INFO\n+           level.",
+    "path": "qiskit_nature/properties/second_quantization/electronic/particle_number.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "dlasecki",
+      "id": 26851041,
+      "node_id": "MDQ6VXNlcjI2ODUxMDQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26851041?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dlasecki",
+      "html_url": "https://github.com/dlasecki",
+      "followers_url": "https://api.github.com/users/dlasecki/followers",
+      "following_url": "https://api.github.com/users/dlasecki/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dlasecki/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dlasecki/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dlasecki/subscriptions",
+      "organizations_url": "https://api.github.com/users/dlasecki/orgs",
+      "repos_url": "https://api.github.com/users/dlasecki/repos",
+      "events_url": "https://api.github.com/users/dlasecki/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dlasecki/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n           If this measured number does not match the expected number, it will be logged on the INFO\r\n           level.\r\n```",
+    "created_at": "2021-08-16T14:40:23Z",
+    "updated_at": "2021-08-16T14:43:30Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689597785",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689597785"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689597785"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689597785/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 36,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 37,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 24,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689647364",
+    "pull_request_review_id": 730862605,
+    "id": 689647364,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTY0NzM2NA==",
+    "diff_hunk": "@@ -70,6 +70,19 @@ def __init__(\n \n         self._perturbations = None  # type: Optional[List[float]]\n \n+    def __str__(self) -> str:",
+    "path": "qiskit_nature/drivers/molecule.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It might have been convenient for this to simply have been the standard xyz format for a molecule definition - though that would have meant not having masses as I don't think that's part of it - or at least I guess it could be appended afterwards. One reason for mentioning using that is then the extra labelling for geometry, multiplicity etc would not be needed, since its standard, and this whole output would be more compact.",
+    "created_at": "2021-08-16T15:39:36Z",
+    "updated_at": "2021-08-16T15:39:36Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689647364",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689647364"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689647364"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689647364/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 73,
+    "original_line": 73,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689687568",
+    "pull_request_review_id": 730915095,
+    "id": 689687568,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTY4NzU2OA==",
+    "diff_hunk": "@@ -13,66 +13,54 @@\n \"\"\"The SecondQuantizedProperty base class.\"\"\"\n \n from abc import abstractmethod\n-from typing import Any, List, TypeVar, Union\n+from typing import Any, List, Type, TypeVar, Union\n \n from qiskit_nature import QiskitNatureError\n-from qiskit_nature.drivers import QMolecule as LegacyQMolecule\n-from qiskit_nature.drivers import WatsonHamiltonian as LegacyWatsonHamiltonian\n-from qiskit_nature.drivers.second_quantization import QMolecule, WatsonHamiltonian\n+from qiskit_nature.drivers import QMolecule, WatsonHamiltonian\n from qiskit_nature.operators.second_quantization import SecondQuantizedOp\n \n from ..grouped_property import GroupedProperty\n from ..property import Property\n \n-LegacyElectronicStructureDriverResult = Union[QMolecule, LegacyQMolecule]\n-LegacyVibrationalStructureDriverResult = Union[WatsonHamiltonian, LegacyWatsonHamiltonian]\n-LegacyDriverResult = Union[\n-    LegacyElectronicStructureDriverResult, LegacyVibrationalStructureDriverResult\n-]\n+LegacyDriverResult = Union[QMolecule, WatsonHamiltonian]\n \n \n class SecondQuantizedProperty(Property):\n     \"\"\"The SecondQuantizedProperty base class.\n \n-    A second-quantization property provides the logic to transform a raw data (as e.g. produced by a\n+    A second-quantization property provides the logic to transform raw data (as e.g. produced by a\n     `qiskit_nature.second_quantization.drivers.BaseDriver`) into a\n     `qiskit_nature.operators.second_quantization.SecondQuantizedOp`.",
+    "path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n    A second-quantization property provides the logic to transform raw data (as e.g. produced by a\r\n    :class:`~qiskit_nature.second_quantization.drivers.BaseDriver`) into a\r\n    :class:`~qiskit_nature.operators.second_quantization.SecondQuantizedOp`.\r\n```\r\nSo these turn out as links in the doc rather than just highlighted text - and limited now to just the class name since it does not need to be so verbose with a link I think.",
+    "created_at": "2021-08-16T16:32:37Z",
+    "updated_at": "2021-08-16T16:32:37Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689687568",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689687568"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689687568"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689687568/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 31,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 33,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 31,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689700979",
+    "pull_request_review_id": 730932159,
+    "id": 689700979,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTcwMDk3OQ==",
+    "diff_hunk": "@@ -20,7 +20,7 @@ class ElectronicBasis(Enum):\n \n     This ``Enum`` simply names the available electronic bases. The ``SO`` basis is the _special_\n     basis into which an ``ElectronicEnergy`` must map its integrals before being able to perform the",
+    "path": "qiskit_nature/properties/second_quantization/electronic/bases/electronic_basis.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n    This ``Enum`` simply names the available electronic bases. The ``SO`` basis is the *special*\r\n    basis into which an ``ElectronicEnergy`` must map its integrals before being able to perform the\r\n```\r\nI think that was intended to come out in italic font - while the underscore is interpreted that way for markdown text it does not do it for Sphinx",
+    "created_at": "2021-08-16T16:51:39Z",
+    "updated_at": "2021-08-16T16:51:40Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689700979",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689700979"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689700979"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689700979/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 21,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 22,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 3,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689707139",
+    "pull_request_review_id": 730940255,
+    "id": 689707139,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTcwNzEzOQ==",
+    "diff_hunk": "@@ -13,66 +13,54 @@\n \"\"\"The SecondQuantizedProperty base class.\"\"\"\n \n from abc import abstractmethod\n-from typing import Any, List, TypeVar, Union\n+from typing import Any, List, Type, TypeVar, Union\n \n from qiskit_nature import QiskitNatureError\n-from qiskit_nature.drivers import QMolecule as LegacyQMolecule\n-from qiskit_nature.drivers import WatsonHamiltonian as LegacyWatsonHamiltonian\n-from qiskit_nature.drivers.second_quantization import QMolecule, WatsonHamiltonian\n+from qiskit_nature.drivers import QMolecule, WatsonHamiltonian\n from qiskit_nature.operators.second_quantization import SecondQuantizedOp\n \n from ..grouped_property import GroupedProperty\n from ..property import Property\n \n-LegacyElectronicStructureDriverResult = Union[QMolecule, LegacyQMolecule]\n-LegacyVibrationalStructureDriverResult = Union[WatsonHamiltonian, LegacyWatsonHamiltonian]\n-LegacyDriverResult = Union[\n-    LegacyElectronicStructureDriverResult, LegacyVibrationalStructureDriverResult\n-]\n+LegacyDriverResult = Union[QMolecule, WatsonHamiltonian]\n \n \n class SecondQuantizedProperty(Property):\n     \"\"\"The SecondQuantizedProperty base class.\n \n-    A second-quantization property provides the logic to transform a raw data (as e.g. produced by a\n+    A second-quantization property provides the logic to transform raw data (as e.g. produced by a\n     `qiskit_nature.second_quantization.drivers.BaseDriver`) into a\n     `qiskit_nature.operators.second_quantization.SecondQuantizedOp`.",
+    "path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I see there are other places in the text that would benefit from being links rather than quoted text as they refer to classes etc that it would be nice to navigate too. Since the text existed from before I cannot annotate it like above as its too far from any changes. And rather than try to include them here I will just note this. It would be nice to have them as links but it can always be improved later if it cannot be done now",
+    "created_at": "2021-08-16T17:00:43Z",
+    "updated_at": "2021-08-16T17:00:43Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689707139",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689707139"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689707139"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689707139/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 31,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 33,
+    "side": "RIGHT",
+    "in_reply_to_id": 689687568,
+    "author_association": "MEMBER",
+    "original_position": 31,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689710904",
+    "pull_request_review_id": 730945330,
+    "id": 689710904,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTcxMDkwNA==",
+    "diff_hunk": "@@ -39,7 +39,7 @@ def __init__(\n \n     @property\n     def num_modals_per_mode(self) -> List[int]:\n-        \"\"\"Returns the num_modals_per_mode.\"\"\"\n+        \"\"\"Returns the number of modals per mode.\"\"\"",
+    "path": "qiskit_nature/properties/second_quantization/vibrational/bases/vibrational_basis.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "In the class documentation a few lines above this\r\n\r\n> Refer to the documentation of ``qiskit_nature.properties.vibrational.integrals`` for more details.\r\n\r\nThis would be nice to have as a link to the module for when the user is already reading the docs",
+    "created_at": "2021-08-16T17:06:28Z",
+    "updated_at": "2021-08-16T17:06:53Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689710904",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689710904"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689710904"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689710904/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 42,
+    "original_line": 42,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 5,
+    "position": 14,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689714030",
+    "pull_request_review_id": 730949316,
+    "id": 689714030,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY4OTcxNDAzMA==",
+    "diff_hunk": "@@ -25,8 +25,7 @@\n already using the underlying chemistry program or library will be familiar with. The driver is\n used to compute some intermediate data, which later will be used to form the input to an\n algorithm.  Such intermediate data, is populated into a\n-:class:`~qiskit_nature.drivers.second_quantization.QMolecule` object and includes the following for\n-example:\n+:class:`~qiskit_nature.drivers.QMolecule` object and includes the following for example:",
+    "path": "qiskit_nature/drivers/second_quantization/__init__.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I am under the impression this is deprecated and going away and the drivers here emit some grouped property result now. This text I think ought to be updated in that regard etc.",
+    "created_at": "2021-08-16T17:11:09Z",
+    "updated_at": "2021-08-16T17:11:10Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689714030",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689714030"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r689714030"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/689714030/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 28,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690178183",
+    "pull_request_review_id": 731513502,
+    "id": 690178183,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MDE3ODE4Mw==",
+    "diff_hunk": "@@ -70,6 +70,19 @@ def __init__(\n \n         self._perturbations = None  # type: Optional[List[float]]\n \n+    def __str__(self) -> str:",
+    "path": "qiskit_nature/drivers/molecule.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "According to [Wikipedia](https://en.wikipedia.org/wiki/XYZ_file_format) the XYZ format has neither support for masses nor spins or charges. It links to an extended format but that requires information like cell vectors (which we do not have or which does not always apply).\r\n\r\nThus, I am not 100% sure what you are saying: I agree, that the xyz format could have been useful but we cannot, in any way, add all the information which we have here. Besides: the `geometry` section is formatted as XYZ with only the top line indicating the number of atoms missing. But that can be easily added by a user.\r\n\r\nIs this okay as is for now or what concretely would you like me to change?",
+    "created_at": "2021-08-17T09:03:45Z",
+    "updated_at": "2021-08-17T09:03:45Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690178183",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690178183"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690178183"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690178183/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 73,
+    "original_line": 73,
+    "side": "RIGHT",
+    "in_reply_to_id": 689647364,
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690203147",
+    "pull_request_review_id": 731546186,
+    "id": 690203147,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MDIwMzE0Nw==",
+    "diff_hunk": "@@ -13,66 +13,54 @@\n \"\"\"The SecondQuantizedProperty base class.\"\"\"\n \n from abc import abstractmethod\n-from typing import Any, List, TypeVar, Union\n+from typing import Any, List, Type, TypeVar, Union\n \n from qiskit_nature import QiskitNatureError\n-from qiskit_nature.drivers import QMolecule as LegacyQMolecule\n-from qiskit_nature.drivers import WatsonHamiltonian as LegacyWatsonHamiltonian\n-from qiskit_nature.drivers.second_quantization import QMolecule, WatsonHamiltonian\n+from qiskit_nature.drivers import QMolecule, WatsonHamiltonian\n from qiskit_nature.operators.second_quantization import SecondQuantizedOp\n \n from ..grouped_property import GroupedProperty\n from ..property import Property\n \n-LegacyElectronicStructureDriverResult = Union[QMolecule, LegacyQMolecule]\n-LegacyVibrationalStructureDriverResult = Union[WatsonHamiltonian, LegacyWatsonHamiltonian]\n-LegacyDriverResult = Union[\n-    LegacyElectronicStructureDriverResult, LegacyVibrationalStructureDriverResult\n-]\n+LegacyDriverResult = Union[QMolecule, WatsonHamiltonian]\n \n \n class SecondQuantizedProperty(Property):\n     \"\"\"The SecondQuantizedProperty base class.\n \n-    A second-quantization property provides the logic to transform a raw data (as e.g. produced by a\n+    A second-quantization property provides the logic to transform raw data (as e.g. produced by a\n     `qiskit_nature.second_quantization.drivers.BaseDriver`) into a\n     `qiskit_nature.operators.second_quantization.SecondQuantizedOp`.",
+    "path": "qiskit_nature/properties/second_quantization/second_quantized_property.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I have iterated through all files in the `qiskit_nature.properties` submodule looking for \"`\" characters.\r\nI think the situation should be generally better now :+1:",
+    "created_at": "2021-08-17T09:37:00Z",
+    "updated_at": "2021-08-17T09:37:01Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690203147",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690203147"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690203147"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690203147/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 31,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 33,
+    "side": "RIGHT",
+    "in_reply_to_id": 689687568,
+    "author_association": "MEMBER",
+    "original_position": 31,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690449798",
+    "pull_request_review_id": 731872617,
+    "id": 690449798,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MDQ0OTc5OA==",
+    "diff_hunk": "@@ -70,6 +70,19 @@ def __init__(\n \n         self._perturbations = None  # type: Optional[List[float]]\n \n+    def __str__(self) -> str:",
+    "path": "qiskit_nature/drivers/molecule.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "6771508327508d00adf449f38edf3737056efc59",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I guess I was more thinking of the xyz in the context drivers do it e.g\r\n```\r\n0 1\r\nH 0 0 0\r\nH 0 0 0.75\r\n```\r\nand yes I was saying that does not include mass. But having seen the Property notebook and the formatting there I guess the 'extra' verbosity in the str here fits in general with what you have here. So lets go with this then as you have it.",
+    "created_at": "2021-08-17T14:52:17Z",
+    "updated_at": "2021-08-17T14:52:18Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690449798",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690449798"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690449798"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690449798/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 73,
+    "original_line": 73,
+    "side": "RIGHT",
+    "in_reply_to_id": 689647364,
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690668543",
+    "pull_request_review_id": 732155439,
+    "id": 690668543,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MDY2ODU0Mw==",
+    "diff_hunk": "@@ -0,0 +1,1469 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"656ed516\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# The Property Framework\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"1ac4c84b\",\n+   \"metadata\": {},\n+   \"outputs\": [],\n+   \"source\": [\n+    \"import numpy as np\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"ed023bb1\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"Since version 0.2.0 Qiskit Nature includes the _Property_ framework. This framework replaces the legacy driver return types like `QMolecule` and `WatsonHamiltonian` with a more modular and extensible approach.\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"022da759\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"In this tutorial, we will walk through the framework, explain its most important components and show you, how you can extend it with a custom _property_ yourself.\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"3e95594d\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"## What is a `Property`?\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"d04769fd\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"At its core, a `Property` is an object complementing some raw data with functions that allow you to transform/manipulate/interpret this raw data. This \\\"definition\\\" is kept rather abstract on purpose, but what it means is essentially the following.\\n\",\n+    \"A `Property`:\\n\",\n+    \"\\n\",\n+    \"* represents a physical observable (that's the raw data)\\n\",\n+    \"* can be expressed as an operator\\n\",\n+    \"* can be evaluated with a wavefunction\\n\",\n+    \"* provides an `interpret` method which gives meaning to the eigenvalue of the evaluated qubit operator\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 2,\n+   \"id\": \"77fb4108\",\n+   \"metadata\": {},\n+   \"outputs\": [],\n+   \"source\": [\n+    \"from qiskit_nature.properties import Property, GroupedProperty\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"8da122b1\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"The `qiskit_nature.properties` module provides two classes:\\n\",\n+    \"\\n\",\n+    \"1. `Property`: this is the basic interface. It requires only a `name` and an `interpret` method to be implemented.\\n\",\n+    \"2. `GroupedProperty`: this class is an implementation of the [Composite pattern](https://en.wikipedia.org/wiki/Composite_pattern) which allows you to _group_ multiple properties into one.\\n\",\n+    \"\\n\",\n+    \"**Note:** Grouped properties must have unique `name` attributes!\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"d3c2c15a\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"## Second Quantization Properties\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"08c67dd6\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"At the time of writing, Qiskit Nature ships with a single variant of properties: the `SecondQuantizedProperty` objects.\\n\",\n+    \"\\n\",\n+    \"This sub-type adds one additional requirement because any `SecondQuantizedProperty`\\n\",\n+    \"\\n\",\n+    \"* **must** implement a `second_q_ops` method which constructs a (list of) `SecondQuantizedOp`s.\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"b30111ec\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"The `qiskit_nature.properties.second_quantization` module is further divided into `electronic` and `vibrational` modules (similar to other modules of Qiskit Nature).\\n\",\n+    \"Let us dive into the `electronic` sub-module first.\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"2aa8e7b3\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"### Electronic Second Quantization Properties\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"39393b42\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"Out-of-the-box Qiskit Nature ships the following electronic properties:\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 3,\n+   \"id\": \"11c080c5\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stderr\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"/home/oss/Files/Qiskit/.direnv/python-3.9.6/lib/python3.9/site-packages/pyscf/lib/misc.py:46: H5pyDeprecationWarning: Using default_file_mode other than 'r' is deprecated. Pass the mode to h5py.File() instead.\\n\",\n+      \"  h5py.get_config().default_file_mode = 'a'\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"from qiskit_nature.properties.second_quantization.electronic import (\\n\",\n+    \"    ElectronicEnergy,\\n\",\n+    \"    ElectronicDipoleMoment,\\n\",\n+    \"    ParticleNumber,\\n\",\n+    \"    AngularMomentum,\\n\",\n+    \"    Magnetization,\\n\",\n+    \")\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"57ee71e0\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"`ElectronicEnergy` is arguably the most important property because it contains the _Hamiltonian_ representing the electronic structure problem whose eigenvalues we are interested in when solving an `ElectronicStructureProblem`.\\n\",\n+    \"The way in which it stores this Hamiltonian is, just like the rest of the framework, highly modular. The initializer of the `ElectronicEnergy` has a single required argument, `electronic_integrals`, which is a `List[ElectronicIntegrals]`.\\n\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"87bf5b74\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"#### ElectronicIntegrals\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 4,\n+   \"id\": \"3807ffbb\",\n+   \"metadata\": {},\n+   \"outputs\": [],\n+   \"source\": [\n+    \"from qiskit_nature.properties.second_quantization.electronic.integrals import (\\n\",\n+    \"    ElectronicIntegrals,\\n\",\n+    \"    OneBodyElectronicIntegrals,\\n\",\n+    \"    TwoBodyElectronicIntegrals,\\n\",\n+    \"    IntegralProperty,\\n\",\n+    \")\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"7e2b1630\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"The `ElectronicIntegrals` are a container class for _n-body_ interactions in a given basis, which can be any of the following:\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 5,\n+   \"id\": \"1e969daa\",\n+   \"metadata\": {},\n+   \"outputs\": [],\n+   \"source\": [\n+    \"from qiskit_nature.properties.second_quantization.electronic.bases import ElectronicBasis\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 6,\n+   \"id\": \"b3ead61a\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"data\": {\n+      \"text/plain\": [\n+       \"[<ElectronicBasis.AO: 'atomic'>,\\n\",\n+       \" <ElectronicBasis.MO: 'molecular'>,\\n\",\n+       \" <ElectronicBasis.SO: 'spin'>]\"\n+      ]\n+     },\n+     \"execution_count\": 6,\n+     \"metadata\": {},\n+     \"output_type\": \"execute_result\"\n+    }\n+   ],\n+   \"source\": [\n+    \"list(ElectronicBasis)\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"37aae51a\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"Let us take the `OneBodyElectronicIntegrals` as an example. As the name suggests, this container is for 1-body interaction integrals. You can construct an instance of it like so:\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 7,\n+   \"id\": \"55fc757d\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"(MO) 1-Body Terms:\\n\",\n+      \"\\tAlpha\\n\",\n+      \"\\t[0, 0] = 1.0\\n\",\n+      \"\\t[1, 1] = 1.0\\n\",\n+      \"\\tBeta\\n\",\n+      \"\\t[0, 0] = 2.0\\n\",\n+      \"\\t[1, 1] = 2.0\\n\"\n+     ]\n+    }\n+   ],\n+   \"source\": [\n+    \"one_body_ints = OneBodyElectronicIntegrals(\\n\",\n+    \"    ElectronicBasis.MO,\\n\",\n+    \"    (\\n\",\n+    \"        np.eye(2),\\n\",\n+    \"        2 * np.eye(2),\\n\",\n+    \"    ),\\n\",\n+    \")\\n\",\n+    \"print(one_body_ints)\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"c7c1b39e\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"As you can see, the first argument simply specifies the basis of the integrals.\\n\",\n+    \"The second argument requires a little further explanation:\\n\",\n+    \"\\n\",\n+    \"1. In the case of the `AO` or `MO` basis, this argument **must** be a pair of numpy arrays, where the first and second one are the alpha- and beta-spin integrals, respectively.\\n\",\n+    \"\\n\",\n+    \"**Note:** The second argument may be `None`, in which case the alpha-spin integrals are used instead.\\n\",",
+    "path": "docs/tutorials/08_property_framework.ipynb",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "836af13f46f3452875824827d96fa6767cfff951",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n    \"**Note:** The second argument may be `None`, for the case where the beta-spin integrals are the same as the alpha-spin integrals (so there is no need to provide the same values twice).\\n\",\r\n```\r\nI think I know the intent of the text, wondering if the above is a better way of saying things.",
+    "created_at": "2021-08-17T19:41:04Z",
+    "updated_at": "2021-08-17T20:05:26Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690668543",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690668543"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690668543"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690668543/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 274,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 274,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690671637",
+    "pull_request_review_id": 732159332,
+    "id": 690671637,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MDY3MTYzNw==",
+    "diff_hunk": "@@ -0,0 +1,1469 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"656ed516\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"# The Property Framework\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"1ac4c84b\",\n+   \"metadata\": {},\n+   \"outputs\": [],\n+   \"source\": [\n+    \"import numpy as np\"\n+   ]\n+  },\n+  {\n+   \"cell_type\": \"markdown\",\n+   \"id\": \"ed023bb1\",\n+   \"metadata\": {},\n+   \"source\": [\n+    \"Since version 0.2.0 Qiskit Nature includes the _Property_ framework. This framework replaces the legacy driver return types like `QMolecule` and `WatsonHamiltonian` with a more modular and extensible approach.\"",
+    "path": "docs/tutorials/08_property_framework.ipynb",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "836af13f46f3452875824827d96fa6767cfff951",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n    \"Qiskit Nature 0.2.0 introduces the _Property_ framework. This framework replaces the legacy driver return types like `QMolecule` and `WatsonHamiltonian` with a more modular and extensible approach.\"\r\n```\r\nI just changed the introduction sentence - think that reads a little easier.",
+    "created_at": "2021-08-17T19:45:40Z",
+    "updated_at": "2021-08-17T19:45:40Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690671637",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690671637"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r690671637"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/690671637/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 26,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 26,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691201577",
+    "pull_request_review_id": 732815659,
+    "id": 691201577,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MTIwMTU3Nw==",
+    "diff_hunk": "@@ -97,10 +109,31 @@ def __str__(self) -> str:\n     def _render_matrix_as_sparse_list(matrix) -> List[str]:\n         string = []\n         nonzero = matrix.nonzero()\n+        nonzero_count = len(nonzero[0])\n+        string += [f\"\\t<{matrix.shape} matrix with {nonzero_count} non-zero entries>\"]\n+        count = 0\n         for value, *indices in zip(matrix[nonzero], *nonzero):\n+            if ElectronicIntegrals._truncate and count >= ElectronicIntegrals._truncate:\n+                string += [\n+                    f\"\\t... skipping {nonzero_count - ElectronicIntegrals._truncate} entries\"\n+                ]\n+                break\n             string += [f\"\\t{indices} = {value}\"]\n+            count += 1\n         return string\n \n+    @staticmethod\n+    def set_truncation(max_num_entries: int) -> None:\n+        \"\"\"Set the maximum number of integral values to display before truncation.\n+\n+        Args:\n+            max_num_entries: the maximum number of entries.\n+\n+        .. note::\n+            Truncation will be disabled if `max_num)lines` is set to 0.",
+    "path": "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "68f8da178315e794e59ff35997258aa1bef0c9d7",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n            Truncation will be disabled if `max_num_entries` is set to 0.\r\n```\r\nI imagine this is what it should be",
+    "created_at": "2021-08-18T12:45:55Z",
+    "updated_at": "2021-08-18T12:49:46Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691201577",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691201577"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691201577"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691201577/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 133,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691203040",
+    "pull_request_review_id": 732815659,
+    "id": 691203040,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MTIwMzA0MA==",
+    "diff_hunk": "@@ -75,10 +82,31 @@ def integrals(self, integrals: List[Tuple[float, Tuple[int, ...]]]) -> None:\n \n     def __str__(self) -> str:\n         string = [f\"{self._num_body_terms}-Body Terms:\"]\n+        integral_count = len(self._integrals)\n+        string += [f\"\\t\\t<sparse integral list with {integral_count} entries>\"]\n+        count = 0\n         for value, indices in self._integrals:\n-            string += [f\"\\t{indices} = {value}\"]\n+            if VibrationalIntegrals._truncate and count >= VibrationalIntegrals._truncate:\n+                string += [\n+                    f\"\\t\\t... skipping {integral_count - VibrationalIntegrals._truncate} entries\"\n+                ]\n+                break\n+            string += [f\"\\t\\t{indices} = {value}\"]\n+            count += 1\n         return \"\\n\".join(string)\n \n+    @staticmethod\n+    def set_truncation(max_num_entries: int) -> None:\n+        \"\"\"Set the maximum number of integral values to display before truncation.\n+\n+        Args:\n+            max_num_entries: the maximum number of entries.\n+\n+        .. note::\n+            Truncation will be disabled if `max_num)lines` is set to 0.",
+    "path": "qiskit_nature/properties/second_quantization/vibrational/integrals/vibrational_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "68f8da178315e794e59ff35997258aa1bef0c9d7",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n            Truncation will be disabled if `max_num_entries` is set to 0.\r\n```",
+    "created_at": "2021-08-18T12:47:45Z",
+    "updated_at": "2021-08-18T12:49:46Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691203040",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691203040"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691203040"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691203040/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 106,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 42,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691211024",
+    "pull_request_review_id": 732827772,
+    "id": 691211024,
+    "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDY5MTIxMTAyNA==",
+    "diff_hunk": "@@ -97,10 +109,31 @@ def __str__(self) -> str:\n     def _render_matrix_as_sparse_list(matrix) -> List[str]:\n         string = []\n         nonzero = matrix.nonzero()\n+        nonzero_count = len(nonzero[0])\n+        string += [f\"\\t<{matrix.shape} matrix with {nonzero_count} non-zero entries>\"]\n+        count = 0\n         for value, *indices in zip(matrix[nonzero], *nonzero):\n+            if ElectronicIntegrals._truncate and count >= ElectronicIntegrals._truncate:\n+                string += [\n+                    f\"\\t... skipping {nonzero_count - ElectronicIntegrals._truncate} entries\"\n+                ]\n+                break\n             string += [f\"\\t{indices} = {value}\"]\n+            count += 1\n         return string\n \n+    @staticmethod\n+    def set_truncation(max_num_entries: int) -> None:\n+        \"\"\"Set the maximum number of integral values to display before truncation.\n+\n+        Args:\n+            max_num_entries: the maximum number of entries.\n+\n+        .. note::\n+            Truncation will be disabled if `max_num)lines` is set to 0.",
+    "path": "qiskit_nature/properties/second_quantization/electronic/integrals/electronic_integrals.py",
+    "commit_id": "c08f3e351e222b4743913368fbf642872f21618c",
+    "original_commit_id": "68f8da178315e794e59ff35997258aa1bef0c9d7",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes you're right! I had originally used `max_num_lines` as the argument name but apparently I even misspelled that :sweat_smile: ",
+    "created_at": "2021-08-18T12:57:21Z",
+    "updated_at": "2021-08-18T12:57:22Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691211024",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691211024"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/303#discussion_r691211024"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/303"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/691211024/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 133,
+    "side": "RIGHT",
+    "in_reply_to_id": 691201577,
+    "author_association": "MEMBER",
+    "original_position": 70,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

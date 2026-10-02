@@ -1,0 +1,126 @@
+{
+  "id": 69,
+  "sample_id": "qiskit_nature_577_591",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "3372bc1c19ab0e738720fcf847b338af2be3ceb2",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 3,
+    "subtype_test_counts": {
+      "quantum_semantics/heisenberg_hamiltonian_construction": 5,
+      "quantum_semantics/ising_hamiltonian_construction": 3
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_init",
+      "label": "quantum_semantics/heisenberg_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 42,
+          "expected": "Default two-site model yields X, Y, and Z spin interaction terms."
+        }
+      ],
+      "rationale": "The Pauli-axis coupling terms define the Heisenberg Hamiltonian."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_triangular",
+      "label": "quantum_semantics/heisenberg_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "Triangular lattice yields interaction terms on every selected edge."
+        }
+      ],
+      "rationale": "The test checks spin couplings against lattice connectivity."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_ising",
+      "label": "quantum_semantics/heisenberg_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 108,
+          "expected": "Z coupling and X field reproduce the transverse Ising Hamiltonian."
+        }
+      ],
+      "rationale": "This is a quantum spin-model specialization."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xy",
+      "label": "quantum_semantics/heisenberg_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 134,
+          "expected": "XY coupling selects only the X and Y interaction terms."
+        }
+      ],
+      "rationale": "The expected spin Hamiltonian omits Z coupling."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_heisenberg_model.py::TestHeisenbergModel::test_xyz_ext_field",
+      "label": "quantum_semantics/heisenberg_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 157,
+          "expected": "XYZ interactions and external field yield all prescribed spin terms."
+        }
+      ],
+      "rationale": "The asserted terms have quantum spin-axis semantics."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_init",
+      "label": "quantum_semantics/ising_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 62,
+          "expected": "Ising model gives the expected Z couplings and X field terms."
+        }
+      ],
+      "rationale": "The exact spin Hamiltonian is primary among graph and matrix checks."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_uniform_parameters",
+      "label": "quantum_semantics/ising_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 117,
+          "expected": "Uniform Ising parameters give the expected spin terms."
+        }
+      ],
+      "rationale": "The selected control checks quantum-model construction."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/problems/second_quantization/lattice/models/test_ising_model.py::TestIsingModel::test_from_parameters",
+      "label": "quantum_semantics/ising_hamiltonian_construction",
+      "assertions": [
+        {
+          "line": 148,
+          "expected": "Parameter-matrix Ising construction gives the expected spin terms."
+        }
+      ],
+      "rationale": "The selected control checks quantum-model construction."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/3372bc1c19ab0e738720fcf847b338af2be3ceb2/test/problems/second_quantization/lattice/models/test_heisenberg_model.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/3372bc1c19ab0e738720fcf847b338af2be3ceb2/test/problems/second_quantization/lattice/models/test_ising_model.py"
+  ],
+  "rationale": "Reviewed all 8 selected cases against exact-patch source; physical operator equalities are quantum constraints and result-container contracts are interface constraints."
+}

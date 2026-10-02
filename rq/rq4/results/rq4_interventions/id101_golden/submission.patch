@@ -1,0 +1,1873 @@
+diff --git a/qiskit_optimization/algorithms/__init__.py b/qiskit_optimization/algorithms/__init__.py
+index c4ab6b0..515dd15 100644
+--- a/qiskit_optimization/algorithms/__init__.py
++++ b/qiskit_optimization/algorithms/__init__.py
+@@ -62,6 +62,14 @@ Algorithms and results
+    WarmStartQAOAOptimizer
+    WarmStartQAOAFactory
+ 
++Submodules
++==========
++
++.. autosummary::
++   :toctree:
++
++   qrao
++
+ """
+ 
+ from .admm_optimizer import (
+diff --git a/qiskit_optimization/algorithms/optimization_algorithm.py b/qiskit_optimization/algorithms/optimization_algorithm.py
+index fb6cee1..62a63c1 100644
+--- a/qiskit_optimization/algorithms/optimization_algorithm.py
++++ b/qiskit_optimization/algorithms/optimization_algorithm.py
+@@ -11,12 +11,13 @@
+ # that they have been altered from the originals.
+ 
+ """An abstract class for optimization algorithms in Qiskit optimization module."""
++from __future__ import annotations
+ 
+ from abc import ABC, abstractmethod
+ from dataclasses import dataclass
+ from enum import Enum
+ from logging import getLogger
+-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
++from typing import Any, Dict, List, Tuple, Type, Union, cast
+ 
+ import numpy as np
+ from qiskit.quantum_info import Statevector
+@@ -98,12 +99,12 @@ class OptimizationResult:
+ 
+     def __init__(
+         self,
+-        x: Optional[Union[List[float], np.ndarray]],
+-        fval: Optional[float],
++        x: Union[List[float], np.ndarray] | None,
++        fval: float | None,
+         variables: List[Variable],
+         status: OptimizationResultStatus,
+-        raw_results: Optional[Any] = None,
+-        samples: Optional[List[SolutionSample]] = None,
++        raw_results: Any | None = None,
++        samples: List[SolutionSample] | None = None,
+     ) -> None:
+         """
+         Args:
+@@ -215,7 +216,7 @@ class OptimizationResult:
+         return correlations
+ 
+     @property
+-    def x(self) -> Optional[np.ndarray]:
++    def x(self) -> np.ndarray | None:
+         """Returns the variable values found in the optimization or None in case of FAILURE.
+ 
+         Returns:
+@@ -224,7 +225,7 @@ class OptimizationResult:
+         return self._x
+ 
+     @property
+-    def fval(self) -> Optional[float]:
++    def fval(self) -> float | None:
+         """Returns the objective function value.
+ 
+         Returns:
+@@ -374,8 +375,8 @@ class OptimizationAlgorithm(ABC):
+ 
+     @staticmethod
+     def _prepare_converters(
+-        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]],
+-        penalty: Optional[float] = None,
++        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
++        penalty: float | None = None,
+     ) -> List[QuadraticProgramConverter]:
+         """Prepare a list of converters from the input.
+ 
+@@ -430,7 +431,7 @@ class OptimizationAlgorithm(ABC):
+ 
+     @staticmethod
+     def _check_converters(
+-        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]]
++        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
+     ) -> List[QuadraticProgramConverter]:
+         if converters is None:
+             converters = []
+@@ -445,9 +446,7 @@ class OptimizationAlgorithm(ABC):
+         cls,
+         x: np.ndarray,
+         problem: QuadraticProgram,
+-        converters: Optional[
+-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
+-        ] = None,
++        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None = None,
+         result_class: Type[OptimizationResult] = OptimizationResult,
+         **kwargs,
+     ) -> OptimizationResult:
+@@ -490,7 +489,7 @@ class OptimizationAlgorithm(ABC):
+         cls,
+         problem: QuadraticProgram,
+         raw_samples: List[SolutionSample],
+-        converters: List[QuadraticProgramConverter],
++        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
+     ) -> Tuple[List[SolutionSample], SolutionSample]:
+         """Interpret and sort all samples and return the raw sample corresponding to the best one"""
+         converters = cls._check_converters(converters)
+diff --git a/qiskit_optimization/algorithms/qrao/__init__.py b/qiskit_optimization/algorithms/qrao/__init__.py
+new file mode 100644
+index 0000000..0e54689
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/__init__.py
+@@ -0,0 +1,141 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++r"""
++Quantum Random Access Optimization (:mod:`qiskit_optimization.algorithms.qrao`)
++===============================================================================
++
++.. currentmodule:: qiskit_optimization.algorithms.qrao
++
++The Quantum Random Access Optimization (QRAO) module is designed to enable users to leverage a new
++quantum method for combinatorial optimization problems [1]. This approach incorporates
++Quantum Random Access Codes (QRACs) as a tool to encode multiple classical binary variables into a
++single qubit, thereby saving quantum resources and enabling exploration of larger problem instances
++on a quantum computer. The encoding produce a local quantum Hamiltonian whose ground state can be
++approximated with standard algorithms such as VQE, and then rounded to yield approximation solutions
++of the original problem.
++
++QRAO through a series of 3 classes:
++
++* The encoding class (:class:`~.QuantumRandomAccessEncoding`): This class encodes the original
++  problem into a relaxed problem that requires fewer resources to solve.
++* The rounding schemes (:class:`~.SemideterministicRounding` and :class:`~.MagicRounding`): This
++  scheme is used to round the solution obtained from the relaxed problem back to a solution of
++  the original problem.
++* The optimizer class (:class:`~.QuantumRandomAccessOptimizer`): This class performs the high-level
++  optimization algorithm, utilizing the capabilities of the encoding class and the rounding scheme.
++
++:class:`~.QuantumRandomAccessOptimizer` has two methods for solving problems,
++:meth:`~.QuantumRandomAccessOptimizer.solve` and
++:meth:`~.QuantumRandomAccessOptimizer.solve_relaxed`. The solve method provides a seamless
++workflow by automatically managing the encoding and rounding procedures, as demonstrated in the
++example below. This allows for a simplified and streamlined user experience.
++On the other hand, the solve_relaxed method offers the flexibility to break the computation
++process into distinct steps. This feature can be  advantageous when we need to compare solutions
++obtained from different rounding schemes applied to a potential ground state.
++
++
++For example:
++
++.. code-block:: python
++
++    from qiskit_algorithms.optimizers import COBYLA
++    from qiskit_algorithms import VQE
++    from qiskit.circuit.library import RealAmplitudes
++    from qiskit.primitives import Estimator
++
++    from qiskit_optimization.algorithms.qrao import (
++        QuantumRandomAccessOptimizer,
++        QuantumRandomAccessEncoding,
++        SemideterministicRounding,
++    )
++    from qiskit_optimization.problems import QuadraticProgram
++
++    problem = QuadraticProgram()
++    problem.binary_var("x")
++    problem.binary_var("y")
++    problem.binary_var("z")
++    problem.minimize(linear={"x": 1, "y": 2, "z": 3})
++
++    ansatz = RealAmplitudes(1)
++    vqe = VQE(
++        ansatz=ansatz,
++        optimizer=COBYLA(),
++        estimator=Estimator(),
++    )
++    # solve() automatically performs the encoding, optimization, and rounding
++    qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
++    result = qrao.solve(problem)
++
++    # solve_relaxed() only performs the optimization. The encoding and rounding must be done manually.
++    # encoding
++    encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
++    encoding.encode(problem)
++    # optimization
++    qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
++    relaxed_results, rounding_context = qrao.solve_relaxed(encoding=encoding)
++    # rounding
++    rounding = SemideterministicRounding()
++    result = rounding.round(rounding_context)
++
++
++[1] Bryce Fuller et al., Approximate Solutions of Combinatorial Problems via Quantum Relaxations,
++`arXiv:2111.03167 <https://arxiv.org/abs/2111.03167>`_
++
++
++Quantum Random Access Encoding and Optimization
++===============================================
++.. autosummary::
++    :toctree: ../stubs/
++    :nosignatures:
++
++    EncodingCommutationVerifier
++    QuantumRandomAccessEncoding
++    QuantumRandomAccessOptimizer
++    QuantumRandomAccessOptimizationResult
++
++Rounding schemes
++================
++
++.. autosummary::
++    :toctree: ../stubs/
++    :nosignatures:
++
++    MagicRounding
++    RoundingScheme
++    RoundingContext
++    RoundingResult
++    SemideterministicRounding
++
++"""
++
++from .encoding_commutation_verifier import EncodingCommutationVerifier
++from .magic_rounding import MagicRounding
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++from .quantum_random_access_optimizer import (
++    QuantumRandomAccessOptimizationResult,
++    QuantumRandomAccessOptimizer,
++    SemideterministicRounding,
++)
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++
++__all__ = [
++    "EncodingCommutationVerifier",
++    "QuantumRandomAccessEncoding",
++    "RoundingScheme",
++    "RoundingContext",
++    "RoundingResult",
++    "SemideterministicRounding",
++    "MagicRounding",
++    "QuantumRandomAccessOptimizer",
++    "QuantumRandomAccessOptimizationResult",
++]
+diff --git a/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py b/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py
+new file mode 100644
+index 0000000..315770f
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/encoding_commutation_verifier.py
+@@ -0,0 +1,70 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""The EncodingCommutationVerifier."""
++
++from __future__ import annotations
++
++from qiskit.primitives import BaseEstimator
++
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++
++
++class EncodingCommutationVerifier:
++    """Class for verifying that the relaxation commutes with the objective function."""
++
++    def __init__(self, encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator):
++        """
++        Args:
++            encoding: The encoding to verify.
++            estimator: The estimator to use for the verification.
++        """
++        self._encoding = encoding
++        self._estimator = estimator
++
++    def __len__(self) -> int:
++        return 2**self._encoding.num_vars
++
++    def __iter__(self):
++        for i in range(len(self)):
++            yield self[i]
++
++    def __getitem__(self, i: int) -> tuple[str, float, float]:
++        if i < 0 or i >= len(self):
++            raise IndexError(f"Index out of range: {i}")
++
++        encoding = self._encoding
++        str_dvars = f"{i:0{encoding.num_vars}b}"
++        dvars = [int(b) for b in str_dvars]
++        encoded_bitstr_qc = encoding.state_preparation_circuit(dvars)
++
++        # Evaluate the original objective function
++        problem = encoding.problem
++        sense = problem.objective.sense.value
++        obj_val = problem.objective.evaluate(dvars) * sense
++
++        # Evaluate the encoded Hamiltonian
++        encoded_op = encoding.qubit_op
++        offset = encoding.offset
++
++        job = self._estimator.run([encoded_bitstr_qc], [encoded_op])
++
++        try:
++            encoded_obj_val = job.result().values[0] + offset
++        except Exception as exc:
++            raise QiskitOptimizationError(
++                "The primitive job to verify commutation failed!"
++            ) from exc
++
++        return (str_dvars, obj_val, encoded_obj_val)
+diff --git a/qiskit_optimization/algorithms/qrao/magic_rounding.py b/qiskit_optimization/algorithms/qrao/magic_rounding.py
+new file mode 100644
+index 0000000..02261d1
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/magic_rounding.py
+@@ -0,0 +1,473 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Magic basis rounding module"""
++from __future__ import annotations
++
++from collections import defaultdict
++
++import numpy as np
++from qiskit import QuantumCircuit
++from qiskit.primitives import BaseSampler
++from qiskit.quantum_info import SparsePauliOp
++from qiskit_algorithms.exceptions import AlgorithmError
++
++from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .quantum_random_access_encoding import (
++    _z_to_21p_qrac_basis_circuit,
++    _z_to_31p_qrac_basis_circuit,
++)
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++
++
++class MagicRounding(RoundingScheme):
++    """Magic rounding scheme that measures in magic bases, and then uses the measurement results
++    to round the solution. Since the magic rounding is based on the measurement results, it
++    requires a quantum backend, which can be either hardware or a simulator.
++
++    The details are described in https://arxiv.org/abs/2111.03167.
++    """
++
++    _DECODING = {
++        3: (  # Eq. (8)
++            {"0": [0, 0, 0], "1": [1, 1, 1]},  # I mu+ I, I mu- I
++            {"0": [0, 1, 1], "1": [1, 0, 0]},  # X mu+ X, X mu- X
++            {"0": [1, 0, 1], "1": [0, 1, 0]},  # Y mu+ Y, Y mu- Y
++            {"0": [1, 1, 0], "1": [0, 0, 1]},  # Z mu+ Z, Z mu- Z
++        ),
++        2: (  # Sec. VII
++            {"0": [0, 0], "1": [1, 1]},  # I xi+ I, I xi- I
++            {"0": [0, 1], "1": [1, 0]},  # X xi+ X, X xi- X
++        ),
++        1: ({"0": [0], "1": [1]},),
++    }
++
++    # Pauli op string to label index in ops
++    _OP_INDICES = {1: {"Z": 0}, 2: {"X": 0, "Z": 1}, 3: {"X": 0, "Y": 1, "Z": 2}}
++
++    def __init__(
++        self,
++        sampler: BaseSampler,
++        basis_sampling: str = "uniform",
++        seed: int | None = None,
++    ):
++        """
++        Args:
++            sampler: Sampler to use for sampling the magic bases.
++            basis_sampling: Method to use for sampling the magic bases.  Must
++                be either ``"uniform"`` (default) or ``"weighted"``.
++                ``"uniform"`` samples all magic bases uniformly, and is the
++                method described in https://arxiv.org/abs/2111.03167.
++                ``"weighted"`` attempts to choose bases strategically using the
++                Pauli expectation values from the minimum eigensolver.
++                However, the approximation bounds given in
++                https://arxiv.org/abs/2111.03167 apply only to ``"uniform"``
++                sampling.
++            seed: Seed for random number generator, which is used to sample the
++                magic bases.
++
++        Raises:
++            ValueError: If ``basis_sampling`` is not ``"uniform"`` or ``"weighted"``.
++            ValueError: If the sampler is not configured with a number of shots.
++        """
++        if basis_sampling not in ("uniform", "weighted"):
++            raise ValueError(
++                f"'{basis_sampling}' is not an implemented sampling method. "
++                "Please choose either 'uniform' or 'weighted'."
++            )
++        self._sampler = sampler
++        self._rng = np.random.default_rng(seed)
++        self._basis_sampling = basis_sampling
++        if self._sampler.options.get("shots") is None:
++            raise ValueError("Magic rounding requires a sampler configured with a number of shots.")
++        self._shots = sampler.options.shots
++        super().__init__()
++
++    @property
++    def sampler(self) -> BaseSampler:
++        """Returns the Sampler used to sample the magic bases."""
++        return self._sampler
++
++    @property
++    def basis_sampling(self):
++        """Basis sampling method (either ``"uniform"`` or ``"weighted"``)."""
++        return self._basis_sampling
++
++    @staticmethod
++    def _make_circuits(
++        circuit: QuantumCircuit, bases: np.ndarray, vars_per_qubit: int
++    ) -> list[QuantumCircuit]:
++        """Make a list of circuits to measure in the given magic bases.
++
++        Args:
++            circuit: Quantum circuit to measure.
++            bases: List of magic bases to measure in.
++            vars_per_qubit: Number of variables per qubit.
++
++        Returns:
++            List of quantum circuits to measure in the given magic bases.
++
++        Raises:
++            ValueError: If ``vars_per_qubit`` is not 1, 2, or 3.
++        """
++        if vars_per_qubit not in (1, 2, 3):
++            raise ValueError("vars_per_qubit must be 1, 2, or 3.")
++
++        circuits = []
++        for basis in bases:
++            if vars_per_qubit == 3:
++                qc = circuit.compose(_z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
++            elif vars_per_qubit == 2:
++                qc = circuit.compose(_z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
++            elif vars_per_qubit == 1:
++                qc = circuit.copy()
++            qc.measure_all()
++            circuits.append(qc)
++        return circuits
++
++    def _evaluate_magic_bases(
++        self,
++        circuit: QuantumCircuit,
++        bases: np.ndarray,
++        basis_shots: np.ndarray,
++        vars_per_qubit: int,
++    ) -> list[dict[str, int]]:
++        """
++        Given a quantum circuit to measure, a list of magic bases to measure, and a list of the
++        shots to use for each magic basis configuration, measure the provided circuit in the magic
++        bases given and return the counts dictionaries associated with each basis measurement.
++
++        Args:
++            circuit: The quantum circuit to measure.
++            bases: A list of magic bases to measure.
++            basis_shots: A list of shots to use for each magic basis configuration.
++            vars_per_qubit: The number of decision variables per qubit.
++
++        Returns:
++            A list of counts dictionaries associated with each basis measurement.
++
++        Raises:
++            AlgorithmError: If the primitive job failed.
++            QiskitOptimizationError: If the number of circuits and the number of basis types are
++                not the same.
++            QiskitOptimizationError: If the number of circuits and the results from the primitive
++                job are not the same.
++            QiskitOptimizationError: If some of the results from the primitive job are not collected.
++        """
++        circuits = self._make_circuits(circuit, bases, vars_per_qubit)
++        # Execute each of the rotated circuits and collect the results
++        # Batch the circuits into jobs where each group has the same number of
++        # shots, so that you can wait for the queue as few times as possible if
++        # using hardware.
++        circuit_indices_by_shots: dict[int, list[int]] = defaultdict(list)
++        basis_counts: list[dict[str, int] | None] = [None] * len(circuits)
++        if len(circuits) != len(basis_shots):
++            raise QiskitOptimizationError(
++                "Internal error: The number of circuits and the number of basis types must be the same, "
++                f"{len(circuits)} != {len(basis_shots)}."
++            )
++
++        for i, shots in enumerate(basis_shots):
++            circuit_indices_by_shots[shots].append(i)
++
++        for shots, indices in sorted(circuit_indices_by_shots.items(), reverse=True):
++            try:
++                job = self._sampler.run([circuits[i] for i in indices], shots=shots)
++                result = job.result()
++            except Exception as exc:
++                raise AlgorithmError(
++                    "The primitive job to evaluate the magic state failed."
++                ) from exc
++            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
++            if len(counts_list) != len(indices):
++                raise QiskitOptimizationError(
++                    "Internal error: The number of circuits and the results from the primitive job "
++                    f"must be the same, {len(indices)} != {len(counts_list)}."
++                )
++            for i, counts in zip(indices, counts_list):
++                basis_counts[i] = counts
++
++        if None in basis_counts:
++            raise QiskitOptimizationError(
++                "Internal error: Some basis counts were not collected. Please check the primitive job."
++            )
++
++        basis_counts = [
++            {key: val * basis_shots[i] for key, val in counts.items()}
++            for i, counts in enumerate(basis_counts)
++        ]
++
++        return basis_counts
++
++    def _unpack_measurement_outcome(
++        self,
++        bits: str,
++        basis: list[int],
++        var2op: dict[int, tuple[int, SparsePauliOp]],
++        vars_per_qubit: int,
++    ) -> list[int]:
++        """
++        Given a measurement outcome, a magic basis, and a mapping from decision variables to
++        Pauli operators, return the values of the decision variables.
++
++        Args:
++            bits: The measurement outcome.
++            basis: The magic basis used for the measurement.
++            var2op: A mapping from decision variables to Pauli operators.
++            vars_per_qubit: The number of decision variables per qubit.
++
++        Returns:
++            The values of the decision variables.
++        """
++        output_bits = []
++        # iterate in order over decision variables
++        for q, op in var2op.values():
++            # get the decoding outcome index for the variable
++            # corresponding to this Pauli op.
++            op_index = self._OP_INDICES[vars_per_qubit][str(op.paulis[0])]
++            # get the bits associated to this magic basis'
++            # measurement outcomes
++            bit_outcomes = self._DECODING[vars_per_qubit][basis[q]]
++            # select which measurement outcome we observed
++            # this gives up to 3 bits of information
++            magic_bits = bit_outcomes[bits[q]]
++            # Assign our variable's value depending on
++            # which pauli our variable was associated to
++            variable_value = magic_bits[op_index]
++            output_bits.append(variable_value)
++        return output_bits
++
++    def _compute_dv_counts(
++        self,
++        basis_counts: list[dict[str, int]],
++        bases: np.ndarray,
++        var2op: dict[int, tuple[int, SparsePauliOp]],
++        vars_per_qubit: int,
++    ):
++        """
++        Given a list of bases, basis_shots, and basis_counts, convert
++        each observed bitstrings to its corresponding decision variable
++        configuration. Return the counts of each decision variable configuration.
++
++        Args:
++            basis_counts: A list of counts dictionaries associated with each basis measurement.
++            bases: A list of magic bases to measure.
++            var2op: A mapping from decision variables to Pauli operators.
++            vars_per_qubit: The number of decision variables per qubit.
++
++        Returns:
++            A dictionary of counts for each decision variable configuration.
++        """
++        dv_counts: dict[str, int] = defaultdict(int)
++        for base, counts in zip(bases, basis_counts):
++            # For each measurement outcome...
++            for bitstr, count in counts.items():
++                # For each bit in the observed bit string...
++                soln = self._unpack_measurement_outcome(bitstr, base, var2op, vars_per_qubit)
++                soln_str = "".join([str(bit) for bit in soln])
++                dv_counts[soln_str] += count
++        return dv_counts
++
++    def _sample_bases_uniform(
++        self, q2vars: list[list[int]], vars_per_qubit: int
++    ) -> tuple[np.ndarray, np.ndarray]:
++        """
++        Sample measurement bases for each qubit uniformly at random.
++
++        Args:
++            q2vars: A list of lists of integers. Each inner list contains the indices of decision
++                variables mapped to a specific qubit.
++            vars_per_qubit: The maximum number of decision variables that can be mapped to a
++                single qubit..
++
++        Returns:
++            A tuple containing two arrays:
++                bases: A 2D numpy array of shape (num_bases, num_qubits), where each row
++                corresponds to a basis configuration. Each element of the array is an
++                integer in the range [0, 2 ** (vars_per_qubit - 1) - 1]. The integer
++                represents the index of the basis to measure in for the corresponding
++                qubit.
++                basis_shots: A 1D numpy array of shape (num_bases,), where each element
++                corresponds to the number of shots to use for the corresponding basis in
++                the bases array.
++        """
++        bases_ = self._rng.choice(2 ** (vars_per_qubit - 1), size=(self._shots, len(q2vars)))
++        bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
++        return bases, basis_shots
++
++    def _sample_bases_weighted(
++        self, q2vars: list[list[int]], expectation_values: list[complex] | None, vars_per_qubit: int
++    ) -> tuple[np.ndarray, np.ndarray]:
++        """
++        Perform weighted sampling from the expectation values. The goal is to make smarter choices
++        about which bases to measure in using the expectation values.
++
++        Args:
++            q2vars: A list of lists of integers. Each inner list contains the indices of decision
++                variables mapped to a specific qubit.
++            expectation_values: A list of expectation values for each decision variable.
++            vars_per_qubit: The maximum number of decision variables that can be mapped to a
++                single qubit.
++
++        Returns:
++            A tuple containing two arrays:
++                bases: A 2D numpy array of shape (num_bases, num_qubits), where each row
++                corresponds to a basis configuration. Each element of the array is an
++                integer in the range [0, 2 ** (vars_per_qubit - 1) - 1]. The integer
++                represents the index of the basis to measure in for the corresponding
++                qubit.
++                basis_shots: A 1D numpy array of shape (num_bases,), where each element
++                corresponds to the number of shots to use for the corresponding basis in
++                the bases array.
++        """
++        # First, we make sure all Pauli expectation values have absolute value
++        # at most 1.  Otherwise, some of the probabilities computed below might
++        # be negative.
++        clipped_expectation_values = np.clip(expectation_values, -1, 1)
++        # basis_probs will have num_qubits number of elements.
++        # Each element will be a list of length 4 specifying the
++        # probability of picking the corresponding magic basis on that qubit.
++        basis_probs = []
++        for dvars in q2vars:
++            if vars_per_qubit == 3:
++                x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
++                y = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
++                z = 0.5 * (1 - clipped_expectation_values[dvars[2]]) if (len(dvars) > 2) else 0
++                # In the coefficient of the Pauli operator within the magic bases, 'p' represents a
++                # positive sign, while 'm' signifies a negative sign.
++                # The four combinations of these signs are used to define the quantum system behavior
++                #  in the context of magic bases.
++                # ppp:   mu±   = .5(I ± 1/sqrt(3)( X + Y + Z))
++                # pmm: X mu± X = .5(I ± 1/sqrt(3)( X - Y - Z))
++                # mpm: Y mu± Y = .5(I ± 1/sqrt(3)(-X + Y - Z))
++                # mmp: Z mu± Z = .5(I ± 1/sqrt(3)(-X - Y + Z))
++                # fmt: off
++                ppp_mmm =   x   *   y   *   z   + (1-x) * (1-y) * (1-z)
++                pmm_mpp =   x   * (1-y) * (1-z) + (1-x) *   y   *   z
++                mpm_pmp = (1-x) *   y   * (1-z) +   x   * (1-y) *   z
++                ppm_mmp =   x   *   y   * (1-z) + (1-x) * (1-y) *   z
++                # fmt: on
++                basis_probs.append([ppp_mmm, pmm_mpp, mpm_pmp, ppm_mmp])
++            elif vars_per_qubit == 2:
++                x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
++                z = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
++                # In the coefficient of the Pauli operator within the magic bases, 'p' represents a
++                # positive sign, while 'm' signifies a negative sign.
++                # The two combinations of these signs are used to define the quantum system behavior
++                #  in the context of magic bases.
++                # pp:   xi±   = .5(I ± 1/sqrt(2)( X + Z ))
++                # pm: X xi± X = .5(I ± 1/sqrt(2)( X - Z ))
++                # fmt: off
++                pp_mm =   x   *   z   + (1-x) * (1-z)
++                pm_mp =   x   * (1-z) + (1-x) *   z
++                # fmt: on
++                basis_probs.append([pp_mm, pm_mp])
++            elif vars_per_qubit == 1:
++                basis_probs.append([1.0])
++        bases_ = np.array(
++            [
++                self._rng.choice(
++                    2 ** (vars_per_qubit - 1), p=[p.real for p in probs], size=self._shots
++                )
++                for probs in basis_probs
++            ]
++        ).T
++        bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
++        return bases, basis_shots
++
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Perform magic rounding using the given RoundingContext.
++
++        Args:
++            rounding_context: The context containing the information needed for the rounding.
++
++        Returns:
++            RoundingResult: The results of the magic rounding process.
++
++        Raises:
++            ValueError: If the rounding context has no circuits.
++            ValueError: If the rounding context has no expectation values for magic rounding with the
++                weighted sampling.
++            QiskitOptimizationError: If the magic rounding did not return the expected number of shots.
++            QiskitOptimizationError: If the magic rounding did not return the expected number of bases.
++        """
++        expectation_values = rounding_context.expectation_values
++        circuit = rounding_context.circuit
++        q2vars = rounding_context.encoding.q2vars
++        var2op = rounding_context.encoding.var2op
++        vars_per_qubit = rounding_context.encoding.max_vars_per_qubit
++
++        if circuit is None:
++            raise ValueError(
++                "No circuit was provided in the rounding context. "
++                "Magic rounding requires a circuit to be available. "
++                "Perhaps try Semi-deterministic rounding instead."
++            )
++
++        if self.basis_sampling == "uniform":
++            # uniform sampling
++            bases, basis_shots = self._sample_bases_uniform(q2vars, vars_per_qubit)
++        else:
++            # weighted sampling
++            if expectation_values is None:
++                raise ValueError(
++                    "No expectation values were provided in the rounding context. "
++                    "Magic rounding with weighted sampling requires the expectation values of the "
++                    "``RoundingContext`` to be available, but they are not. "
++                    'Try `basis_sampling="uniform"` instead.'
++                )
++            bases, basis_shots = self._sample_bases_weighted(
++                q2vars, expectation_values, vars_per_qubit
++            )
++
++        # For each of the Magic Bases sampled above, measure
++        # the appropriate number of times (given by basis_shots)
++        # and return the circuit results
++        basis_counts = self._evaluate_magic_bases(circuit, bases, basis_shots, vars_per_qubit)
++        # keys will be configurations of decision variables
++        # values will be total number of observations.
++        soln_counts = self._compute_dv_counts(basis_counts, bases, var2op, vars_per_qubit)
++
++        soln_samples = [
++            SolutionSample(
++                x=np.asarray([int(bit) for bit in soln]),
++                fval=rounding_context.encoding.problem.objective.evaluate(
++                    [int(bit) for bit in soln]
++                ),
++                probability=count / self._shots,
++                status=OptimizationResultStatus.SUCCESS
++                if rounding_context.encoding.problem.is_feasible([int(bit) for bit in soln])
++                else OptimizationResultStatus.INFEASIBLE,
++            )
++            for soln, count in soln_counts.items()
++        ]
++        if sum(soln_counts.values()) != self._shots:
++            raise QiskitOptimizationError(
++                f"Internal error: Magic rounding did not return the expected number of shots. "
++                f"Expected {self._shots}, got {sum(soln_counts.values())}."
++            )
++        if not len(bases) == len(basis_shots) == len(basis_counts):
++            raise QiskitOptimizationError(
++                f"Internal error: sizes of bases({len(bases)}), basis_shots({len(basis_shots)}), "
++                f"and basis_counts({len(basis_counts)}) are not equal."
++            )
++
++        # Create a MagicRoundingResult object to return
++        return RoundingResult(
++            expectation_values=expectation_values,
++            samples=soln_samples,
++            bases=bases,
++            basis_shots=basis_shots,
++            basis_counts=basis_counts,
++        )
+diff --git a/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py b/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py
+new file mode 100644
+index 0000000..c438134
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/quantum_random_access_encoding.py
+@@ -0,0 +1,578 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""The Quantum Random Access Encoding module."""
++from __future__ import annotations
++
++from collections import defaultdict
++from functools import reduce
++from typing import cast
++
++import networkx as nx
++import numpy as np
++from qiskit import QuantumCircuit
++from qiskit.quantum_info import SparsePauliOp
++
++from qiskit_optimization.exceptions import QiskitOptimizationError
++from qiskit_optimization.problems.quadratic_program import QuadraticProgram
++
++
++def _z_to_31p_qrac_basis_circuit(bases: list[int], bit_flip: int = 0) -> QuantumCircuit:
++    """Return the circuit that implements the rotation to the (3,1,p)-QRAC.
++
++    Args:
++        bases: The basis, 0, 1, 2, or 3, for the qubit.
++        bit_flip: Whether to flip the state of the qubit. 1 for flip, 0 for no flip.
++
++    Returns:
++        The ``QuantumCircuit`` implementing the rotation to the (3,1,p)-QRAC.
++
++    Raises:
++        ValueError: If the basis is not 0, 1, 2, or 3
++    """
++    circ = QuantumCircuit(len(bases))
++    BETA = np.arccos(1 / np.sqrt(3))  # pylint: disable=invalid-name
++
++    for i, base in enumerate(reversed(bases)):
++        if bit_flip:
++            # if bit_flip == 1: then flip the state of the qubit to |1>
++            circ.x(i)
++
++        if base == 0:
++            circ.r(-BETA, -np.pi / 4, i)
++        elif base == 1:
++            circ.r(np.pi - BETA, np.pi / 4, i)
++        elif base == 2:
++            circ.r(np.pi + BETA, np.pi / 4, i)
++        elif base == 3:
++            circ.r(BETA, -np.pi / 4, i)
++        else:
++            raise ValueError(f"Unknown basis: {base}. Basis must be 0, 1, 2, or 3.")
++    return circ
++
++
++def _z_to_21p_qrac_basis_circuit(bases: list[int], bit_flip: int = 0) -> QuantumCircuit:
++    """Return the circuit that implements the rotation to the (2,1,p)-QRAC.
++
++    Args:
++        bases: The basis, 0, 1, for the qubit.
++        bit_flip: Whether to flip the state of the qubit. 1 for flip, 0 for no flip.
++
++    Returns:
++        The ``QuantumCircuit`` implementing the rotation to the (2,1,p)-QRAC.
++
++    Raises:
++        ValueError: if the basis is not 0 or 1
++    """
++    circ = QuantumCircuit(len(bases))
++
++    for i, base in enumerate(reversed(bases)):
++        if bit_flip:
++            # if bit_flip == 1: then flip the state of the qubit to |1>
++            circ.x(i)
++
++        if base == 0:
++            circ.r(-1 * np.pi / 4, -np.pi / 2, i)
++        elif base == 1:
++            circ.r(-3 * np.pi / 4, -np.pi / 2, i)
++        else:
++            raise ValueError(f"Unknown basis: {base}. Basis must be 0, 1.")
++    return circ
++
++
++def _qrac_state_prep_1q(bit_list: list[int]) -> QuantumCircuit:
++    """
++    Return the circuit that prepares the state for a (1,1,p), (2,1,p), or (3,1,p)-QRAC.
++
++    Args:
++        bit_list: The bitstring to prepare. If 1 argument is given, then a (1,1,p)-QRAC is generated.
++            If 2 arguments are given, then a (2,1,p)-QRAC is generated. If 3 arguments are given,
++            then a (3,1,p)-QRAC is generated.
++
++    Returns:
++        The ``QuantumCircuit`` implementing the state preparation.
++
++    Raises:
++        TypeError: if the number of arguments is not 1, 2, or 3
++        ValueError: if any of the arguments are not 0 or 1
++    """
++    # pylint: disable=C0401
++    if len(bit_list) not in (1, 2, 3):
++        raise TypeError(f"qrac_state_prep_1q requires 1, 2, or 3 arguments, not {len(bit_list)}.")
++    if not all(bit in (0, 1) for bit in bit_list):
++        raise ValueError("Each argument to qrac_state_prep_1q must be 0 or 1.")
++
++    if len(bit_list) == 3:
++        # Prepare (3,1,p)-qrac
++        # In the following lines, the input bits are XORed to match the
++        # conventions used in the paper.
++        # To understand why this transformation happens,
++        # observe that the two states that define each magic basis
++        # correspond to the same bitstrings but with a global bit flip.
++        # Thus the three bits of information we use to construct these states are:
++        # base_index0,base_index1 : two bits to pick one of four magic bases
++        # bit_flip: one bit to indicate which magic basis projector we are interested in.
++
++        bit_flip = bit_list[0] ^ bit_list[1] ^ bit_list[2]
++        base_index0 = bit_list[1] ^ bit_list[2]
++        base_index1 = bit_list[0] ^ bit_list[2]
++
++        # This is a convention chosen to be consistent with https://arxiv.org/abs/2111.03167
++        # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
++        base = [2 * base_index0 + base_index1]
++        circ = _z_to_31p_qrac_basis_circuit(base, bit_flip)
++
++    elif len(bit_list) == 2:
++        # Prepare (2,1,p)-qrac
++        # (00,01) or (10,11)
++        bit_flip = bit_list[0]
++        # (00,11) or (01,10)
++        base_index0 = bit_list[0] ^ bit_list[1]
++
++        # This is a convention chosen to be consistent with https://arxiv.org/abs/2111.03167
++        # # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
++        base = [base_index0]
++        circ = _z_to_21p_qrac_basis_circuit(base, bit_flip)
++
++    else:
++        bit_flip = bit_list[0]
++        circ = QuantumCircuit(1)
++        if bit_flip:
++            circ.x(0)
++
++    return circ
++
++
++def _qrac_state_prep_multi_qubit(
++    x: list[int],
++    q2vars: list[list[int]],
++    max_vars_per_qubit: int,
++) -> QuantumCircuit:
++    """Prepares a multi qubit QRAC state.
++
++    Args:
++        x: The state of each decision variable (0 or 1).
++        q2vars: A list of lists of integers. Each inner list contains the indices of decision variables
++        mapped to a specific qubit.
++        max_vars_per_qubit: The maximum number of decision variables that can be mapped to a
++        single qubit.
++
++    Returns:
++        A QuantumCircuit object representing the prepared state.
++
++    Raises:
++        ValueError: If any qubit is associated with more than `max_vars_per_qubit` variables.
++        ValueError: If a decision variable in ``q2vars`` is not included in `x`.
++        ValueError: If there are unused decision variables in `x` after mapping to qubits.
++    """
++    # Create a set of all remaining decision variables
++    remaining_dvars = set(range(len(x)))
++    # Create a list to store the binary mappings of each qubit to its corresponding decision variables
++    variable_mappings: list[list[int]] = []
++    # Check that each qubit is associated with at most max_vars_per_qubit variables
++    for qi_vars in q2vars:
++        if len(qi_vars) > max_vars_per_qubit:
++            raise ValueError(
++                "Each qubit is expected to be associated with at most "
++                f"`max_vars_per_qubit` ({max_vars_per_qubit}) variables, "
++                f"not {len(qi_vars)} variables."
++            )
++        # Create a list to store the binary mapping of the current qubit
++        qi_bits: list[int] = []
++
++        # Map each decision variable associated with the current qubit to a binary value and add it
++        # to the qubit bits
++        for dvar in qi_vars:
++            try:
++                qi_bits.append(x[dvar])
++            except IndexError:
++                raise ValueError(f"Decision variable not included in dvars: {dvar}") from None
++            try:
++                remaining_dvars.remove(dvar)
++            except KeyError:
++                raise ValueError(
++                    f"Unused decision variable(s) in dvars: {remaining_dvars}"
++                ) from None
++
++        # Pad with zeros if necessary
++        while len(qi_bits) < max_vars_per_qubit:
++            qi_bits.append(0)
++
++        variable_mappings.append(qi_bits)
++
++    # Raise an error if not all decision variables are used
++    if remaining_dvars:
++        raise ValueError(f"Not all dvars were included in q2vars: {remaining_dvars}")
++
++    # Prepare the individual qrac circuit and combine them into a multi qubit circuit
++    qracs = [_qrac_state_prep_1q(qi_bits) for qi_bits in variable_mappings]
++    qrac_circ = reduce(lambda x, y: x.tensor(y), qracs)
++    return qrac_circ
++
++
++class QuantumRandomAccessEncoding:
++    """This class specifies a Quantum Random Access Code that can be used to encode
++    the binary variables of a QUBO (quadratic unconstrained binary optimization
++    problem).
++
++    """
++
++    # This defines the convention of the Pauli operators (and their ordering)
++    # for each encoding.
++    _OPERATORS = (
++        (SparsePauliOp("Z"),),  # (1,1,1) QRAC
++        (SparsePauliOp("X"), SparsePauliOp("Z")),  # (2,1,p) QRAC, p ≈ 0.85
++        (SparsePauliOp("X"), SparsePauliOp("Y"), SparsePauliOp("Z")),  # (3,1,p) QRAC, p ≈ 0.79
++    )
++
++    def __init__(self, max_vars_per_qubit: int = 3):
++        """
++        Args:
++            max_vars_per_qubit: The maximum number of decision variables per qubit.
++                Integer values 1, 2 and 3 are supported (default to 3).
++        """
++        if max_vars_per_qubit not in (1, 2, 3):
++            raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
++        self._ops = self._OPERATORS[max_vars_per_qubit - 1]
++
++        self._qubit_op: SparsePauliOp | None = None
++        self._offset: float | None = None
++        self._problem: QuadraticProgram | None = None
++        self._var2op: dict[int, tuple[int, SparsePauliOp]] = {}
++        self._q2vars: list[list[int]] = []
++        self._frozen = False
++
++    @property
++    def num_qubits(self) -> int:
++        """Number of qubits"""
++        return len(self._q2vars)
++
++    @property
++    def num_vars(self) -> int:
++        """Number of decision variables"""
++        return len(self._var2op)
++
++    @property
++    def max_vars_per_qubit(self) -> int:
++        """Maximum number of variables per qubit"""
++        return len(self._ops)
++
++    @property
++    def var2op(self) -> dict[int, tuple[int, SparsePauliOp]]:
++        """Maps each decision variable to ``(qubit_index, operator)``"""
++        return self._var2op
++
++    @property
++    def q2vars(self) -> list[list[int]]:
++        """Each element contains the list of decision variable indices encoded on that qubit"""
++        return self._q2vars
++
++    @property
++    def compression_ratio(self) -> float:
++        """Compression ratio. Number of decision variables divided by number of qubits"""
++        return self.num_vars / self.num_qubits
++
++    @property
++    def minimum_recovery_probability(self) -> float:
++        """Minimum recovery probability, as set by ``max_vars_per_qubit``"""
++        n = self.max_vars_per_qubit
++        return (1 + 1 / np.sqrt(n)) / 2
++
++    @property
++    def qubit_op(self) -> SparsePauliOp:
++        """Relaxed Hamiltonian operator.
++
++        Raises:
++            RuntimeError: If the objective function has not been set yet. Use the ``encode`` method
++                to construct the Hamiltonian, or make sure that the objective function has been set.
++        """
++        if self._qubit_op is None:
++            raise RuntimeError(
++                "Cannot return the relaxed Hamiltonian operator: no objective function has been "
++                "provided yet. Use the ``encode`` method to construct the Hamiltonian, or make "
++                "sure that the objective function has been set."
++            )
++        return self._qubit_op
++
++    @property
++    def offset(self) -> float:
++        """Relaxed Hamiltonian offset
++
++        Raises:
++            RuntimeError: If the offset has not been set yet. Use the ``encode`` method to construct
++                the Hamiltonian, or make sure that the objective function has been set.
++        """
++        if self._offset is None:
++            raise RuntimeError(
++                "Cannot return the relaxed Hamiltonian offset: The offset attribute cannot be "
++                "accessed until the ``encode`` method has been called to generate the qubit "
++                "Hamiltonian. Please call ``encode`` first."
++            )
++        return self._offset
++
++    @property
++    def problem(self) -> QuadraticProgram:
++        """The ``QuadraticProgram``  encoding a QUBO optimization problem
++
++        Raises:
++            RuntimeError: If the ``QuadraticProgram`` has not been set yet. Use the ``encode``
++                method to set the problem.
++        """
++        if self._problem is None:
++            raise RuntimeError(
++                "This object has not been associated with a ``QuadraticProgram``. "
++                "Please use the ``encode`` method to set the problem."
++            )
++        return self._problem
++
++    def freeze(self):
++        """Freeze the object to prevent further modification.
++
++        Once an instance of this class is frozen, ``encode`` can no longer be called.
++        """
++        if not self._frozen:
++            self._qubit_op = self._qubit_op.simplify(atol=0)
++        self._frozen = True
++
++    @property
++    def frozen(self) -> bool:
++        """Whether the object is frozen or not."""
++        return self._frozen
++
++    def _add_variables(self, variables: list[int]) -> None:
++        """Add variables to the Encoding object.
++
++        Args:
++            variables: A list of variable indices to be added.
++
++        Raises:
++            ValueError: If added variables are not unique.
++            ValueError: If added variables collide with existing ones.
++
++        """
++        # NOTE: If this is called multiple times, it *always* adds an
++        # additional qubit (see final line), even if aggregating them into a
++        # single call would have resulted in fewer qubits.
++
++        # Check if variables is empty
++        if not variables:
++            return
++
++        # Check if variables are unique
++        if len(variables) != len(set(variables)):
++            raise ValueError("Added variables must be unique")
++
++        # Check if variables collide with existing ones
++        for v in variables:
++            if v in self._var2op:
++                raise ValueError("Added variables cannot collide with existing ones")
++
++        # Calculate the number of new qubits required for the added variables.
++        n = len(self._ops)
++        old_num_qubits = len(self._q2vars)
++        num_new_qubits = int(np.ceil(len(variables) / n))
++        # Add the new qubits to _q2vars.
++        for _ in range(num_new_qubits):
++            self._q2vars.append([])
++        # Associate each added variable with a qubit and operator.
++        for i, v in enumerate(variables):
++            qubit, op = divmod(i, n)
++            qubit_index = old_num_qubits + qubit
++            self._var2op[v] = (qubit_index, self._ops[op])
++            self._q2vars[qubit_index].append(v)
++
++    def _add_term(self, w: float, *variables: int) -> None:
++        """Add a term to the Hamiltonian.
++
++        Args:
++            weight: the coefficient for the term
++            *variables: the list of variables for the term
++        """
++        # Eq. (31) in https://arxiv.org/abs/2111.03167 assumes a weight-2
++        # Pauli operator.  To generalize, we replace the `d` in that equation
++        # with `d_prime`, defined as follows:
++        d_prime = np.sqrt(self.max_vars_per_qubit) ** len(variables)
++        op = self._term2op(*variables) * (w * d_prime)
++
++        if w == 0.0:
++            return
++        if self._qubit_op is None:
++            self._qubit_op = op
++        else:
++            self._qubit_op += op
++
++    def _term2op(self, *variables: int) -> SparsePauliOp:
++        """Construct a ``SparsePauliOp`` that is a tensor product of encoded decision variables.
++
++        Args:
++            *variables: The indices of the decision variables to encode.
++
++        Returns:
++            The encoded ``SparsePauliOp`` representing the product of the provided variables.
++
++        Raises:
++            QiskitOptimizationError: If any of the decision variables to be encoded collide in qubit
++            space.
++
++        """
++        ops = [SparsePauliOp("I")] * self.num_qubits
++        done = set()
++        for x in variables:
++            pos, op = self._var2op[x]
++            if pos in done:
++                raise QiskitOptimizationError(f"Collision of variables: {variables}")
++            ops[pos] = op
++            done.add(pos)
++        pauli_op = reduce(lambda x, y: x.tensor(y), ops)
++        return pauli_op
++
++    @staticmethod
++    def _generate_ising_coefficients(
++        problem: QuadraticProgram,
++    ) -> tuple[float, np.ndarray, np.ndarray]:
++        """Generate coefficients of Hamiltonian from a given problem."""
++        num_vars = problem.get_num_vars()
++
++        # set a sign corresponding to a maximized or minimized problem:
++        # 1 is for minimized problem, -1 is for maximized problem.
++        sense = problem.objective.sense.value
++
++        # convert a constant part of the objective function into Hamiltonian.
++        offset = problem.objective.constant * sense
++
++        # convert linear parts of the objective function into Hamiltonian.
++        linear = np.zeros(num_vars)
++        for idx, coef in problem.objective.linear.to_dict().items():
++            idx = cast(int, idx)
++            weight = coef * sense / 2
++            linear[idx] -= weight
++            offset += weight
++
++        # convert quadratic parts of the objective function into Hamiltonian.
++        quad = np.zeros((num_vars, num_vars))
++        for (i, j), coef in problem.objective.quadratic.to_dict().items():
++            i = cast(int, i)
++            j = cast(int, j)
++            weight = coef * sense / 4
++            if i == j:
++                linear[i] -= 2 * weight
++                offset += 2 * weight
++            else:
++                quad[i, j] += weight
++                linear[i] -= weight
++                linear[j] -= weight
++                offset += weight
++
++        return offset, linear, quad
++
++    @staticmethod
++    def _find_variable_partition(quad: np.ndarray) -> dict[int, list[int]]:
++        """Find the variable partition of the quad based on the node coloring of the graph
++
++        Args:
++            coefficients of the quadratic part of the Hamiltonian.
++
++        Returns:
++            A dictionary of the variable partition of the quad based on the node coloring.
++        """
++        # pylint: disable=E1101
++        color2node: dict[int, list[int]] = defaultdict(list)
++        num_nodes = quad.shape[0]
++        graph = nx.Graph()
++        graph.add_nodes_from(range(num_nodes))
++        graph.add_edges_from(list(zip(*np.where(quad != 0))))
++        node2color = nx.greedy_color(graph)
++        for node, color in sorted(node2color.items()):
++            color2node[color].append(node)
++        return color2node
++
++    def encode(self, problem: QuadraticProgram) -> None:
++        """
++        Encodes a given ``QuadraticProgram`` as a (n,1,p) Quantum Random Access Code (QRAC)
++        relaxed Hamiltonian. It accomplishes this by mapping each binary decision variable to one
++        qubit of the QRAC. The encoding is designed to ensure that the problem's objective function
++        commutes with the QRAC encoding.
++
++        After the function is called, it sets the following attributes:
++            - qubit_op: The qubit operator that encodes the input ``QuadraticProgram``.
++            - offset: The constant value in the encoded Hamiltonian.
++            - problem: The original ``QuadraticProgram`` used for encoding.
++
++        Inputs:
++            problem: A ``QuadraticProgram`` encoding a QUBO optimization problem
++
++        Raises:
++            QiskitOptimizationError: If this method is called more than once on the same object.
++            QiskitOptimizationError: If the problem contains non-binary variables.
++            QiskitOptimizationError: If the problem contains constraints.
++        """
++        # Ensure the Encoding object is not already used
++        if self._frozen:
++            raise QiskitOptimizationError(
++                "Cannot reuse an Encoding object that has already been used. "
++                "Please create a new Encoding object and call encode() on it."
++            )
++
++        # Check for non-binary variables
++        if problem.get_num_vars() > problem.get_num_binary_vars():
++            raise QiskitOptimizationError(
++                "All variables must be binary. "
++                "Please convert integer variables to binary variables using the"
++                "``QuadraticProgramToQubo`` converter. "
++                "Continuous variables are not supported by the QRAO algorithm."
++            )
++
++        # Check for constraints
++        if problem.linear_constraints or problem.quadratic_constraints:
++            raise QiskitOptimizationError(
++                "The problem cannot contain constraints. "
++                "Please convert constraints to penalty terms of the objective function using the "
++                "``QuadraticProgramToQubo`` converter."
++            )
++
++        num_vars = problem.get_num_vars()
++
++        # Generate the coefficients of the Hamiltonian
++        offset, linear, quad = self._generate_ising_coefficients(problem)
++
++        # Find the partition of the variables into groups
++        variable_partition = self._find_variable_partition(quad)
++
++        # Add variables and generate the Hamiltonian
++        for _, v in sorted(variable_partition.items()):
++            self._add_variables(sorted(v))
++        for i in range(num_vars):
++            w = linear[i]
++            if w != 0:
++                self._add_term(w, i)
++        for i in range(num_vars):
++            for j in range(num_vars):
++                w = quad[i, j]
++                if w != 0:
++                    self._add_term(w, i, j)
++
++        self._offset = offset
++        self._problem = problem
++
++        self.freeze()
++
++    def state_preparation_circuit(self, x: list[int]) -> QuantumCircuit:
++        """
++        Generate a circuit that prepares the state corresponding to the given binary string.
++
++        Args:
++            x: A list of binary values to be encoded into the state.
++
++        Returns:
++            A QuantumCircuit that prepares the state corresponding to the given binary string.
++        """
++        return _qrac_state_prep_multi_qubit(x, self.q2vars, self.max_vars_per_qubit)
+diff --git a/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py b/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py
+new file mode 100644
+index 0000000..9d41ab4
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/quantum_random_access_optimizer.py
+@@ -0,0 +1,313 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Quantum Random Access Optimizer class."""
++from __future__ import annotations
++
++from typing import cast
++
++import numpy as np
++from qiskit import QuantumCircuit
++from qiskit_algorithms import (
++    MinimumEigensolver,
++    MinimumEigensolverResult,
++    NumPyMinimumEigensolverResult,
++    VariationalResult,
++)
++
++from qiskit_optimization.algorithms import (
++    OptimizationAlgorithm,
++    OptimizationResult,
++    OptimizationResultStatus,
++    SolutionSample,
++)
++from qiskit_optimization.converters import QuadraticProgramToQubo
++from qiskit_optimization.problems import QuadraticProgram, Variable
++
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++from .semideterministic_rounding import SemideterministicRounding
++
++
++class QuantumRandomAccessOptimizationResult(OptimizationResult):
++    """Result of Quantum Random Access Optimization procedure."""
++
++    def __init__(
++        self,
++        *,
++        x: list[float] | np.ndarray,
++        fval: float,
++        variables: list[Variable],
++        status: OptimizationResultStatus,
++        samples: list[SolutionSample],
++        encoding: QuantumRandomAccessEncoding,
++        relaxed_fval: float,
++        relaxed_result: MinimumEigensolverResult,
++        rounding_result: RoundingResult,
++    ) -> None:
++        """
++        Args:
++            x: The optimal value found by ``MinimumEigensolver``.
++            fval: The optimal function value.
++            variables: The list of variables of the optimization problem.
++            status: The termination status of the optimization algorithm.
++            samples: The list of ``SolutionSample`` obtained from the optimization algorithm.
++            encoding: The encoding used for the optimization.
++            relaxed_fval: The optimal function value of the relaxed problem.
++            relaxed_result: The result obtained from the underlying minimum eigensolver.
++            rounding_result: The rounding result.
++        """
++        super().__init__(
++            x=x,
++            fval=fval,
++            variables=variables,
++            status=status,
++            raw_results=None,
++            samples=samples,
++        )
++        self._encoding = encoding
++        self._relaxed_fval = relaxed_fval
++        self._relaxed_result = relaxed_result
++        self._rounding_result = rounding_result
++
++    @property
++    def encoding(self) -> QuantumRandomAccessEncoding:
++        """The encoding used for the optimization."""
++        return self._encoding
++
++    @property
++    def relaxed_fval(self) -> float:
++        """The optimal function value of the relaxed problem."""
++        return self._relaxed_fval
++
++    @property
++    def relaxed_result(
++        self,
++    ) -> MinimumEigensolverResult:
++        """The result obtained from the underlying minimum eigensolver."""
++        return self._relaxed_result
++
++    @property
++    def rounding_result(self) -> RoundingResult:
++        """The rounding result."""
++        return self._rounding_result
++
++
++class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
++    """Quantum Random Access Optimizer class."""
++
++    def __init__(
++        self,
++        min_eigen_solver: MinimumEigensolver,
++        max_vars_per_qubit: int = 3,
++        rounding_scheme: RoundingScheme | None = None,
++        *,
++        penalty: float | None = None,
++    ):
++        """
++        Args:
++            min_eigen_solver: The minimum eigensolver to use for solving the relaxed problem.
++            max_vars_per_qubit: The maximum number of decision variables per qubit.
++                Integer values 1, 2 and 3 are supported (default to 3).
++            rounding_scheme: The rounding scheme.  If ``None`` is provided,
++                :class:`~.SemideterministicRounding` will be used.
++            penalty: The penalty factor to use for the :class:`~.QuadraticProgramToQubo` converter.
++
++        Raises:
++            ValueError: If the maximum number of variables per qubit is not 1, 2, or 3.
++            TypeError: If the provided minimum eigensolver does not support auxiliary operators.
++        """
++        if max_vars_per_qubit not in (1, 2, 3):
++            raise ValueError("max_vars_per_qubit must be 1, 2, or 3, but was {max_vars_per_qubit}.")
++        self._max_vars_per_qubit = max_vars_per_qubit
++        self.min_eigen_solver = min_eigen_solver
++        # Use ``QuadraticProgramToQubo`` to convert the problem to a QUBO.
++        if rounding_scheme is None:
++            rounding_scheme = SemideterministicRounding()
++        self._rounding_scheme = rounding_scheme
++        self._converters = QuadraticProgramToQubo(
++            penalty=penalty,
++        )
++
++    @property
++    def min_eigen_solver(self) -> MinimumEigensolver:
++        """Return the minimum eigensolver."""
++        return self._min_eigen_solver
++
++    @min_eigen_solver.setter
++    def min_eigen_solver(self, min_eigen_solver: MinimumEigensolver) -> None:
++        """Set the minimum eigensolver."""
++        if not min_eigen_solver.supports_aux_operators():
++            raise TypeError(
++                f"The provided MinimumEigensolver ({type(min_eigen_solver)}) "
++                "does not support auxiliary operators."
++            )
++        self._min_eigen_solver = min_eigen_solver
++
++    @property
++    def max_vars_per_qubit(self) -> int:
++        """Return the maximum number of variables per qubit."""
++        return self._max_vars_per_qubit
++
++    @max_vars_per_qubit.setter
++    def max_vars_per_qubit(self, max_vars_per_qubit: int) -> None:
++        """Set the maximum number of variables per qubit."""
++        self._max_vars_per_qubit = max_vars_per_qubit
++
++    @property
++    def rounding_scheme(self) -> RoundingScheme:
++        """Return the rounding scheme."""
++        return self._rounding_scheme
++
++    @rounding_scheme.setter
++    def rounding_scheme(self, rounding_scheme: RoundingScheme) -> None:
++        """Set the rounding scheme."""
++        self._rounding_scheme = rounding_scheme
++
++    def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
++        """Checks whether a given problem can be solved with this optimizer.
++
++        Checks whether the given problem is compatible, i.e., whether the problem can be converted
++        to a QUBO, and otherwise, returns a message explaining the incompatibility.
++
++        Args:
++            problem: The optimization problem to check compatibility.
++
++        Returns:
++            A message describing the incompatibility.
++        """
++        return QuadraticProgramToQubo.get_compatibility_msg(problem)
++
++    def solve_relaxed(
++        self,
++        encoding: QuantumRandomAccessEncoding,
++    ) -> tuple[MinimumEigensolverResult, RoundingContext]:
++        """Solve the relaxed Hamiltonian given by the encoding.
++
++        .. note::
++            This method uses the encoding instance given as ``encoding`` and
++            ignores :meth:`max_vars_per_qubit`.
++
++        Args:
++            encoding: An encoding instance for which :meth:`~QuantumRandomAccessEncoding.encode`
++                has already been called so it has been encoded with a :class:`~.QuadraticProgram`.
++
++        Returns:
++            The result of the minimum eigensolver, and the rounding context.
++
++        Raises:
++            ValueError: If the encoding has not been encoded with a :class:`~.QuadraticProgram`.
++        """
++        if not encoding.frozen:
++            raise ValueError(
++                "The encoding must call ``encode()`` with a ``QuadraticProgram`` before being passed"
++                "to the QuantumRandomAccessOptimizer."
++            )
++
++        # Get the list of operators that correspond to each decision variable.
++        variable_ops = [encoding._term2op(i) for i in range(encoding.num_vars)]
++
++        # Solve the relaxed problem.
++        relaxed_result = self.min_eigen_solver.compute_minimum_eigenvalue(
++            encoding.qubit_op, aux_operators=variable_ops
++        )
++
++        # Get auxiliary expectation values for rounding.
++        expectation_values: list[complex] | None = None
++        if relaxed_result.aux_operators_evaluated is not None:
++            expectation_values = [v[0] for v in relaxed_result.aux_operators_evaluated]  # type: ignore
++
++        # Get the circuit corresponding to the relaxed solution.
++        if isinstance(relaxed_result, VariationalResult):
++            circuit = relaxed_result.optimal_circuit.bind_parameters(relaxed_result.optimal_point)
++        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult):
++            statevector = relaxed_result.eigenstate
++            circuit = QuantumCircuit(encoding.num_qubits)
++            circuit.initialize(statevector)
++        else:
++            circuit = None
++
++        rounding_context = RoundingContext(
++            encoding=encoding,
++            expectation_values=expectation_values,
++            circuit=circuit,
++        )
++
++        return relaxed_result, rounding_context
++
++    def solve(self, problem: QuadraticProgram) -> QuantumRandomAccessOptimizationResult:
++        """Solve the relaxed Hamiltonian given by the encoding and round the solution by the given
++        rounding scheme.
++
++        Args:
++            problem: The :class:`~.QuadraticProgram` to be solved.
++
++        Returns:
++            The result of the quantum random access optimization.
++
++        Raises:
++            ValueError: If the encoding has not been encoded with a :class:`~.QuadraticProgram`.
++        """
++        # Convert the problem to a QUBO
++        self._verify_compatibility(problem)
++        qubo = self._convert(problem, self._converters)
++        # Encode the QUBO into a quantum random access encoding
++        encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=self.max_vars_per_qubit)
++        encoding.encode(qubo)
++
++        # Solve the relaxed problem
++        relaxed_result, rounding_context = self.solve_relaxed(encoding)
++
++        # Round the solution
++        rounding_result = self.rounding_scheme.round(rounding_context)
++
++        return self.process_result(problem, encoding, relaxed_result, rounding_result)
++
++    def process_result(
++        self,
++        problem: QuadraticProgram,
++        encoding: QuantumRandomAccessEncoding,
++        relaxed_result: MinimumEigensolverResult,
++        rounding_result: RoundingResult,
++    ) -> QuantumRandomAccessOptimizationResult:
++        """Process the relaxed result of the minimum eigensolver and rounding scheme.
++
++        Args:
++            problem: The :class:`~.QuadraticProgram` to be solved.
++            encoding: An encoding instance for which :meth:`~QuantumRandomAccessEncoding.encode`
++                has already been called so it has been encoded with a :class:`~.QuadraticProgram`.
++            relaxed_result: The relaxed result of the minimum eigensolver.
++            rounding_result: The result of the rounding scheme.
++
++        Returns:
++            The result of the quantum random access optimization.
++        """
++        samples, best_sol = self._interpret_samples(
++            problem=problem, raw_samples=rounding_result.samples
++        )
++
++        relaxed_fval = encoding.problem.objective.sense.value * (
++            encoding.offset + relaxed_result.eigenvalue.real
++        )
++        return cast(
++            QuantumRandomAccessOptimizationResult,
++            self._interpret(
++                x=best_sol.x,
++                problem=problem,
++                result_class=QuantumRandomAccessOptimizationResult,
++                samples=samples,
++                encoding=encoding,
++                relaxed_fval=relaxed_fval,
++                relaxed_result=relaxed_result,
++                rounding_result=rounding_result,
++            ),
++        )
+diff --git a/qiskit_optimization/algorithms/qrao/rounding_common.py b/qiskit_optimization/algorithms/qrao/rounding_common.py
+new file mode 100644
+index 0000000..9516dd9
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/rounding_common.py
+@@ -0,0 +1,63 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++"""Common classes for rounding schemes"""
++from __future__ import annotations
++
++from abc import ABC, abstractmethod
++from dataclasses import dataclass
++
++import numpy as np
++from qiskit.circuit import QuantumCircuit
++
++from qiskit_optimization.algorithms import SolutionSample
++
++from .quantum_random_access_encoding import QuantumRandomAccessEncoding
++
++
++@dataclass
++class RoundingResult:
++    """Result of rounding"""
++
++    expectation_values: list[complex] | None
++    """Expectation values"""
++    samples: list[SolutionSample]
++    """List of samples after rounding"""
++    bases: np.ndarray | None = None
++    """The bases used for the magic rounding"""
++    basis_shots: np.ndarray | None = None
++    """The number of shots used for each basis for the magic rounding"""
++    basis_counts: list[dict[str, int]] | None = None
++    """The basis_counts represents the resulting counts obtained by measuring with the bases
++    corresponding to the number of shots specified in basis_shots for the magic rounding."""
++
++
++@dataclass
++class RoundingContext:
++    """Information that is provided for rounding"""
++
++    encoding: QuantumRandomAccessEncoding
++    """Encoding containing the problem information."""
++    expectation_values: list[complex] | None
++    """Expectation values for the relaxed Hamiltonian."""
++    circuit: QuantumCircuit | None = None
++    """Circuit corresponding to the encoding and expectation values."""
++
++
++class RoundingScheme(ABC):
++    """Base class for a rounding scheme"""
++
++    @abstractmethod
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Perform rounding
++
++        Returns: an instance of RoundingResult
++        """
+diff --git a/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py b/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py
+new file mode 100644
+index 0000000..017a940
+--- /dev/null
++++ b/qiskit_optimization/algorithms/qrao/semideterministic_rounding.py
+@@ -0,0 +1,80 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2023.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Semi-deterministic rounding module"""
++from __future__ import annotations
++
++import numpy as np
++
++from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
++from qiskit_optimization.exceptions import QiskitOptimizationError
++
++from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
++
++
++class SemideterministicRounding(RoundingScheme):
++    """Semi-deterministic rounding scheme
++
++    This is referred to as "Pauli rounding" in
++    https://arxiv.org/abs/2111.03167.
++    """
++
++    def __init__(self, *, atol: float = 1e-8, seed: int | None = None):
++        """
++        Args:
++            seed: Seed for random number generator, which is used to resolve
++                expectation values near zero to either +1 or -1.
++            atol: Absolute tolerance for determining whether an expectation value is zero.
++        """
++        super().__init__()
++        self._rng = np.random.default_rng(seed)
++        self._atol = atol
++
++    def round(self, rounding_context: RoundingContext) -> RoundingResult:
++        """Perform semi-deterministic rounding
++
++        Args:
++            rounding_context: Rounding context containing information about the problem and solution.
++
++        Returns:
++            Result containing the rounded solution.
++
++        Raises:
++            QiskitOptimizationError: If the expectation values are not available in the context.
++        """
++        if rounding_context.expectation_values is None:
++            raise QiskitOptimizationError(
++                "Semi-deterministic rounding requires the expectation values of the ",
++                "``RoundingContext`` to be available, but they are not.",
++            )
++
++        rounded_vars = np.where(
++            np.isclose(rounding_context.expectation_values, 0, atol=self._atol),
++            self._rng.integers(2, size=len(rounding_context.expectation_values)),
++            np.less_equal(rounding_context.expectation_values, 0).astype(int),
++        )
++
++        soln_samples = [
++            SolutionSample(
++                x=np.asarray(rounded_vars),
++                fval=rounding_context.encoding.problem.objective.evaluate(rounded_vars),
++                probability=1.0,
++                status=OptimizationResultStatus.SUCCESS
++                if rounding_context.encoding.problem.is_feasible(rounded_vars)
++                else OptimizationResultStatus.INFEASIBLE,
++            )
++        ]
++
++        result = RoundingResult(
++            expectation_values=rounding_context.expectation_values, samples=soln_samples
++        )
++        return result

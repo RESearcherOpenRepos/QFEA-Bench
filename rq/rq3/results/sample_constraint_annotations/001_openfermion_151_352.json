@@ -1,0 +1,142 @@
+{
+  "id": 1,
+  "sample_id": "openfermion_151_352",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "9dc86d3ca034dac3b0a6e02b67f87038fb962ed0",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 5,
+    "subtype_test_counts": {
+      "quantum_semantics/operator_normal_ordering": 8,
+      "quantum_semantics/boson_number_conservation": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_empty",
+      "assertions": [
+        {
+          "line": 27,
+          "expected": "Empty bosonic operator is normal ordered after scalar multiplication"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_number",
+      "assertions": [
+        {
+          "line": 31,
+          "expected": "Bosonic number term '2^ 2' is normal ordered"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_normal_ordered_reversed",
+      "assertions": [
+        {
+          "line": 34,
+          "expected": "Annihilation before creation on the same mode is not normal ordered"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_BosonOperator",
+      "assertions": [
+        {
+          "line": 61,
+          "expected": "Empty bosonic operator satisfies the boson-number-preserving predicate"
+        }
+      ],
+      "label": "quantum_semantics/boson_number_conservation"
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_boson_operator_test.py::BosonOperatorTest::test_is_boson_preserving_out_of_order",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "Two creation and two annihilation operators preserve boson number regardless of sequence"
+        }
+      ],
+      "label": "quantum_semantics/boson_number_conservation"
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_empty",
+      "assertions": [
+        {
+          "line": 24,
+          "expected": "Empty fermionic operator is normal ordered after scalar multiplication"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_number",
+      "assertions": [
+        {
+          "line": 28,
+          "expected": "Fermionic number term '2^ 2' is normal ordered"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_reversed",
+      "assertions": [
+        {
+          "line": 31,
+          "expected": "Annihilation before creation on the same mode is not normal ordered"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multi",
+      "assertions": [
+        {
+          "line": 50,
+          "expected": "A sum is not normal ordered if at least one fermionic term violates the order rule"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    },
+    {
+      "test_number": 10,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_fermion_operator_test.py::FermionOperatorTest::test_is_normal_ordered_multiorder",
+      "assertions": [
+        {
+          "line": 54,
+          "expected": "A sum is normal ordered when all fermionic terms satisfy the order rule"
+        }
+      ],
+      "label": "quantum_semantics/operator_normal_ordering"
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/9dc86d3ca034dac3b0a6e02b67f87038fb962ed0/src/openfermion/ops/_boson_operator_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/9dc86d3ca034dac3b0a6e02b67f87038fb962ed0/src/openfermion/ops/_fermion_operator_test.py"
+  ],
+  "rationale": "All listed assertions directly test quantum operator invariants. Constructor calls, scalar multiplication, and assertion truthiness do not independently establish interface or general-semantic constraints."
+}

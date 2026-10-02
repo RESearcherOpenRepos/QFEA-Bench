@@ -1,0 +1,69 @@
+{
+  "id": 10,
+  "sample_id": "openfermion_46_61",
+  "repo": "quantumlib/OpenFermion",
+  "patch_commit": "2945f996a6c0a49324590f8bbe959f4bd6a4b80c",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 4,
+    "p2p_tests": 2,
+    "subtype_test_counts": {
+      "interface/tensor_key_compatibility": 3,
+      "quantum_semantics/fermionic_basis_rotation": 1,
+      "quantum_semantics/interaction_tensor_symmetry": 2
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_add",
+      "label": "interface/tensor_key_compatibility",
+      "assertions": [{"line": 201, "expected": "Adding PolynomialTensors with different action-pattern key sets raises TypeError"}]
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_sub",
+      "label": "interface/tensor_key_compatibility",
+      "assertions": [{"line": 226, "expected": "Subtracting PolynomialTensors with different action-pattern key sets raises TypeError"}]
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_invalid_tensor_keys_mult",
+      "label": "interface/tensor_key_compatibility",
+      "assertions": [{"line": 247, "expected": "Multiplying PolynomialTensors with different action-pattern key sets raises TypeError"}]
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "src/openfermion/ops/_polynomial_tensor_test.py::PolynomialTensorTest::test_rotate_basis_identical",
+      "label": "quantum_semantics/fermionic_basis_rotation",
+      "assertions": [
+        {"line": 327, "expected": "Identity orbital-basis rotation preserves the one- and two-body PolynomialTensor"},
+        {"line": 328, "expected": "The same identity rotation preserves its spinful one- and two-body tensor representation"}
+      ]
+    },
+    {
+      "test_number": 5,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_four_point_iter",
+      "label": "quantum_semantics/interaction_tensor_symmetry",
+      "assertions": [{"line": 53, "expected": "With complex-valued four-point symmetry, unique_iter yields the constant and each distinct one- or two-body coefficient once"}]
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "src/openfermion/ops/_interaction_operator_test.py::InteractionOperatorsTest::test_eight_point_iter",
+      "label": "quantum_semantics/interaction_tensor_symmetry",
+      "assertions": [{"line": 78, "expected": "With default eight-point symmetry, unique_iter yields the constant and each distinct one- or two-body coefficient once"}]
+    }
+  ],
+  "source_files": [
+    "https://github.com/quantumlib/OpenFermion/blob/2945f996a6c0a49324590f8bbe959f4bd6a4b80c/src/openfermion/ops/_polynomial_tensor_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/2945f996a6c0a49324590f8bbe959f4bd6a4b80c/src/openfermion/ops/_interaction_operator_test.py",
+    "https://github.com/quantumlib/OpenFermion/blob/2945f996a6c0a49324590f8bbe959f4bd6a4b80c/src/openfermion/ops/_interaction_operator.py"
+  ],
+  "rationale": "The three key-mismatch tests specify TypeError behavior for incompatible operand structures. The rotation test targets orbital-basis tensor invariance. The iterator tests encode four- and eight-point interaction-tensor symmetry through their unique coefficient sequence."
+}

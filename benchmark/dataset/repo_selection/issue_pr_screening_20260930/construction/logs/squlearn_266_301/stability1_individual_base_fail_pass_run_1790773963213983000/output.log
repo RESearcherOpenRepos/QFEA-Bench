@@ -1,0 +1,29 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  1b0adcd Remove need for `num_features` before fitting  (#301)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 1b0adcd
+
+HEAD is now at e3866c7 fix pennylane executor (#343)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ TestParamZFeatureMap.test_feature_consistency _________________
+
+self = <tests.encoding_circuit.circuit_library.test_param_z_feature_map.TestParamZFeatureMap object at 0x7fffe2638940>
+
+    def test_feature_consistency(self):
+        circuit = ParamZFeatureMap(num_qubits=4, num_features=3)
+        features = np.array([0.5, -0.5])
+        params = np.random.uniform(-np.pi, np.pi, circuit.num_parameters)
+    
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/encoding_circuit/circuit_library/test_param_z_feature_map.py:61: Failed
+=========================== short test summary info ============================
+FAILED tests/encoding_circuit/circuit_library/test_param_z_feature_map.py::TestParamZFeatureMap::test_feature_consistency
+1 failed, 2 warnings in 5.95s

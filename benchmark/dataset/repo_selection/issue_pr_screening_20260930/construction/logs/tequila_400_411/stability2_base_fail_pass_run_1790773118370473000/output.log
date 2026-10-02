@@ -1,0 +1,49 @@
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  2d0f1b8 Implement optimized compiling for general QubitExcitations beyond single and double (#411)
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 2d0f1b8
+
+HEAD is now at a257bc0 SPA not opt+tapered encoding (#410)
+Removing src/tequila_basic.egg-info/
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________________ test_compile_qubit_excitations ________________________
+
+    def test_compile_qubit_excitations():
+    
+        # Test 3-qubit excitation
+    
+        q = [5, 3, 7, 8, 2, 9, 2, 4]
+    
+        state_circ = gates.X([q[0], q[1], q[2]])
+    
+        # optimized decomposition
+        circuit = state_circ + gates.QubitExcitation(
+            angle=numpy.pi / 2, target=[q[0], q[3], q[1], q[4], q[2], q[5]]
+        )
+        U1 = compile_circuit(circuit)
+    
+        # non-optimized decomposition
+        circuit = state_circ + gates.QubitExcitation(
+            angle=numpy.pi / 2,
+            target=[q[0], q[3], q[1], q[4], q[2], q[5]],
+            compile_options="pauli",
+        )
+        U2 = compile_circuit(circuit)
+        wfn1 = simulate(U1)
+        wfn2 = simulate(U2)
+    
+>       assert U1.depth < U2.depth
+E       assert 417 < 417
+E        +  where 417 = circuit: \nX(target=(5,))\nX(target=(3,))\nX(target=(7,))\nRy(target=(2,), parameter=-1.5707963267948966)\nRy(target=(3,), ...eter=-1.5707963267948966)\nRx(target=(8,), parameter=-1.5707963267948966)\nRy(target=(9,), parameter=1.5707963267948966)\n.depth
+E        +  and   417 = circuit: \nX(target=(5,))\nX(target=(3,))\nX(target=(7,))\nRy(target=(2,), parameter=-1.5707963267948966)\nRy(target=(3,), ...eter=-1.5707963267948966)\nRx(target=(8,), parameter=-1.5707963267948966)\nRy(target=(9,), parameter=1.5707963267948966)\n.depth
+
+tests/test_recompilation_routines.py:186: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_recompilation_routines.py::test_compile_qubit_excitations
+1 failed, 8 warnings in 5.79s

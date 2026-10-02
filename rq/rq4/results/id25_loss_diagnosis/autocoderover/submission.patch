@@ -1,0 +1,242 @@
+diff --git a/qiskit_machine_learning/kernels/algorithms/__init__.py b/qiskit_machine_learning/kernels/algorithms/__init__.py
+new file mode 100644
+index 0000000..2f6dd38
+--- /dev/null
++++ b/qiskit_machine_learning/kernels/algorithms/__init__.py
+@@ -0,0 +1,17 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2021.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Algorithms for quantum kernels."""
++
++from .quantum_kernel_trainer import QuantumKernelTrainer, QuantumKernelTrainerResult
++
++__all__ = ["QuantumKernelTrainer", "QuantumKernelTrainerResult"]
+diff --git a/qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py b/qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py
+new file mode 100644
+index 0000000..e4ac354
+--- /dev/null
++++ b/qiskit_machine_learning/kernels/algorithms/quantum_kernel_trainer.py
+@@ -0,0 +1,119 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2021.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Quantum Kernel Trainer."""
++
++from copy import deepcopy
++from typing import Optional
++
++import numpy as np
++from qiskit.algorithms.optimizers import Optimizer, SPSA
++
++from qiskit_machine_learning.kernels import QuantumKernel
++from qiskit_machine_learning.utils.loss_functions.kernel_loss_functions import (
++    KernelLoss,
++    SVCLoss,
++)
++
++
++class QuantumKernelTrainerResult:
++    """Result object for QuantumKernelTrainer."""
++
++    def __init__(self):
++        self._optimizer_result = None
++        self._optimized_kernel = None
++
++    @property
++    def optimizer_result(self):
++        """Returns the optimizer result."""
++        return self._optimizer_result
++
++    @optimizer_result.setter
++    def optimizer_result(self, value):
++        """Sets the optimizer result."""
++        self._optimizer_result = value
++
++    @property
++    def quantum_kernel(self):
++        """Returns the optimized quantum kernel."""
++        return self._optimized_kernel
++
++    @quantum_kernel.setter
++    def quantum_kernel(self, value):
++        """Sets the optimized quantum kernel."""
++        self._optimized_kernel = value
++
++
++class QuantumKernelTrainer:
++    """Trainer for optimizing the user parameters of a QuantumKernel."""
++
++    def __init__(
++        self,
++        quantum_kernel: QuantumKernel,
++        loss: Optional[KernelLoss] = None,
++        optimizer: Optional[Optimizer] = None,
++        initial_point: Optional[np.ndarray] = None,
++    ):
++        """Creates a new QuantumKernelTrainer instance.
++
++        Args:
++            quantum_kernel: the quantum kernel to optimize.
++            loss: the kernel loss function to use. Defaults to SVCLoss().
++            optimizer: the optimizer to use. Defaults to SPSA().
++            initial_point: the initial point for the optimization.
++
++        Raises:
++            ValueError: if the quantum kernel does not have trainable user parameters.
++        """
++        if not quantum_kernel.user_parameters:
++            raise ValueError(
++                "The quantum kernel must have trainable user parameters."
++            )
++
++        self._quantum_kernel = quantum_kernel
++        self._loss = loss if loss is not None else SVCLoss()
++        self._optimizer = optimizer if optimizer is not None else SPSA()
++        self._initial_point = initial_point
++
++    def fit(self, data, labels) -> QuantumKernelTrainerResult:
++        """Fits the trainer on labeled data.
++
++        Args:
++            data: the training data.
++            labels: the training labels.
++
++        Returns:
++            A QuantumKernelTrainerResult containing the optimization results and
++            an optimized quantum kernel.
++        """
++        initial_point = self._initial_point
++        if initial_point is None:
++            initial_point = np.random.rand(len(self._quantum_kernel.user_parameters))
++
++        def objective(parameter_values):
++            return self._loss.evaluate(
++                parameter_values, self._quantum_kernel, data, labels
++            )
++
++        optimizer_result = self._optimizer.minimize(
++            fun=objective, x0=initial_point
++        )
++
++        # Create a copy of the original kernel and assign the optimized parameters
++        optimized_kernel = deepcopy(self._quantum_kernel)
++        optimized_kernel.assign_user_parameters(optimizer_result.x)
++
++        result = QuantumKernelTrainerResult()
++        result.optimizer_result = optimizer_result
++        result.quantum_kernel = optimized_kernel
++
++        return result
+diff --git a/qiskit_machine_learning/utils/loss_functions/__init__.py b/qiskit_machine_learning/utils/loss_functions/__init__.py
+index 59014e8..fd788ea 100644
+--- a/qiskit_machine_learning/utils/loss_functions/__init__.py
++++ b/qiskit_machine_learning/utils/loss_functions/__init__.py
+@@ -48,5 +48,14 @@ from .loss_functions import (
+     CrossEntropyLoss,
+     CrossEntropySigmoidLoss,
+ )
+-
+-__all__ = ["Loss", "L1Loss", "L2Loss", "CrossEntropyLoss", "CrossEntropySigmoidLoss"]
++from .kernel_loss_functions import KernelLoss, SVCLoss
++
++__all__ = [
++    "Loss",
++    "L1Loss",
++    "L2Loss",
++    "CrossEntropyLoss",
++    "CrossEntropySigmoidLoss",
++    "KernelLoss",
++    "SVCLoss",
++]
+diff --git a/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py b/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
+new file mode 100644
+index 0000000..beae7ec
+--- /dev/null
++++ b/qiskit_machine_learning/utils/loss_functions/kernel_loss_functions.py
+@@ -0,0 +1,67 @@
++# This code is part of Qiskit.
++#
++# (C) Copyright IBM 2021.
++#
++# This code is licensed under the Apache License, Version 2.0. You may
++# obtain a copy of this license in the LICENSE.txt file in the root directory
++# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
++#
++# Any modifications or derivative works of this code must retain this
++# copyright notice, and modified files need to carry a notice indicating
++# that they have been altered from the originals.
++
++"""Kernel Loss Functions."""
++
++from abc import ABC, abstractmethod
++
++import numpy as np
++from sklearn.svm import SVC
++
++
++class KernelLoss(ABC):
++    """An abstract class for kernel loss functions."""
++
++    @abstractmethod
++    def evaluate(self, parameter_values, quantum_kernel, data, labels):
++        """Evaluates the kernel loss.
++
++        Args:
++            parameter_values: the parameter values to be used by the quantum kernel.
++            quantum_kernel: the quantum kernel to evaluate.
++            data: the training data.
++            labels: the training labels.
++
++        Returns:
++            The loss value.
++        """
++        raise NotImplementedError
++
++
++class SVCLoss(KernelLoss):
++    """A kernel loss based on the support vector classifier."""
++
++    def __init__(self, **kwargs):
++        """Creates a new SVCLoss instance.
++
++        Args:
++            **kwargs: keyword arguments to be passed to sklearn.svm.SVC.
++        """
++        self._svc_kwargs = kwargs
++
++    def evaluate(self, parameter_values, quantum_kernel, data, labels):
++        """Evaluates the SVC-based kernel loss.
++
++        Args:
++            parameter_values: the parameter values to be used by the quantum kernel.
++            quantum_kernel: the quantum kernel to evaluate.
++            data: the training data.
++            labels: the training labels.
++
++        Returns:
++            The loss value.
++        """
++        quantum_kernel.assign_user_parameters(parameter_values)
++        kernel_matrix = quantum_kernel.evaluate(data)
++        svc = SVC(kernel="precomputed", **self._svc_kwargs)
++        svc.fit(kernel_matrix, labels)
++        return 1.0 - svc.score(kernel_matrix, labels)

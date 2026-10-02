@@ -1,0 +1,144 @@
+{
+  "instance": {
+    "id": 99,
+    "repo": "qiskit-community/qiskit-optimization",
+    "instance_id": "qiskit_optimization_425_436",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-optimization/issues/425",
+    "pr_url": "https://github.com/qiskit-community/qiskit-optimization/pull/436",
+    "base_commit": "3fba471f6c3113c0db60106a49d2ae61903974e9",
+    "patch": "a752fd9e6af400a427a841952aac9555e454bc30"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adapts optimization algorithms to sampler primitives and quasi-distribution result handling."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_optimization/algorithms/grover_optimizer.py",
+      "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+      "qiskit_optimization/algorithms/optimization_algorithm.py",
+      "qiskit_optimization/applications/optimization_application.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "Qiskit Optimization optimizers were still tied to legacy QuantumInstance and opflow-style result handling. Users needed primitives-based workflows to work with the optimization algorithms, including QAOA-style sampling minimum eigensolvers, sampler-backed Grover optimization, and a common helper for extracting the most likely bit string from sampled or statevector results.",
+    "requirements": [
+      "Allow MinimumEigenOptimizer to solve problems with primitive-based sampling minimum eigensolvers such as QAOA using a Sampler.",
+      "Convert primitive quasi-distribution outputs into SolutionSample and raw sample records with valid bit-string ordering, probabilities, objective values, and statuses.",
+      "Allow GroverOptimizer to run with a Sampler instead of requiring a legacy QuantumInstance.",
+      "Provide OptimizationApplication.sample_most_likely for statevectors, opflow StateFn values, dictionaries of sampled bit strings, and QuasiDistribution values.",
+      "Keep existing NumPyMinimumEigensolver behavior and converter-list behavior working."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "MinimumEigenOptimizer",
+        "Path": "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+        "Input": "constructor: min_eigen_solver, penalty: float | None = None, converters = None, filter_criterion = None",
+        "Output": "",
+        "Description": "Accepts both legacy and primitive-based minimum eigensolver objects and prepares optimization results from their outputs."
+      },
+      {
+        "Type": "Method",
+        "Name": "MinimumEigenOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/minimum_eigen_optimizer.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "MinimumEigenOptimizationResult",
+        "Description": "Solves converted binary optimization problems with supported minimum eigensolvers and returns interpreted samples and raw samples."
+      },
+      {
+        "Type": "Class",
+        "Name": "GroverOptimizer",
+        "Path": "qiskit_optimization/algorithms/grover_optimizer.py",
+        "Input": "constructor: num_value_qubits: int, num_iterations: int = 3, converters = None, penalty: float | None = None, quantum_instance = None, sampler = None",
+        "Output": "",
+        "Description": "Supports either the legacy quantum_instance path or a primitives Sampler path for Grover-based optimization."
+      },
+      {
+        "Type": "Method",
+        "Name": "GroverOptimizer.solve",
+        "Path": "qiskit_optimization/algorithms/grover_optimizer.py",
+        "Input": "problem: QuadraticProgram",
+        "Output": "GroverOptimizationResult",
+        "Description": "Runs Grover optimization and returns optimization samples when using sampler-backed execution."
+      },
+      {
+        "Type": "Method",
+        "Name": "OptimizationApplication.sample_most_likely",
+        "Path": "qiskit_optimization/applications/optimization_application.py",
+        "Input": "state_vector",
+        "Output": "np.ndarray",
+        "Description": "Extracts the most likely binary sample from statevector-like and quasi-distribution-like inputs."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_optimization_425_436",
+      "image_id": "sha256:325aa8f385c95127329ef6b7f96bae082243fb6fd1061ec0b9dee4858bd202cb",
+      "image_size": "1061394911"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy==1.23.5",
+        "scipy==1.10.1",
+        "qiskit-terra==0.22.4",
+        "qiskit-aer==0.11.2",
+        "docplex>=2.21.207,!=2.24.231",
+        "networkx>=2.6.3,<3",
+        "pytest",
+        "ddt",
+        "scikit-learn"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_zero_3_sampler",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_qaoa"
+        ],
+        "summary": "2 passed in 22.52s",
+        "duration_seconds": 27.2
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver"
+        ],
+        "summary": "2 passed in 1.84s",
+        "duration_seconds": 6.7
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/algorithms/test_grover_optimizer.py::TestGroverOptimizer::test_qubo_gas_int_zero_3_sampler",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_qaoa"
+        ],
+        "summary": "2 failed in 7.87s",
+        "duration_seconds": 15.11
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_converter_list",
+          "test/algorithms/test_min_eigen_optimizer.py::TestMinEigenOptimizer::test_samples_numpy_eigen_solver"
+        ],
+        "summary": "2 passed in 1.66s",
+        "duration_seconds": 10.67
+      }
+    }
+  }
+}

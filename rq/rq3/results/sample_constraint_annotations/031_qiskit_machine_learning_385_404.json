@@ -1,0 +1,144 @@
+{
+  "id": 31,
+  "sample_id": "qiskit_machine_learning_385_404",
+  "repo": "qiskit-community/qiskit-machine-learning",
+  "patch_commit": "3bf98b67618885bd09f4abbff7e381537a646fac",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 5,
+    "p2p_tests": 4,
+    "subtype_test_counts": {
+      "interface/fitted_model_state": 3,
+      "interface/unfitted_state_error": 2,
+      "general_semantics/model_training_performance": 4
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_circuit_qnn_17__None___absolute_error____statevector___True_",
+      "label": "interface/fitted_model_state",
+      "assertions": [
+        {
+          "line": 226,
+          "expected": "CircuitQNN classifier weights equal fit_result.x; the weight count matches circuit parameters."
+        }
+      ],
+      "rationale": "This selector uses a statevector CircuitQNN with callback enabled. Its distinctive assertions inspect public fitted properties; score is a separate incidental check."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_classifier_with_opflow_qnn_17__None___absolute_error____statevector___True_",
+      "label": "interface/fitted_model_state",
+      "assertions": [
+        {
+          "line": 132,
+          "expected": "OpflowQNN classifier weights equal fit_result.x and match ansatz size."
+        }
+      ],
+      "rationale": "The opflow variant independently tests the same public fitted-state contract, with its own ansatz parameter count."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/algorithms/classifiers/test_neural_network_classifier.py::TestNeuralNetworkClassifier::test_untrained",
+      "label": "interface/unfitted_state_error",
+      "assertions": [
+        {
+          "line": 451,
+          "expected": "Reading classifier.weights before fit raises QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "The selected untrained classifier case explicitly checks the property exception."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_regressor_with_opflow_qnn_5__None___statevector___False_",
+      "label": "interface/fitted_model_state",
+      "assertions": [
+        {
+          "line": 141,
+          "expected": "Regressor weights equal fit_result.x and match ansatz parameter count."
+        }
+      ],
+      "rationale": "This statevector regressor case checks the exposed fitted values; the callback is disabled in this selected variant."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/algorithms/regressors/test_neural_network_regressor.py::TestNeuralNetworkRegressor::test_untrained",
+      "label": "interface/unfitted_state_error",
+      "assertions": [
+        {
+          "line": 192,
+          "expected": "Reading regressor.weights before fit raises QiskitMachineLearningError."
+        }
+      ],
+      "rationale": "The selected untrained regressor case checks the same lifecycle contract on a different public class."
+    },
+    {
+      "test_number": 6,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_qsvc.py::TestQSVC::test_qsvc",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 73,
+          "expected": "QSVC classification score is exactly 0.5."
+        }
+      ],
+      "rationale": "The assertion is a classifier score, with no expected quantum state or kernel matrix."
+    },
+    {
+      "test_number": 7,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_qsvr.py::TestQSVR::test_qsvr",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 72,
+          "expected": "QSVR regression score matches 0.38365."
+        }
+      ],
+      "rationale": "The test checks a numeric prediction-quality metric."
+    },
+    {
+      "test_number": 8,
+      "split": "P2P",
+      "selector": "test/algorithms/classifiers/test_vqc.py::TestVQC::test_VQC_05___statevector___2___zz_feature_map____real_amplitudes___None___binary__",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 143,
+          "expected": "VQC score exceeds 0.5 for the selected binary dataset."
+        }
+      ],
+      "rationale": "The selected VQC variant asserts a training score threshold."
+    },
+    {
+      "test_number": 9,
+      "split": "P2P",
+      "selector": "test/algorithms/regressors/test_vqr.py::TestVQR::test_vqr_09__None___statevector___True_",
+      "label": "general_semantics/model_training_performance",
+      "assertions": [
+        {
+          "line": 119,
+          "expected": "VQR score exceeds 0.5."
+        }
+      ],
+      "rationale": "The selected regressor variant asserts a training score threshold."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/classifiers/test_neural_network_classifier.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/classifiers/test_qsvc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/classifiers/test_vqc.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/regressors/test_neural_network_regressor.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/regressors/test_qsvr.py",
+    "https://github.com/qiskit-community/qiskit-machine-learning/blob/3bf98b67618885bd09f4abbff7e381537a646fac/test/algorithms/regressors/test_vqr.py"
+  ],
+  "rationale": "Reviewed each of the nine selected variants against its test body and assertions. Fitted-state and pre-fit errors are interface contracts; P2P score checks are general semantics."
+}

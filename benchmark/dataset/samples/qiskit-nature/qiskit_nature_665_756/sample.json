@@ -1,0 +1,167 @@
+{
+  "instance": {
+    "id": 71,
+    "repo": "qiskit-community/qiskit-nature",
+    "instance_id": "qiskit_nature_665_756",
+    "status": "completed",
+    "issue_url": "https://github.com/qiskit-community/qiskit-nature/issues/665",
+    "pr_url": "https://github.com/qiskit-community/qiskit-nature/pull/756",
+    "base_commit": "e286beff0f11efb3288d07a5f77343e4a547c26f",
+    "patch": "c765c724a0f1e862104ab639ae27c963da86ae44"
+  },
+  "metadata": {
+    "quantum_depth": "medium",
+    "quantum_depth_rationale": "The task adds a tensor coefficient container for second-quantized operators, with correctness centered on data-structure validation and linear operations."
+  },
+  "golden_patch": {
+    "oracle_files": [
+      "qiskit_nature/second_q/operators/__init__.py",
+      "qiskit_nature/second_q/operators/polynomial_tensor.py"
+    ]
+  },
+  "task": {
+    "problem_statement": "The refactored second-quantized operator stack has specialized coefficient containers for specific domains, but it lacks a general tensor container for arbitrary n-body operator coefficients. Users need a reusable PolynomialTensor container that can store keyed dense coefficient arrays, validate their dimensions, expose mapping-style access, and support basic linear and adjoint operations.",
+    "requirements": [
+      "A PolynomialTensor class must be available from the second-quantized operators package.",
+      "PolynomialTensor construction must accept a mapping from string operator keys to numeric scalars or NumPy arrays together with a register length.",
+      "Construction must reject data whose array rank does not match the key length, whose array axes are not all the same length, or whose axis length does not match the provided register length.",
+      "PolynomialTensor instances must provide mapping-style key lookup, length, and iteration over stored coefficient keys.",
+      "Scalar multiplication must return a new PolynomialTensor with every stored coefficient scaled, and multiplying by another PolynomialTensor must raise TypeError.",
+      "Adding two PolynomialTensor instances with matching register length must combine common and unique keys into a new PolynomialTensor.",
+      "Adding an unsupported object must raise TypeError, and adding tensors with different register lengths must raise ValueError.",
+      "PolynomialTensor equality, conjugation, and transposition must operate on the stored coefficient arrays and preserve the register length.",
+      "Existing second-quantized operator arithmetic and adjoint behavior must remain compatible."
+    ],
+    "interface": [
+      {
+        "Type": "Class",
+        "Name": "PolynomialTensor",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "constructor: data, register_length",
+        "Output": "",
+        "Description": "Stores string-keyed numeric coefficient tensors for a fixed register length, validates key and tensor dimensions, supports mapping access, equality, scalar multiplication, addition, conjugation, and transposition."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.conjugate",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "",
+        "Output": "PolynomialTensor",
+        "Description": "Returns a PolynomialTensor containing the complex conjugate of each stored coefficient array."
+      },
+      {
+        "Type": "Method",
+        "Name": "PolynomialTensor.transpose",
+        "Path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+        "Input": "",
+        "Output": "PolynomialTensor",
+        "Description": "Returns a PolynomialTensor containing the transposed version of each stored coefficient array."
+      }
+    ]
+  },
+  "runtime": {
+    "docker": {
+      "build_success": true,
+      "platform": "linux/amd64",
+      "image": "benchmark-evaluation:qiskit_nature_665_756",
+      "image_id": "sha256:03e0d6704f0bed79a16b3d2f3f991edb6e137b4de9d9a9444030d45eab8883d6",
+      "image_size": "1218490915"
+    },
+    "environment": {
+      "python_version": "3.10",
+      "platform": "linux/amd64",
+      "extra_test_dependencies": [
+        "numpy<2",
+        "scipy<1.12",
+        "qiskit-terra==0.22.4",
+        "rustworkx",
+        "h5py",
+        "psutil",
+        "typing_extensions",
+        "pytest==7.3.1",
+        "ddt",
+        "networkx<2.6",
+        "scikit-learn",
+        "sparse==0.13.0"
+      ],
+      "shared_between_base_and_patched": true
+    }
+  },
+  "validation": {
+    "classification": "fail_to_pass",
+    "patched": {
+      "fail_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose"
+        ],
+        "summary": "12 passed in 1.38s",
+        "duration_seconds": 4.67
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity"
+        ],
+        "summary": "9 passed in 2.32s",
+        "duration_seconds": 6.49
+      }
+    },
+    "base": {
+      "fail_pass": {
+        "result": "failed",
+        "file_list": [
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+          "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose"
+        ],
+        "summary": "12 collection errors in 1.53s; ImportError: cannot import name 'PolynomialTensor' from 'qiskit_nature.second_q.operators'",
+        "duration_seconds": 6.8
+      },
+      "pass_pass": {
+        "result": "passed",
+        "file_list": [
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_mul",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_add",
+          "test/second_q/operators/test_fermionic_op.py::TestFermionicOp::test_adjoint",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_mul",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_add",
+          "test/second_q/operators/test_spin_op.py::TestSpinOp::test_adjoint",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_mul",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_add",
+          "test/second_q/operators/test_vibrational_op.py::TestVibrationalOp::test_hermiticity"
+        ],
+        "summary": "9 passed in 1.42s",
+        "duration_seconds": 6.45
+      }
+    }
+  }
+}

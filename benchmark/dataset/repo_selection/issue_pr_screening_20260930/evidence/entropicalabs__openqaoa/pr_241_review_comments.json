@@ -1,0 +1,71 @@
+[
+  {
+    "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1213065987",
+    "pull_request_review_id": 1455334539,
+    "id": 1213065987,
+    "node_id": "PRRC_kwDOHMYLyM5ITesD",
+    "diff_hunk": "@@ -686,3 +689,42 @@ def classical_hamiltonian(\n                 raise ValueError(\"Hamiltonian only supports Linear and Quadratic terms\")\n \n         return cls(pauli_ops, pauli_coeffs, constant)\n+\n+    @property\n+    def as_matrix(self):\n+        \"\"\"\n+        Build sparse matrix of Hamiltonian\n+\n+        Returns\n+        -------\n+        H_mat:\n+            sparse matrix of Hamiltonian.\n+        \"\"\"\n+\n+        if self.n_qubits>20:\n+            raise ValueError('number of qubits exceeds maximum of 20')\n+\n+        p_mat_dict = {'X': csr_matrix([[0, 1],\n+                                       [1, 0]]),\n+                      'Y': csr_matrix([[0., -1j],\n+                                       [1j, 0.]]),\n+                      'Z': csr_matrix([[1, 0],\n+                                       [0, -1]]),\n+                      'I': csr_matrix([[1, 0], [0, 1]])}\n+\n+        converter = lambda s: p_mat_dict[s]\n+        vfunc = np.vectorize(converter)\n+\n+        base = np.array(['I' for _ in range(self.n_qubits)])\n+\n+        H_mat = reduce(sparse_kron, vfunc(base)) * self.constant\n+        for P, coeff in zip(self.terms, self.coeffs):\n+            temp = base.copy()\n+\n+            P_str = np.array(list(P.pauli_str))\n+            P_q_inds = np.array(P.qubit_indices)\n+            temp[P_q_inds] = P_str",
+    "path": "src/openqaoa-core/qaoa_components/ansatz_constructor/operators.py",
+    "commit_id": "a3edfc0ff6f009168cbc6bad90b5c295dbd6d4ca",
+    "original_commit_id": "0d48ef7f0a53d1c3cd65a2474eb715f18e6a754f",
+    "user": {
+      "login": "Q-lds",
+      "id": 35239244,
+      "node_id": "MDQ6VXNlcjM1MjM5MjQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35239244?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Q-lds",
+      "html_url": "https://github.com/Q-lds",
+      "followers_url": "https://api.github.com/users/Q-lds/followers",
+      "following_url": "https://api.github.com/users/Q-lds/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Q-lds/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Q-lds/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Q-lds/subscriptions",
+      "organizations_url": "https://api.github.com/users/Q-lds/orgs",
+      "repos_url": "https://api.github.com/users/Q-lds/repos",
+      "events_url": "https://api.github.com/users/Q-lds/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Q-lds/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'd avoid creating new variables that are used only once. How about just doing\r\n`temp[np.array(P.qubit_indices)] = np.array(list(P.pauli_str))` ?\r\n\r\nYou could though add a comment above to explain what's happening :)",
+    "created_at": "2023-06-01T12:19:32Z",
+    "updated_at": "2023-06-01T12:19:33Z",
+    "html_url": "https://github.com/entropicalabs/openqaoa/pull/241#discussion_r1213065987",
+    "pull_request_url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/241",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1213065987"
+      },
+      "html": {
+        "href": "https://github.com/entropicalabs/openqaoa/pull/241#discussion_r1213065987"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/241"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/entropicalabs/openqaoa/pulls/comments/1213065987/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 726,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 48,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

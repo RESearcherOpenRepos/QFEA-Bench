@@ -1,0 +1,124 @@
+diff --git a/src/squlearn/qnn/__init__.py b/src/squlearn/qnn/__init__.py
+index b2b6ce2..6be1b86 100644
+--- a/src/squlearn/qnn/__init__.py
++++ b/src/squlearn/qnn/__init__.py
+@@ -1,11 +1,19 @@
+ """QNN module for classification and regression."""
+ 
+-from .loss import ConstantLoss, ODELoss, ParameterRegularizationLoss, SquaredLoss, VarianceLoss
++from .loss import (
++    ConstantLoss,
++    CrossEntropyLoss,
++    ODELoss,
++    ParameterRegularizationLoss,
++    SquaredLoss,
++    VarianceLoss,
++)
+ from .qnnc import QNNClassifier
+ from .qnnr import QNNRegressor
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/__init__.py b/src/squlearn/qnn/loss/__init__.py
+index eb13da1..060206f 100644
+--- a/src/squlearn/qnn/loss/__init__.py
++++ b/src/squlearn/qnn/loss/__init__.py
+@@ -1,5 +1,6 @@
+ """Loss functions for QNNs."""
+ 
++from .cross_entropy_loss import CrossEntropyLoss
+ from .ode_loss import ODELoss
+ from .parameter_regularization_loss import ParameterRegularizationLoss
+ from .qnn_loss_base import ConstantLoss
+@@ -8,6 +9,7 @@ from .variance_loss import VarianceLoss
+ 
+ __all__ = [
+     "ConstantLoss",
++    "CrossEntropyLoss",
+     "ODELoss",
+     "ParameterRegularizationLoss",
+     "SquaredLoss",
+diff --git a/src/squlearn/qnn/loss/cross_entropy_loss.py b/src/squlearn/qnn/loss/cross_entropy_loss.py
+new file mode 100644
+index 0000000..8d5a554
+--- /dev/null
++++ b/src/squlearn/qnn/loss/cross_entropy_loss.py
+@@ -0,0 +1,45 @@
++import numpy as np
++from .qnn_loss_base import QNNLossBase
++
++class CrossEntropyLoss(QNNLossBase):
++    """Cross-entropy loss for QNN classification."""
++
++    def __init__(self, eps: float = 1e-8):
++        super().__init__()
++        self.eps = eps
++
++    def value(self, value_dict: dict, **kwargs) -> float:
++        """Computes the cross-entropy loss."""
++        f = value_dict["f"]
++        y = kwargs.get("ground_truth")
++        f = np.clip(f, self.eps, 1.0 - self.eps)
++        
++        if y.ndim == 1 or y.shape[1] == 1:
++            # Binary cross entropy
++            y = y.ravel()
++            f = f.ravel()
++            loss = -np.mean(y * np.log(f) + (1.0 - y) * np.log(1.0 - f))
++        else:
++            # Categorical cross entropy
++            loss = -np.mean(np.sum(y * np.log(f), axis=1))
++        return loss
++
++    def gradient(self, value_dict: dict, **kwargs) -> np.ndarray:
++        """Computes the gradient of the cross-entropy loss."""
++        f = value_dict["f"]
++        df = value_dict["df_dp"]
++        y = kwargs.get("ground_truth")
++        f = np.clip(f, self.eps, 1.0 - self.eps)
++
++        if y.ndim == 1 or y.shape[1] == 1:
++            y = y.reshape(-1, 1)
++            f = f.reshape(-1, 1)
++            # Gradient of BCE: (f - y) / (f * (1 - f))
++            grad_factor = (f - y) / (f * (1.0 - f))
++        else:
++            # Gradient of CCE: -y / f
++            grad_factor = -y / f
++
++        # df has shape (n_samples, n_outputs, n_param)
++        # grad_factor has shape (n_samples, n_outputs)
++        return np.mean(np.sum(grad_factor[:, :, np.newaxis] * df, axis=1), axis=0)
+diff --git a/src/squlearn/qnn/qnnc.py b/src/squlearn/qnn/qnnc.py
+index 9f173c0..2f69bfa 100644
+--- a/src/squlearn/qnn/qnnc.py
++++ b/src/squlearn/qnn/qnnc.py
+@@ -169,6 +169,13 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             np.ndarray : The predicted values.
+         """
+         pred = self._predict(X)
++        if pred.ndim > 1 and pred.shape[1] > 1:
++            # Multi-class or multi-output probability handling
++            pred = np.argmax(pred, axis=1)
++        elif pred.ndim == 1 or (pred.ndim == 2 and pred.shape[1] == 1):
++            # Binary classification thresholding if probabilities are returned
++            if np.min(pred) >= 0.0 and np.max(pred) <= 1.0:
++                pred = (pred > 0.5).astype(int)
+         return self._label_binarizer.inverse_transform(pred)
+ 
+     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+@@ -216,7 +223,9 @@ class QNNClassifier(BaseQNN, ClassifierMixin):
+             y = np.hstack([1 - y, y])
+ 
+         if y.shape[1] == 1:
+-            y = self._label_binarizer.transform(y).ravel()
++            from .loss import CrossEntropyLoss
++            if not isinstance(self.loss, CrossEntropyLoss):
++                y = self._label_binarizer.transform(y).ravel()
+ 
+         loss = self.loss
+         if self.variance is not None:

@@ -1,0 +1,210 @@
+[
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096218610",
+    "pull_request_review_id": 1283626274,
+    "id": 1096218610,
+    "node_id": "PRRC_kwDOE-DJV85BVvfy",
+    "diff_hunk": "@@ -256,13 +247,13 @@ def is_empty(self) -> bool:\n     @_optionals.HAS_SPARSE.require_in_call\n     def is_sparse(self) -> bool:\n         \"\"\"Returns whether all matrices in this tensor are sparse.\"\"\"\n-        return all(isinstance(self[key], SparseArray) for key in self if key != \"\")\n+        return all(self[key].is_sparse() for key in self if key != \"\")\n \n     def is_dense(self) -> bool:\n         \"\"\"Returns whether all matrices in this tensor are dense.\"\"\"\n-        return all(isinstance(self[key], np.ndarray) for key in self if key != \"\")\n+        return all(self[key].is_dense() for key in self if key != \"\")\n \n-    def __getitem__(self, __k: str) -> (np.ndarray | SparseArray | Number):\n+    def __getitem__(self, __k: str) -> Tensor:",
+    "path": "qiskit_nature/second_q/operators/polynomial_tensor.py",
+    "commit_id": "126e624f58da2c20827bc5c04e49beb190d8a306",
+    "original_commit_id": "75c9cf23f034c35e92e7424afb09aa0e17b0b4a1",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The auto wrapping into a Tensor, in the constructor, will end up changing the type being returned for anyone currently using this class. Is this something we should phase in - have a setting that defaults to False now so whatever types the user passes in they see back here too, warning that next time it will be set True but recommend already setting it True in preparation. (Later the setting would be removed entirely - similar to how we have done things elsewhere).",
+    "created_at": "2023-02-03T19:53:04Z",
+    "updated_at": "2023-02-03T20:02:12Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1096218610",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096218610"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1096218610"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096218610/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 265,
+    "start_side": "LEFT",
+    "line": null,
+    "original_line": 256,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 98,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096221103",
+    "pull_request_review_id": 1283626274,
+    "id": 1096221103,
+    "node_id": "PRRC_kwDOE-DJV85BVwGv",
+    "diff_hunk": "@@ -0,0 +1,409 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2022, 2023.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"Tensor class\"\"\"\n+\n+from __future__ import annotations\n+\n+import string\n+from numbers import Number\n+from typing import Any, Sequence, Type, Union, cast\n+\n+import numpy as np\n+from qiskit.quantum_info.operators.mixins import TolerancesMixin\n+\n+import qiskit_nature.optionals as _optionals\n+\n+if _optionals.HAS_SPARSE:\n+    # pylint: disable=import-error\n+    from sparse import COO, DOK, GCXS, SparseArray, zeros_like\n+else:\n+\n+    def zeros_like(*args):\n+        \"\"\"Empty zeros_like function\n+        Replacement if sparse.zeros_like is not present.\n+        \"\"\"\n+        del args\n+\n+    class COO:  # type: ignore\n+        \"\"\"Empty COO class\n+        Replacement if sparse.COO is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class DOK:  # type: ignore\n+        \"\"\"Empty DOK class\n+        Replacement if sparse.DOK is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class GCXS:  # type: ignore\n+        \"\"\"Empty GCXS class\n+        Replacement if sparse.GCXS is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass\n+\n+\n+# pylint: disable=invalid-name\n+ARRAY_TYPE = Union[np.ndarray, SparseArray]\n+\n+\n+def _unpack_args(sequence: Sequence) -> Sequence[ARRAY_TYPE]:\n+    \"\"\"An internal utility to recursively unpack a sequence of array-like objects.\"\"\"\n+    seq: list[ARRAY_TYPE] = []\n+    for obj in sequence:\n+        if isinstance(obj, Sequence):\n+            seq.append(_unpack_args(obj))\n+        elif isinstance(obj, Tensor):\n+            seq.append(obj.array)\n+        else:\n+            seq.append(obj)\n+    return seq\n+\n+\n+class Tensor(np.lib.mixins.NDArrayOperatorsMixin, TolerancesMixin):\n+    \"\"\"A tensor representation wrapping single numeric values, dense or sparse arrays.\n+\n+    This class is designed to unify the usage of tensors throughout the stack. It provides a central\n+    entry point for the handling of arrays enabling seamless interchange of dense and sparse arrays\n+    in any use-case. This is done by implementing this class as an ``np.ndarray`` container as\n+    described `here <https://numpy.org/doc/stable/user/basics.dispatch.html>`_. At the same time\n+    this class can also wrap a ``sparse.SparseArray`` (which in turn implements the ``np.ndarray``\n+    interface).\n+    \"\"\"\n+\n+    def __init__(self, array: Number | ARRAY_TYPE | Tensor) -> None:\n+        \"\"\"\n+        Args:\n+            array: the wrapped array object. This can be any of the following objects:\n+\n+                :`numpy.ndarray`: a dense matrix\n+                :`sparse.SparseArray`: a sparse matrix\n+                :`numbers.Number`: any numeric singular value\n+                :`Tensor`: another Tensor whose ``array`` attribute will be extracted\n+        \"\"\"\n+        if isinstance(array, Tensor):\n+            array = array._array\n+        elif isinstance(array, Number):\n+            array = np.array(array)\n+\n+        self._array: ARRAY_TYPE = array\n+\n+    @property\n+    def array(self) -> ARRAY_TYPE:\n+        \"\"\"Returns the wrapped array object.\"\"\"\n+        return self._array\n+\n+    def __repr__(self) -> str:\n+        return repr(self._array)\n+\n+    def __array__(self, dtype=None) -> ARRAY_TYPE:\n+        \"\"\"Makes this class behave like a numpy ndarray.\n+\n+        See also https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array__\n+        \"\"\"\n+        if dtype is None:\n+            return self._array\n+\n+        return self._array.astype(dtype=dtype)\n+\n+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):\n+        \"\"\"Makes this class work with numpy ufuncs.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_ufunc__\n+        \"\"\"\n+        if method == \"__call__\":\n+            new_inputs = []\n+            for i in inputs:\n+                if isinstance(i, self.__class__):\n+                    new_inputs.append(i._array)\n+                else:\n+                    new_inputs.append(i)\n+            return ufunc(*new_inputs, **kwargs)\n+        else:\n+            return NotImplemented\n+\n+    # pylint: disable=unused-argument\n+    def __array_function__(self, func, types, args, kwargs):\n+        \"\"\"Another numpy function wrapper necessary for interoperability with numpy.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_function__\n+        \"\"\"\n+        new_args = _unpack_args(args)\n+        return self.__array_wrap__(func(*new_args, **kwargs))\n+\n+    # pylint: disable=unused-argument\n+    def __array_wrap__(self, array: ARRAY_TYPE, context=None) -> Tensor:\n+        \"\"\"Ensures the returned objects of a numpy function are wrapped again by this class.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_wrap__\n+        \"\"\"\n+        return self.__class__(array)\n+\n+    def __getattr__(self, name: str) -> Any:\n+        array = self.__array__()\n+        if hasattr(array, name):\n+            # expose any attribute of the internally wrapped array object\n+            return getattr(array, name)\n+        return None\n+\n+    def __getitem__(self, key: Any) -> Any:\n+        array = self.__array__()\n+        if hasattr(array, \"__getitem__\"):\n+            # expose any item of the internally wrapped array object\n+            return array.__getitem__(key)\n+        return None\n+\n+    def __setitem__(self, key: Any, value: Any) -> None:\n+        array = self.__array__()\n+        if hasattr(array, \"__setitem__\"):\n+            # expose any item setting of the internally wrapped array object\n+            array.__setitem__(key, value)\n+\n+    @property\n+    def shape(self) -> tuple[int, ...]:\n+        \"\"\"Returns the shape of the wrapped array object.\"\"\"\n+        return self._array.shape\n+\n+    @property\n+    def ndim(self) -> int:\n+        \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n+        return len(self._array.shape)\n+\n+    @_optionals.HAS_SPARSE.require_in_call\n+    def is_sparse(self) -> bool:\n+        \"\"\"Returns whether this tensor is sparse.\"\"\"\n+        return isinstance(self._array, SparseArray) or self._array.ndim == 0\n+\n+    def is_dense(self) -> bool:\n+        \"\"\"Returns whether this tensor is dense.\"\"\"\n+        return isinstance(self._array, np.ndarray)\n+\n+    # TODO: change the following type-hint if/when SparseArray dictates the existence of from_numpy\n+    @_optionals.HAS_SPARSE.require_in_call\n+    def to_sparse(self, *, sparse_type: Type[COO] | Type[DOK] | Type[GCXS] = COO) -> Tensor:\n+        \"\"\"Returns a new instance with the internal array converted to a sparse array.\n+\n+        If the instance on which this method was called already fulfilled this requirement, it is\n+        returned unchanged.\n+\n+        Args:\n+            sparse_type: the type to use for the conversion to sparse array. Note, that this will\n+            only be applied if the wrapped array object was dense. Converting an already sparse\n+            array to another sparse type needs to be done explicitly.\n+\n+        Returns:\n+            A new ``Tensor`` with the internal array converted to the requested sparse array type.\n+        \"\"\"\n+        if self.is_sparse():\n+            return self\n+\n+        return self.__array_wrap__(sparse_type.from_numpy(self._array))\n+\n+    def to_dense(self) -> Tensor:\n+        \"\"\"Returns a new instance with the internal array converted to a dense numpy array.\n+\n+        If the instance on which this method was called already fulfilled this requirement, it is\n+        returned unchanged.\n+        \"\"\"\n+        if self.is_dense():\n+            return self\n+\n+        return self.__array_wrap__(cast(SparseArray, self._array).todense())\n+\n+    # pylint: disable=too-many-return-statements\n+    def __eq__(self, other: object) -> bool:\n+        \"\"\"Check equality of ``Tensor`` instances.\n+\n+        .. note::\n+            This check only asserts the internal matrix elements for equivalence but ignores the\n+            type of the matrices. As such, it will indicate equality of two ``Tensor`` instances\n+            even if one contains sparse and the other dense numpy arrays, as long as their elements\n+            are identical.\n+\n+        Args:\n+            other: the second ``Tensor`` object to be compared with the first.\n+\n+        Returns:\n+            True when the ``Tensor`` objects are equal, False when not.\n+        \"\"\"\n+        if not isinstance(other, (Tensor, Number, np.ndarray, SparseArray)):\n+            return False\n+\n+        value = Tensor(self)._array\n+        other_value = Tensor(other)._array\n+\n+        self_is_sparse = isinstance(value, SparseArray)\n+        other_is_sparse = isinstance(other_value, SparseArray)\n+\n+        if self_is_sparse:\n+            if other_is_sparse:\n+                if value.ndim != other_value.ndim:\n+                    return False\n+                if value.nnz != other_value.nnz:  # type: ignore[union-attr]\n+                    return False\n+                if value.size != other_value.size:\n+                    return False\n+                diff = value - other_value\n+                if diff.nnz != 0:\n+                    return False\n+                return True\n+            value = value.todense()  # type: ignore[union-attr]\n+        elif other_is_sparse:\n+            other_value = cast(SparseArray, other_value).todense()\n+\n+        if not np.array_equal(value, other_value):\n+            return False\n+\n+        return True\n+\n+    def __ne__(self, other: object) -> bool:\n+        return not self.__eq__(other)",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "126e624f58da2c20827bc5c04e49beb190d8a306",
+    "original_commit_id": "75c9cf23f034c35e92e7424afb09aa0e17b0b4a1",
+    "user": {
+      "login": "woodsp-ibm",
+      "id": 40241007,
+      "node_id": "MDQ6VXNlcjQwMjQxMDA3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40241007?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/woodsp-ibm",
+      "html_url": "https://github.com/woodsp-ibm",
+      "followers_url": "https://api.github.com/users/woodsp-ibm/followers",
+      "following_url": "https://api.github.com/users/woodsp-ibm/following{/other_user}",
+      "gists_url": "https://api.github.com/users/woodsp-ibm/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/woodsp-ibm/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/woodsp-ibm/subscriptions",
+      "organizations_url": "https://api.github.com/users/woodsp-ibm/orgs",
+      "repos_url": "https://api.github.com/users/woodsp-ibm/repos",
+      "events_url": "https://api.github.com/users/woodsp-ibm/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/woodsp-ibm/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Is this not equals somehow needed to be explicitly included due to the numpy mixin use. By default this is what Python 3 would do, hence normally you only see the \\_\\_eq\\_\\_ implemented,",
+    "created_at": "2023-02-03T19:56:39Z",
+    "updated_at": "2023-02-03T20:02:12Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1096221103",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096221103"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1096221103"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1096221103/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 282,
+    "original_start_line": 282,
+    "start_side": "RIGHT",
+    "line": 283,
+    "original_line": 283,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 283,
+    "position": 283,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1097027540",
+    "pull_request_review_id": 1284673905,
+    "id": 1097027540,
+    "node_id": "PRRC_kwDOE-DJV85BY0_U",
+    "diff_hunk": "@@ -0,0 +1,409 @@\n+# This code is part of Qiskit.\n+#\n+# (C) Copyright IBM 2022, 2023.\n+#\n+# This code is licensed under the Apache License, Version 2.0. You may\n+# obtain a copy of this license in the LICENSE.txt file in the root directory\n+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.\n+#\n+# Any modifications or derivative works of this code must retain this\n+# copyright notice, and modified files need to carry a notice indicating\n+# that they have been altered from the originals.\n+\n+\"\"\"Tensor class\"\"\"\n+\n+from __future__ import annotations\n+\n+import string\n+from numbers import Number\n+from typing import Any, Sequence, Type, Union, cast\n+\n+import numpy as np\n+from qiskit.quantum_info.operators.mixins import TolerancesMixin\n+\n+import qiskit_nature.optionals as _optionals\n+\n+if _optionals.HAS_SPARSE:\n+    # pylint: disable=import-error\n+    from sparse import COO, DOK, GCXS, SparseArray, zeros_like\n+else:\n+\n+    def zeros_like(*args):\n+        \"\"\"Empty zeros_like function\n+        Replacement if sparse.zeros_like is not present.\n+        \"\"\"\n+        del args\n+\n+    class COO:  # type: ignore\n+        \"\"\"Empty COO class\n+        Replacement if sparse.COO is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class DOK:  # type: ignore\n+        \"\"\"Empty DOK class\n+        Replacement if sparse.DOK is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class GCXS:  # type: ignore\n+        \"\"\"Empty GCXS class\n+        Replacement if sparse.GCXS is not present.\n+        \"\"\"\n+\n+        pass\n+\n+    class SparseArray:  # type: ignore\n+        \"\"\"Empty SparseArray class\n+        Replacement if sparse.SparseArray is not present.\n+        \"\"\"\n+\n+        pass\n+\n+\n+# pylint: disable=invalid-name\n+ARRAY_TYPE = Union[np.ndarray, SparseArray]\n+\n+\n+def _unpack_args(sequence: Sequence) -> Sequence[ARRAY_TYPE]:\n+    \"\"\"An internal utility to recursively unpack a sequence of array-like objects.\"\"\"\n+    seq: list[ARRAY_TYPE] = []\n+    for obj in sequence:\n+        if isinstance(obj, Sequence):\n+            seq.append(_unpack_args(obj))\n+        elif isinstance(obj, Tensor):\n+            seq.append(obj.array)\n+        else:\n+            seq.append(obj)\n+    return seq\n+\n+\n+class Tensor(np.lib.mixins.NDArrayOperatorsMixin, TolerancesMixin):\n+    \"\"\"A tensor representation wrapping single numeric values, dense or sparse arrays.\n+\n+    This class is designed to unify the usage of tensors throughout the stack. It provides a central\n+    entry point for the handling of arrays enabling seamless interchange of dense and sparse arrays\n+    in any use-case. This is done by implementing this class as an ``np.ndarray`` container as\n+    described `here <https://numpy.org/doc/stable/user/basics.dispatch.html>`_. At the same time\n+    this class can also wrap a ``sparse.SparseArray`` (which in turn implements the ``np.ndarray``\n+    interface).\n+    \"\"\"\n+\n+    def __init__(self, array: Number | ARRAY_TYPE | Tensor) -> None:\n+        \"\"\"\n+        Args:\n+            array: the wrapped array object. This can be any of the following objects:\n+\n+                :`numpy.ndarray`: a dense matrix\n+                :`sparse.SparseArray`: a sparse matrix\n+                :`numbers.Number`: any numeric singular value\n+                :`Tensor`: another Tensor whose ``array`` attribute will be extracted\n+        \"\"\"\n+        if isinstance(array, Tensor):\n+            array = array._array\n+        elif isinstance(array, Number):\n+            array = np.array(array)\n+\n+        self._array: ARRAY_TYPE = array\n+\n+    @property\n+    def array(self) -> ARRAY_TYPE:\n+        \"\"\"Returns the wrapped array object.\"\"\"\n+        return self._array\n+\n+    def __repr__(self) -> str:\n+        return repr(self._array)\n+\n+    def __array__(self, dtype=None) -> ARRAY_TYPE:\n+        \"\"\"Makes this class behave like a numpy ndarray.\n+\n+        See also https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array__\n+        \"\"\"\n+        if dtype is None:\n+            return self._array\n+\n+        return self._array.astype(dtype=dtype)\n+\n+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):\n+        \"\"\"Makes this class work with numpy ufuncs.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_ufunc__\n+        \"\"\"\n+        if method == \"__call__\":\n+            new_inputs = []\n+            for i in inputs:\n+                if isinstance(i, self.__class__):\n+                    new_inputs.append(i._array)\n+                else:\n+                    new_inputs.append(i)\n+            return ufunc(*new_inputs, **kwargs)\n+        else:\n+            return NotImplemented\n+\n+    # pylint: disable=unused-argument\n+    def __array_function__(self, func, types, args, kwargs):\n+        \"\"\"Another numpy function wrapper necessary for interoperability with numpy.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_function__\n+        \"\"\"\n+        new_args = _unpack_args(args)\n+        return self.__array_wrap__(func(*new_args, **kwargs))\n+\n+    # pylint: disable=unused-argument\n+    def __array_wrap__(self, array: ARRAY_TYPE, context=None) -> Tensor:\n+        \"\"\"Ensures the returned objects of a numpy function are wrapped again by this class.\n+\n+        See also\n+        https://numpy.org/doc/stable/reference/arrays.classes.html#numpy.class.__array_wrap__\n+        \"\"\"\n+        return self.__class__(array)\n+\n+    def __getattr__(self, name: str) -> Any:\n+        array = self.__array__()\n+        if hasattr(array, name):\n+            # expose any attribute of the internally wrapped array object\n+            return getattr(array, name)\n+        return None\n+\n+    def __getitem__(self, key: Any) -> Any:\n+        array = self.__array__()\n+        if hasattr(array, \"__getitem__\"):\n+            # expose any item of the internally wrapped array object\n+            return array.__getitem__(key)\n+        return None\n+\n+    def __setitem__(self, key: Any, value: Any) -> None:\n+        array = self.__array__()\n+        if hasattr(array, \"__setitem__\"):\n+            # expose any item setting of the internally wrapped array object\n+            array.__setitem__(key, value)\n+\n+    @property\n+    def shape(self) -> tuple[int, ...]:\n+        \"\"\"Returns the shape of the wrapped array object.\"\"\"\n+        return self._array.shape\n+\n+    @property\n+    def ndim(self) -> int:\n+        \"\"\"Returns the number of dimensions of the wrapped array object.\"\"\"\n+        return len(self._array.shape)\n+\n+    @_optionals.HAS_SPARSE.require_in_call\n+    def is_sparse(self) -> bool:\n+        \"\"\"Returns whether this tensor is sparse.\"\"\"\n+        return isinstance(self._array, SparseArray) or self._array.ndim == 0\n+\n+    def is_dense(self) -> bool:\n+        \"\"\"Returns whether this tensor is dense.\"\"\"\n+        return isinstance(self._array, np.ndarray)\n+\n+    # TODO: change the following type-hint if/when SparseArray dictates the existence of from_numpy\n+    @_optionals.HAS_SPARSE.require_in_call\n+    def to_sparse(self, *, sparse_type: Type[COO] | Type[DOK] | Type[GCXS] = COO) -> Tensor:\n+        \"\"\"Returns a new instance with the internal array converted to a sparse array.\n+\n+        If the instance on which this method was called already fulfilled this requirement, it is\n+        returned unchanged.\n+\n+        Args:\n+            sparse_type: the type to use for the conversion to sparse array. Note, that this will\n+            only be applied if the wrapped array object was dense. Converting an already sparse\n+            array to another sparse type needs to be done explicitly.\n+\n+        Returns:\n+            A new ``Tensor`` with the internal array converted to the requested sparse array type.\n+        \"\"\"\n+        if self.is_sparse():\n+            return self\n+\n+        return self.__array_wrap__(sparse_type.from_numpy(self._array))\n+\n+    def to_dense(self) -> Tensor:\n+        \"\"\"Returns a new instance with the internal array converted to a dense numpy array.\n+\n+        If the instance on which this method was called already fulfilled this requirement, it is\n+        returned unchanged.\n+        \"\"\"\n+        if self.is_dense():\n+            return self\n+\n+        return self.__array_wrap__(cast(SparseArray, self._array).todense())\n+\n+    # pylint: disable=too-many-return-statements\n+    def __eq__(self, other: object) -> bool:\n+        \"\"\"Check equality of ``Tensor`` instances.\n+\n+        .. note::\n+            This check only asserts the internal matrix elements for equivalence but ignores the\n+            type of the matrices. As such, it will indicate equality of two ``Tensor`` instances\n+            even if one contains sparse and the other dense numpy arrays, as long as their elements\n+            are identical.\n+\n+        Args:\n+            other: the second ``Tensor`` object to be compared with the first.\n+\n+        Returns:\n+            True when the ``Tensor`` objects are equal, False when not.\n+        \"\"\"\n+        if not isinstance(other, (Tensor, Number, np.ndarray, SparseArray)):\n+            return False\n+\n+        value = Tensor(self)._array\n+        other_value = Tensor(other)._array\n+\n+        self_is_sparse = isinstance(value, SparseArray)\n+        other_is_sparse = isinstance(other_value, SparseArray)\n+\n+        if self_is_sparse:\n+            if other_is_sparse:\n+                if value.ndim != other_value.ndim:\n+                    return False\n+                if value.nnz != other_value.nnz:  # type: ignore[union-attr]\n+                    return False\n+                if value.size != other_value.size:\n+                    return False\n+                diff = value - other_value\n+                if diff.nnz != 0:\n+                    return False\n+                return True\n+            value = value.todense()  # type: ignore[union-attr]\n+        elif other_is_sparse:\n+            other_value = cast(SparseArray, other_value).todense()\n+\n+        if not np.array_equal(value, other_value):\n+            return False\n+\n+        return True\n+\n+    def __ne__(self, other: object) -> bool:\n+        return not self.__eq__(other)",
+    "path": "qiskit_nature/second_q/operators/tensor.py",
+    "commit_id": "126e624f58da2c20827bc5c04e49beb190d8a306",
+    "original_commit_id": "75c9cf23f034c35e92e7424afb09aa0e17b0b4a1",
+    "user": {
+      "login": "mrossinek",
+      "id": 21973473,
+      "node_id": "MDQ6VXNlcjIxOTczNDcz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21973473?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mrossinek",
+      "html_url": "https://github.com/mrossinek",
+      "followers_url": "https://api.github.com/users/mrossinek/followers",
+      "following_url": "https://api.github.com/users/mrossinek/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mrossinek/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mrossinek/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mrossinek/subscriptions",
+      "organizations_url": "https://api.github.com/users/mrossinek/orgs",
+      "repos_url": "https://api.github.com/users/mrossinek/repos",
+      "events_url": "https://api.github.com/users/mrossinek/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mrossinek/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Yes, this is necessary because the numpy mixin specifically sets this method differently: https://github.com/numpy/numpy/blob/3624b0628b9f493b7d2339a15ba3004dc90fc943/numpy/lib/mixins.py#L144",
+    "created_at": "2023-02-06T07:34:48Z",
+    "updated_at": "2023-02-06T07:34:49Z",
+    "html_url": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1097027540",
+    "pull_request_url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1097027540"
+      },
+      "html": {
+        "href": "https://github.com/qiskit-community/qiskit-nature/pull/1033#discussion_r1097027540"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/1033"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/qiskit-community/qiskit-nature/pulls/comments/1097027540/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 282,
+    "original_start_line": 282,
+    "start_side": "RIGHT",
+    "line": 283,
+    "original_line": 283,
+    "side": "RIGHT",
+    "in_reply_to_id": 1096221103,
+    "author_association": "MEMBER",
+    "original_position": 283,
+    "position": 283,
+    "subject_type": "line"
+  }
+]

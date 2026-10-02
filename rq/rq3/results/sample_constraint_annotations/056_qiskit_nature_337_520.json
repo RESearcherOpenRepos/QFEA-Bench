@@ -1,0 +1,339 @@
+{
+  "id": 56,
+  "sample_id": "qiskit_nature_337_520",
+  "repo": "qiskit-community/qiskit-nature",
+  "patch_commit": "373fe1d040ee9a00aa1ecb94d487009f7827c0fc",
+  "status": "manually_reviewed",
+  "summary": {
+    "f2p_tests": 12,
+    "p2p_tests": 12,
+    "subtype_test_counts": {
+      "quantum_semantics/two_body_integral_index_ordering": 12,
+      "interface/input_validation": 1,
+      "interface/missing_key_lookup": 1,
+      "interface/return_representation": 2,
+      "general_semantics/symbolic_tensor_arithmetic": 6,
+      "general_semantics/tensor_conjugation": 1,
+      "general_semantics/tensor_transpose": 1
+    }
+  },
+  "tests": [
+    {
+      "test_number": 1,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_1",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Physicist-ordered two-electron tensor is identified as PHYSICIST."
+        }
+      ],
+      "rationale": "First detection data row carries physicist index symmetry."
+    },
+    {
+      "test_number": 2,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_2",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Chemist-ordered two-electron tensor is identified as CHEMIST."
+        }
+      ],
+      "rationale": "Second row has chemist integral index symmetry."
+    },
+    {
+      "test_number": 3,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_3",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Intermediate two-electron tensor is identified as INTERMEDIATE."
+        }
+      ],
+      "rationale": "Third row checks the supported intermediate axis arrangement."
+    },
+    {
+      "test_number": 4,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_find_index_order_4",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 103,
+          "expected": "Tensor without supported integral symmetry is identified as UNKNOWN."
+        }
+      ],
+      "rationale": "Fourth row has deliberately broken four-index symmetry."
+    },
+    {
+      "test_number": 5,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_1",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Physicist-ordered tensor converts to the chemist axis order."
+        }
+      ],
+      "rationale": "First chemist-conversion row checks the prescribed two-electron integral permutation."
+    },
+    {
+      "test_number": 6,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_2",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Already chemist-ordered tensor retains the same values."
+        }
+      ],
+      "rationale": "Second chemist-conversion row checks idempotence of the physical convention."
+    },
+    {
+      "test_number": 7,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_chemist_ordering_3",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 86,
+          "expected": "Intermediate tensor converts to the chemist order."
+        }
+      ],
+      "rationale": "Third row checks the distinct intermediate-to-chemist axis permutation."
+    },
+    {
+      "test_number": 8,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_1",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Chemist-ordered tensor converts to physicist axis order."
+        }
+      ],
+      "rationale": "First physicist-conversion row checks the prescribed integral permutation."
+    },
+    {
+      "test_number": 9,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_2",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Already physicist-ordered tensor retains the same values."
+        }
+      ],
+      "rationale": "Second physicist-conversion row checks idempotence."
+    },
+    {
+      "test_number": 10,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_to_physicist_ordering_3",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 70,
+          "expected": "Intermediate tensor converts to physicist order."
+        }
+      ],
+      "rationale": "Third row checks the distinct intermediate-to-physicist permutation."
+    },
+    {
+      "test_number": 11,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_chemist_ordering",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 90,
+          "expected": "Unknown two-body integral ordering is rejected for chemist conversion."
+        }
+      ],
+      "rationale": "This focused rejection depends on integral-index symmetry, not generic input type."
+    },
+    {
+      "test_number": 12,
+      "split": "F2P",
+      "selector": "test/second_q/operators/test_tensor_ordering.py::TestTwoBodySymmetryConversion::test_unknown_to_physicist_ordering",
+      "label": "quantum_semantics/two_body_integral_index_ordering",
+      "assertions": [
+        {
+          "line": 74,
+          "expected": "Unknown two-body integral ordering is rejected for physicist conversion."
+        }
+      ],
+      "rationale": "The paired conversion rejects the same physically invalid index symmetry."
+    },
+    {
+      "test_number": 13,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_init",
+      "label": "interface/input_validation",
+      "assertions": [
+        {
+          "line": 99,
+          "expected": "PolynomialTensor constructor rejects unsupported keys and dimensions."
+        }
+      ],
+      "rationale": "The selected init test expects three public construction errors."
+    },
+    {
+      "test_number": 14,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_get_item",
+      "label": "interface/missing_key_lookup",
+      "assertions": [
+        {
+          "line": 121,
+          "expected": "PolynomialTensor key lookup returns the stored array."
+        }
+      ],
+      "rationale": "The selected getter test compares public key access with the source mapping."
+    },
+    {
+      "test_number": 15,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_len",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 127,
+          "expected": "len(PolynomialTensor) reports the expected number of keys."
+        }
+      ],
+      "rationale": "This test checks container length."
+    },
+    {
+      "test_number": 16,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_iter",
+      "label": "interface/return_representation",
+      "assertions": [
+        {
+          "line": 133,
+          "expected": "Iteration over PolynomialTensor yields expected keys."
+        }
+      ],
+      "rationale": "This test checks iterator order and contents."
+    },
+    {
+      "test_number": 17,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_1_0_0",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplying PolynomialTensor by zero yields zero coefficients."
+        }
+      ],
+      "rationale": "The first scalar parameter is 0.0; invalid tensor multiplication is secondary."
+    },
+    {
+      "test_number": 18,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_2_0_75",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplying PolynomialTensor by 0.75 scales coefficients."
+        }
+      ],
+      "rationale": "The second scalar parameter is 0.75."
+    },
+    {
+      "test_number": 19,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_3_1_5",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplying PolynomialTensor by 1.5 scales coefficients."
+        }
+      ],
+      "rationale": "The third scalar parameter is 1.5."
+    },
+    {
+      "test_number": 20,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_4_2_25",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplying PolynomialTensor by 2.25 scales coefficients."
+        }
+      ],
+      "rationale": "The fourth scalar parameter is 2.25."
+    },
+    {
+      "test_number": 21,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_mul_5_3_0",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 146,
+          "expected": "Multiplying PolynomialTensor by 3.0 scales coefficients."
+        }
+      ],
+      "rationale": "The fifth scalar parameter is 3.0."
+    },
+    {
+      "test_number": 22,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_add",
+      "label": "general_semantics/symbolic_tensor_arithmetic",
+      "assertions": [
+        {
+          "line": 154,
+          "expected": "Adding two PolynomialTensors produces expected coefficient arrays."
+        }
+      ],
+      "rationale": "The type and dimension exceptions are secondary subcases."
+    },
+    {
+      "test_number": 23,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_conjugate",
+      "label": "general_semantics/tensor_conjugation",
+      "assertions": [
+        {
+          "line": 171,
+          "expected": "Conjugating PolynomialTensor conjugates every coefficient array."
+        }
+      ],
+      "rationale": "This is ordinary complex tensor arithmetic."
+    },
+    {
+      "test_number": 24,
+      "split": "P2P",
+      "selector": "test/second_q/operators/test_polynomial_tensor.py::TestPolynomialTensor::test_transpose",
+      "label": "general_semantics/tensor_transpose",
+      "assertions": [
+        {
+          "line": 176,
+          "expected": "Transposing PolynomialTensor permutes array axes as expected."
+        }
+      ],
+      "rationale": "This is ordinary tensor manipulation."
+    }
+  ],
+  "source_files": [
+    "https://github.com/qiskit-community/qiskit-nature/blob/373fe1d040ee9a00aa1ecb94d487009f7827c0fc/test/second_q/operators/test_polynomial_tensor.py",
+    "https://github.com/qiskit-community/qiskit-nature/blob/373fe1d040ee9a00aa1ecb94d487009f7827c0fc/test/second_q/operators/test_tensor_ordering.py"
+  ],
+  "rationale": "Reviewed each four-index tensor data row for chemist, physicist, intermediate and unknown symmetry, plus every selected PolynomialTensor container/arithmetic case."
+}

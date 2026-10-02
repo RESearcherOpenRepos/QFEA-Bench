@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "study_type": "retrospective_repository_selection_audit",
+  "primary_query": "quantum in:name,description stars:>100 fork:false sort:stars-desc",
+  "keyword_search_fields": "name,description,readme",
+  "keywords_any": [
+    "quantum computing",
+    "quantum chemistry",
+    "quantum machine learning",
+    "quantum optimization",
+    "quantum finance"
+  ],
+  "stars_exclusive_min": 100,
+  "closed_issues_exclusive_min": 20,
+  "merged_prs_exclusive_min": 200,
+  "include_forks": false,
+  "language_filter": null,
+  "archive_filter": null,
+  "issue_count_excludes_pull_requests": true,
+  "keyword_combination": "OR",
+  "filter_combination": "AND",
+  "manual_scope": {
+    "target": "Reusable application-layer software for quantum-computing chemistry, machine learning, optimization, or finance, including their domain models, problem-to-quantum representations and algorithm workflows. Assess the main maintained implementation, not every possible downstream use.",
+    "application_examples": [
+      "quantum chemistry and electronic-structure mappings",
+      "quantum machine learning",
+      "quantum optimization",
+      "quantum finance"
+    ],
+    "non_software": "Exclude repositories primarily containing documentation, tutorials, courses, resource lists, or example collections rather than reusable implementation code.",
+    "infrastructure": "Repositories primarily implementing a language/compiler, runtime/provider, deployment infrastructure or simulator engine are outside focus. Adopted additional conditions explicitly include domain-specific simulator products. Mixed projects require functional review; names alone are insufficient.",
+    "classical_science": "Exclude primarily classical scientific-computing packages that model quantum-mechanical systems but do not primarily implement quantum-computing application workflows. This is a domain boundary, not a programming-language filter.",
+    "other_quantum_domains": "For this stricter four-domain proposal, standalone quantum-networking, hardware/error-correction and quantum-information-theory tools fall outside scope. These are substantive scope restrictions requiring explicit human confirmation, not universally unsuitable quantum software.",
+    "repository_granularity": "Assess current independent application-module boundaries. A documented predecessor or component whose functionality was split or merged into retained repositories may be proposed for exclusion as a separate repository unit. This does not establish duplicate historical tasks; archive status alone is not an exclusion.",
+    "boundary_cases": "Review mixed projects by their maintained functionality. Apply all adopted necessary conditions; application overlap cannot override a proven failure of another condition. Unknown or unaudited conditions remain unresolved.",
+    "instance_feasibility": "For newly admitted samples, verify a feature Issue linked to its implementing PR and stable executable F2P/P2P tests under ../Build_Docker_WORKFLOW.md. Repository counts alone do not establish this.",
+    "unknown_evidence": "Record not_audited or needs_review; never infer that no suitable Issue-PR pair or tests exist from missing audit evidence.",
+    "general_frameworks": "Exclude primarily general quantum programming or training frameworks whose main maintained interfaces provide registers/circuits, generic quantum layers, differentiation, tensor integration or execution infrastructure. Judge the actual delivered functionality, not the word framework. A mixed project with independently maintained domain-problem models, problem-to-quantum mappings or application-level solving/prediction modules must be reviewed individually; examples alone do not establish such modules.",
+    "framework_comparison": "TFQ PQC takes circuits/observables and emits expectation-value tensors as a Keras layer; propose E10 exclusion as a generic training framework. PennyLane also supplies a qchem Molecule API and molecular_hamiltonian mapping, with dedicated tests, so it remains a mixed project with explicit application modules. The distinction is functional and must not be generalized to excluding every quantum ML library.",
+    "research_experiment_collections": "Proposed retrospective clarification: exclude repositories primarily organized as implementations and reproduction/extension pipelines for particular published experiments (including experiment-specific collection, calibration and analysis), even if they contain reusable helpers. Research use, publication, notebooks, or lack of PyPI distribution alone are not exclusions. General domain-problem libraries with reusable solver/model APIs remain individually assessed.",
+    "additional_conditions": "Apply adopted_additional_necessary_conditions conjunctively. Passing application-module checks does not override an evidence-supported failure of any other adopted necessary condition."
+  },
+  "reason_codes": {
+    "K01": "Existing application repository with sample metadata in the current dataset",
+    "E01": "Documentation, teaching, demonstrations or SDK example collections",
+    "E02": "Language, compiler or circuit toolchain infrastructure",
+    "E03": "Runtime, provider, adapter, orchestration or cloud infrastructure",
+    "E04": "General circuit representation or simulation-engine infrastructure",
+    "E05": "Primarily classical scientific computing rather than quantum-computing applications",
+    "E06": "Other quantum domains outside the proposed four application areas",
+    "E07": "Packaging, environment or supporting scientific-data utilities",
+    "E08": "Documented predecessor or merged component outside current independent-module granularity",
+    "E09": "Circuit benchmark generation rather than application-library implementation",
+    "U01": "Direct application-scope overlap; no supported exclusion established",
+    "U02": "Mixed scope or unresolved abstraction boundary; needs further evidence",
+    "E10": "Primarily general quantum programming/training framework, judged by core interfaces rather than project naming",
+    "E11": "Primarily a collection of publication-specific research experiments and reproduction pipelines",
+    "E12": "Primarily continuous-variable photonic applications outside the adopted qubit scope",
+    "E13": "Application core implemented in another language; Python mainly provides interoperability",
+    "E14": "Application toolkit centered on a single algorithm family",
+    "E15": "Primarily a domain-specific circuit simulator product"
+  },
+  "current_cohort_policy": "The seven repositories in ../samples/index.json are existing dataset members. Their compliance with the four newly adopted conditions has NOT been checked, at explicit user request. Do not claim that all seven pass, or that this audit uniquely derives seven eligible repositories.",
+  "human_review_policy": "Agent-prepared scope assessments are drafts. A human reviewer must fill the separate review fields before calling them completed human audits.",
+  "functional_scope_confirmation": {
+    "date": "2026-09-30",
+    "rule": "User confirmed functional classification: exclude general frameworks; review mixed projects with explicit application modules individually."
+  },
+  "decision_logic": {
+    "rule": "All applicable necessary conditions must be met. One evidence-supported failure is sufficient for exclusion; satisfying other conditions does not offset it.",
+    "scope": "Use a consistent criterion and unit when evaluated. At explicit user request the existing seven are not re-evaluated in this turn; mark their compliance with new conditions not_checked, not pass.",
+    "unknown": "Unknown, untested, or unaudited is not a failed condition.",
+    "new_conditions": "The four additional conditions were adopted retrospectively on 2026-09-30 after user confirmation; they are not documented historical selection rules.",
+    "user_confirmation": "User confirmed that failure of any one requirement is sufficient for exclusion."
+  },
+  "adopted_additional_necessary_conditions": {
+    "qubit_application_scope": "The targeted application implementation must concern the qubit computing model; primarily continuous-variable photonic application repositories are outside this scope.",
+    "python_native_application_implementation": "The application core must be natively implemented in Python. A Python interoperability wrapper around application logic maintained in another language is insufficient. Native numerical dependencies alone are not disqualifying.",
+    "beyond_single_algorithm_family": "The application toolkit must not be centered on one algorithm family. Variants of that family, alternative backends, optimizers and problem encodings do not alone satisfy this breadth condition.",
+    "not_a_domain_specific_simulator_product": "Exclude a repository whose primary product is a domain-specific circuit simulation engine, even where supporting public domain representations and application-related operations are present. The mere presence of simulation functionality in a mixed project does not establish failure."
+  },
+  "additional_scope_confirmation": {
+    "date": "2026-09-30",
+    "source": "Direct user reply in this conversation",
+    "confirmed_all_four": true,
+    "user_reply": "可以，然后暂时先不排查现有的7个库是否符合",
+    "existing_seven_recheck": "deferred_at_user_request",
+    "historical_selection_rule": false
+  }
+}
